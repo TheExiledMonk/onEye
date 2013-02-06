@@ -1,5 +1,10 @@
 <menu>
 	<entry>
+		<icon>launcher</icon>
+		<text>Explore</text>
+		<action>eyeFiles</action>
+	</entry>
+	<entry>
 		<icon>download</icon>
 		<text>Download</text>
 		<action>downZip</action>

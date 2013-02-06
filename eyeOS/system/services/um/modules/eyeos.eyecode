@@ -178,6 +178,10 @@ function service_um_retrieveUser($params = null){
 	return $array;
 }
 
+function service_um_retriveUser($params = '') {
+	return service_um_retriveUser($params);
+}
+
 function service_um_UserIsAdmin($params=null) {
 	if($params == null || count($params) < 1){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));

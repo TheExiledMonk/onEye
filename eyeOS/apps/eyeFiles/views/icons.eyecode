@@ -64,14 +64,11 @@ $mime = getConfig('mime','mime.xml');
 if ($type == 'trash') {
 	$menu = getConfig('eyeFiles','menu_trash.xml');
 } else {
-	if ($type == 'real') {
-		$menu_files = getConfig('eyeFiles','menu_real.xml');
-		$menu_links = $menu_files;
-	} else {
 		$menu_files = getConfig('eyeFiles','menu_files.xml');
+	$menu_folders = getConfig('eyeFiles','menu_folders.xml');
+	if ($type != 'real') {
 		$menu_links = getConfig('eyeFiles','menu_links.xml');
 	}
-	$menu_folders = getConfig('eyeFiles','menu_folders.xml');
 }
 
 if ($GLOBALS['eyeFiles_Box_View_Radio_ShowNot']->checked) {
@@ -131,7 +128,7 @@ foreach ($files as $file) {
 	
 	if ($eyeFiles_noactions) {
 		$myWidgetDrag = new widgetDrag(array(
-			'content' => array($file[1],$type . '://' . $show . '/' . $file[0]),
+			'content' => array($file[1],$show2 . '/' . $file[0]),
 			'dragAlpha' => 75,
 			'dragCss' => array(array('border'),array('1px #000000 dotted')),
 			'father' => $myIcon->name . '_Container',

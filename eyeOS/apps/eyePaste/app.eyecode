@@ -53,7 +53,7 @@ function eyePaste_run($params = '') {
 		if ($params[1]) {
 			eyex('rawjs',array('js' => $params[1]));
 		}
-		eyeFiles('update',array($to[1] . '://' . $to[2],$path[1] . '://' . $path[2]));
+		eyeFiles('update',array($to[1] . '://' . $to[2]));
 	}
 	proc('end');
 }

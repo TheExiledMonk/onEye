@@ -273,6 +273,9 @@ class SortabletableSelected {
 	function delRow($params) {
 		global $myPid;
 		$name = 'table_'.$myPid.'_'.$this->name;
+		if($this->selected == $params){
+			$this->setValue(null);
+		}
 		$tokens[] = $params;
 		service('eyex','runjs',array('js' => "if($name){".$name.".delEntry( %s );}",'tokens'=>$tokens));
 	}

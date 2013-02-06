@@ -960,12 +960,6 @@ function service_vfs_checkPermissions($params) {
 		}		
 	}
 	
-	$web_path = realpath($userdir.'Web');
-	
-	if(($web_path == $file_path) && $params[1] == 'e') {
-		return false;
-	}
-	
 	if (0 === utf8_strpos($file_path,$userdir_path)) {
 		return true;
 	} elseif ($currentUser == ROOTUSER) {

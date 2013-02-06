@@ -21,7 +21,12 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
+/*
+*This constant is only for 1.8 version and won't be compatible
+*With eyeOS 1.9 and above, so please use INDEX_TYPE INSTEAD!
+*/
 define('IS_MOBILE',1);
+define('INDEX_TYPE','mobile');
 
 //Loading basic settings for eyeOS Kernel and Services
 include_once('../settings.php');

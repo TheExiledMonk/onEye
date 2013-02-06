@@ -85,11 +85,12 @@ function lib_eyeConverter_convert($params) {
 			file_put_contents($dest . '.bat',$content);
 			$cmd = '"' . $dest . '.bat"';
 		} elseif(OFFICE_USE_DISPLAY == 1) { 
-			$cmd = OFFICE_COMMAND.' -headless -norestore -display :'.intval(OFFICE_SCREEN).'.0 '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.ConvertAny('.$forig.','.$dest.','.$format.')'.OFFICE_SEPARATOR_ARG;
+			$cmd = OFFICE_COMMAND.' -headless -invisible -nologo -nodefault -head -norestore -display :'.intval(OFFICE_SCREEN).'.0 '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.ConvertAny('.$forig.','.$dest.','.$format.')'.OFFICE_SEPARATOR_ARG;
 		} else {
-			$cmd = OFFICE_COMMAND.' -headless -norestore '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.ConvertAny('.$forig.','.$dest.','.$format.')'.OFFICE_SEPARATOR_ARG;
+			$cmd = OFFICE_COMMAND.' -headless -invisible -nologo -nodefault -head -norestore '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.ConvertAny('.$forig.','.$dest.','.$format.')'.OFFICE_SEPARATOR_ARG;
 		}
-		$env = array();
+		$tempDir = get_tmp_dir();
+		$env = array('HOME'=>$tempDir);
 		$pipe = array();
 		$desc = array();
 		proc_open($cmd,$desc,$pipe,null,$env);

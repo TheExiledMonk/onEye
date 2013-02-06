@@ -708,6 +708,15 @@ function getParentWidgetType(widget,widgetType){
 function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight,wclass,cent,sizeUnit,isVisible,widgetType)
 {
 	var father = document.getElementById(fatherid);
+	//If there are a widget with the same id, return false;
+	if(document.getElementById(widgetid)) {
+		try{
+			console.log(widgetid+' Already exists in the dom tree, so I won\'t create a new one');
+		}catch(err){
+			//firebug is not pressent...
+		}
+		return false;
+	}
 	if (!father) {
 		return;
 	}

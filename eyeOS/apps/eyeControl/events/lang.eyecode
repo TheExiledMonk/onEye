@@ -22,7 +22,7 @@
 */
 
 function eyeControl_on_lang_change($params = '') {
-	$dir = um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/i18n/';
+	$dir = eyeControl_lib_getConfigUserPath() . '/' . CONF_USER_DIR . '/i18n/';
 	$LangXML = eyeControl_lib_getXMLconfig(array('i18n','lang.xml'));
 	$LangXML['lang'][0] = $GLOBALS['eyeControl_lang_select']->selected;
 	if (!file_exists($dir)) {

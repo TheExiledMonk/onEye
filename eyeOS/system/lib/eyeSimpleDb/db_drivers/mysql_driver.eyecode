@@ -37,7 +37,8 @@ class dbDriver{
 	var $error;//storage the error text when it appears (the i18n is php dependence)
 	var $conn;//A conection link (in dbDriver for txt is the file descriptor).
 	var $result;
-	
+	var $connEncoding = 'utf8';//Our default encoding is utf8
+
 	//Constructor, check if mysql function are available 
 	function dbDriver(){
 		if(!function_exists('mysql_connect')){
@@ -55,14 +56,23 @@ class dbDriver{
 		if($params['password']){
 			$password = $params['password'];
 		}
+		if($params['connEncoding']){
+			$this->connEncoding = $params['connEncoding'];
+		}
 		$conn = mysql_connect($host,$login,$password);
 		if(!$conn){
 			errorCodes('setErrorCode',array(DB_NO_CONNECT));
 			$this->error = mysql_error();
 			return FALSE;
 		}
+		//Setting the connection charset, only applicable to mysql
+// 		$result = mysql_query("SET NAMES '".$this->connEncoding."'",$conn);
+		if(!$result){
+			//Waiting for better debuggin system... maybe return false here?
+		}
 		//Setting connection for a driver instance
 		$this->conn = $conn;
+		//Setting encoding
 		return TRUE;
 	}
 	
@@ -137,7 +147,11 @@ class dbDriver{
 	//Fetch a results for insert query
 	function insertResult(){
 		$this->affectedRows = mysql_affected_rows($this->conn);
-		$returnArray = array('affected'=>$this->affectedRows);
+		$inssertedId = mysql_insert_id($this->conn);
+		if($inssertedId == 0 || $inssertedId == false){
+			$inssertedId = false;
+		}
+		$returnArray = array('affected'=>$this->affectedRows,'id'=>$inssertedId);
 		return $returnArray;		
 	}
 	

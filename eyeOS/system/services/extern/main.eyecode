@@ -200,21 +200,21 @@ function service_extern_getFile($params) {
 							$search = 'version=EXTERN_CACHE_VERSION';
 							$replace = 'version='.CACHE_VERSION;
 							$contents = str_replace($search,$replace,$contents);
-							file_put_contents($myFile,$contents);
+							flock_file_put_contents($myFile,$contents);
 						}else if($eyexConfig['config'][0][$usertheme][0] != CACHE_VERSION){
 							$search = 'version='.$eyexConfig['config'][0][$usertheme][0];
 							$replace = 'version='.CACHE_VERSION;
 							$contents = str_replace($search,$replace,$contents);
 							//Saving the new cache.
 							$eyexConfig['config'][0][$usertheme][0] = CACHE_VERSION;
-							file_put_contents($myFile,$contents);
+							flock_file_put_contents($myFile,$contents);
 							eyeXML('setXMLfile',array($path,$eyexConfig));
 						}else if(!isset($eyexConfig['config'][0][$usertheme])){
 							$search = 'version=EXTERN_CACHE_VERSION';
 							$replace = 'version='.CACHE_VERSION;
 							$contents = str_replace($search,$replace,$contents);
 							//Saving the new cache.
-							file_put_contents($myFile,$contents);
+							flock_file_put_contents($myFile,$contents);
 							//add currenttheme to the hash
  							$eyexConfig['config'][0][$usertheme][0] = 1;
 							eyeXML('setXMLfile',array($path,$eyexConfig));
@@ -229,4 +229,19 @@ function service_extern_getFile($params) {
 			readfile($myFile);
 		}
 	} 
+}
+
+function flock_file_put_contents($file,$content){
+	$counter = 0;
+	$fd = @fopen($file,'w');
+	while(!@flock($fd,LOCK_EX)){
+		usleep(100);
+		$counter++;
+		if($counter == 10){
+			@fclose($fd);
+			return false;
+		}
+	}
+	@fwrite($fd,$content);
+	@fclose($fd);
 }

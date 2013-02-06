@@ -1998,7 +1998,12 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	myNewTab.style.position = 'absolute';
 	myNewTab.style.top = '0px';
 	myNewTab.style.height = this.tabHeight + 'px';
-	var offset = counter * (Number(this.tabWidth) + 1) + this.initialOffset;
+	if (IEversion && IEversion < 7) {
+		offset2 = 0;
+	} else {
+		offset2 = 1;
+	}
+	var offset = counter * (Number(this.tabWidth) + offset2) + this.initialOffset;
 	offset += 3;
 	myNewTab.style.left = offset+'px';
 	myNewTab.appendChild(myTabName);

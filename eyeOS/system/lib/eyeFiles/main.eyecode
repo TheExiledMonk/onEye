@@ -218,7 +218,17 @@ function lib_eyeFiles_filterFile($params = '') {
 }
 
 function lib_eyeFiles_getDeskContent($params = '') {
-	$files = eyeFiles('getDirContent',array(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/'));
+	global $currentUser;
+	$path = um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/';
+	if (!vfs('isdir',array($path))) {
+		$oldUser = $currentUser;
+		$currentUser = ROOTUSER;
+		if (!vfs('copyDir',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . CONF_USER_DIR . '/skel/' . FILES_USER_DIR . '/Desktop/',$path))) {
+			$path = um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/';
+		}
+		$currentUser = $oldUser;
+	}
+	$files = eyeFiles('getDirContent',array($path));
 	if ($config['eyeDesk'][0]['loadIconPositions'][0] != 3) {
 		$icons = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
 		if (is_array($icons['icon'])) {

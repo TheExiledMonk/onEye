@@ -303,8 +303,8 @@ function eyeFeeds_doResize() {
 	//LEFT PANEL - BOX
 	$GLOBALS['left_BOX']->setHeight($GLOBALS['leftRight_SPLT']->height);
 	$GLOBALS['left_BOX']->setWidth($GLOBALS['leftRight_SPLT']->position - 1);
-	$GLOBALS['tree_CTN']->setHeight($GLOBALS['leftRight_SPLT']->height - 36);
-	$GLOBALS['tree_CTN']->setWidth($GLOBALS['leftRight_SPLT']->position - 20);
+	$GLOBALS['tree_CTN']->setHeight($GLOBALS['leftRight_SPLT']->height - 25);
+	$GLOBALS['tree_CTN']->setWidth($GLOBALS['leftRight_SPLT']->position - 3);
 	$GLOBALS['feeds_TREE']->setHeight($GLOBALS['itemsList_BOX']->height - 30);
 
 	//RIGHT PANEL - ITEMS BOX

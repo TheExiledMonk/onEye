@@ -108,7 +108,7 @@ foreach ($files as $file) {
 	
 	if ($eyeFiles_noactions) {
 		$myWidgetDrag = new widgetDrag(array(
-			'content' => array($file[1],$type . '://' . $show . '/' . $file[0]),
+			'content' => array($file[1],$show2 . '/' . $file[0]),
 			'dragAlpha' => 75,
 			'dragCss' => array(array('border'),array('1px #000000 dotted')),
 			'father' => $myIcon->name . '_Container',

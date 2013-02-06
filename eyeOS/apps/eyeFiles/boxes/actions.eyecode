@@ -23,7 +23,7 @@
 
 global $checknum;
 global $myPid;
-$menus = array('menu_files.xml','menu_trash.xml','menu_real.xml');
+$menus = array('menu_files.xml','menu_trash.xml');
 foreach ($menus as $menu) {
 	$father = 'eyeFiles_Box_Actions_' . utf8_basename($menu,'.xml') . '_Container';
 	$myContainer = new Container(array(

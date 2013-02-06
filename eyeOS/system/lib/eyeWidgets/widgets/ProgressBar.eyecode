@@ -69,7 +69,7 @@ class ProgressBar {
 		isset($params['progress']) ? $this->progress = $params['progress'] : $this->progress = 0;
 	}
 	
-	function show() {
+	function show($noserialize=0) {
 		$progress = round($this->progress * 100 / $this->max);
 		if ($progress > 100) {
 			$progress = 100;
@@ -94,6 +94,9 @@ class ProgressBar {
 		);
 		service('eyex','createWidget',$myProgressBar);
 		$this->showed=1;
+		if($noserialize == 0) {
+			reqLib('eyeWidgets','serialize',array($this));
+		}
 	}
 	
 	function setCss($params) {

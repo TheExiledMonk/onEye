@@ -23,8 +23,8 @@
 
 /**
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.1
- * @updated 25-Jan-2009
+ * @version 3.2.1-1
+ * @updated 8-Feb-2009
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
@@ -188,7 +188,7 @@ function eyeFTP_run($params=null) {
 		'y' => 4,
 		'width' => 80,
 		'text' => 'eyeftp@eyeos.org',
-		'password' => 2
+		'password' => 1
 	));
 	$passwordTextbox->show();
 
@@ -635,7 +635,7 @@ function eyeFTP_run($params=null) {
 	));
 	
 	//processing provided connection string if any
-	if (is_array($params) && is_string($params[0])) {
+	if (is_array($params) && $params[0]) {
 		$urlsParts = @parse_url($params[0]);
 		if (is_array($urlsParts) && isset($urlsParts['scheme']) && strtolower($urlsParts['scheme']) == 'ftp' && isset($urlsParts['host'])) {
 			$hostTextbox->setText($urlsParts['host']);

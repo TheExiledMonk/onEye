@@ -1071,7 +1071,7 @@ function eyeFeeds_on_importFeeds_import_BTN($params=null) {
 		$savedFeeds = eyeFeeds_addFolder(eyeFeeds_getSavedFeeds(), $folderName, $newFolderId, $parentFolderId);
 		$parentFolderId = $newFolderId;
 	}
-
+	
 	$newFeedsToSave = eyeFeeds_importFeeds($savedFeeds, $parentFolderId, $filePath);
 	if ($newFeedsToSave === false){
 		eyeX('messageBox',array('content'=> 'Unable to import feeds from specified file'));

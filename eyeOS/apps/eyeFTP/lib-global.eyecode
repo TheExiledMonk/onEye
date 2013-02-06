@@ -70,7 +70,7 @@ function eyeFTP_getConf() {
 	$conf['host'] = $GLOBALS['eyeFTP_host_TXTBOX']->text;
 	$conf['port'] = $GLOBALS['eyeFTP_port_TXTBOX']->text;
 	$conf['username'] = $GLOBALS['eyeFTP_username_TXTBOX']->text;
-	$conf['password'] = base64_decode($GLOBALS['eyeFTP_password_TXTBOX']->text);
+	$conf['password'] = $GLOBALS['eyeFTP_password_TXTBOX']->text;
 	$conf['passiveMode'] = $GLOBALS['eyeFTP_passiveMode_CHKBOX']->checked;
 	
 	$conf['currentLocalDir'] = $GLOBALS['eyeFTP_currentLocalDir_HID']->text;

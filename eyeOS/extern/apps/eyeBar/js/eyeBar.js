@@ -28,24 +28,16 @@ function ButOnClick(e,pid,checknum) {
 	if (!eyeSystem_handled) {
 		eyeSystemClickHandler(pid);
 	}
-	var eyeBut = xGetElementById(pid + '_eyeBut');
 	if (eyeBarMenuState) {
-		eyeBarMenuState = 0;
-		eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
-		fixPNG(eyeBut);
-		if (IEversion) {
-			hideIEmenu(pid);
-		} else {
-			updateOpacity(pid + '_eyeMenu',100,0,150,'eyeSystem_hideMenu(' + pid + ');');
-		}
+		hideMenu(pid);
 	} else {
 		eyeBarMenuState = 1;
-		fixPNG(eyeBut);
-		if (IEversion) {
-			showIEmenu(pid);
-		} else {
+		xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10000';
+		if (!IEversion) {
 			updateOpacityOnce(0,pid + '_eyeMenu');
-			xGetElementById(pid + '_eyeMenu').style.visibility = 'visible';
+		}
+		xGetElementById(pid + '_eyeMenu').style.visibility = 'visible';
+		if (!IEversion) {
 			updateOpacity(pid + '_eyeMenu',0,100,350,'');
 		}
 	}
@@ -69,19 +61,28 @@ function ButOnMouseOver(e,pid,checknum) {
 
 function eyeSystemClickHandler(pid) {
 	eyeSystem_handled = 1;
-	addClickHandler(pid + '_eyeMenu_content','if (eyeBarMenuState) { eyeBut = xGetElementById("' + pid + '_eyeBut"); eyeBut.src = "index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png"; if (IEversion) { hideIEmenu(' +  pid + '); fixPNG(eyeBut); } else { updateOpacity("' + pid + '_eyeMenu",100,0,150,"eyeSystem_hideMenu(' + pid + ');"); } eyeBarMenuState = 0; }');
+	addClickHandler(pid + '_eyeMenu_content','if (eyeBarMenuState) { eyeBut = xGetElementById("' + pid + '_eyeBut"); eyeBut.src = "index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png"; if (IEversion) { hideMenu(' +  pid + '); fixPNG(eyeBut); } else { updateOpacity("' + pid + '_eyeMenu",100,0,150,"hideMenu(' + pid + ');"); } eyeBarMenuState = 0; }');
 	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeBut');
 	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_top');
 	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_bot');
 	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_cen');
 }
 
-function eyeSystem_hideMenu(pid) {
-	xGetElementById(pid + '_eyeMenu').style.visibility = 'hidden';
+function hideMenu(pid) {
+	eyeBarMenuState = 0;
+	if (IEversion) {
+		hideMenu2(pid);
+	} else {
+		updateOpacity(pid + '_eyeMenu',100,0,150,'hideMenu2(' + pid + ');');
+	}
 }
 
-function hideIEmenu(pid) {
+function hideMenu2(pid) {
+	var eyeBut = xGetElementById(pid + '_eyeBut');
+	eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
+	fixPNG(eyeBut);
 	xGetElementById(pid + '_eyeMenu').style.visibility = 'hidden';
+	xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10';
 }
 
 function init_eyeBar(pid,checknum) {
@@ -89,10 +90,6 @@ function init_eyeBar(pid,checknum) {
 	obj.onmousedown = function(e) { ButOnClick(e,pid,checknum); };
 	obj.onmouseover = function(e) { ButOnMouseOver(e,pid,checknum); };
 	obj.onmouseout = function(e) { ButOnMouseOut(e,pid,checknum); };
-}
-
-function showIEmenu(pid) {
-	xGetElementById(pid + '_eyeMenu').style.visibility = 'visible';
 }
 
 function updateMenuStateOff(menu) {

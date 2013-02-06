@@ -126,7 +126,7 @@ function eyeFTP_on_eyeFTP_manageHosts_load_BTN($params=null) {
 	$GLOBALS['eyeFTP_host_TXTBOX']->setText($displayedHosts[$id]['name']);
 	$GLOBALS['eyeFTP_port_TXTBOX']->setText($displayedHosts[$id]['port']);
 	$GLOBALS['eyeFTP_username_TXTBOX']->setText($displayedHosts[$id]['username']);
-	$GLOBALS['eyeFTP_password_TXTBOX']->setText(base64_encode($displayedHosts[$id]['password']));
+	$GLOBALS['eyeFTP_password_TXTBOX']->setText($displayedHosts[$id]['password']);
 	$GLOBALS['eyeFTP_listA_HID']->setText($displayedHosts[$id]['listA']);
 	
 	$GLOBALS['eyeFTP_manageHosts_DLG']->close();
@@ -162,7 +162,7 @@ function eyeFTP_on_eyeFTP_manageHosts_save_BTN($params=null) {
 	$newOrUpdatedHost['name'] = $GLOBALS['eyeFTP_manageHosts_host_TXTBOX']->text;
 	$newOrUpdatedHost['port'] = $GLOBALS['eyeFTP_manageHosts_port_TXTBOX']->text;
 	$newOrUpdatedHost['username'] = $GLOBALS['eyeFTP_manageHosts_username_TXTBOX']->text;
-	$newOrUpdatedHost['password'] = base64_decode($GLOBALS['eyeFTP_manageHosts_password_TXTBOX']->text);
+	$newOrUpdatedHost['password'] = $GLOBALS['eyeFTP_manageHosts_password_TXTBOX']->text;
 	$newOrUpdatedHost['listA'] = $GLOBALS['eyeFTP_manageHosts_listA_CHKBOX']->checked? '1' : '0';
 	
 	$displayedHosts[$id] = $newOrUpdatedHost;
@@ -572,7 +572,7 @@ function showManageHostsDialog($params=null) {
 		'x' => 296,
 		'y' => 34,
 		'width' => 80,
-		'password' => 2,
+		'password' => 1,
 		'enabled' => 1
 	));
 	$passwordTextbox->show();

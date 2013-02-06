@@ -204,7 +204,7 @@ function eyeFeeds_displayFeedItems($feed, $forceRefresh=false) {
 		$itemRowData = array(
 			$iconUrl,
 			cleanString($itemData['title']),
-			$itemData['date'],
+			$itemData['date']? $itemData['date'] : ' ',
 			$itemData['author_name']? $itemData['author_name'] : ' ',
 			$itemId
 		);
@@ -689,7 +689,10 @@ function eyeFeeds_importFeeds($rootFeed, $parentFolderId, $inputFilePath) {
 		}
 
 		foreach($opml->body->outline as $outline) {
-			$rootFeed['feed'][] = eyeFeeds_createFeedNodeFromOpml($outline);
+			$newNode = eyeFeeds_createFeedNodeFromOpml($outline);
+			if ($newNode) {
+				$rootFeed['feed'][] = $newNode;
+			} 
 		}
 		return $rootFeed;
 	}
@@ -710,19 +713,26 @@ function eyeFeeds_importFeeds($rootFeed, $parentFolderId, $inputFilePath) {
 }
 
 function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
-	if (! $xmlObject
-		|| (!isset($xmlObject['title'][0]) && !isset($xmlObject['text'][0]))) {
-		return array();
+	if (! is_object($xmlObject)) {
+		return false;
 	}
+	/**
+	 * BIG UGLY HACK FOR PHP 5.2.0
+	 * @see http://fr3.php.net/manual/en/book.simplexml.php#85674
+	 */
+	$title = $xmlObject['title']->asXML();
+	$title = trim(preg_replace('/.*="(.*?)".*/', '$1', $title));
+	$text = $xmlObject['text']->asXML();
+	$text = trim(preg_replace('/.*="(.*?)".*/', '$1', $text));
+	
 	$name ='';
-	if (isset($xmlObject['title'][0]) && $xmlObject['title'][0]) {
-		$name = (string) $xmlObject['title'][0];
+	if ($title) {
+		$name = $title;
 	}
-	elseif (isset($xmlObject['text'][0]) && $xmlObject['text'][0]) {
-		$name = (string) $xmlObject['text'][0];
+	elseif ($text) {
+		$name = $text;
 	}
-
-	if (!$name) {
+	else {
 		$name = i18n('translate',array('(Unknown name)'));
 	}
 
@@ -742,7 +752,9 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 	}
 	//feed
 	else {
-		$url = (string) $xmlObject['xmlUrl'][0];
+		/** BIG HACK AGAIN */
+		$url = $xmlObject['xmlUrl']->asXML();
+		$url = trim(preg_replace('/.*="(.*?)".*/', '$1', $url));
 		$feed = array(
 			'id' => array(md5($url.microtime())),
 			'type' => array('feed'),

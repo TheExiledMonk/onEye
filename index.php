@@ -21,7 +21,12 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
+/*
+*This constant is only for 1.8 version and won't be compatible
+*With eyeOS 1.9 and above, so please use INDEX_TYPE INSTEAD!
+*/
 define('IS_MOBILE',0);
+define('INDEX_TYPE','browser');
 
 //Loading basic settings for eyeOS Kernel and Services
 include_once('settings.php');
@@ -123,7 +128,7 @@ if (isset($_GET['extern'])) {
 	}
 	//Checking if checknum and message are set
 	if(isset($_GET['checknum']) && !empty($_GET['checknum'])) {
-		if(isset($_REQUEST['params']) && !empty($_REQUEST['params'])) {
+		if(isset($_REQUEST['params']) && $_REQUEST['params'] != null) {
 			$params = $_REQUEST['params'];
 		} else {
 			$params = null;
