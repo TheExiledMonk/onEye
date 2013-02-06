@@ -21,12 +21,14 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeContacts_run($params = '') {
-	proc('launch',array('eyeAddressBook',$params));
+function eyeContacts_run($params=null) {
+	proc('launch',array('eyeAddressBook'));
 	proc('end');
 }
 
-function eyeContacts_end($params = '') {
-	eyeWidgets('unserialize');
+function eyeContacts_end($params=null) {
+	reqLib('eyeWidgets','unserialize');
 }
+
+
 ?>

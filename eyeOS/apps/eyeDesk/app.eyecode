@@ -46,13 +46,13 @@ function eyeDesk_run($params = '') {
 	$xml = eyeXML('getXMLfile',array($userDir . $config));
 	$share = getConfig('eyeDesk','conf.xml');
 	if ($xml['eyeDesk'][0]['restoreDock'][0] != $share['eyeDesk'][0]['restoreDock'][0]) {
-		if ($xml['eyeDesk'][0]['restoreDock'][0] == 4) {
+		if ($xml['eyeDesk'][0]['restoreDock'][0] < 5) {
 			$key = array_search('eyeDock',$xml['eyeDesk'][0]['autolaunch']);
 			if ($key !== false) {
 				$xml['eyeDesk'][0]['autolaunch'][$key] = 'eyeDockText';
 			}
 		}
-		if ($xml['eyeDesk'][0]['restoreDock'][0] < 4) {
+		if ($xml['eyeDesk'][0]['restoreDock'][0] < 3) {
 			copy(EYE_ROOT . '/' . SYSTEM_DIR . '/' . CONF_USER_DIR . '/skel/' . CONF_USER_DIR . '/eyeDock/eyeDock.xml',$userDir . '/' . CONF_USER_DIR . '/eyeDock/eyeDock.xml');
 			if (array_search('miniActions',$xml['eyeDesk'][0]['autolaunch']) === false){
 				$xml['eyeDesk'][0]['autolaunch'][] = 'miniActions';

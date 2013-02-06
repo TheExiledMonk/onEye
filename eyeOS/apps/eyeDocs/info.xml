@@ -1,7 +1,7 @@
 <package>
 	<name>eyeDocs</name>
 	<category>Office</category>
-	<version>1.8.5</version>
+	<version>1.8</version>
 	<description>Application to edit documents</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

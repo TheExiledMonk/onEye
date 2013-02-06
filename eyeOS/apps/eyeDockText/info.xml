@@ -1,7 +1,7 @@
 <package>
 	<name>eyeDock</name>
 	<category>Utilities</category>
-	<version>1.8.5</version>
+	<version>1.8</version>
 	<description>Bar at the top of the desktop to access applications</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

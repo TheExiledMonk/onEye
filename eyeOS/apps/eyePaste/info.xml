@@ -1,7 +1,7 @@
 <package>
 	<name>eyePaste</name>
 	<category>File Management</category>
-	<version>1.8.5</version>
+	<version>1.8</version>
 	<description>Utility to paste files</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

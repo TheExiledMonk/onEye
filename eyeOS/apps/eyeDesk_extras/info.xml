@@ -1,7 +1,7 @@
 <package>
 	<name>eyeDesk_extras</name>
 	<category>System</category>
-	<version>1.8.5</version>
+	<version>1.8</version>
 	<description>Widgets for the eyeOS desktop</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

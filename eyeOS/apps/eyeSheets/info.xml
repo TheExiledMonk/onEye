@@ -1,7 +1,7 @@
 <package>
 	<name>eyeSheets</name>
 	<category>Office</category>
-	<version>1.8.5</version>
+	<version>1.8</version>
 	<description>Utility to edit spreadsheets</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>
