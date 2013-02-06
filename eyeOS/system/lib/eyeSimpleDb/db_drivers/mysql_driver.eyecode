@@ -67,9 +67,9 @@ class dbDriver{
 		}
 		//Setting the connection charset, only applicable to mysql
 // 		$result = mysql_query("SET NAMES '".$this->connEncoding."'",$conn);
-		if(!$result){
+		//if(!$result){
 			//Waiting for better debuggin system... maybe return false here?
-		}
+		//}
 		//Setting connection for a driver instance
 		$this->conn = $conn;
 		//Setting encoding

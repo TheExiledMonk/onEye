@@ -37,7 +37,7 @@ if(!defined('EYE_INDEX')){
 if(isset($_SERVER['PATH_INFO'])) {
 	$myInfo = $_SERVER['PATH_INFO'];
 	if($myInfo{0} == '/') {
-		$myInfo = substr($myInfo,1,strlen($myInfo));
+		$myInfo = utf8_substr($myInfo,1,utf8_strlen($myInfo));
 	}
 } else {
 	$myInfo="";
@@ -47,43 +47,43 @@ if(isset($_SERVER['PATH_INFO'])) {
 if($myInfo != "" && strstr($myInfo,"extern/")){
 	//Getting the cache version
 	$search = "externVersion/";
-	if(strpos($myInfo,$search) !== false){
-		$in = strpos($myInfo,$search)+strlen($search);
-		$end = strpos($myInfo,"/",$in);
+	if(utf8_strpos($myInfo,$search) !== false){
+		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
+		$end = utf8_strpos($myInfo,"/",$in);
  		$end = $end-$in;
-		$_GET['version'] = substr($myInfo,$in,$end);
+		$_GET['version'] = utf8_substr($myInfo,$in,$end);
 		$_REQUEST['version'] = $_GET['version'];
 	}
 	$search = "externType/";
-	if(strpos($myInfo,$search) !== false){
-		$in = strpos($myInfo,$search)+strlen($search);
-		$end = strpos($myInfo,"/",$in);
+	if(utf8_strpos($myInfo,$search) !== false){
+		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
+		$end = utf8_strpos($myInfo,"/",$in);
  		$end = $end-$in;
-		$_GET['type'] = substr($myInfo,$in,$end);
+		$_GET['type'] = utf8_substr($myInfo,$in,$end);
 		$_REQUEST['type'] = $_GET['type'];
 	}
 	$search = "externTheme/";
-	if(strpos($myInfo,$search) !== false){
-		$in = strpos($myInfo,$search)+strlen($search);
-		$end = strpos($myInfo,"/",$in);
+	if(utf8_strpos($myInfo,$search) !== false){
+		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
+		$end = utf8_strpos($myInfo,"/",$in);
  		$end = $end-$in;
-		$_GET['theme'] = substr($myInfo,$in,$end);
+		$_GET['theme'] = utf8_substr($myInfo,$in,$end);
 		$_REQUEST['theme'] = $_GET['theme'];
 	}
 	$search = "externNocache/";
-	if(strpos($myInfo,$search) !== false){
-		$in = strpos($myInfo,$search)+strlen($search);
-		$end = strpos($myInfo,"/",$in);
+	if(utf8_strpos($myInfo,$search) !== false){
+		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
+		$end = utf8_strpos($myInfo,"/",$in);
  		$end = $end-$in;
-		$_GET['nocache'] = substr($myInfo,$in,$end);
+		$_GET['nocache'] = utf8_substr($myInfo,$in,$end);
 		$_REQUEST['nocache'] = $_GET['nocache'];
 	}
 	$search = "externPath/";
-	if(strpos($myInfo,$search) !== false){
-		$in = strpos($myInfo,$search)+strlen($search);
-		$end = strpos($myInfo,"/",$in);
- 		$end = strlen($myInfo)-$in;
-		$_GET['extern'] = substr($myInfo,$in,$end);
+	if(utf8_strpos($myInfo,$search) !== false){
+		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
+		$end = utf8_strpos($myInfo,"/",$in);
+ 		$end = utf8_strlen($myInfo)-$in;
+		$_GET['extern'] = utf8_substr($myInfo,$in,$end);
 		$_REQUEST['extern'] = $_GET['extern'];
 	}
 }

@@ -28,7 +28,7 @@ function eyeHelp_run($params=null) {
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeHelp/events'.EYE_CODE_EXTENSION);
 	//This checks if there were passed any params (can be APP_NAME or APP_NAME.eyeHelp)
 	if($params[0]!=''){
-		if(strtolower(strrchr($params[0],'.')) == strtolower('.eyeHelp'))$params[0] = substr($params[0],0,-(strlen('.eyeHelp')));
+		if(utf8_strtolower(strrchr($params[0],'.')) == utf8_strtolower('.eyeHelp'))$params[0] = utf8_substr($params[0],0,-(utf8_strlen('.eyeHelp')));
 		$folder = eyeHelp_getFolder(array(utf8_basename($params[0])));
 	}else $folder = eyeHelp_getFolder(array('eyeHelp'));
 	
@@ -113,7 +113,7 @@ function eyeHelp_run($params=null) {
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
 	$myDir = $folder;
-	if(substr($myDir, -1)!='/')$myDir = $myDir.'/';
+	if(utf8_substr($myDir, -1)!='/')$myDir = $myDir.'/';
 	$myInfoFile = $myDir.'info.xml';
 	$size = service('vfs','real_filesize',array($myInfoFile));
 	if ($size > 0) {
@@ -126,9 +126,9 @@ function eyeHelp_run($params=null) {
 	$info = eyeXML('xml2array',array($InfoContent));
 	$info = $info['eyeHelp'][0];
 
-	if($info['title-'.$_SESSION['lang']][0]!='')$title = trim($info['title-'.$_SESSION['lang']][0]);
-		else $title = trim($info['title'][0]);
-	$myDir2 = substr($myDir,0,strlen($myDir)-1);
+	if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
+		else $title = utf8_trim($info['title'][0]);
+	$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
 	if($title=="")$title = utf8_basename($myDir2);
 	
 	//Show sthe title of the main topic above the tree
@@ -189,7 +189,7 @@ function drawTree($object,$tree,$dir) {
 			if(is_dir($value)){
 				$oldUser = $currentUser;
 				$myDir = $value;
-				if($myDir{strlen($myDir)-1}!='/')$myDir = $myDir.'/';
+				if($myDir{utf8_strlen($myDir)-1}!='/')$myDir = $myDir.'/';
 				$currentUser = ROOTUSER;
 				$myInfoFile = $myDir.'info.xml';
 				$size = service('vfs','real_filesize',array($myInfoFile));
@@ -202,9 +202,9 @@ function drawTree($object,$tree,$dir) {
 			
 				$info = eyeXML('xml2array',array($InfoContent));
 				$info = $info['eyeHelp'][0];
-				if($info['title-'.$_SESSION['lang']][0]!='')$title = trim($info['title-'.$_SESSION['lang']][0]);
-					else $title = trim($info['title'][0]);
-				$myDir2 = substr($myDir,0,strlen($myDir)-1);
+				if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
+					else $title = utf8_trim($info['title'][0]);
+				$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
 				if($title=="")$title = utf8_basename($myDir2);
 			
 				$object->addSubList('item_'.$dir,'list_'.$dir);

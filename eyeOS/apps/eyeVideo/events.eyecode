@@ -48,7 +48,7 @@ function eyeVideo_on_getFile($params = '') {
 function eyeVideo_on_loadVideo($params = '') {
 	global $myPid;
 	addShortUrl($myPid . '_eyeVideo','getFile');
-	eyex('rawjs',array('js' => 'var fo = new SWFObject("index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/FlowPlayer.swf","FlowPlayer","468","350","7","#ffffff",true); fo.addVariable("config","{ showPlayListButtons: true,playList: [ { overlayId: \'play\' },{ url: \'index.php/' . $myPid . '_eyeVideo\' } ],initialScale: \'fit\',loop: false,autoRewind: true }"); fo.write("' . $myPid . '_eyeVideo_Window_Content");'));
+	eyex('rawjs',array('js' => 'flowplayer("' . $myPid . '_eyeVideo_Window_Content", "index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/FlowPlayer.swf", "index.php/' . $myPid . '_eyeVideo");'));
 }
 
 function eyeVideo_on_Message($params = '') {

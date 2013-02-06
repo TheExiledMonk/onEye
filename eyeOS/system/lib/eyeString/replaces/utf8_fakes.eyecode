@@ -75,7 +75,7 @@ function utf8_substr_replace($str=null,$repl=null,$start=null,$length=null){
 }
 
 function utf8_strspn($str=null,$mask=null,$start=null,$length=null){
- 	return strspn($str,$mask,$start,$lenght);
+ 	return strspn($str,$mask,$start,$length);
 }
 
 function utf8_str_split($str=null,$split_len=1){    

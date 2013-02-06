@@ -28,7 +28,7 @@ $oldUser = $currentUser;
 $currentUser = ROOTUSER;
 $categoriesXML = getConfig('eyeControl','categories.xml');
 $currentUser = $oldUser;
-$array = eyeControl_lib_findArrayByText(array($categoriesXML['category'],'no',array('show',0),2));
+$array = eyeControl_lib_findArrayByText(array($categoriesXML['eyeControl'][0]['category'],'no',array('show',0),2));
 foreach($array as $category) {
 	if ($category['permissions'][0] == 'all'
 	|| $category['permissions'][0] == 'root' && eyeControl_lib_getConfigUser() == ROOTUSER

@@ -119,22 +119,24 @@ function service_extern_getFile($params) {
 	if(is_readable($myFile)) {		
 		$len = filesize($myFile);		
 		if($type == 'text' || $myExt == 'js') {
-			header("Content-type: text/plain");
+			header('Content-type: text/javascript; charset=utf-8');
 		} elseif($myExt == 'htm' || $myExt == 'html' || $myExt == 'xhtml') {
-			header("Content-type: text/html");
+			header('Content-type: text/html; charset=utf-8');
+		} elseif ($type == 'icon' || $myExt == 'ico' || $myExt == 'cur') {
+			header('Content-Type: image/x-icon');
 		} elseif ($type == 'image' || $myExt == 'png' || $myExt == 'jpg' || $myExt == 'gif') {
 			header('Content-Type: image/'.$myExt);
 		} elseif ($type == 'download') {
 			header('Content-Type: application/force-download');
-			header("Content-Description: File Transfer");
+			header('Content-Description: File Transfer');
 			header('Content-Disposition: attachment; filename="'.$myFile.'"');
 		} elseif ($type == 'css' || $myExt == 'css') {
-			header("Content-type: text/css");
+			header('Content-type: text/css; charset=utf-8');
 			$cacheReplace = true;
 		} elseif ($type == 'xml' || $myExt == 'xml' || $myExt == 'xsl') {
-			header("Content-type: text/xml");
+			header('Content-type: text/xml; charset=utf-8');
 		} elseif($type == 'swf'  || $myExt == 'swf'){
-			header("Content-type: application/x-shockwave-flash");
+			header('Content-type: application/x-shockwave-flash');
 		} else if($type == 'mp3' || $myExt == 'mp3') {
 			header('Content-type: audio/mpeg3');
 		} elseif($type == 'dynamic') {

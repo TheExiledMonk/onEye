@@ -138,7 +138,7 @@ function clientMobile(){
 			"xda",
 			"iphone"
 		);
-		$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+		$userAgent = utf8_strtolower($_SERVER['HTTP_USER_AGENT']);
 		foreach($mobileClients as $mobileClient) {
 			if (strstr($userAgent, $mobileClient)) {
 				return $mobileClient;
@@ -149,7 +149,7 @@ function clientMobile(){
 }
 
 function mobileWithWebkit() {
-	$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+	$userAgent = utf8_strtolower($_SERVER['HTTP_USER_AGENT']);
 	if (strstr($userAgent, 'webkit')) {
 		return true;
 	} else {

@@ -58,7 +58,7 @@ if (is_array($openDir)) {
 }
 $currentUser = $oldUser;
 $mySelect->focus();
-eyeControl_lib_addEnterEvent($mySelect,'lang_change');
+$mySelect->addEnterEventMsg('lang_change');
 // Change language
 $myButton = new Button(array(
 	'name' => 'eyeControl_lang_button',

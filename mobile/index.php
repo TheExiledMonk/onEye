@@ -53,7 +53,7 @@ if (isset($_GET['extern'])) {
 	if(isset($_SERVER['PATH_INFO'])) {
 		$myInfo = $_SERVER['PATH_INFO'];
 		if($myInfo{0} == '/') {
-			$myInfo = substr($myInfo,1,strlen($myInfo));
+			$myInfo = utf8_substr($myInfo,1,utf8_strlen($myInfo));
 		}
 	} else {
 		$myInfo="";

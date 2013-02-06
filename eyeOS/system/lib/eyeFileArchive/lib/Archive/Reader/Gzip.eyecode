@@ -29,8 +29,8 @@
  * @link       http://pear.php.net/package/File_Archive
  */
 
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Archive".EYE_CODE_EXTENSION;
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Files".EYE_CODE_EXTENSION;
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Archive' . EYE_CODE_EXTENSION; // eyeOS
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Files' . EYE_CODE_EXTENSION; // eyeOS
 
 /**
  * Uncompress a file that was compressed in the Gzip format
@@ -214,7 +214,7 @@ class File_Archive_Reader_Gzip extends File_Archive_Reader_Archive
      */
     function makeWriterRemoveBlocks($blocks, $seek = 0)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Gzip".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Gzip' . EYE_CODE_EXTENSION; // eyeOS
 
         if ($this->nbRead == 0) {
             return PEAR::raiseError('No file selected');

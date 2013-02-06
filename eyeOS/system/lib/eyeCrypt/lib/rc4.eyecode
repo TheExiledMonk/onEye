@@ -42,11 +42,38 @@
 * @author Dave Mertens <dmertens@zyprexia.com>
  */
 class Crypt_RC4 {
+
+    /**
+    * Real programmers...
+    * @var array
+    */
     var $s= array();
+    /**
+    * Real programmers...
+    * @var array
+    */
     var $i= 0;
+    /**
+    * Real programmers...
+    * @var array
+    */
     var $j= 0;
+
+    /**
+    * Key holder
+    * @var string
+    */
     var $_key;
 
+    /**
+    * Constructor
+    * Pass encryption key to key()
+    *
+    * @see    key() 
+    * @param  string key    - Key which will be used for encryption
+    * @return void
+    * @access public
+    */
     function Crypt_RC4($key = null) {
         if ($key != null) {
             $this->setKey($key);
@@ -58,6 +85,13 @@ class Crypt_RC4 {
             $this->_key = $key;
     }
 
+    /**
+    * Assign encryption key to class
+    *
+    * @param  string key	- Key which will be used for encryption
+    * @return void
+    * @access public    
+    */
     function key(&$key) {
         $len= utf8_strlen($key);
         for ($this->i = 0; $this->i < 256; $this->i++) {
@@ -74,6 +108,13 @@ class Crypt_RC4 {
         $this->i = $this->j = 0;
     }
 
+    /**
+    * Encrypt function
+    *
+    * @param  string paramstr 	- string that will encrypted
+    * @return void
+    * @access public    
+    */
     function crypt(&$paramstr) {
 
         //Init key for every call, Bugfix 22316
@@ -92,13 +133,23 @@ class Crypt_RC4 {
             $paramstr[$c] = chr(utf8_ord($paramstr[$c]) ^ $this->s[$t]);
         }
     }
-    
+
+    /**
+    * Decrypt function
+    *
+    * @param  string paramstr 	- string that will decrypted
+    * @return void
+    * @access public    
+    */
     function decrypt(&$paramstr) {
+        //Decrypt is exactly the same as encrypting the string. Reuse (en)crypt code
         $this->crypt($paramstr);
     }
-}
 
-function crypt_rc4_crypt($params) {
+
+}	//end of RC4 class
+
+function crypt_rc4_crypt($params) { // eyeOS
 	$str = $params[0];
 	$key = $params[1];
 	$myClass = new Crypt_RC4($key);
@@ -106,7 +157,7 @@ function crypt_rc4_crypt($params) {
 	return $ret;
 }
 
-function crypt_rc4_decrypt($params) {
+function crypt_rc4_decrypt($params) { // eyeOS
 	$str = $params[0];
 	$key = $params[1];
 	$myClass = new Crypt_RC4($key);

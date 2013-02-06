@@ -1,3 +1,4 @@
+/*jslint */
 /*
                                   ____   _____
                                  / __ \ / ____|
@@ -20,8 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-init_eyeDesk_extras($myPid,$checknum);
-
 function eyeClock(myPid) {
 	var myTime = new Date();
 	var hours = myTime.getHours();
@@ -29,16 +28,24 @@ function eyeClock(myPid) {
 	var day = myTime.getDate();
 	var month = myTime.getMonth() + 1;
 	
-	if (minutes <= 9) minutes = '0' + minutes;
-	if (hours <= 9) hours = '0' + hours;
-	if (day <= 9) day = '0' + day;
-	if (month <= 9) month = '0' + month;
+	if (minutes <= 9) { minutes = '0' + minutes; }
+	if (hours <= 9) { hours = '0' + hours; }
+	if (day <= 9) { day = '0' + day; }
+	if (month <= 9) { month = '0' + month; }
 	
 	xGetElementById(myPid + '_eyeClockText').innerHTML = day + '/' + month + ' &nbsp; ' + hours + ':' + minutes;
 	setTimeout('eyeClock(' + myPid + ');',5000);
 }
 
 function init_eyeDesk_extras(myPid,checknum) {
+	function showMiniCalendar() {
+		if (xGetElementById(myPid + '_calendar_Content').style.display == 'block') {
+			xGetElementById(myPid + '_calendar_Content').style.display = 'none';
+		} else {
+			xGetElementById(myPid + '_calendar_Content').style.display = 'block';
+		}
+	}
+	
 	// Clock
 	var eyeClockId = document.createElement('div');
 	eyeClockId.setAttribute('id',myPid + '_eyeClockDiv');
@@ -60,7 +67,7 @@ function init_eyeDesk_extras(myPid,checknum) {
 	calendarContent.className = 'eyeDesk_miniCalendar';
 	xGetElementById('eyeScreen').appendChild(calendarContent);
 	
-	var params = new Array();
+	var params = {};
 	params.backgroundNames = '#53a0e1';
 	params.drawHighlight = 0;
 	params.drawOnClick = 0;
@@ -77,18 +84,10 @@ function init_eyeDesk_extras(myPid,checknum) {
 	params.toWeekBackground = '#2a4774';
 	params.weekDays = '$weekDays';
 	params.weekEnd = '#519eda';
-	params.width = '168';
+	params.width = '169';
 	params.workDays = 'white';
 	
-	Calendar_show(params,'calendarWidget_' + myPid,myPid + '_calendar_Content',100,100,1,0,checknum,1);
-	
-	function hideMiniCalendar() {}
-	
-	function showMiniCalendar() {
-		if (xGetElementById(myPid + '_calendar_Content').style.display == 'block') {
-			xGetElementById(myPid + '_calendar_Content').style.display = 'none';
-		} else {
-			xGetElementById(myPid + '_calendar_Content').style.display = 'block';
-		}
-	}
+	Calendar_show(params,'calendarWidget_' + myPid,myPid + '_calendar_Content',2,5,1,0,checknum,1);
 }
+
+init_eyeDesk_extras($myPid,$checknum);

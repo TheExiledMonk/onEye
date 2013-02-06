@@ -32,8 +32,8 @@ function eyeNotes_run($params=null) {
 			'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60));
 	} else {
 		if($params[0]) {
-			$info = pathinfo($params[0]);
-			$ext = strtolower($info['extension']);
+			$info = utf8_pathinfo($params[0]);
+			$ext = utf8_strtolower($info['extension']);
 			if($ext == 'asp') {
 				$lang = 'asp';
 			} else if($ext == 'cs') {

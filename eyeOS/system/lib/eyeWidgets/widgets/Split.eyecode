@@ -178,8 +178,13 @@ class Split {
 	function setPosition($position) {
 		global $checknum;
 		global $myPid;
+		$this->position = intval($position);
 		$js = 'splitter_setPosition("'.$myPid.'_'.$this->name.'",'.intval($position).','.$this->orientation.','.$checknum.',"'.$this->sigResize.'");';
 		service('eyex','rawjs',array('js' => $js));
+	}
+	
+	function setValue($position) {
+		$this->position = intval($position);
 	}
 	
 	function hideSplitter() {

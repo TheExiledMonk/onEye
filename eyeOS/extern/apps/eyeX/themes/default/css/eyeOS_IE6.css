@@ -208,6 +208,10 @@
 	width: 93%
 }
 
+.eyeListbox_txt, .eyeWindowOnBar_Container, .eyeWindowOnBar_Off, .eyeWindowOnBar_On, .eyeWindowOnBar_text {
+	display: inline;
+}
+
 .eyeMenu {
 	bottom: 30px;
 }
@@ -235,10 +239,6 @@
 .eyeSplitter_vertical {
 	border-left: 1px dashed #acacac;
 	margin-left: 2px;
-}
-
-.eyeWindowOnBar_Off, .eyeWindowOnBar_On {
-	margin-top: 1px;
 }
 
 .eyeWindowCloseButton {
@@ -269,6 +269,11 @@
 	padding-right: 37px;
 }
 
+.eyeWindowOnBar_Off, .eyeWindowOnBar_On {
+	height: 28px;
+	width: 157px;
+}
+
 .eyeWindowResizeButton {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/resizebutton.png', sizingMethod='crop');
@@ -286,30 +291,35 @@
 	width: 100%;
 	height: 100%;
 }
+
 .inactiveWindow{
 	background: url();
 	border: 1px solid #acacac;
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png', sizingMethod='scale');
 }
 
-.inactiveWindow_border_left {}
-.inactiveWindow_border_right {}
+.minIconLeft {
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/left.png', sizingMethod='scale');
+}
+
+.minIconRight {
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/right.png', sizingMethod='scale');
+}
 
 .minimizedApps {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_bg.png', sizingMethod='scale');
-	height: 31px;
-	left: 0px;	
-	position: absolute;
-	width: expression(this.parentNode.offsetWidth - 143);
+	width: expression(this.parentNode.offsetWidth - 156);
 }
 
 .minimizedAppsLeft {
-	right: 0px;
-	width: expression(this.parentNode.offsetWidth - 0);
+	width: expression(this.parentNode.offsetWidth);
 }
 
-.minimizedAppsRight {/*look in .eyeClock*/}
+.minimizedAppsRight {
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_bg.png', sizingMethod='scale');
+	width: expression(this.parentNode.offsetWidth);
+}
 
 .shadowLayer {
 	background-image: url();

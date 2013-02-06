@@ -33,7 +33,7 @@ function eyeDesk_run($params = '') {
 	eyex('createDiv',array('class' => 'minIconLeft','father' => 'eyeScreen','name' => 'minIconLeft','nopid' => 1,'removepid' => 1));
 	eyex('createDiv',array('class' => 'minIconRight','father' => 'eyeScreen','name' => 'minIconRight','class' => 'minIconRight','nopid' => 1,'removepid' => 1));
 	$_SESSION['SCREEN']['eyeApps']['height'] -= 31;
-	eyex('rawjs',array('js' => 'document.getElementById("eyeApps").style.height = "' . $_SESSION['SCREEN']['eyeApps']['height'] . 'px";'));
+	eyex('rawjs',array('js' => 'document.getElementById("eyeApps").style.height = "' . $_SESSION['SCREEN']['eyeApps']['height'] . 'px"; Taskbars.Add();'));
 	
 	$userDir = um('getCurrentUserDir');
 	if (!vfs('real_fileExists',array($userDir . '/tmp/'))) {

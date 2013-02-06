@@ -89,7 +89,7 @@ function lib_eyeContacts_pathToInfo($params=null){
  	//From the last _ to the end of the string
  	$md5 = utf8_substr($contact,utf8_strrpos($contact,'_')+1,utf8_strlen($contact));
  	//Remove extension
- 	$md5 = basename($md5,'.'.EYECARD_EXT);
+ 	$md5 = utf8_basename($md5,'.'.EYECARD_EXT);
  	return  array($name,$sName,$md5);
 }
 /*function lib_eyecontacts_getId($params=null){

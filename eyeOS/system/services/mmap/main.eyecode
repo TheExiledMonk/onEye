@@ -124,7 +124,6 @@ function service_mmap_routemsg($params) {
 	if(!isset($procInfo['appName']) || empty($procInfo['appName'])) {
 		exit;
 	} 
-	unset($messageTable);
 	
 	if(um('UserIsAdmin',array($currentUser))) {
 		define('ROOTUSER',$currentUser);

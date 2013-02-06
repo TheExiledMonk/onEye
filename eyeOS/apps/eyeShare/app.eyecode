@@ -1,106 +1,101 @@
 <?php
-function eyeShare_run($params = ''){
-	global $myPid;
-	global $checknum;
+/*
+                                  ____   _____
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
-	$myHiddenParams = new Hidden(array(
-		'name' => 'hiddenParams',
-		'father' => 'eyeShare_wnd',
-		'text' => $params[0]
-	));
-	eyeWidgets('serialize',array($myHiddenParams));
+                     Web Operating System
+                           eyeOS.org
+
+             eyeOS Engineering Team - www.eyeos.org/team
+
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
+
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+*/
+
+function eyeShare_run($params = '') {
+	global $myPid;
 	
-	$myWindow = new window(array(
-		'father' => 'eyeApps',
-		'name' => 'eyeShare_wnd',
-		'style' => TITLE + LISTED + MIN + CLOSE,
-		'title' => i18n('translate',array('Share "%s" with...',array(utf8_basename($params[0])))),
-		'savePosition' => 1,
-		'width' => 300,
-		'height' => 280,
+	$myWindow = new Window(array(
 		'cent' => 1,
-		'removepid' => 1,
-		'removeWin' => 1,
-		'x' => 0,
-		'y' => 0
+		'father' => 'eyeApps',
+		'height' => 280,
+		'name' => 'eyeShare_Window',
+		'savePosition' => 1,
+		'style' => TITLE + LISTED + MIN + CLOSE,
+		'title' => i18n('translate',array('Share "%s" with...', array(utf8_basename($params[0])))),
+		'width' => 300
 	));
 	$myWindow->show();
-
-	$path = EYE_ROOT . '/' . GROUPS_DIR;
-	$content = vfs('getDirContent',array($path));
-	
-	$groups =  um('getCurrentGroups');
-	
-	$mySimpleBox0 = new Simplebox(array(
-		'father' => 'eyeShare_wnd',
-		'name' => 'eyeShare_simplebox_big',
-		'x' => '60',
-		'y' => '76',
-		'border' => 0,
-		'width' => 160,
-		'height' => 140
-	));
-	$mySimpleBox0->show();
-	
-	$myButton = new button(array(
-		'father' => 'eyeShare_wnd',
-		'name' => 'save_button',
-		'caption' => 'Share',
-		'signal' => 'shareSignal',
-		'x' => 127,
-		'vert' => 1,
-		'y' => 18
-	));
-
-	$i=0;
-	$y=0;
-	foreach($groups as $group=>$value){
-		$mySimpleBox1 = new Simplebox(array(
-			'father' => 'eyeShare_simplebox_big',
-			'name' => 'eyeShare_simplebox_small_'.$i,
-			'x' => '0',
-			'y' => $y,
-			'border' => 0,
-			'width' => 158,
-			'height' => 20
-		));
-		$mySimpleBox1->show();
-		$myCheckBox = new Checkbox(array(
-			'father' => 'eyeShare_simplebox_small_'.$i,
-			'name' => "eyeShare_chekbox_".$i,
-			'text' => $group,
-			'x' => 65,
-			'y' => 0
-		));
-		$myCheckBox->show();
-		$myButton->addFriend($myCheckBox);
-		$y+=22;
-		$i++;
-	}
-	$myButton->show();
 	
 	$myHidden = new Hidden(array(
-		'name' => 'simplebox_num',
-		'father' => 'eyeShare_wnd',
-		'text' => $i
+		'father' => 'eyeShare_Window_Content',
+		'name' => 'eyeShare_Hidden',
+		'text' => $params[0]
 	));
 	eyeWidgets('serialize',array($myHidden));
 	
-	eyex('rawjs', array('js' => 'document.getElementById("'.$myPid.'_eyeShare_simplebox_big_Container").style.overflowY="auto";'));
-
-	
 	$myLabel = new Label(array(
-		'father' => 'eyeShare_wnd',
-		'name' => 'eyeShare_label',
-		'text' => 'Choose the groups to share with',
-		'x' => 56,
-		'y' => 46
+		'father' => 'eyeShare_Window_Content',
+		'name' => 'eyeShare_Label',
+		'text' => 'Choose the groups to share with'
 	));
 	$myLabel->show();
-	$myLabel->setCSS(array('font-weight' => 'bolder'));
+	$myLabel->setCSS(array('font-weight' => 'bold'));
+	eyex('rawjs', array('js' => 'setWidgetPos("' . $myPid . '_eyeShare_Label_Container", "' . $myPid . '_eyeShare_Window_Content", 0, 0, 0, 20, 2);'));
+	
+	$myButton = new Button(array(
+		'cent' => 2,
+		'caption' => 'Share',
+		'father' => 'eyeShare_Window_Content',
+		'name' => 'eyeShare_Button',
+		'signal' => 'Share',
+		'vert' => 1,
+		'x' => 0,
+		'y' => 20
+	));
+	
+	$myContainer = new Container(array(
+		'cent' => 2,
+		'father' => 'eyeShare_Window_Content',
+		'height' => 160,
+		'name' => 'eyeShare_Container',
+		'width' => 200,
+		'x' => 0,
+		'y' => 50
+	));
+	$myContainer->show();
+	$myContainer->setCss(array(
+		'overflow' => 'auto',
+		'position' => 'absolute'
+	));
+	
+	$y = 0;
+	foreach (um('getCurrentGroups') as $group => $value) {
+		$myCheckbox = new Checkbox(array(
+			'father' => 'eyeShare_Container',
+			'name' => 'eyeShare_Checkbox_' . $group,
+			'text' => $group,
+			'x' => 0,
+			'y' => $y
+		));
+		$myCheckbox->show();
+		eyex('rawjs', array('js' => 'document.getElementById("' . $myPid . '_eyeShare_Checkbox_' . $group . '_textContainer").style.whiteSpace = "nowrap";'));
+		$myButton->addFriend($myCheckbox);
+		$y += 22;
+	}
+	$myButton->show();
 }
 
-function eyeShare_end($params=null) {
+function eyeShare_end($params = '') {
 	eyeWidgets('unserialize');
 }
 ?>

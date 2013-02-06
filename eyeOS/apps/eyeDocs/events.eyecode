@@ -86,8 +86,8 @@ function eyeDocs_on_SelectFileSave($params=null) {
 		}
 		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		//check if the extension is present
-		if(strtolower(substr($file,strlen($file)-strlen($params['fileType'][0])+1)) != strtolower(substr($params['fileType'][0],1))) {
-			$file .= substr($params['fileType'][0],1);
+		if(utf8_strtolower(utf8_substr($file,utf8_strlen($file)-utf8_strlen($params['fileType'][0])+1)) != utf8_strtolower(utf8_substr($params['fileType'][0],1))) {
+			$file .= utf8_substr($params['fileType'][0],1);
 		}
 		eyeDocs_setCurrentFile($file);
 		$content = $GLOBALS['fileContent']->text;
@@ -225,8 +225,8 @@ function eyeDocs_on_SelectFileSaveClose($params=null) {
 		}
 		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		//check if the extension is present
-		if(strtolower(substr($file,strlen($file)-strlen($params['fileType'][0])+1)) != strtolower(substr($params['fileType'][0],1))) {
-			$file .= substr($params['fileType'][0],1);
+		if(utf8_strtolower(utf8_substr($file,utf8_strlen($file)-utf8_strlen($params['fileType'][0])+1)) != utf8_strtolower(utf8_substr($params['fileType'][0],1))) {
+			$file .= utf8_substr($params['fileType'][0],1);
 		}
 		eyeDocs_setCurrentFile($file);
 		$content = $GLOBALS['fileContent']->text;

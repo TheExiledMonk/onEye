@@ -230,7 +230,7 @@ class File {
 				$finalPath = $finalPathTemp . '_' . $countFiles . '.' . $extension;
 			}
 			
-			move_uploaded_file($file,$finalPath);
+			move_uploaded_file($_FILES[$this->filename]['tmp_name'],$finalPath);
 			if (!$suffix) {
 				vfs('realToVirtual',array($finalPath));
 			}

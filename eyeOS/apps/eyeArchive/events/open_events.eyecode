@@ -62,13 +62,9 @@ function eyeArchive_on_Open($params=null){
  */
 function eyeArchive_on_SelectOpenFile($params = null){		
 	global $currentUser,$archivedExtensions,$myPid;
-	
+
 	//Getting real path (eyDialog return ~/ path).
-	if(utf8_substr($file,0,utf8_strlen('/' . GROUPS_DIR . '/')) == '/' . GROUPS_DIR . '/') {
-		$file = EYE_ROOT;
-	} else {
-		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/';
-	}
+	$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/';
 	if(!isset($params['arg'][0])){
 		$file = $GLOBALS['argSrc']->text;
 	}else{

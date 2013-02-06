@@ -348,7 +348,7 @@ function eyeAddressBook_on_deleteContactsWindow($params=null) {
         'btn2_name' => 'deleteContactNo',
         'content' => 'Are you sure you want to delete these contacts(%s)?',
         'tokens' => array(count($ids)),
-        'img' => '?',
+        'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
         'win_removepid' => 0,
         'type' => 3
     ));
@@ -993,7 +993,7 @@ function eyeAddressBook_on_sendWindow($params=null) {
 
 function eyeAddressBook_on_savevCard($params=null) {
     $name = $params['arg'][0];
-    $name = pathinfo($name);
+    $name = utf8_pathinfo($name);
     $path = null;
     if (!isset($name['extension'])) {
         $path = um('getCurrentUserDir').FILES_USER_DIR.$params['arg'][0].'.vcf';
@@ -1080,8 +1080,8 @@ function eyeAddressBook_on_loadImage($params=null) {
 	}
 	
     $tempId = md5(uniqid(rand()));
-    $pathext = pathinfo($path);
-    $newPath = um('getCurrentUserDir').'/tmp/eyeAddressBook_'.basename($path,$pathext['extension']).'png';
+    $pathext = utf8_pathinfo($path);
+    $newPath = um('getCurrentUserDir').'/tmp/eyeAddressBook_'.utf8_basename($path,$pathext['extension']).'png';
     eyeAddressBook('saveImage',array($realPath,$newPath));
 	
 	$GLOBALS['eyeAddressBook_fakePhoto']->setUrl('index.php?checknum=' . $checknum . '&msg=showImage&tempId=' . $tempId);

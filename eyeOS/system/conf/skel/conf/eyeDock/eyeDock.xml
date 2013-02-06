@@ -33,6 +33,13 @@
 				<icon>RSS.png</icon>
 				<exec>eyeFeeds</exec>
 			</item>
+			<item>
+				<name>eyeManageApps</name>
+				<desc>Edit this Menu</desc>
+				<text>Edit the applications listed on the eyeos dock</text>
+				<icon>eyeManageApps.png</icon>
+				<exec>eyeManageApps</exec>
+			</item>
 		</items>
 	</Group>
 	<Group>

@@ -66,7 +66,7 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 	$allUsers = um('getAllUsersBy');
 } elseif (um('userExist',array($selUser))) {
 	$allUsers[] = $selUser;
-} elseif (strlen($selUser)) {
+} elseif (utf8_strlen($selUser)) {
 	$params = explode('/',$selUser);
 	foreach ($params as $param) {
 		if ($param{0} == 'a') {

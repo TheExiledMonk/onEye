@@ -82,7 +82,7 @@ function _paintDaysOfMonth(){
 			$js .= 'xGetElementById("'.$myPid.'_calendarWidget_'.$day.'_current").style.fontWeight = 900;';
 		}
 	}
-	$rest = 42-count($setOfDays);
+	$rest = 42; // -count($setOfDays);
 	for($x=1;$x<=$rest;$x++){
 		$day = $x;
 		$note = eyeCalendar('getDayNotes',array('mday'=>$day,'month'=>$dateInfo['mon']+1,'year'=>$dateInfo['year']));

@@ -1,7 +1,7 @@
 <?php
 // by Edd Dumbill (C) 1999-2002
 // <edd@usefulinc.com>
-// $Id: xmlrpc.inc,v 1.169 2008/03/06 18:47:24 ggiunta Exp $
+// $Id: xmlrpc.inc,v 1.174 2009/03/16 19:36:38 ggiunta Exp $
 
 // Copyright (c) 1999,2000,2002 Edd Dumbill.
 // All rights reserved.
@@ -231,7 +231,7 @@
 	$GLOBALS['xmlrpc_internalencoding']='ISO-8859-1';
 
 	$GLOBALS['xmlrpcName']='XML-RPC for PHP';
-	$GLOBALS['xmlrpcVersion']='2.2.1';
+	$GLOBALS['xmlrpcVersion']='2.2.2';
 
 	// let user errors start at 800
 	$GLOBALS['xmlrpcerruser']=800;
@@ -351,7 +351,7 @@
 		//3 16 1110bbbb 10bbbbbb 10bbbbbb
 		else if ($ii>>4 == 14)
 		{
-			$b1 = ($ii & 31);
+			$b1 = ($ii & 15);
 			$ii = ord($data[$nn+1]);
 			$b2 = ($ii & 63);
 			$ii = ord($data[$nn+2]);
@@ -364,7 +364,7 @@
 		//4 21 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
 		else if ($ii>>3 == 30)
 		{
-			$b1 = ($ii & 31);
+			$b1 = ($ii & 7);
 			$ii = ord($data[$nn+1]);
 			$b2 = ($ii & 63);
 			$ii = ord($data[$nn+2]);
@@ -658,7 +658,7 @@
 						else
 						{
 							// log if receiveing something strange, even though we set the value to false anyway
-							if ($GLOBALS['_xh']['ac']!='0' && strcasecmp($_xh[$parser]['ac'], 'false') != 0)
+							if ($GLOBALS['_xh']['ac']!='0' && strcasecmp($GLOBALS['_xh']['ac'], 'false') != 0)
 								error_log('XML-RPC: invalid value received in BOOLEAN: '.$GLOBALS['_xh']['ac']);
 							$GLOBALS['_xh']['value']=false;
 						}
@@ -1378,6 +1378,7 @@
 
 			if(!fputs($fp, $op, strlen($op)))
 			{
+    			fclose($fp);
 				$this->errstr='Write error';
 				$r=&new xmlrpcresp(0, $GLOBALS['xmlrpcerr']['http_error'], $this->errstr);
 				return $r;
@@ -1390,12 +1391,12 @@
 			// G. Giunta 2005/10/24: close socket before parsing.
 			// should yeld slightly better execution times, and make easier recursive calls (e.g. to follow http redirects)
 			$ipd='';
-			while($data=fread($fp, 32768))
+			do
 			{
 				// shall we check for $data === FALSE?
 				// as per the manual, it signals an error
-				$ipd.=$data;
-			}
+				$ipd.=fread($fp, 32768);
+			} while(!feof($fp));
 			fclose($fp);
 			$r =& $msg->parseResponse($ipd, false, $this->return_type);
 			return $r;
@@ -2206,6 +2207,11 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		/**
 		* Given an open file handle, read all data available and parse it as axmlrpc response.
 		* NB: the file handle is not closed by this function.
+		* NNB: might have trouble in rare cases to work on network streams, as we
+        *      check for a read of 0 bytes instead of feof($fp).
+		*      But since checking for feof(null) returns false, we would risk an
+		*      infinite loop in that case, because we cannot trust the caller
+		*      to give us a valid pointer to an open file...
 		* @access public
 		* @return xmlrpcresp
 		* @todo add 2nd & 3rd param to be passed to ParseResponse() ???
@@ -2935,7 +2941,12 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 							$rs.="<${typ}>".(int)$val."</${typ}>";
 							break;
 						case $GLOBALS['xmlrpcDouble']:
-							$rs.="<${typ}>".(double)$val."</${typ}>";
+    						// avoid using standard conversion of float to string because it is locale-dependent,
+    						// and also because the xmlrpc spec forbids exponential notation
+    						// sprintf('%F') would be most likely ok but it is only available since PHP 4.3.10 and PHP 5.0.3.
+    						// The code below tries its best at keeping max precision while avoiding exp notation,
+    						// but there is of course no limit in the number of decimal places to be used...
+    						$rs.="<${typ}>".preg_replace('/\\.?0+$/','',number_format((double)$val, 128, '.', ''))."</${typ}>";
 							break;
 						case $GLOBALS['xmlrpcNull']:
 							$rs.="<nil/>";
@@ -3580,9 +3591,8 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 
 	/**
 	* xml charset encoding guessing helper function.
-	* Tries to determine the charset encoding of an XML chunk
-	* received over HTTP.
-	* NB: according to the spec (RFC 3023, if text/xml content-type is received over HTTP without a content-type,
+	* Tries to determine the charset encoding of an XML chunk received over HTTP.
+	* NB: according to the spec (RFC 3023), if text/xml content-type is received over HTTP without a content-type,
 	* we SHOULD assume it is strictly US-ASCII. But we try to be more tolerant of unconforming (legacy?) clients/servers,
 	* which will be most probably using UTF-8 anyway...
 	*
@@ -3600,16 +3610,19 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		//Details:
 		// LWS:           (\13\10)?( |\t)+
 		// token:         (any char but excluded stuff)+
+		// quoted string: " (any char but double quotes and cointrol chars)* "
 		// header:        Content-type = ...; charset=value(; ...)*
 		//   where value is of type token, no LWS allowed between 'charset' and value
 		// Note: we do not check for invalid chars in VALUE:
 		//   this had better be done using pure ereg as below
+		// Note 2: we might be removing whitespace/tabs that ought to be left in if
+        //   the received charset is a quoted string. But nobody uses such charset names...
 
 		/// @todo this test will pass if ANY header has charset specification, not only Content-Type. Fix it?
 		$matches = array();
-		if(preg_match('/;\s*charset=([^;]+)/i', $httpheader, $matches))
+		if(preg_match('/;\s*charset\s*=([^;]+)/i', $httpheader, $matches))
 		{
-			return strtoupper(trim($matches[1]));
+			return strtoupper(trim($matches[1], " \t\""));
 		}
 
 		// 2 - scan the first bytes of the data for a UTF-16 (or other) BOM pattern
@@ -3666,7 +3679,7 @@ xmlrpc_encode_entitites($this->errstr, $GLOBALS['xmlrpc_internalencoding'], $cha
 		else
 		{
 			// no encoding specified: as per HTTP1.1 assume it is iso-8859-1?
-			// Both RFC 2616 (HTTP 1.1) and 1945(http 1.0) clearly state that for text/xxx content types
+			// Both RFC 2616 (HTTP 1.1) and 1945 (HTTP 1.0) clearly state that for text/xxx content types
 			// this should be the standard. And we should be getting text/xml as request and response.
 			// BUT we have to be backward compatible with the lib, which always used UTF-8 as default...
 			return $GLOBALS['xmlrpc_defencoding'];

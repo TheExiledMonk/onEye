@@ -52,9 +52,6 @@ function eyeArchive_run($params=null) {
 		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>5,'y'=>110,'width'=>535,'height'=>388));
 	
 	$myTable->show();
-	foreach($content as $value) {
-		$myTable->addRow(array($value));
-	}
 	
 	$myHidden = new Hidden(array('name'=>'projectStarted','father'=>'eyeApps','text'=>'false'));
 	reqLib('eyeWidgets','serialize',array($myHidden));

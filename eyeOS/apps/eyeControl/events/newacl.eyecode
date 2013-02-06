@@ -1,4 +1,26 @@
 <?php
+/*
+                                  ____   _____
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
+
+                     Web Operating System
+                           eyeOS.org
+
+             eyeOS Engineering Team - www.eyeos.org/team
+
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
+
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+*/
+
 function eyeControl_on_selectChange($params=""){
 
 	$switch=$params[arg0][0];
@@ -108,7 +130,7 @@ function eyeControl_on_add_settings($params=""){
 	if($GLOBALS['eyeControl_acl_service_select']->selected == 2){
 		$service = 'extern';
 	} elseif ($GLOBALS['eyeControl_acl_service_select']->selected == 3){
-		$service = 'nmap';
+		$service = 'mmap';
 	} elseif ($GLOBALS['eyeControl_acl_service_select']->selected == 4){
 		$service = 'proc';
 	} elseif ($GLOBALS['eyeControl_acl_service_select']->selected == 5){
@@ -119,15 +141,15 @@ function eyeControl_on_add_settings($params=""){
 	
 	if ($service == 'extern' && $GLOBALS['eyeControl_acl_function_select']->selected == '2'){
 		$call = getFile;
-	} elseif ($service == 'nmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '2') {
+	} elseif ($service == 'mmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '2') {
 		$call = addToBuffer;
-	} elseif ($service == 'nmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '3') {
+	} elseif ($service == 'mmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '3') {
 		$call = array2js;
-	} elseif ($service == 'nmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '4') {
+	} elseif ($service == 'mmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '4') {
 		$call = array2jsArg;
-	} elseif ($service == 'nmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '5') {
+	} elseif ($service == 'mmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '5') {
 		$call = releaseBuffer;
-	} elseif ($service == 'nmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '6') {
+	} elseif ($service == 'mmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '6') {
 		$call = routemsg;
 	} elseif ($service == 'proc' && $GLOBALS['eyeControl_acl_function_select']->selected == '2') {
 		$call = 'close';
@@ -303,7 +325,7 @@ function eyeControl_on_add_settings($params=""){
 			)));
 			$config['GACL'][0]['ACL'] = array($acl);
 		} else {
-			$trimd=trim($config['GACL'][0]);
+			$trimd=utf8_trim($config['GACL'][0]);
 			if(empty($trimd)){
 				unset($config['GACL']);
 				//eyeXML('setXMLconfig',array('eyeACL','acl.xml',$config));

@@ -132,7 +132,7 @@ function eyeNav_on_delBookmark($params = '') {
 				'content' => 'Do you really want to delete this bookmark?',
 				'father' => 'eyeNav_window',
 				'hiddens' => array(array('eyeNav_hidden_delBookmark',$value[0])),
-				'img' => '?',
+				'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
 				'title' => 'Delete bookmark',
 				'type' => 3,
 				'win_name' => 'eyeNav_window_delBookmark',
@@ -195,6 +195,35 @@ function eyeNav_on_open_bookmarks($params = '') {
 
 function eyeNav_on_open_bookmarks_now($params = '') {
 	eyeNav_lib_ShowBookmarks($params);
+}
+
+function eyeNav_on_Download($params = '') {
+	global $checknum;
+	proc('launch',array('eyeDialog',
+		array(
+			EYEDIALOG_TYPE_SAVEFILE,
+			'DownloadNow',
+			$checknum,
+			$params['basename'][0],
+			null,
+			null,
+			null,
+			'DownloadNow'
+		)
+	));
+}
+
+function eyeNav_on_DownloadNow($params = '') {
+	global $checknum;
+	if (isset($params['arg'][0])) {
+		proc('launch', array('eyeRename', array(um('getCurrentUserDir') . '/' . TMP_USER_DIR . '/' . $checknum . '.tmp', null, um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/' . $params['arg'][0])));
+	} else {
+		vfs('delete', array(um('getCurrentUserDir') . '/' . TMP_USER_DIR . '/' . $checknum . '.tmp'));
+	}
+}
+
+function eyeNav_on_SetAddress($params = '') {
+	$GLOBALS['eyeNav_url']->setText(base64_decode($params['address'][0]));
 }
 
 function eyeNav_on_Search($params = '') {
@@ -272,6 +301,7 @@ function eyeNav_on_saveUrl($params = '') {
 		'buttons' => array(array('saveUrl_add','Accept'),array('saveUrl_cancel','Cancel')),
 		'content' => 'Bookmark title',
 		'father' => 'eyeNav_window',
+		'img' => '?',
 		'textbox_event' => 'saveUrl_add',
 		'textbox_name' => 'eyeNav_textbox_saveUrl',
 		'title' => 'Add bookmark',

@@ -12,7 +12,7 @@
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
@@ -28,15 +28,23 @@ function eyeMail_starter() {
 		eyeMail_checkNew();
 	}
 	if($settings['eyeMail'][0]['checkDelay'][0] == 5) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*5*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*5*60);'));
 	} elseif($settings['eyeMail'][0]['checkDelay'][0] == 15) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*15*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*15*60);'));
 	} elseif($settings['eyeMail'][0]['checkDelay'][0] == 30) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*30*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*30*60);'));
 	} elseif($settings['eyeMail'][0]['checkDelay'][0] == 60) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*60*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*60*60);'));
 	}
 	eyeX('sendMessage',array('msg'=>'printMails'));
+	
+	//check if accounts list is empty
+	
+	$accountsFile = eyeXML('getXMLconfig',array('eyeMail','accounts.xml'));
+	if (empty($accountsFile)) {
+		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/preferences'.EYE_CODE_EXTENSION);
+		eyeMail_createAccount();
+	}
 }
 
 function eyeMail_createXMLmail($params=null) {
@@ -44,6 +52,7 @@ function eyeMail_createXMLmail($params=null) {
 
 	//create sqlite table
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 	$sqlCreateTable = 'CREATE TABLE mails(id INTEGER PRIMARY KEY, subject TEXT, date TEXT, sender TEXT, uid INTEGER, to TEXT, body TEXT)';
 	@sqlite_exec($dbHandle, $sqlCreateTable);
@@ -115,6 +124,7 @@ function eyeMail_on_getMails($params=null) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 
 	$user = $userconfig['typeuser'][0];
@@ -176,6 +186,7 @@ function eyeMail_on_printMails($params=null) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 
 	$GLOBALS['mailTable']->delAllRows();
@@ -199,6 +210,7 @@ function eyeMail_on_printSent($params=null) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 
 	$GLOBALS['mailTable']->delAllRows();
@@ -234,6 +246,7 @@ function eyeMail_checkNew($params=null) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 	
 	$sqlGetView = 'SELECT count(*) as number FROM mails';
@@ -281,13 +294,13 @@ function eyeMail_on_fetch($params) {
 	eyeMail_checkNew();
 	$settings = eyeXML('getXMLconfig',array('eyeMail','settings.xml'));
 	if($settings['eyeMail'][0]['checkDelay'][0] == 5) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*5*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*5*60);'));
 	} elseif($settings['eyeMail'][0]['checkDelay'][0] == 15) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*15*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*15*60);'));
 	} elseif($settings['eyeMail'][0]['checkDelay'][0] == 30) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*30*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*30*60);'));
 	} elseif($settings['eyeMail'][0]['checkDelay'][0] == 60) {
-		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\"fetch\",\"refetch\");",1000*60*60);'));
+		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*60*60);'));
 	}
 }
 
@@ -360,6 +373,7 @@ function eyeMail_sendMail($to,$cc,$cco,$sbj,$body) {
 		$userconfig = $GLOBALS['defaultMail']->text;
 
 		$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+		$sqliteError = null;
 		$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 		$sqlInsert = 'INSERT INTO sent (subject, date, sender, to, body) VALUES (\''.sqlite_escape_string(imap_utf8($sbj)).'\',';
 		$sqlInsert.= '\''.sqlite_escape_string(date('d/m/y',time())).'\', \''.sqlite_escape_string($defaultAccount['email'][0]).'\', \''.sqlite_escape_string($oldTo).'\', \''.sqlite_escape_string($body).'\')';
@@ -395,7 +409,7 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
         'width'=>450,
         'height'=> 500,
         'sendResizeMsg'=>1,
-		'style' => TITLE+CLOSE+MAX,
+		'style' => CLOSE + MAX + RESIZE + TITLE,
         'sigResize'=>'resizeCompose',
 		'sigClose' => 'closeCompose'
 	));
@@ -435,7 +449,7 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 		'text' => $body
 	));
 	$myTextArea->show();
-	$myTextArea->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","body"));');
+	// $myTextArea->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","body"));');
 	$myTextArea->setCss(array('border-bottom'=>'none'));
 	$myTextArea->setCss(array('border-right'=>'none'));
 	$myTextArea->setCss(array('border-left'=>'none'));
@@ -520,7 +534,7 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	$toTextbox->show();
 	$toTextbox->focus();
 
-	$toTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","to"));');
+	// $toTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","to"));');
 
 	$y += 30;
 	//cc
@@ -543,14 +557,14 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	));
 	$ccTextbox->show();
 
-	$ccTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","cc"));');
+	// $ccTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","cc"));');
 
 	$y += 30;
 	//cco
 	$ccoLabel = new Label(array(
 		'name'=>'eyeMail_cco_lbl',
 		'father'=>'eyeMail_sendContainer',
-		'text'=>'CCO:',
+		'text'=>'BCC:',
 		'x'=>20,
 		'y'=>$y+10,
 	));
@@ -566,7 +580,7 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	));
 	$ccoTextbox->show();
 
-	$ccoTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","cco"));');
+	// $ccoTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","cco"));');
 
 	$y += 30;
 	//subject
@@ -590,7 +604,7 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	));
 	$sbjTextbox->show();
 
-	$sbjTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","sbj"));');
+	// $sbjTextbox->addEvent('onfocus','sendMsg('.$checknum.',"changeFocus",eyeParam("field","sbj"));');
 
 	$myToolbar = new Toolbar(array(
 		'name'=>'myBarCompose',
@@ -702,6 +716,7 @@ function eyeMail_drawBoxes() {
 		$labelInboxMenu->show(0);
 		$labelInboxMenu->setCSS(array(
 			'cursor' => 'pointer',
+			'white-space' => 'nowrap'
 		));
 
 		$labelInboxMenu->addEvent('onclick','sendMsg(' . $checknum . ',"openMailBox",eyeParam("mailbox","'.$value['id'][0].'"));');

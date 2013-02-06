@@ -25,13 +25,13 @@
  * @author     Vincent Lascaux <vincentlascaux@php.net>
  * @copyright  1997-2005 The PHP Group
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL
- * @version    CVS: $Id: Mail.php,v 1.11 2005/06/02 12:24:43 vincentlascaux Exp $
+ * @version    CVS: $Id: Mail.php,v 1.12 2005/08/29 15:14:09 vincentlascaux Exp $
  * @link       http://pear.php.net/package/File_Archive
  */
 
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer".EYE_CODE_EXTENSION;
-require_once "Mail".EYE_CODE_EXTENSION;
-require_once "Mail/mime".EYE_CODE_EXTENSION;
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer' . EYE_CODE_EXTENSION; // eyeOS
+require_once "Mail.php";
+require_once "Mail/mime.php";
 
 /**
  * Send the files attached to a mail.
@@ -146,7 +146,7 @@ class File_Archive_Writer_Mail extends File_Archive_Writer
                         $this->currentMime,
                         $this->currentFilename,
                         false);
-        $this->currentData = "";
+        $this->currentData = '';
         return $error;
     }
     /**
@@ -159,8 +159,12 @@ class File_Archive_Writer_Mail extends File_Archive_Writer
             return $error;
         }
 
-        $this->currentFilename = $filename;
-        $this->currentMime = $mime;
+        if (substr($filename, -1) == '/') {
+            $this->currentFilename = null;
+        } else {
+            $this->currentFilename = $filename;
+            $this->currentMime = $mime;
+        }
     }
     /**
      * @see File_Archive_Writer::newFileNeedsMIME()

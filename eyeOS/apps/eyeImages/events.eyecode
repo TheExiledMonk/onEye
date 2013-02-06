@@ -154,6 +154,8 @@ function eyeImages_on_Init($params = '') {
 
 function eyeImages_on_Next($params = '') {
 	$files = vfs('getDirContent',array(dirname($GLOBALS['eyeImages_Hidden_Path']->text)));
+	$image = '';
+	$next = 0;
 	foreach ($files as $file) {
 		$info = utf8_pathinfo($file);
 		if (in_array(utf8_strtolower($info['extension']),array('bmp','gif','jpeg','jpg','png','tiff'))) {
@@ -177,6 +179,7 @@ function eyeImages_on_Next($params = '') {
 
 function eyeImages_on_Previous($params = '') {
 	$files = vfs('getDirContent',array(dirname($GLOBALS['eyeImages_Hidden_Path']->text)));
+	$image = '';
 	foreach ($files as $file) {
 		$info = utf8_pathinfo($file);
 		if (in_array(utf8_strtolower($info['extension']),array('bmp','gif','jpeg','jpg','png','tiff'))) {

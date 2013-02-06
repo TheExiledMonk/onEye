@@ -38,13 +38,13 @@
 */
 
 
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeIPC/modules/Common'.EYE_CODE_EXTENSION;
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeIPC/modules/Common' . EYE_CODE_EXTENSION; // eyeOS
 
-// class System_SharedMemory
+// {{{ class System_SharedMemory
 
 class System_SharedMemory_File extends System_SharedMemory_Common
 {
-
+    // {{{ properties
     /**
     * Contains internal options
     *
@@ -62,7 +62,8 @@ class System_SharedMemory_File extends System_SharedMemory_Common
     * @access private
     */
     var $_connected;
-
+    // }}}
+    // {{{ constructor
 
     /**
      * Constructor. Init all variables.
@@ -75,12 +76,13 @@ class System_SharedMemory_File extends System_SharedMemory_Common
     {
         $this->_options = $this->_default($options, array
         (
-            'tmp'  => get_tmp_dir(),
+            'tmp'  => get_tmp_dir(), // eyeOS
         ));
 
         $this->_connected = is_writeable($this->_options['tmp']) && is_dir($this->_options['tmp']);
     }
-
+    // }}}
+    // {{{ isConnected()
 
     /**
      * returns true if plugin was 
@@ -93,7 +95,8 @@ class System_SharedMemory_File extends System_SharedMemory_Common
     {
         return $this->_connected;
     }
-
+    // }}}
+    // {{{ get()
 
     /**
      * returns value of variable in shared mem
@@ -121,9 +124,10 @@ class System_SharedMemory_File extends System_SharedMemory_Common
             return $str == '' ? array() : unserialize($str);
         }
 
-        return false;
+        return false; // eyeOS
     }
-
+    // }}}
+    // {{{ set()
 
     /**
      * set value of variable in shared mem
@@ -148,8 +152,10 @@ class System_SharedMemory_File extends System_SharedMemory_Common
             return true;
         }
 
-        return false;
+        return false; // eyeOS
     }
+    // }}}
+    // {{{ rm()
 
     /**
      * remove variable from memory
@@ -167,24 +173,23 @@ class System_SharedMemory_File extends System_SharedMemory_Common
             unlink($name);
         }
     }
-    
- /* remove variable from memory
+    // }}}
+    // {{{ isVar()
+
+    /**
+     * check if name already exists
      *
-     * @param string $name  name of the variable
+     * @param string $name name of the variable
      *
-     * @return mixed true on success or PEAR_error on fail
+     * @return bool true on success
      * @access public
      */
     function isVar($name)
     {
-        $name = $this->_options['tmp'].'/smf_'.md5($name);
-
-        if (file_exists($name)) {
-            return true;
-        }else{
-        	return false;
-        }
+        return file_exists($this->_options['tmp'] . '/smf_' . md5($name));
     }
+    // }}}
 
 }
+// }}}
 ?>

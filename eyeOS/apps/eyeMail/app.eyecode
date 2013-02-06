@@ -12,7 +12,7 @@
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
@@ -23,6 +23,29 @@
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/mail'.EYE_CODE_EXTENSION);
 
 function eyeMail_run($params=null) {
+	if (!function_exists('sqlite_open')) {
+		eyex('messageBox', array(
+			'content' => 'You cannot run eyeMail. The server\'s administrator needs to activate the PHP extension for SQLite first.',
+			'img' => 'x',
+			'title' => 'eyeMail',
+			'type' => 3,
+			'win_name' => 'eyeMail_Window',
+			'win_style' => CLOSE + LISTED + MIN + TITLE
+		));
+		return;
+	}
+	if (!function_exists('imap_open')) {
+		eyex('messageBox', array(
+			'content' => 'You cannot run eyeMail. The server\'s administrator needs to activate the PHP extension for IMAP first.',
+			'img' => 'x',
+			'title' => 'eyeMail',
+			'type' => 3,
+			'win_name' => 'eyeMail_Window',
+			'win_style' => CLOSE + LISTED + MIN + TITLE
+		));
+		return;
+	}
+	
 	global $myPid, $checknum;
 	// error_reporting(E_ALL);
 	$config = eyeXML('getXMLconfig',array('eyeMail','settings.xml'));

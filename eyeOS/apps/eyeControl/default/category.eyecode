@@ -99,10 +99,10 @@ if ($selCategory == 'others') {
 			}
 		}
 	}
-} elseif (is_array(eyeControl_lib_findArrayByText(array($categoriesXML['category'],$selCategory,array('name',0))))) {
+} elseif (is_array(eyeControl_lib_findArrayByText(array($categoriesXML['eyeControl'][0]['category'],$selCategory,array('name',0))))) {
 	$x = 1;
 	$boxY = 0;
-	$category = eyeControl_lib_findArrayByText(array($categoriesXML['category'],$selCategory,array('name',0)));
+	$category = eyeControl_lib_findArrayByText(array($categoriesXML['eyeControl'][0]['category'],$selCategory,array('name',0)));
 	$category = $category[0];
 	$array = eyeControl_lib_findArrayByText(array($category['content'],'no',array('show',0),2));
 	// $myLine

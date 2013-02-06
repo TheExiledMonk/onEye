@@ -41,6 +41,9 @@ class Select {
 	var $vert;
 	var $cent;
 	
+	//friends abstraction
+	var $friends = "''";
+	
 	var $showed = 0;
 	
 	//custom widget options
@@ -56,7 +59,7 @@ class Select {
 		$this->creatorPid = $myPid;
 		//generic widget options without default
 		$this->name = $params['name'];
-		$this->father = $params['father'];		
+		$this->father = $params['father'];
 
 		//generic widget options with default
 		isset($params['horiz']) ? $this->horiz = $params['horiz'] : $this->horiz = 0;
@@ -123,14 +126,36 @@ class Select {
 			}
 		}
 	}
-
+	
+	//friends handler 
+	function addFriend($friend) {
+		if (method_exists($friend,'getSyncString')) {
+			if ($this->friends == "''") {
+				$this->friends = $friend->getSyncString();				
+			} else {
+				$this->friends .= '+' . $friend->getSyncString();
+			}
+		}
+	}
+	
+	//comunication functions
 	function getSyncString() {
 		global $myPid;
 		return "eyeParam('$this->name',document.getElementById('$myPid".'_'."$this->name').value)";
 	}
 	
 	function setValue($newText) {
-		$this->selected = $newText;	
+		$this->selected = $newText;
+	}
+	
+	function addEnterEvent($event) {
+		$this->addEvent('onkeypress','var event = new xEvent(e);if(event.keyCode == 13){'.$event.'}','e');
+	}
+	
+	function addEnterEventMsg($message) {
+		global $checknum;
+		global $myPid;
+		$this->addEnterEvent('sendMsg(' . $checknum . ',"' . $message . '","' . $this->getSyncString() . '"+"' . $this->friends . '");');
 	}
 
 	function addOption($text,$value,$selected=0,$tokens=0) {

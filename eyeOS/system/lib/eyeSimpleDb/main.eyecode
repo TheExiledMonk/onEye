@@ -60,7 +60,7 @@ function lib_eyeSimpleDb_newDb($params){
 	if(!$params['type']){
 		$dbType = DB_DEFAULT_TYPE;
 	}else{
-		$dbType = basename($params['type']);//it is needed? 
+		$dbType = utf8_basename($params['type']);//it is needed? 
 	}
 	
 	//Including the driver
@@ -147,9 +147,9 @@ function lib_eyeSimpleDb_parseQuery($params){
 		$value = parseValue($value);
 		//replace ? for value			
 		
-		$tokenPos = strpos($queryString,'?');//token position
-		$query .= substr($queryString,0,$tokenPos);//safe part
-		$queryString = substr($queryString,$tokenPos+1,strlen($queryString));//next part to be parsed											
+		$tokenPos = utf8_strpos($queryString,'?');//token position
+		$query .= utf8_substr($queryString,0,$tokenPos);//safe part
+		$queryString = utf8_substr($queryString,$tokenPos+1,utf8_strlen($queryString));//next part to be parsed											
 		$query .= "\"$value\"";//Adding value
 	}
 	$query .= $queryString;//rest of query

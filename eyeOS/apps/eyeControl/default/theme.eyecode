@@ -54,7 +54,7 @@ foreach ($openDir as $theme) {
 $currentUser = $oldUser;
 $mySelect->addEvent('onchange','sendMsg(' . $checknum . ',"theme_select",eyeParam("selected",this.value));');
 $mySelect->focus();
-eyeControl_lib_addEnterEvent($mySelect,'theme_change');
+$mySelect->addEnterEventMsg('theme_change');
 // Change theme
 $myButton = new Button(array(
 	'name' => 'eyeControl_theme_button_change',

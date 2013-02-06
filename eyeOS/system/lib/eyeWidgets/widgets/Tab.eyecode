@@ -245,9 +245,9 @@ class Tab {
 		foreach($this->myTabs as $key=>$value) {
 			if($value == $tabname) {
 				$ret = $key;
-				$i = strlen('_Content');
+				$i = utf8_strlen('_Content');
 				$i = $i*-1;
-				$ret = substr($ret,0,$i);
+				$ret = utf8_substr($ret,0,$i);
 				return $ret;
 			}
 		}

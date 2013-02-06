@@ -143,8 +143,8 @@ function eyeNotes_on_SelectFileOpen($params=null) {
 	$file = $params['arg'][0];
 	if($file) {
 		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
-		$info = pathinfo($file);
-		$ext = strtolower($info['extension']);
+		$info = utf8_pathinfo($file);
+		$ext = utf8_strtolower($info['extension']);
 		if($ext == 'asp') {
 			$lang = 'asp';
 		} else if($ext == 'cs') {

@@ -160,7 +160,7 @@ function eyeFeeds_on_feeds_TREE($params=null) {
 
 	//the name of an item of the tree is 'typeOfNode_feedId'
 	//(the first underscore separates the type of the node from the feed's id)
-	$feedId = substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
+	$feedId = utf8_substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
 	$feeds = eyeFeeds_getSavedFeeds();
 	$feed = eyeFeeds_getFeedFromId($feeds['feed'], $feedId);
 

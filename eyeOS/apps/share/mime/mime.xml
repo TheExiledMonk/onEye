@@ -24,6 +24,10 @@
 		<extension>flv</extension>
 	</mime>
 	<mime>
+		<type>video</type>
+		<extension>mp4</extension>
+	</mime>
+	<mime>
 		<type>text</type>
 		<extension>txt</extension>
 	</mime>

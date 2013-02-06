@@ -55,11 +55,16 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 	if (is_array($path)) {
 		$path = '';
 	}
-
+	
 	if ($config['eyeDesk'][0]['wallpaper'][0] && is_string($config['eyeDesk'][0]['wallpaper'][0])) {
 		$cw = 1;
 	} else {
 		$cw = 0;
+	}
+	if ($config['eyeDesk'][0]['bgColor'][0] && is_string($config['eyeDesk'][0]['bgColor'][0])) {
+		$cc = 1;
+	} else {
+		$cc = 0;
 	}
 	if ($config['eyeDesk'][0]['wallpaperRepeat'][0] == '1') {
 		$repeat = 1;
@@ -77,7 +82,7 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		$centerHeight = 33;
 		$centerWidth = 104;
 	}
-
+	
 	// Use a custom wallpaper
 	$myCheckbox_use = new Checkbox(array(
 		'name' => 'eyeControl_desktop_checkbox_use',
@@ -163,6 +168,49 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 	$myCheckbox_center->show();
 	$myCheckbox_center->addEvent('onclick','if (this.checked) { document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.left = "104px"; document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.top = "103px"; } else { document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.left = "60px"; document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.top = "70px"; }');
 	$ContentY += 60;
+	// Use a custom background color
+	$myCheckbox_use_color = new Checkbox(array(
+		'name' => 'eyeControl_desktop_checkbox_use_color',
+		'father' => $wallpaperTab,
+		'x' => 20,
+		'y' => $ContentY,
+		'text' => 'Use a custom background color',
+		'checked' => $cc
+	));
+	$myCheckbox_use_color->show();
+	$ContentY += 30;
+	// Background color
+	$myLabel = new Label(array(
+		'name' => 'eyeControl_desktop_label_color',
+		'father' => $wallpaperTab,
+		'x' => 60,
+		'y' => $ContentY + 3,
+		'text' => 'Background color'
+	));
+	$myLabel->show();
+	$myTextbox_color = new Textbox(array(
+		'name' => 'eyeControl_desktop_textbox_color',
+		'father' => $wallpaperTab,
+		'width' => 220,
+		'x' => 180,
+		'y' => $ContentY + 2,
+		'text' => $config['eyeDesk'][0]['bgColor'][0]
+	));
+	$myTextbox_color->show();
+	$myTextbox_color->addEvent('onkeyup', 'if (this.value == "") {
+		document.getElementById("' . $myPid . '_eyeControl_desktop_checkbox_use_color").checked = false;
+	} else {
+		document.getElementById("' . $myPid . '_eyeControl_desktop_checkbox_use_color").checked = true;
+	}
+	this.style.backgroundColor = "#ffffff";
+	this.style.backgroundColor = this.value;
+	var bgColor = xParseColor(xGetComputedStyle(this, "background-color"));
+	this.style.color = "rgb(" + String(288 - bgColor.r) + ", " + String(288 - bgColor.g) + ", " + String(288 - bgColor.b) + ")";');
+	eyex('rawjs', array('js' => 'var e = document.getElementById("' . $myPid . '_eyeControl_desktop_textbox_color");
+	e.style.backgroundColor = e.value;
+	var bgColor = xParseColor(xGetComputedStyle(e, "background-color"));
+	e.style.color = "rgb(" + String(288 - bgColor.r) + ", " + String(288 - bgColor.g) + ", " + String(288 - bgColor.b) + ")";'));
+	$ContentY += 60;
 	// Save changes
 	$myButton = new Button(array(
 		'name' => 'eyeControl_dektop_save',
@@ -173,7 +221,9 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		'signal' => 'desktop_save'
 	));
 	$myButton->addFriend($myCheckbox_use);
+	$myButton->addFriend($myCheckbox_use_color);
 	$myButton->addFriend($myTextbox);
+	$myButton->addFriend($myTextbox_color);
 	$myButton->addFriend($myCheckbox_repeat);
 	$myButton->addFriend($myCheckbox_center);
 	$myButton->show();

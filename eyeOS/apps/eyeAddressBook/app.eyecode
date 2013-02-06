@@ -229,7 +229,7 @@ function eyeAddressBook_drawListBox($contacts=null) {
 		$contacts = array();
 	}
     foreach ($contacts as $key=>$contact) {
-        $key = substr($key,3);
+        $key = utf8_substr($key,3);
         $chkContact = new Checkbox(array(
             'name' => 'eyeAddressBook_chkContact_'.$key,
             'father' => 'eyeAddressBook_listBox',

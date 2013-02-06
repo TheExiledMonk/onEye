@@ -277,7 +277,7 @@ function eyeFiles_on_OpenPath($params = '') {
 	}
 	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Window_Content").style.backgroundImage = "url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/bg-' . $type . '.png)";'));
 	if ($show == '/') {
-		$title = i18n('translate',array(ucfirst($type)));
+		$title = i18n('translate',array(utf8_ucfirst($type)));
 	} else {
 		$title = utf8_basename($show);
 	}
@@ -307,7 +307,7 @@ function eyeFiles_on_OpenPath($params = '') {
 	}
 	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Toolbar");
 	for (var i = 0; i < e.childNodes.length; i++) {
-		if (e.childNodes[i].id == "' . $myPid . '_' . ucfirst($type) . '_Container") {
+		if (e.childNodes[i].id == "' . $myPid . '_' . utf8_ucfirst($type) . '_Container") {
 			e.childNodes[i].className = "blockbarItemPress";
 		} else if (e.childNodes[i].id == "' . $myPid . '_Home_Container" || e.childNodes[i].id == "' . $myPid . '_Groups_Container" || e.childNodes[i].id == "' . $myPid . '_Trash_Container" || e.childNodes[i].id == "' . $myPid . '_Users_Container" || e.childNodes[i].id == "' . $myPid . '_Real_Container") {
 			e.childNodes[i].className = "blockbarItem";
@@ -347,7 +347,7 @@ function eyeFiles_on_OpenPath($params = '') {
 
 function eyeFiles_on_OpenTree($params = '') {
 	$type = eyeFiles('cleanPath',array($GLOBALS['eyeFiles_Hidden_Path']->text));
-	$path = utf8_substr($GLOBALS['eyeFiles_Box_Tree_Tree']->selected,utf8_strlen(i18n('translate',array(ucfirst($type[1])))));
+	$path = utf8_substr($GLOBALS['eyeFiles_Box_Tree_Tree']->selected,utf8_strlen(i18n('translate',array(utf8_ucfirst($type[1])))));
 	eyeFiles_on_OpenPath(array($path,$type[1]));
 }
 
@@ -388,7 +388,7 @@ function eyeFiles_on_ChangeBox($params = array()) {
 		));
 		$myTree->show();
 		$myTree->setCss(array('overflow' => 'auto'));
-		$myTree->addItem('eyeFiles_Box_Tree_Tree','item_' . $path[1],i18n('translate',array(ucfirst($path[1]))));
+		$myTree->addItem('eyeFiles_Box_Tree_Tree','item_' . $path[1],i18n('translate',array(utf8_ucfirst($path[1]))));
 		if (!in_array($path[1],array('groups','users'))) {
 			$myWidgetDrop = new widgetDrop(array(
 				'father' => 'item_' . $path[1],

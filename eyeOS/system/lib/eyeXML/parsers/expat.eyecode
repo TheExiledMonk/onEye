@@ -35,7 +35,7 @@ function lib_eyeXML_xml2array($params){
 
 	$GLOBALS['counter'] = null;
 
-	$minPos = strpos($params[0],'<')+1;
+	$minPos = utf8_strpos($params[0],'<')+1;
 	if($params[0]{$minPos} == '?'){
 		$params[0] = str_replace('?>','?><xmlContainer>',$params[0]);
 	}else{
@@ -97,7 +97,7 @@ function expat_eyeXML_endElementHandler($parser,$name){
 	unset($GLOBALS['concatData']);
 }
 function expat_eyeXML_characterDataHandler($parser,$data){
- 	$data = rtrim($data,"\t\n\r");
+ 	$data = utf8_rtrim($data,"\t\n\r");
 	if($data != ''){
 		if($GLOBALS['concatData']){
 			$GLOBALS['concatData'] .=  '&'.$data;
@@ -178,7 +178,7 @@ function getArrayText($array,$tabs = -1) {
 			}
 		}
 	}
-	return trim($return,"\n");
+	return utf8_trim($return,"\n");
 }
 
 function getNodeContent($content) {

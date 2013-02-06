@@ -5,10 +5,16 @@
 * @subpackage strings
 */
 
+/**
+* Define UTF8_CORE as required
+*/
+if ( !defined('UTF8_CORE') ) {
+    define('UTF8_CORE',TRUE);
+}
 
 //--------------------------------------------------------------------
 /**
-* Unicode aware replacement for utf8_strlen(). Returns the number
+* Unicode aware replacement for strlen(). Returns the number
 * of characters in the string (not the number of bytes), replacing
 * multibyte characters with a single byte equivalent
 * utf8_decode() converts characters that are not in ISO-8859-1
@@ -17,7 +23,7 @@
 * Note: this function does not count bad UTF-8 bytes in the string
 * - these are simply ignored
 * @author <chernyshevsky at hotmail dot com>
-* @link   http://www.php.net/manual/en/function.utf8_strlen.php
+* @link   http://www.php.net/manual/en/function.strlen.php
 * @link   http://www.php.net/manual/en/function.utf8-decode.php
 * @param string UTF-8 string
 * @return int number of UTF-8 characters in string
@@ -28,9 +34,10 @@ function utf8_strlen($str){
     return strlen(utf8_decode($str));
 }
 
+
 //--------------------------------------------------------------------
 /**
-* UTF-8 aware alternative to utf8_strpos
+* UTF-8 aware alternative to strpos
 * Find position of first occurrence of a string
 * Note: This will get alot slower if offset is used
 * Note: requires utf8_strlen amd utf8_substr to be loaded
@@ -38,7 +45,7 @@ function utf8_strlen($str){
 * @param string needle (you should validate this with utf8_is_valid)
 * @param integer offset in characters (from left)
 * @return mixed integer position or FALSE on failure
-* @see http://www.php.net/utf8_strpos
+* @see http://www.php.net/strpos
 * @see utf8_strlen
 * @see utf8_substr
 * @package utf8
@@ -57,7 +64,7 @@ function utf8_strpos($str, $needle, $offset = NULL) {
     } else {
         
         if ( !is_int($offset) ) {
-        //    //trigger_error('utf8_strpos: Offset must be an integer',E_USER_ERROR);
+            trigger_error('utf8_strpos: Offset must be an integer',E_USER_WARNING); // eyeOS
             return FALSE;
         }
         
@@ -74,7 +81,7 @@ function utf8_strpos($str, $needle, $offset = NULL) {
 
 //--------------------------------------------------------------------
 /**
-* UTF-8 aware alternative to utf8_strrpos
+* UTF-8 aware alternative to strrpos
 * Find position of last occurrence of a char in a string
 * Note: This will get alot slower if offset is used
 * Note: requires utf8_substr and utf8_strlen to be loaded
@@ -82,7 +89,7 @@ function utf8_strpos($str, $needle, $offset = NULL) {
 * @param string needle (you should validate this with utf8_is_valid)
 * @param integer (optional) offset (from left)
 * @return mixed integer position or FALSE on failure
-* @see http://www.php.net/utf8_strrpos
+* @see http://www.php.net/strrpos
 * @see utf8_substr
 * @see utf8_strlen
 * @package utf8
@@ -105,7 +112,7 @@ function utf8_strrpos($str, $needle, $offset = NULL) {
     } else {
         
         if ( !is_int($offset) ) {
-            //trigger_error('utf8_strrpos expects parameter 3 to be long',E_USER_WARNING);
+            trigger_error('utf8_strrpos expects parameter 3 to be long',E_USER_WARNING);
             return FALSE;
         }
         
@@ -122,14 +129,14 @@ function utf8_strrpos($str, $needle, $offset = NULL) {
 
 //--------------------------------------------------------------------
 /**
-* UTF-8 aware alternative to utf8_substr
+* UTF-8 aware alternative to substr
 * Return part of a string given character offset (and optionally length)
 *
-* Note arguments: comparied to utf8_substr - if offset or length are
+* Note arguments: comparied to substr - if offset or length are
 * not integers, this version will not complain but rather massages them
 * into an integer.
 *
-* Note on returned values: utf8_substr documentation states false can be
+* Note on returned values: substr documentation states false can be
 * returned in some cases (e.g. offset > string length)
 * mb_substr never returns false, it will return an empty string instead.
 * This adopts the mb_substr approach
@@ -150,89 +157,113 @@ function utf8_strrpos($str, $needle, $offset = NULL) {
 * @package utf8
 * @subpackage strings
 */
-function utf8_substr($str, $offset, $length = NULL) {    
+function utf8_substr($str, $offset, $length = NULL) {
+    
     // generates E_NOTICE
     // for PHP4 objects, but not PHP5 objects
     $str = (string)$str;
     $offset = (int)$offset;
-    if(!is_null($length)) $length = (int)$length;
+    if (!is_null($length)) $length = (int)$length;
     
     // handle trivial cases
-    if($length === 0) return '';
-    if($offset < 0 && $length < 0 && $length < $offset)
+    if ($length === 0) return '';
+    if ($offset < 0 && $length < 0 && $length < $offset)
         return '';
     
     // normalise negative offsets (we could use a tail
     // anchored pattern, but they are horribly slow!)
-    if($offset < 0){        
+    if ($offset < 0) {
+        
         // see notes
         $strlen = strlen(utf8_decode($str));
         $offset = $strlen + $offset;
-        if ($offset < 0) $offset = 0;       
-    }    
+        if ($offset < 0) $offset = 0;
+        
+    }
+    
     $Op = '';
-    $Lp = '';    
+    $Lp = '';
+    
     // establish a pattern for offset, a
     // non-captured group equal in length to offset
-    if($offset > 0){        
+    if ($offset > 0) {
+        
         $Ox = (int)($offset/65535);
-        $Oy = $offset%65535;        
-        if($Ox){
+        $Oy = $offset%65535;
+        
+        if ($Ox) {
             $Op = '(?:.{65535}){'.$Ox.'}';
-        }        
-        $Op = '^(?:'.$Op.'.{'.$Oy.'})';        
-    }else{        
+        }
+        
+        $Op = '^(?:'.$Op.'.{'.$Oy.'})';
+        
+    } else {
+        
         // offset == 0; just anchor the pattern
-        $Op = '^';        
+        $Op = '^';
+        
     }
     
     // establish a pattern for length
-    if (is_null($length)) {        
+    if (is_null($length)) {
+        
         // the rest of the string
-        $Lp = '(.*)$';        
-    }else{        
-        if (!isset($strlen)){
+        $Lp = '(.*)$';
+        
+    } else {
+        
+        if (!isset($strlen)) {
             // see notes
             $strlen = strlen(utf8_decode($str));
         }
         
         // another trivial case
-        if($offset > $strlen) return '';
+        if ($offset > $strlen) return '';
         
-        if($length > 0){           
+        if ($length > 0) {
+            
             // reduce any length that would
             // go passed the end of the string
             $length = min($strlen-$offset, $length);
             
-            $Lx = (int)($length / 65535);
+            $Lx = (int)( $length / 65535 );
             $Ly = $length % 65535;
             
             // negative length requires a captured group
             // of length characters
             if ($Lx) $Lp = '(?:.{65535}){'.$Lx.'}';
-            $Lp = '('.$Lp.'.{'.$Ly.'})';            
-        }else if ($length < 0){            
-            if($length < ($offset - $strlen)){
+            $Lp = '('.$Lp.'.{'.$Ly.'})';
+            
+        } else if ($length < 0) {
+            
+            if ( $length < ($offset - $strlen) ) {
                 return '';
-            }            
+            }
+            
             $Lx = (int)((-$length)/65535);
-            $Ly = (-$length)%65535;            
+            $Ly = (-$length)%65535;
+            
             // negative length requires ... capture everything
             // except a group of  -length characters
             // anchored at the tail-end of the string
             if ($Lx) $Lp = '(?:.{65535}){'.$Lx.'}';
-            $Lp = '(.*)(?:'.$Lp.'.{'.$Ly.'})$';            
-        }       
-    }    
+            $Lp = '(.*)(?:'.$Lp.'.{'.$Ly.'})$';
+            
+        }
+        
+    }
+    
     if (!preg_match( '#'.$Op.$Lp.'#us',$str, $match )) {
         return '';
-    }    
-    return $match[1];   
+    }
+    
+    return $match[1];
+    
 }
 
 //---------------------------------------------------------------
 /**
-* UTF-8 aware alternative to utf8_strtolower
+* UTF-8 aware alternative to strtolower
 * Make a string lowercase
 * Note: The concept of a characters "case" only exists is some alphabets
 * such as Latin, Greek, Cyrillic, Armenian and archaic Georgian - it does
@@ -242,7 +273,7 @@ function utf8_substr($str, $offset, $length = NULL) {
 * @author Andreas Gohr <andi@splitbrain.org>
 * @param string
 * @return mixed either string in lowercase or FALSE is UTF-8 invalid
-* @see http://www.php.net/utf8_strtolower
+* @see http://www.php.net/strtolower
 * @see utf8_to_unicode
 * @see utf8_from_unicode
 * @see http://www.unicode.org/reports/tr21/tr21-5.html
@@ -320,7 +351,7 @@ function utf8_strtolower($string){
 
 //---------------------------------------------------------------
 /**
-* UTF-8 aware alternative to utf8_strtoupper
+* UTF-8 aware alternative to strtoupper
 * Make a string uppercase
 * Note: The concept of a characters "case" only exists is some alphabets
 * such as Latin, Greek, Cyrillic, Armenian and archaic Georgian - it does
@@ -330,7 +361,7 @@ function utf8_strtolower($string){
 * @author Andreas Gohr <andi@splitbrain.org>
 * @param string
 * @return mixed either string in lowercase or FALSE is UTF-8 invalid
-* @see http://www.php.net/utf8_strtoupper
+* @see http://www.php.net/strtoupper
 * @see utf8_to_unicode
 * @see utf8_from_unicode
 * @see http://www.unicode.org/reports/tr21/tr21-5.html
@@ -405,3 +436,4 @@ function utf8_strtoupper($string){
     
     return utf8_from_unicode($uni);
 }
+?>

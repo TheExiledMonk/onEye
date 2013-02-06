@@ -45,7 +45,7 @@ function eyeManageApps_on_ListApps() {
 	}
 	$myConfig = eyeXML('getXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml'));
 	$gCounter = 1;
-	
+	$myY = 0;
 	foreach($myConfig['eyeDock'][0]['Group'] as $group) {
 		$groupIcon = new Icon(array(
 			'name' => 'groupIcon'.$gCounter,
@@ -400,10 +400,10 @@ function eyeManageApps_on_addApplication($params=null) {
 }
 
 function eyeManageApps_on_doAdd($params=null) {
-	$aname = trim($params['tboxappName'][0]);
-	$agroup = trim($params['selectappgroup'][0]);
-	$aexec = trim($params['tboxappExec'][0]);
-	$adesc = trim($params['tboxappDesc'][0]);
+	$aname = utf8_trim($params['tboxappName'][0]);
+	$agroup = utf8_trim($params['selectappgroup'][0]);
+	$aexec = utf8_trim($params['tboxappExec'][0]);
+	$adesc = utf8_trim($params['tboxappDesc'][0]);
 	
 	if(!$aname) {
 		eyeX('messageBox', array('content' => "You must specify the name of the application"));
@@ -551,9 +551,9 @@ function eyeManageApps_on_properties($params) {
 		
 		$gIconList = vfs('real_getDirContent', array(eyex('getThemeImage',array('images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/',2)), '*.png'));
 	    foreach($gIconList as $file) {
-	    	$file = basename($file);
-	        if (!strpos($file, '_')) {
-	        	if(strcmp($icon, $file) == 0) {
+	    	$file = utf8_basename($file);
+	        if (!utf8_strpos($file, '_')) {
+	        	if(utf8_strcmp($icon, $file) == 0) {
 	        		$mySelect1->addOption($file, $file, 1);
 	        	} else {
 	        		$mySelect1->addOption($file,$file);
@@ -753,7 +753,7 @@ function eyeManageApps_on_properties($params) {
 		
 		$appIconList = vfs('real_getDirContent', array(eyex('getThemeImage',array('icons/'.ICON_SIZE.'x'.ICON_SIZE.'/',2)), '*.png'));
 		foreach($appIconList as $file) {
-			$file = basename($file);
+			$file = utf8_basename($file);
 			if($file != $icon) {
 				$mySelect2->addOption($file,$file);
 			}
@@ -814,7 +814,7 @@ function eyeManageApps_on_doUpdateGroup($params=null) {
 	
 	$saveChanges = false;
 	$oldGroupName = $GLOBALS['oldGroupName']->text;
-	$newGroupName = trim($GLOBALS['newGroupName']->text);
+	$newGroupName = utf8_trim($GLOBALS['newGroupName']->text);
 	$icon = $GLOBALS['selectIcon']->selected;
 	
 	//Trying to pass no group name or an existing group name?

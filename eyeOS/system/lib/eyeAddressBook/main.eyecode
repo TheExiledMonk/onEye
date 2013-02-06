@@ -192,7 +192,7 @@ function lib_eyeAddressBook_saveContactXML($params=null) {
     $contacts['Contacts'][0][$index] = $params[0][$index];
     $path = um('getCurrentUserDir').CONF_USER_DIR.'/eyeAddressBook/contacts.xml';
     if (eyeXML('setXMLfile', array($path, $contacts))) {
-         return substr($index,3);
+         return utf8_substr($index,3);
     } else {
         return false;
     }
@@ -532,43 +532,43 @@ function lib_eyeAddressBook_searchXML($params=null) {
         if ($group == '0' || $group == $id[0]['group'][0]) {
 			if (empty($key)) {
 				$value['Contacts'][0][$index]=$id;
-			} elseif (stristr($id[0]['home'][0]['name'][0],$key)) {
+			} elseif (utf8_stristr($id[0]['home'][0]['name'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['home'][0]['surname'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['home'][0]['surname'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['home'][0]['address'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['home'][0]['address'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['home'][0]['phone'][0]['local'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['home'][0]['phone'][0]['local'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['home'][0]['phone'][0]['mobile'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['home'][0]['phone'][0]['mobile'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['home'][0]['email'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['home'][0]['email'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['home'][0]['website'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['home'][0]['website'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['name'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['name'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['address'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['address'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['phone'][0]['local'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['phone'][0]['local'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['phone'][0]['mobile'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['phone'][0]['mobile'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['phone'][0]['fax'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['phone'][0]['fax'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['email'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['email'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['website'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['website'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['company'][0]['role'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['company'][0]['role'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['other'][0]['im'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['other'][0]['im'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['other'][0]['voip'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['other'][0]['voip'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['other'][0]['nick'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['other'][0]['nick'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
-            } elseif (stristr($id[0]['other'][0]['user'][0],$key)) {
+            } elseif (utf8_stristr($id[0]['other'][0]['user'][0],$key)) {
                 $value['Contacts'][0][$index]=$id;
             }
         }
@@ -746,7 +746,7 @@ function lib_eyeAddressBook_pathToInfo($params=null){
     //From the last _ to the end of the string
     $md5 = utf8_substr($contact,utf8_strrpos($contact,'_')+1,utf8_strlen($contact));
     //Remove extension
-    $md5 = basename($md5,'.eyeCard');
+    $md5 = utf8_basename($md5,'.eyeCard');
     return  array($name,$sName,$md5);
 }
 
@@ -832,7 +832,7 @@ function lib_eyeAddressBook_userList($params=null){
     $contacts = $contacts['Contacts'][0];
     $contact = array();
     foreach ($contacts as $key=>$newContact) {
-        $id = substr($key,3);
+        $id = utf8_substr($key,3);
         $contact[$id]['name'][0] = $newContact[0]['home'][0]['name'][0];
         $contact[$id]['surname'][0] = $newContact[0]['home'][0]['surname'][0];
         $contact[$id]['home_phone'][0] = $newContact[0]['home'][0]['phone'][0]['local'][0];

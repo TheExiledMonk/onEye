@@ -111,7 +111,7 @@ class Contact_Vcard_Parse {
             $text = '';
             $len = filesize($filename);
             
-            $fp = vfs('real_open',array($filename, 'r'));
+            $fp = vfs('real_open',array($filename, 'r')); // eyeOS
             while ($line = fread($fp, filesize($filename))) {
                 $text .= $line;
             }

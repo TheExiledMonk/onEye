@@ -363,29 +363,21 @@ if (ALLOW_USER_REGISTER) {
 
 $myWindow = new Window(array(
 	'father' => 'eyeApps',
-	'height' => 30,
 	'horiz' => 1,
 	'name' => 'eyeLogin_Window_Powered',
 	'type' => INVISIBLE_WINDOW,
 	'vert' => 1,
-	'width' => 200,
-	'x' => 10,
+	'x' => 15,
 	'y' => 10
 ));
 $myWindow->show();
-eyex('rawjs',array('js' => 'xGetElementById("' . $myPid . '_eyeLogin_Window_Powered_Content").style.fontSize = "1px";'));
-
-$myLabel = new Label(array(
-	'father' => 'eyeLogin_Window_Powered',
-	'horiz' => 1,
-	'name' => 'eyeLogin_Label_Powered',
-	'text' => 'Powered by eyeOS',
-	'vert' => 1,
-	'x' => 0,
-	'y' => 0
+$myWindow->setCss(array(
+	'height' => 'auto',
+	'line-height' => '2',
+	'text-align' => 'center',
+	'width' => 'auto'
 ));
-$myLabel->show();
-$myLabel->setCss(array('color' => '#ffffff'));
+eyex('runjs', array('js' => 'document.getElementById("' . $myPid . '_eyeLogin_Window_Powered").innerHTML = %s;', 'tokens' => array('<a href="http://sourceforge.net/projects/eyeos" target="_blank"><img alt="" src="http://sflogo.sourceforge.net/sflogo.php?group_id=145027&amp;type=9" /></a><br />Powered by eyeOS')));
 
 eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeLogin/themes/default/eyeLogin' . EYE_CODE_EXTENSION . '&type=dynamic&params[]=' . $myPid . '&params[]=' . $checknum . '&params[]=' . $_SESSION['sawasc']));
 ?>

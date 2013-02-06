@@ -1,3 +1,4 @@
+/*jslint */
 /*
                                   ____   _____
                                  / __ \ / ____|
@@ -20,7 +21,7 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-eyeLogin_Start($myPid,$checknum);
+var movecount = 0;
 
 function eyeLogin_Disable_On(pid) {
 	xGetElementById(pid + '_eyeLogin_Textbox_1_Password').disabled = true;
@@ -35,14 +36,6 @@ function eyeLogin_badLogin(user,pass,checknum,pid) {
 	eyeLogin_Disable_On(pid);
 }
 
-function eyeLogin_1_KeyPressed(characterCode,checknum,pid) {
-	if (characterCode == 13) {
-		eyeLogin_SendLogin(checknum,pid);
-		return false;
-	}
-	return true;
-}
-
 function eyeLogin_SendLogin(checknum,pid) {
 	var sawasc = '$sawasc';
 	if (sawasc) {
@@ -52,6 +45,14 @@ function eyeLogin_SendLogin(checknum,pid) {
 		password = Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_1_Password').value);
 	}
 	sendMsg(checknum,'Login',eyeParam('eyeLogin_Textbox_1_User',xGetElementById(pid + '_eyeLogin_Textbox_1_User').value) + eyeParam('eyeLogin_Textbox_1_Password',password) + eyeParam('eyeLogin_Select_1_Language',xGetElementById(pid + '_eyeLogin_Select_1_Language').value));
+}
+
+function eyeLogin_1_KeyPressed(characterCode,checknum,pid) {
+	if (characterCode == 13) {
+		eyeLogin_SendLogin(checknum,pid);
+		return false;
+	}
+	return true;
 }
 
 function eyeLogin_2_KeyPressed(characterCode,checknum,pid) {
@@ -79,54 +80,16 @@ function eyeLogin_2_Clean(pid) {
 	xGetElementById(pid + '_eyeLogin_Textbox_2_User').style.display = 'none';
 }
 
-function eyeLogin_Start(pid,checknum) {
-	xGetElementById(pid + '_eyeLogin_1_Container').style.left = '50%';
-	xGetElementById(pid + '_eyeLogin_1_Container').style.top = '50%';
-	
-	var obj = xGetElementById(pid + '_eyeLogin_Label_Powered');
-	obj.innerHTML = '<a href="http://sourceforge.net/projects/eyeos"><img alt="" src="http://sflogo.sourceforge.net/sflogo.php?group_id=145027&amp;type=9" style="height: 15px; width: 80px;" /></a><br />' + obj.innerHTML;
-	
-	var obj = xGetElementById(pid + '_eyeLogin_Label_1_Enter');
-	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
-	obj.style.zIndex = '10000';
-	
-	var obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_Enter_Container');
-	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
-	obj.style.zIndex = '10000';
-	
-	var obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_New_Container');
-	if (obj) {
-		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
-		obj.style.zIndex = '10000';
-		
-		var obj = xGetElementById(pid + '_eyeLogin_Label_1_New_Container');
-		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
-		obj.style.zIndex = '10000';
+function eyeLogin_Light_Off(id) {
+	if (!IEversion || IEversion > 7) {
+		xGetElementById(id).style.backgroundImage = 'url(index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeLogin/box.png)';
 	}
-	
-	var obj = xGetElementById(pid + '_eyeLogin_Textbox_1_Password');
-	obj.onkeypress = function(e) {
-		var event = new xEvent(e);
-		eyeLogin_1_KeyPressed(event.keyCode,checknum,pid);
-	};
-	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_1_Password'); };
-	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_1_Password'); };
-	
-	var obj = xGetElementById(pid + '_eyeLogin_Textbox_1_User');
-	obj.onkeypress = function(e) {
-		var event = new xEvent(e);
-		eyeLogin_1_KeyPressed(event.keyCode,checknum,pid);
-	};
-	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_1_User'); };
-	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_1_User'); };
-	
-	var obj = xGetElementById(pid + '_eyeLogin_Select_1_Language');
-	obj.onkeypress = function(e) {
-		var event = new xEvent(e);
-		eyeLogin_1_KeyPressed(event.keyCode,checknum,pid);
-	};
-	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Select_1_Language'); };
-	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Select_1_Language'); };
+}
+
+function eyeLogin_Light_On(id) {
+	if (!IEversion || IEversion > 7) {
+		xGetElementById(id).style.backgroundImage = 'url(index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeLogin/box_x.png)';
+	}
 }
 
 function eyeLogin_2_Launch(pid,checknum) {
@@ -159,11 +122,11 @@ function eyeLogin_2_Launch(pid,checknum) {
 	if (obj) {
 		obj.onclick = function () { sendMsg(checknum,'Create',eyeParam('eyeLogin_Textbox_2_User',xGetElementById(pid + '_eyeLogin_Textbox_2_User').value) + eyeParam('eyeLogin_Textbox_2_Password_1',Base64.encode(xGetElementById(pid+'_eyeLogin_Textbox_2_Password_1').value)) + eyeParam('eyeLogin_Textbox_2_Password_2',Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_2_Password_2').value)) + eyeParam('eyeLogin_Select_2_Language',xGetElementById(pid + '_eyeLogin_Select_2_Language').value)); };
 		
-		var obj = xGetElementById(pid + '_eyeLogin_Label_2_Create');
+		obj = xGetElementById(pid + '_eyeLogin_Label_2_Create');
 		obj.onclick = function () { sendMsg(checknum,'Create',eyeParam('eyeLogin_Textbox_2_User',xGetElementById(pid + '_eyeLogin_Textbox_2_User').value) + eyeParam('eyeLogin_Textbox_2_Password_1',Base64.encode(xGetElementById(pid+'_eyeLogin_Textbox_2_Password_1').value)) + eyeParam('eyeLogin_Textbox_2_Password_2',Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_2_Password_2').value)) + eyeParam('eyeLogin_Select_2_Language',xGetElementById(pid + '_eyeLogin_Select_2_Language').value)); };
 	}
 	
-	var obj = xGetElementById(pid + '_eyeLogin_Textbox_2_User');
+	obj = xGetElementById(pid + '_eyeLogin_Textbox_2_User');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
 		eyeLogin_2_KeyPressed(event.keyCode,checknum,pid);
@@ -171,7 +134,7 @@ function eyeLogin_2_Launch(pid,checknum) {
 	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_2_User'); };
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_2_User'); };
 	
-	var obj = xGetElementById(pid + '_eyeLogin_Textbox_2_Password_1');
+	obj = xGetElementById(pid + '_eyeLogin_Textbox_2_Password_1');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
 		eyeLogin_2_KeyPressed(event.keyCode,checknum,pid);
@@ -179,7 +142,7 @@ function eyeLogin_2_Launch(pid,checknum) {
 	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_2_Password_1'); };
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_2_Password_1'); };
 	
-	var obj = xGetElementById(pid + '_eyeLogin_Textbox_2_Password_2');
+	obj = xGetElementById(pid + '_eyeLogin_Textbox_2_Password_2');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
 		eyeLogin_2_KeyPressed(event.keyCode,checknum,pid);
@@ -188,15 +151,61 @@ function eyeLogin_2_Launch(pid,checknum) {
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_2_Password_2'); };
 }
 
-function eyeLogin_Light_On(id) {
-	if (!IEversion || IEversion > 7) {
-		xGetElementById(id).style.backgroundImage = 'url(index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeLogin/box_x.png)';
+function eyeLogin_Start(pid,checknum) {
+	xGetElementById(pid + '_eyeLogin_1_Container').style.left = '50%';
+	xGetElementById(pid + '_eyeLogin_1_Container').style.top = '50%';
+	
+	var obj = xGetElementById(pid + '_eyeLogin_Label_1_Enter');
+	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
+	obj.style.zIndex = '10000';
+	
+	obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_Enter_Container');
+	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
+	obj.style.zIndex = '10000';
+	
+	obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_New_Container');
+	if (obj) {
+		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
+		obj.style.zIndex = '10000';
+		
+		obj = xGetElementById(pid + '_eyeLogin_Label_1_New_Container');
+		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
+		obj.style.zIndex = '10000';
 	}
+	
+	obj = xGetElementById(pid + '_eyeLogin_Textbox_1_Password');
+	obj.onkeypress = function(e) {
+		var event = new xEvent(e);
+		eyeLogin_1_KeyPressed(event.keyCode,checknum,pid);
+	};
+	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_1_Password'); };
+	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_1_Password'); };
+	
+	obj = xGetElementById(pid + '_eyeLogin_Textbox_1_User');
+	obj.onkeypress = function(e) {
+		var event = new xEvent(e);
+		eyeLogin_1_KeyPressed(event.keyCode,checknum,pid);
+	};
+	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_1_User'); };
+	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_1_User'); };
+	
+	obj = xGetElementById(pid + '_eyeLogin_Select_1_Language');
+	obj.onkeypress = function(e) {
+		var event = new xEvent(e);
+		eyeLogin_1_KeyPressed(event.keyCode,checknum,pid);
+	};
+	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Select_1_Language'); };
+	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Select_1_Language'); };
 }
 
 function eyeLogin_Move_L(widget,pid) {
 	xLeft(widget,xLeft(widget) - 40);
 	setTimeout('eyeLogin_Move_R("' + widget + '","' + pid + '");',50);
+}
+
+function eyeLogin_Disable_Off(pid) {
+	xGetElementById(pid + '_eyeLogin_Textbox_1_Password').disabled = false;
+	xGetElementById(pid + '_eyeLogin_Textbox_1_User').disabled = false;
 }
 
 function eyeLogin_Move_R(widget,pid) {
@@ -215,13 +224,4 @@ function eyeLogin_Move_R(widget,pid) {
 	}
 }
 
-function eyeLogin_Light_Off(id) {
-	if (!IEversion || IEversion > 7) {
-		xGetElementById(id).style.backgroundImage = 'url(index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeLogin/box.png)';
-	}
-}
-
-function eyeLogin_Disable_Off(pid) {
-	xGetElementById(pid + '_eyeLogin_Textbox_1_Password').disabled = false;
-	xGetElementById(pid + '_eyeLogin_Textbox_1_User').disabled = false;
-}
+eyeLogin_Start($myPid,$checknum);

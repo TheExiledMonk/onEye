@@ -1,7 +1,7 @@
 <?php
 // by Edd Dumbill (C) 1999-2002
 // <edd@usefulinc.com>
-// $Id: xmlrpcs.inc,v 1.69 2007/09/20 20:14:25 ggiunta Exp $
+// $Id: xmlrpcs.inc,v 1.71 2008/10/29 23:41:28 ggiunta Exp $
 
 // Copyright (c) 1999,2000,2002 Edd Dumbill.
 // All rights reserved.
@@ -632,7 +632,7 @@
 				// http compression of output: only
 				// if we can do it, and we want to do it, and client asked us to,
 				// and php ini settings do not force it already
-				$php_no_self_compress = ini_get('zlib.output_compression') == '' && (ini_get('output_handler') != 'ob_gzhandler');
+				$php_no_self_compress = !ini_get('zlib.output_compression') && (ini_get('output_handler') != 'ob_gzhandler');
 				if($this->compress_response && function_exists('gzencode') && $resp_encoding != ''
 					&& $php_no_self_compress)
 				{
@@ -674,9 +674,10 @@
 		* @param string $function the php function that will get invoked
 		* @param array $sig the array of valid method signatures
 		* @param string $doc method documentation
+		* @param array $sigdoc the array of valid method signatures docs (one string per param, one for return type)
 		* @access public
 		*/
-		function add_to_map($methodname,$function,$sig=null,$doc='')
+		function add_to_map($methodname,$function,$sig=null,$doc=false,$sigdoc=false)
 		{
 			$this->dmap[$methodname] = array(
 				'function'	=> $function,
@@ -685,6 +686,10 @@
 			if ($sig)
 			{
 				$this->dmap[$methodname]['signature'] = $sig;
+			}
+			if ($sigdoc)
+			{
+			    $this->dmap[$methodname]['signature_docs'] = $sigdoc;
 			}
 		}
 

@@ -87,7 +87,7 @@ function eyeControl_on_system_cache_save($params = ''){
 }
 
 function eyeControl_on_system_office($params = '') {
-	if (strpos(realpath(EYE_ROOT . '/'),'\\')) {
+	if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) {
 		$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
 		$xml = eyeXML('getXMLfile',array($file));
 		$xml['CONFIG'][0]['OFFICE_COMMAND'][0] = $GLOBALS['eyeControl_system_office_textbox_folder']->text;
@@ -114,7 +114,7 @@ function eyeControl_on_system_uninstall($params = '') {
 			'buttons' => array(array('system_uninstall_yes','Yes'),array('system_uninstall_no','No')),
 			'content' => 'Do you really want to delete the eyeOS system? This removes all data from eyeOS\' directory!',
 			'father' => 'eyeControl_container_big',
-			'img' => '?',
+			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
 			'title' => 'Uninstall eyeOS',
 			'type' => 3,
 			'win_name' => 'eyeControl_system_uninstall_window',

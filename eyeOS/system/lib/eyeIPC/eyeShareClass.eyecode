@@ -60,7 +60,7 @@ class System_SharedMemory
             $type = utf8_ucfirst(utf8_strtolower($type));
         }
 
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeIPC/modules/'.$type.EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeIPC/modules/' . $type . EYE_CODE_EXTENSION; // eyeOS
         $class = 'System_SharedMemory_' . $type;
 
         $ref = new $class($options);
@@ -83,16 +83,10 @@ class System_SharedMemory
      {
         $detect = array
         (
-			'shmop_open'   => 'Shmop',          // Shmop
-			'shm_get_var'  => 'Systemv',        // System V
-			'apache_note'  => 'Apachenote',     // Apache note
-			'file'         => 'File',           // Plain text			
-        	/*'eaccelerator' => 'Eaccelerator',   // Eaccelerator (Turck MMcache fork)
-            'mmcache'      => 'Mmcache',        // Turck MMCache
-            'Memcache'     => 'Memcache',       // Memched          
-            'apc_fetch'    => 'Apc',            // APC                        
-            'sqlite_open'  => 'Sqlite',         // SQLite            
-            'fsockopen'    => 'Sharedance',     // Sharedance*/
+            'shmop_open'   => 'Shmop',          // Shmop
+            'apache_note'  => 'Apachenote',     // Apache note
+            'shm_get_var'  => 'Systemv',        // System V
+            'file'         => 'File',           // Plain text
         );
 
         $types = array();

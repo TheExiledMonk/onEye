@@ -52,6 +52,8 @@ function eyeLogin_run($params = '') {
 		$_SESSION['usertheme'] = LOGIN_THEME;
 		if (SECURE_LOGIN == 1 && function_exists('service_um_loginWidthHash')) {
 			$_SESSION['sawasc'] = md5(uniqid(rand()));
+		} else {
+			$_SESSION['sawasc'] = '';
 		}
 		$file = EYE_ROOT . '/' . APP_DIR . '/eyeLogin/themes/' . LOGIN_THEME . '/window' . EYE_CODE_EXTENSION;
 		if (vfs('real_fileExists',array($file))) {

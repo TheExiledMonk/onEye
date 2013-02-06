@@ -49,7 +49,7 @@ class ods {
 		xml_set_element_handler($xml_parser, "startElement", "endElement");
 		xml_set_character_data_handler($xml_parser, "characterData");
 
-		xml_parse($xml_parser, $data, strlen($data));
+		xml_parse($xml_parser, $data, utf8_strlen($data));
 
 		xml_parser_free($xml_parser);
 	}
@@ -70,7 +70,7 @@ class ods {
 		foreach ($fontArray as $fontName => $fontAttribs) {
 			$string .= '<style:font-face ';
 			foreach ($fontAttribs as $attrName => $attrValue) {
-				$string .= strtolower($attrName) . '="' . $attrValue . '" ';
+				$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
 			}
 			$string .= '/>';
 		}
@@ -81,7 +81,7 @@ class ods {
 		foreach ($styleArray as $styleName => $styleAttribs) {
 			$string .= '<style:style ';
 			foreach ($styleAttribs['attrs'] as $attrName => $attrValue) {
-				$string .= strtolower($attrName) . '="' . $attrValue . '" ';
+				$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
 			}
 			$string .= '>';
 			
@@ -90,7 +90,7 @@ class ods {
 				foreach ($styleAttribs['styles'] as $nodeName => $nodeTree) {
 					$string .= '<' . $nodeName . ' ';
 					foreach ($nodeTree as $attrName => $attrValue) {
-						$string .= strtolower($attrName) . '="' . $attrValue . '" ';
+						$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
 					}
 					$string .= '/>';
 				}
@@ -113,7 +113,7 @@ class ods {
 				foreach($rowContent as $cellIndex => $cellContent) {
 					$string .= '<table:table-cell ';
 					foreach ($cellContent['attrs'] as $attrName => $attrValue) {
-						$string .= strtolower($attrName) . '="' . $attrValue . '" ';
+						$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
 					}
 					$string .= '>';
 					
@@ -140,7 +140,7 @@ class ods {
 	}
 	
 	function startElement($parser, $tagName, $attrs) {
-		$cTagName = strtolower($tagName);
+		$cTagName = utf8_strtolower($tagName);
 		if($cTagName == 'style:font-face') {
 			$this->fonts[$attrs['STYLE:NAME']] = $attrs;
 		} elseif($cTagName == 'style:style') {
@@ -177,7 +177,7 @@ class ods {
 	}
 	
 	function endElement($parser, $tagName) {
-		$cTagName = strtolower($tagName);
+		$cTagName = utf8_strtolower($tagName);
 		if($cTagName == 'table:table') {
 			$this->currentSheet++;
 			$this->currentRow = 0;
@@ -268,7 +268,7 @@ class ods {
 	}
 	
 	function addFormula($sheet,$row,$cell,$value) {
-		$formula = "oooc:=[.".substr($value, 1); //Skip the initial '='
+		$formula = "oooc:=[.".utf8_substr($value, 1); //Skip the initial '='
 		$formula = str_replace('*', ']*[.', $formula);
 		$formula = str_replace('+', ']+[.', $formula);
 		$formula = str_replace('/', ']/[.', $formula);
@@ -279,7 +279,7 @@ class ods {
 	}
 	
 	function editFormula($sheet,$row,$cell,$value) {
-		$formula = "oooc:=[.".substr($value, 1); //Skip the initial '='
+		$formula = "oooc:=[.".utf8_substr($value, 1); //Skip the initial '='
 		$formula = str_replace('*', ']*[.', $formula);
 		$formula = str_replace('+', ']+[.', $formula);
 		$formula = str_replace('/', ']/[.', $formula);
@@ -293,8 +293,8 @@ class ods {
 
 function parseOds($file) {
 	$tmp = get_tmp_dir();
-	copy($file,$tmp.'/'.basename($file));
-	$path = $tmp.'/'.basename($file);
+	copy($file,$tmp.'/'.utf8_basename($file));
+	$path = $tmp.'/'.utf8_basename($file);
 	$uid = uniqid();
 	mkdir($tmp.'/'.$uid);
 	if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) { // Check for windows systems
@@ -342,6 +342,7 @@ function saveOds($obj,$file,$convert=0) {
 	if($convert == 1) {
 		eyeConverter('convert', array($file, $file, 'MS Excel 97', 1));
 	}
+	vfs('delete',array($file));
 	vfs('realToVirtual', array($file));
 	ini_set('default_charset',$charset);
 }

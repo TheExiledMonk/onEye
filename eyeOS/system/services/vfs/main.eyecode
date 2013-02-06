@@ -22,6 +22,6 @@
 */
 
 $modulename = utf8_basename(VFS_MODULE);
-include(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/vfs/modules/'.$modulename.EYE_CODE_EXTENSION);
+include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/vfs/modules/'.$modulename.EYE_CODE_EXTENSION);
 
 ?>

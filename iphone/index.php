@@ -38,7 +38,7 @@ chdir('../'.REAL_EYE_ROOT);
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeString/main'.EYE_CODE_EXTENSION);
 call_user_func('lib_eyeString_start');
 //setting library loaded
-define('LIB_'.strtoupper('eyeString').'_LOADED',1);
+define('LIB_'.utf8_strtoupper('eyeString').'_LOADED',1);
 
 //Loading the Kernel
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/kernel'.EYE_CODE_EXTENSION);
@@ -104,7 +104,7 @@ if(!isset($_GET['action'])) {
 		}
 		require_once(IPHONE_PATH.'bottom.eyecode');
 	} else {
-		$action = basename($_GET['action']);
+		$action = utf8_basename($_GET['action']);
 		if (isset($_GET['noPropagate']) && $_GET['noPropagate']== 2) {
 			require_once(IPHONE_PATH.'top_back.eyecode');
 		}
@@ -113,7 +113,7 @@ if(!isset($_GET['action'])) {
 				require_once(IPHONE_PATH.'apps/'.$action.'/app.eyecode');
 				call_user_func($action.'_execute');
 			} else {
-				$func = basename($_GET['do']);
+				$func = utf8_basename($_GET['do']);
 				require_once(IPHONE_PATH.'apps/'.$action.'/events.eyecode');
 				if(function_exists($action.'_'.$func)) {
 					call_user_func($action.'_'.$func);

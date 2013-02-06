@@ -274,7 +274,7 @@ function eyeDialog_drawFolderNode($treeObject, $parentListNode, $relativePath) {
 					if (!$firstItemId) {
 						$firstItemId = 'item_'.$itemId;
 					}
-					$treeObject->addItem($parentListNode, 'item_'.$itemId, basename($filepath));
+					$treeObject->addItem($parentListNode, 'item_'.$itemId, utf8_basename($filepath));
 					$treeObject->addSubList('item_'.$itemId, 'list_'.$itemId);
 					eyeDialog_drawFolderNode($treeObject, 'list_'.$itemId, $filepath);
 				}
@@ -474,14 +474,14 @@ function eyeDialog_listDir($dir) {
 				$author = ' ';
 				$size = ' ';
 				$date = ' ';
-				$name = basename($file);
+				$name = utf8_basename($file);
 			}
-			elseif (ltrim(strrchr($file,'.'),'.') == EYEOS_LINK_EXT) {
+			elseif (utf8_ltrim(strrchr($file,'.'),'.') == EYEOS_LINK_EXT) {
 				$type = 'l';
 				$author = ' ';
 				$size = ' ';
 				$date = ' ';
-				$name = basename($file);
+				$name = utf8_basename($file);
 			}
 			else {
 				$type = '-';

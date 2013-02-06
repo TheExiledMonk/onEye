@@ -1,3 +1,4 @@
+/*jslint */
 /*
                                   ____   _____
                                  / __ \ / ____|
@@ -21,10 +22,10 @@
 */
 
 function eyeFTP_logConsole(pid, text_b64, maxDisplayedLines, type, debug) {
-	maxDisplayedLines = parseInt(maxDisplayedLines);
+	maxDisplayedLines = parseInt(maxDisplayedLines, 10);
 	maxDisplayedLines = (isNaN(maxDisplayedLines) || maxDisplayedLines < 1)? 100 : maxDisplayedLines;
 	var consoleObj = document.getElementById(pid+"_eyeFTP_log_CTNR");
-	if (consoleObj == null) {
+	if (!consoleObj) {
 		return;
 	}
 	
@@ -55,7 +56,7 @@ function eyeFTP_logConsole(pid, text_b64, maxDisplayedLines, type, debug) {
 
 function eyeFTP_clearConsole(pid) {
 	var consoleObj = document.getElementById(pid+"_eyeFTP_log_CTNR");
-	if (consoleObj == null) {
+	if (!consoleObj) {
 		return;
 	}
 	consoleObj.innerHTML = "";

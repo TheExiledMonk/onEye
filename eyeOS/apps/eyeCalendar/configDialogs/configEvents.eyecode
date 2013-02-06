@@ -347,6 +347,8 @@ function eyeCalendar_on_updateCalendars($params=""){
 		}
 	}
 	unset($params);
+	$nums = array();
+	$names = array();
 	foreach($paramsInfo as $key =>$info){
 		if($info['delete'] == 'true'){
 			$calednarsNum = reqLib('eyeCalendar','numOfCalendars');
@@ -447,9 +449,9 @@ function eyeCalendar_on_workViewSave($params=''){
 		}
 	}
 	
-	if($configDaySelect != 0 && $configDaySelect != 1){
+	/*if($configDaySelect != 0 && $configDaySelect != 1){
 		return false;
-	}
+	}*/
 		
 	$info['eyeCalendar'][0]['workStartDay'][0] = $workStartDay;
 	$info['eyeCalendar'][0]['workEndDay'][0] = $workEndDay;
@@ -508,9 +510,9 @@ function eyeCalendar_on_generalViewSave($params=''){
 	}
 	
 //Basic checks
-	if($configDaySelect != 0 && $configDaySelect != 1){
+	/*if($configDaySelect != 0 && $configDaySelect != 1){
 		return false;
-	}
+	}*/
 		
 	$info['eyeCalendar'][0]['generalStartDay'][0] = $workStartDay;
 	$info['eyeCalendar'][0]['generalEndDay'][0] = $workEndDay;

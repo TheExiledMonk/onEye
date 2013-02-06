@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function cleanTmp() {
@@ -36,8 +36,8 @@ function eyeFiles_openLocation($file) {
 		echo '<ul id="eyeFiles_'.md5($file).'" title="'.$show.'" selected="true">';
 		$path = 'index.php?action=eyeFiles&do=getIcon&icon=';
 		foreach($content as $value) {
-			$info = pathinfo($value);
-			$info = strtolower($info['extension']);
+			$info = utf8_pathinfo($value);
+			$info = utf8_strtolower($info['extension']);
 		
 			if(is_dir($value)) {
 				$icon = 'folder.png';
@@ -61,8 +61,8 @@ function eyeFiles_openLocation($file) {
 		}
 		echo '</ul>';
 	} else {
-		$info = pathinfo($file);
-		$info = strtolower($info['extension']);
+		$info = utf8_pathinfo($file);
+		$info = utf8_strtolower($info['extension']);
 		
 		if($info == 'txt') {
 			$fp = vfs('open',array($file,'r'));

@@ -37,13 +37,13 @@
 * @link       http://pear.php.net/package/System_SharedMemory
 */
 
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeIPC/modules/Common'.EYE_CODE_EXTENSION;
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeIPC/modules/Common' . EYE_CODE_EXTENSION; // eyeOS
 
-// class System_SharedMemory_Systemv
+// {{{ class System_SharedMemory_Systemv
 
 class System_SharedMemory_Systemv extends System_SharedMemory_Common
 {
-  
+    // {{{ properties
     /**
     * true if plugin was connected to backend
     *
@@ -61,7 +61,8 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
     * @access private
     */
     var $_h;
-  
+    // }}}
+    // {{{ constructor
 
     /**
      * Constructor. Init all variables.
@@ -72,6 +73,8 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
      */
     function System_SharedMemory_Systemv($options)
     {
+        $size = null;
+        $project = null;
         extract($this->_default($options, array
         (
             'size'    => false,
@@ -90,7 +93,9 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
 
        $this->_connection = true;
     }
-  
+    // }}}
+    // {{{ isConnected()
+
     /**
      * returns true if plugin was 
      * successfully connected to backend
@@ -102,7 +107,9 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
     {
         return $this->_connected;
     }
- 
+    // }}}
+    // {{{ get()
+
     /**
      * returns value of variable in shared mem
      *
@@ -115,6 +122,8 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
     {
         return shm_get_var($this->_h, $this->_s2i($name));
     }
+    // }}}
+    // {{{ set()
 
     /**
      * set value of variable in shared mem
@@ -129,6 +138,8 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
     {
         return shm_put_var($this->_h, $this->_s2i($name), $value);
     }
+    // }}}
+    // {{{ rm()
 
     /**
      * remove variable from memory
@@ -142,25 +153,24 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
     {
         return shm_remove_var($this->_h, $this->_s2i($name));
     }
+    // }}}
+    // {{{ isVar()
 
-	/* returns value of variable in shared mem
+    /**
+     * check if name already exists
      *
-     * @param int $name name of variable
+     * @param string $name name of the variable
      *
-     * @return mixed value of the variable
+     * @return bool true on success
      * @access public
      */
     function isVar($name)
     {
-        $var =  shm_get_var($this->_h, $this->_s2i($name));
-        if($var == false){
-        	return false;
-        }else{
-        	return true;
-        }
+        return (shm_get_var($this->_h, $this->_s2i($name)) != false);
     }
-    
-    
+    // }}}
+    // {{{ _ftok()
+
     /**
      * ftok emulation for Windows
      *
@@ -178,6 +188,8 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
         return sprintf("%u", (($s['ino'] & 0xffff) | (($s['dev'] & 0xff) << 16) |
         (($project & 0xff) << 24)));
     }
+    // }}}
+    // {{{ _s2i()
 
     /**
      * convert string to int
@@ -188,7 +200,9 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
      */
     function _s2i($name)
     {
-        return unpack('N', utf8_str_pad($name, 4, "\0", utf8_str_pad_LEFT));
+        return unpack('N', utf8_str_pad($name, 4, "\0", STR_PAD_LEFT));
     }
+    // }}}
 }
+// }}}
 ?>

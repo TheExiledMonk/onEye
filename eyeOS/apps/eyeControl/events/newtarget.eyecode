@@ -299,7 +299,7 @@ function eyeControl_on_yDelete1($params=""){
 							eyeXML('setXMLfile', array($file,$config));
 							//$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
 							$config = eyeXML('getXMLfile', array($file));
-							$trimd=trim($config['GACL'][0]['ACL'][$x]['target'][$y]['params'][0]);
+							$trimd=utf8_trim($config['GACL'][0]['ACL'][$x]['target'][$y]['params'][0]);
 							if (empty($trimd)){
 								unset($config['GACL'][0]['ACL'][$x]['target'][$y]['params']);
 								$config['GACL'][0]['ACL'][$x]['target'][$y] = $Params;

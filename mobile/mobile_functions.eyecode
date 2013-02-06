@@ -36,8 +36,8 @@ if(isset($_REQUEST['dirname'])) {
 	$file = $_REQUEST['download'];
 	$myName = vfs('getRealName',array($dir.$file));
 	if(vfs('fileExists', array($dir.$file))) {
-		$extension = pathinfo($dir.$file);
-		$extension = strtolower($extension['extension']);
+		$extension = utf8_pathinfo($dir.$file);
+		$extension = utf8_strtolower($extension['extension']);
 		switch ($extension) {
 			case "jpg": case"jpeg":
 				header('Content-Type: image/jpeg');

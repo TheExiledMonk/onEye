@@ -58,7 +58,7 @@ function eyeHelp_on_goto($params=null){
 	global $currentUser;
 	
 	$folder = eyeHelp_getFolder();
-	$open = substr($params['itemName'][0],5);
+	$open = utf8_substr($params['itemName'][0],5);
 	if($params[0]){
 		$open = str_replace('..','.',$params[0]);
 	}
@@ -67,7 +67,7 @@ function eyeHelp_on_goto($params=null){
 
 	if($open && $stop!==TRUE){
 		$myDir = $open;
-		if($myDir{strlen($myDir)-1}!='/')$myDir = $myDir.'/';
+		if($myDir{utf8_strlen($myDir)-1}!='/')$myDir = $myDir.'/';
 
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
@@ -92,14 +92,14 @@ function eyeHelp_on_goto($params=null){
 		}
 		$currentUser = $oldUser;
 
-		if($info['title-'.$_SESSION['lang']][0]!='')$title = trim($info['title-'.$_SESSION['lang']][0]);
-			else $title = trim($info['title'][0]);
-		$myDir2 = substr($myDir,0,strlen($myDir)-1);
+		if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
+			else $title = utf8_trim($info['title'][0]);
+		$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
 		if($title=="")$title = utf8_basename($myDir2);
 	
 		eyeX('runjs',array('js'=>'document.getElementById("'.$myPid.'_label1").innerHTML="<h1>'.str_replace('"','\\"',$title).'</h1><hr />";'));
 		
-		if(trim($info['HTML-only'][0])!=1)$IndexContent = eyeHelp_BBCode($IndexContent);
+		if(utf8_trim($info['HTML-only'][0])!=1)$IndexContent = eyeHelp_BBCode($IndexContent);
 		$IndexContent_array = explode('<br />[split]<br />',$IndexContent);
 		
 		foreach($IndexContent_array as $value){
@@ -109,7 +109,7 @@ function eyeHelp_on_goto($params=null){
 }
 
 function eyeHelp_on_open($param){
-	if(strpos($param,'..'))$getfolder_param['root']=1;
+	if(utf8_strpos($param,'..'))$getfolder_param['root']=1;
 	$goto = array(eyeHelp_getFolder($getfolder_param).$param);
 	eyeHelp_on_goto($goto);
 }
@@ -123,6 +123,7 @@ function eyeHelp_on_pref() {
 			'btn1_capt' => 'Submit',
 			'btn1_name' => 'submit',
 			'content' => 'User to contact to ask for help:',
+			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/eyeMessages.png',
 			'textbox_name' => 'eyeHelp_contact_box',
 			'textbox_text' => $xml['eyeHelp'][0]['contact'][0],
 			'textbox_event' => 'submit',
@@ -268,7 +269,7 @@ function eyeHelp_on_Restart(){
 
 function eyeHelp_on_Close(){
 	global $myPid;
-	eyeSessions('delVar',array('eyeHelp_'.$myPid.'_app',$OnlyRunApp));
+	eyeSessions('delVar',array('eyeHelp_'.$myPid.'_app'));
 	proc('end');
 }
 

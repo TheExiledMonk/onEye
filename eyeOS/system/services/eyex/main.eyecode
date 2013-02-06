@@ -209,6 +209,7 @@ function service_eyex_setWallpaper($params) {
 	$wallp = $params['path'];
 	$repeat = $params['repeat'];
 	$center = $params['center'];
+	$color = $params['color'];
 	
 	if(!isset($repeat)) {
 		$repeat=0;
@@ -222,7 +223,8 @@ function service_eyex_setWallpaper($params) {
 		'task' => array('setWallpaper'),
 		'url' => array($wallp),
 		'repeat' => array($repeat),
-		'center' => array($center)
+		'center' => array($center),
+		'color' => array($color)
 	);
 	
 	$task = array(
@@ -275,6 +277,7 @@ function service_eyex_getThemeImage($params) {
 		$path = $themes_path . '/' . eyeSessions('getVar',array('usertheme')) . '/' . utf8_substr($url,utf8_strlen($themes_path . '/default/'));
 		$path = eyex_getExistingPath($path);
 		if (!$path) {
+			$alias = array();
 			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/image_alias' . EYE_CODE_EXTENSION;
 			$temp = utf8_substr($url,utf8_strlen($themes_path . '/default/'));
 			if ($alias[0][$temp]) {
@@ -304,6 +307,7 @@ function service_eyex_getThemeImage($params) {
 	} else {
 		$path = eyex_getExistingPath($path);
 		if (!$path) {
+			$alias = array();
 			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/image_alias' . EYE_CODE_EXTENSION;
 			$path = utf8_substr($url,utf8_strlen(EYE_ROOT . '/' . EXTERN_DIR . '/'));
 			if ($alias[1][$path]) {
@@ -577,7 +581,7 @@ function service_eyex_removeWidget($params) {
 /**
 * Displays a dialog to the user with the specified message.
 * 
-* @param $params array(content,[tokens],[type],[title],[win_name],[win_style],[win_removepid],[btn1_name],[btn1_capt],[btn2_name],[btn2_capt],[btn3_name],[btn3_capt],[hidden_name],[hidden_text],[hidden1_name],[hidden1_text],[hidden2_name],[hidden2_text],[hidden3_name],[hidden3_text],[father],[img],[textbox_name],[textbox_text],[textbox_password],[textbox_events])
+* @param $params array(content,[tokens],[type],[title],[win_name],[win_style],[win_removepid],[btn1_name],[btn1_capt],[btn2_name],[btn2_capt],[btn3_name],[btn3_capt],[hidden_name],[hidden_text],[hidden1_name],[hidden1_text],[hidden2_name],[hidden2_text],[hidden3_name],[hidden3_text],[father],[img],[textbox_name],[textbox_text],[textbox_password],[textbox_event],[select_name],[select_event])
 * @param $content String containing the message to be displayed.
 * @param $tokens Indexed array containing the value of the tokens appearing
 *	on 'message'.  Each token in the 'content' parameter is
@@ -620,15 +624,20 @@ function service_eyex_removeWidget($params) {
 * @param $textbox_password Specifies whether the text in the Textbox is shown as plain
 *	text (0) or masked with asterisks as a password field (1).
 *	Default value is 0.
-* @param $textbox_events Name of the signal sent to the system in case the user
+* @param $textbox_event Name of the signal sent to the system in case the user
 *	presses the enter key in the Textbox.
-* @return If the function succeeds, it does not return any value.
+* @param $select_name If specified, creates a Select widget to select information in the
+*	dialog. The Select widget will use this parameter as its name.
+* @param $select_event Name of the signal sent to the system in case the user
+*	presses the enter key in the Select widget.
+* @return If the function succeeds, it returns the created Textbox, Select widget or true.
 *	Otherwise, if some parameter is missing, returns false and
 *	sets the error code to the INVALID_PARAMS code.
 * @exception INCORRECT_PARAMS Some parameter is not specified.
 * @date 2009/05/09
 */
 function service_eyex_messageBox($params = '') {
+	global $checknum;
 	global $myPid;
 	if (!isset($params['content'])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
@@ -652,6 +661,7 @@ function service_eyex_messageBox($params = '') {
 		if (!isset($params['img'])) {
 			$width -= 60;
 		}
+		$myWidget = true;
 		$myWindow = new Window(array(
 			'cent' => 1,
 			'father' => $params['father'],
@@ -701,7 +711,7 @@ function service_eyex_messageBox($params = '') {
 		));
 		
 		if ($params['textbox_name']) {
-			$myTextbox = new Textbox(array(
+			$myWidget = new Textbox(array(
 				'father' => $params['win_name'] . '_Content',
 				'horiz' => 1,
 				'name' => $params['textbox_name'],
@@ -711,10 +721,24 @@ function service_eyex_messageBox($params = '') {
 				'x' => 20,
 				'y' => 55
 			));
-			$myTextbox->show();
-			$myTextbox->focus();
+			$myWidget->show();
+			$myWidget->focus();
 			if (isset($params['textbox_event'])) {
-				$myTextbox->addEnterEventMsg($params['textbox_event']);
+				$myWidget->addEnterEventMsg($params['textbox_event']);
+			}
+		} else if ($params['select_name']) {
+			$myWidget = new Select(array(
+				'father' => $params['win_name'] . '_Content',
+				'horiz' => 1,
+				'name' => $params['select_name'],
+				'width' => 275,
+				'x' => 20,
+				'y' => 55
+			));
+			$myWidget->show();
+			$myWidget->focus();
+			if (isset($params['select_event'])) {
+				$myWidget->addEnterEventMsg($params['select_event']);
 			}
 		}
 		
@@ -745,7 +769,7 @@ function service_eyex_messageBox($params = '') {
 						'signal' => $button[2],
 						'y' => 90
 					));
-					$myButton->addFriend($myTextbox);
+					$myButton->addFriend($myWidget);
 					$myButton->show();
 					$buttons .= '"' . $button[0] . '",';
 				}
@@ -786,6 +810,7 @@ function service_eyex_messageBox($params = '') {
 				}
 			}
 		}
+		return $myWidget;
 	} else {
 		if ($params['type'] != 2) {
 			$params['type'] = 1;

@@ -1,3 +1,7 @@
+* {
+	direction: ltr;
+}
+
 .activeWindow, .eyeWindowTitle, .inactiveWindow {
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
@@ -12,11 +16,31 @@
 	top: 0;
 }
 
-.activeWindow_border_left {}
-.activeWindow_border_right {}
+.activeWindow_center, .inactiveWindow_center, .eyeWindowTitle_center {
+	font-size: 1px;
+	height: 2px;
+	top: 0;
+	width: 100%;
+	z-index: 2;
+}
+
+.activeWindow_border_left, .activeWindow_border_right, .inactiveWindow_border_left, .inactiveWindow_border_right, .eyeWindowTitle_border_left, .eyeWindowTitle_border_right {
+	height: 3px;
+	top: 0;
+	width: 3px;
+	z-index: 3;
+}
+
+.activeWindow_border_left, .inactiveWindow_border_left, .eyeWindowTitle_border_left {
+	left: 0;
+}
+
+.activeWindow_border_right, .inactiveWindow_border_right, .eyeWindowTitle_border_right {
+	right: 0;
+}
 
 #background {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/wallpapers/default.jpg) no-repeat;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/wallpapers/default.jpg) no-repeat top center;
 	height: 100%;
 	min-height: 400px;
 	min-width: 500px;
@@ -27,6 +51,7 @@
 .blockbar {
 	background-color: #eeeeee;
 	border-bottom: 2px ridge #ffffff;
+	font-size: 20px;
 	height: 57px;
 	overflow: hidden;
 	width: 100%;
@@ -37,19 +62,19 @@
 .blockbarItem, .blockbarItem_right {
 	border: 1px solid #eeeeee;
 	cursor: pointer;
-	margin-top: 6px;
+	margin-top: 4px;
 	padding: 2px 7px 5px;
 	text-align: center;
 	width: auto;
 }
 
 .blockbarItem, .blockbarItem:hover, .blockbarItemPress {
-	margin-left: 5px;
+	margin-left: 3px;
 	float: left;
 }
 
 .blockbarItem_right, .blockbarItem_right:hover, .blockbarItemPress_right {
-	margin-right: 5px;
+	margin-right: 3px;
 	float: right;
 }
 
@@ -64,8 +89,7 @@
 	border-style: solid;
 	border-width: 1px;
 	cursor: pointer;
-	font-size: 20px;
-	margin-top: 6px;
+	margin-top: 4px;
 	padding: 2px 7px 5px;
 	text-align: center;
 	width: auto;
@@ -77,7 +101,7 @@
 	border-radius: 5px;
 	border-style: solid;
 	border-width: 2px 2px 1px 2px;
-	margin-top: 5px;
+	margin-top: 3px;
 	padding: 2px 6px 5px;
 }
 
@@ -751,12 +775,36 @@
 
 .eyeTextbox:hover {}
 
+.eyeWindowBottom_center {
+	bottom: 0;
+	font-size: 1px;
+	height: 2px;
+	width: 100%;
+	z-index: 2;
+}
+
+.eyeWindowBottom_left, .eyeWindowBottom_right {
+	bottom: 0;
+	height: 3px;
+	width: 3px;
+	z-index: 3;
+}
+
+.eyeWindowBottom_left {
+	left: 0;
+}
+
+.eyeWindowBottom_right {
+	right: 0;
+}
+
 .eyeWindowCloseButton, .eyeWindowMaxButton, .eyeWindowMinimizeButton {
 	cursor: pointer;
 	height: 22px;
 	position: absolute;
 	top: 1px;
 	width: 23px;
+	z-index: 4;
 }
 
 .eyeWindowCloseButton {
@@ -792,6 +840,20 @@
 	position: absolute;
 	right: 0;
 	top: 23px;
+}
+
+.eyeWindowLeft, .eyeWindowRight {
+	height: 100%;
+	width: 2px;
+	z-index: 1;
+}
+
+.eyeWindowLeft {
+	left: 0;
+}
+
+.eyeWindowRight {
+	right: 0;
 }
 
 .eyeWindowMain {
@@ -834,24 +896,21 @@
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min_x.png) no-repeat;
 }
 
-.eyeWindowOnBar_Container {
-	bottom: 0;
-	left: 13px;
-	right: 0;
-	position: absolute;
-	z-index: 10000;
+.eyeWindowOnBar_Container, .eyeWindowOnBar_text {
+	display: inline-block;
 }
 
 .eyeWindowOnBar_Off, .eyeWindowOnBar_On {
-	color: #000000;
 	cursor: pointer;
-	height: 28px;
-	margin-right:3px;
+	display: inline-block;
+	height: 21px;
+	margin-left: 3px;
 	overflow: hidden;
-	position: absolute;
-	top: -29px;
-	width: 157px;
-	z-index: 20;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 7px;
+	white-space: nowrap;
+	width: 137px;
 }
 
 .eyeWindowOnBar_Off{
@@ -860,14 +919,6 @@
 
 .eyeWindowOnBar_On {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_on.png) top center no-repeat;
-}
-
-.eyeWindowOnBar_text {
-	font-size:11px;
-	margin-left: 5px;
-	margin-right: 5px;
-	margin-top: 6px;
-	white-space: nowrap;
 }
 
 .eyeWindowResizeButton {
@@ -881,9 +932,6 @@
 }
 
 .eyeWindowTitle { /* look at .activeWindow */ }
-.eyeWindowTitle_center {}
-.eyeWindowTitle_border_left {}
-.eyeWindowTitle_border_right {}
 
 .eyeWindowTitle_text {
 	color: #ffffff;
@@ -900,12 +948,9 @@
 }
 
 .inactiveWindow{
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png)repeat-x;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png) repeat-x;
 	border: 1px solid #acacac;
 }
-
-.inactiveWindow_border_left {}
-.inactiveWindow_border_right {}
 
 .menuBar_text {
 	cursor: pointer;
@@ -913,10 +958,11 @@
 }
 
 .minIconLeft, .minIconRight {
-	bottom: 3px;
+	bottom: 0;
 	cursor: pointer;
 	display: none;
-	height: 18px;
+	height: 28px;
+	margin: 0 2px;
 	overflow: hidden;
 	position: absolute;
 	width: 12px;
@@ -925,34 +971,37 @@
 
 .minIconLeft {
 	left: 0;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/left.png) center no-repeat;
 }
 
 .minIconRight {
 	right: 128px;
-}
-
-.minimizedApps, .minimizedAppsRight {
-	bottom: 0px;
-	height: 31px;
-	overflow: hidden;
-	position: absolute;
-	z-index: 10000;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/right.png) center no-repeat;
 }
 
 .minimizedApps {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_bg.png)repeat-x;
-	left: 0px;
-	right: 142px;
+	bottom: 0;
+	color: #000000;
+	font-size: 11px;
+	left: 0;
+	overflow: hidden;
+	position: absolute;
+	right: 144px;
+	z-index: 10000;
 }
 
 .minimizedAppsLeft {
-	right: 0px;
+	right: 0;
 }
 
 .minimizedAppsRight {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_bg.png) repeat-x;
-	right: 127px;
-	width: 16px;
+	bottom: 0;
+	height: 31px;
+	left: 0;
+	position: absolute;
+	right: 0;
+	z-index: 9999;
 }
 
 .multipleSelect {

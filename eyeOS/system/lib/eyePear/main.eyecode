@@ -41,7 +41,7 @@
  * @since      File available since Release 0.1
  */
 
-function lib_eyePear_loadPear($param=null) {
+function lib_eyePear_loadPear($param = '') {
 	/**#@+
 	 * ERROR constants
 	 */
@@ -371,12 +371,12 @@ class PEAR
                 if (is_callable($options)) {
                     $setoptions = $options;
                 } else {
-                    // trigger_error("invalid error callback", E_USER_WARNING); // eyeOS
+                    trigger_error("invalid error callback", E_USER_WARNING);
                 }
                 break;
 
             default:
-                // trigger_error("invalid error mode", E_USER_WARNING); // eyeOS
+                trigger_error("invalid error mode", E_USER_WARNING);
                 break;
         }
     }
@@ -577,7 +577,7 @@ class PEAR
         } else {
             $ec = 'PEAR_Error';
         }
-// eyeOS
+
         if ($skipmsg) {
             $a = new $ec($code, $mode, $options, $userinfo);
         } else {
@@ -634,12 +634,12 @@ class PEAR
                 if (is_callable($options)) {
                     $def_options = $options;
                 } else {
-                    // trigger_error("invalid error callback", E_USER_WARNING); // eyeOS
+                    trigger_error("invalid error callback", E_USER_WARNING);
                 }
                 break;
 
             default:
-                // trigger_error("invalid error mode", E_USER_WARNING); // eyeOS
+                trigger_error("invalid error mode", E_USER_WARNING);
                 break;
         }
         $stack[] = array($mode, $options);
@@ -671,12 +671,12 @@ class PEAR
                 if (is_callable($options)) {
                     $setoptions = $options;
                 } else {
-                    // trigger_error("invalid error callback", E_USER_WARNING); // eyeOS
+                    trigger_error("invalid error callback", E_USER_WARNING);
                 }
                 break;
 
             default:
-                // trigger_error("invalid error mode", E_USER_WARNING); // eyeOS
+                trigger_error("invalid error mode", E_USER_WARNING);
                 break;
         }
         return true;
@@ -780,12 +780,12 @@ class PEAR
     // }}}
 }
 
-if (PEAR_ZE2) {
+if (PEAR_ZE2) { // eyeOS
     /**
      * This is only meant for PHP 5 to get rid of certain strict warning
      * that doesn't get hidden since it's in the shutdown function
      */
-    class PEAR5 // eyeOS
+    class PEAR5
     {
         /**
         * If you have a class that's mostly/entirely static, and you need static
@@ -954,7 +954,7 @@ class PEAR_Error
             printf($format, $this->getMessage());
         }
         if ($this->mode & PEAR_ERROR_TRIGGER) {
-            // trigger_error($this->getMessage(), $this->level); // eyeOS
+            trigger_error($this->getMessage(), $this->level);
         }
         if ($this->mode & PEAR_ERROR_DIE) {
             $msg = $this->getMessage();
@@ -974,7 +974,7 @@ class PEAR_Error
             }
         }
         if ($this->mode & PEAR_ERROR_EXCEPTION) {
-            // trigger_error("PEAR_ERROR_EXCEPTION is obsolete, use class PEAR_Exception for exceptions", E_USER_WARNING); // eyeOS
+            trigger_error("PEAR_ERROR_EXCEPTION is obsolete, use class PEAR_Exception for exceptions", E_USER_WARNING);
             // eval('$e = new Exception($this->message, $this->code);throw($e);'); // eyeOS
         }
     }

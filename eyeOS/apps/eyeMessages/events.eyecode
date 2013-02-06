@@ -256,7 +256,7 @@ function eyeMessages_on_empty($params=null) {
 		'btn2_capt' => 'Cancel',
 		'btn2_name' => 'emptyNo',
 		'father' => 'eyeApps',
-		'img' => '?'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png'
 	));
 }
 
@@ -328,7 +328,7 @@ function eyeMessages_on_gotosection($params=null) {
 		$list = reqLib('eyeMessages', 'getRead');
 		if(is_array($list)) {
 			foreach($list as $value) {
-				$myDate = date('G:i m-d-Y',$value['date']);
+				$myDate = date('m-d-Y G:i',$value['date']);
 				$GLOBALS['table_1']->addRow(array($value['author'],$value['subject'],$myDate,$value['hash']));
 			}
 		}
@@ -336,7 +336,7 @@ function eyeMessages_on_gotosection($params=null) {
 		$list = reqLib('eyeMessages', 'getUnread');
 		if(is_array($list)) {
 			foreach($list as $value) {
-				$myDate = date('G:i m-d-Y',$value['date']);
+				$myDate = date('m-d-Y G:i',$value['date']);
 				$GLOBALS['table_1']->addRow(array($value['author'],$value['subject'],$myDate,$value['hash']));
 			}
 		}
@@ -345,7 +345,7 @@ function eyeMessages_on_gotosection($params=null) {
 
 		if(is_array($list)) {
 			foreach($list as $value) {
-				$myDate = date('G:i m-d-Y',$value['date']);
+				$myDate = date('m-d-Y G:i',$value['date']);
 				$GLOBALS['table_1']->addRow(array($value['author'],$value['subject'],$myDate,$value['hash']));
 			}
 		}
@@ -353,7 +353,7 @@ function eyeMessages_on_gotosection($params=null) {
 		$list = reqLib('eyeMessages', 'getSent');
 		if(is_array($list)) {
 			foreach($list as $value) {
-				$myDate = date('G:i m-d-Y', $value['date']);
+				$myDate = date('m-d-Y G:i', $value['date']);
 				$GLOBALS['table_1']->addRow(array($value['to'],$value['subject'],$myDate,$value['hash']));
 			}
 		}
@@ -361,7 +361,7 @@ function eyeMessages_on_gotosection($params=null) {
 		$list = reqLib('eyeMessages', 'getTrash');
 		if(is_array($list)) {
 			foreach($list as $value) {
-				$myDate = date('G:i m-d-Y',$value['date']);
+				$myDate = date('m-d-Y G:i',$value['date']);
 				$GLOBALS['table_1']->addRow(array($value['author'],$value['subject'],$myDate,$value['hash']));
 			}
 		}

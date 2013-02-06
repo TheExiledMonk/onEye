@@ -12,7 +12,7 @@
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
@@ -76,8 +76,12 @@ function eyeMail_on_eyeMail_addButton($params=null) {
 }
 
 function eyeMail_on_cancelAccButton($params=null) {
-	$GLOBALS['eyeMail_createAccountWND']->close();
-	$GLOBALS['eyeMail_preferencesWND']->unhide();
+	if (is_object($GLOBALS['eyeMail_createAccountWND'])) {
+		$GLOBALS['eyeMail_createAccountWND']->close();
+	}
+	if (is_object($GLOBALS['eyeMail_preferencesWND'])) {
+		$GLOBALS['eyeMail_preferencesWND']->unhide();
+	}
 }
 
 function eyeMail_on_backAccButton($params=null) {
@@ -138,6 +142,7 @@ function eyeMail_on_resizeSplit($params=null) {
 	$last = intval($last);
 	$GLOBALS['mailTable']->setHeight($first);
 	$GLOBALS['eyeMail_mailBody']->setHeight($last-95);
+	$GLOBALS['splitter']->setValue($first);
 }
 
 function eyeMail_on_resizeSplitCompose($params=null) {
@@ -247,6 +252,7 @@ function eyeMail_on_openMail($params=null) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 	if($GLOBALS['location']->text == 'inbox') {
 		$sqlGetView = 'SELECT * FROM mails WHERE uid = '.intval($uid);
@@ -290,6 +296,7 @@ function eyeMail_on_openMailBig($params) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 	if($GLOBALS['location']->text == 'inbox') {
 		$sqlGetView = 'SELECT * FROM mails WHERE uid = '.intval($uid);
@@ -386,6 +393,7 @@ function eyeMail_on_doDelete($params) {
 	}
 	$userconfig = $GLOBALS['defaultMail']->text;
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 	if($GLOBALS['location']->text == 'inbox') {
 		$sqlGetView = 'DELETE FROM mails WHERE uid = '.intval($uid);
@@ -488,6 +496,7 @@ function eyeMail_on_reply($params) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 	
 	$sqlGetView = 'SELECT * FROM mails WHERE uid = '.intval($uid);
@@ -496,12 +505,12 @@ function eyeMail_on_reply($params) {
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
 	
-	if(substr($result[0]['subject'],0,3) != 'Re:') {
+	if(utf8_substr($result[0]['subject'],0,3) != 'Re:') {
 		$result[0]['subject'] = 'Re: '.$result[0]['subject'];
 	}
 	$body .= $result[0]['sender']." wrote:\n";
 	$body .= ">";
-	$body .= str_replace("\n",">\n",$GLOBALS['eyeMail_mailBody']->text);
+	$body .= str_replace("\n","\n>",$GLOBALS['eyeMail_mailBody']->text);
 	$body .= "\n\n";
 	eyeMail_compose($result[0]['sender'],$result[0]['subject'],$body);
 }
@@ -522,6 +531,7 @@ function eyeMail_on_forward($params) {
 	$userconfig = $GLOBALS['defaultMail']->text;
 
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
+	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
 	
 	$sqlGetView = 'SELECT * FROM mails WHERE uid = '.intval($uid);
@@ -530,7 +540,7 @@ function eyeMail_on_forward($params) {
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
 	
-	if(substr($result[0]['subject'],0,4) != 'Fwd:') {
+	if(utf8_substr($result[0]['subject'],0,4) != 'Fwd:') {
 		$result[0]['subject'] = 'Fwd: '.$result[0]['subject'];
 	}
 	$body .= "\n\n\n\n------ Forwarded Message ---------\n";

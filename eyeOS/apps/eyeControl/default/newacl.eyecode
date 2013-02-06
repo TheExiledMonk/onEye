@@ -88,7 +88,7 @@ $mySelect = new Select(array(
 $mySelect->show();
 $mySelect->addOption('---',1,1);
 $mySelect->addOption('extern',2);
-$mySelect->addOption('nmap',3);
+$mySelect->addOption('mmap',3);
 $mySelect->addOption('proc',4);
 $mySelect->addOption('um',5);
 $mySelect->addOption('vfs',6); 

@@ -39,6 +39,7 @@
 
 class System_SharedMemory_Common
 {
+    // {{{ isConnected()
 
    /**
     * returns true if plugin was 
@@ -52,6 +53,9 @@ class System_SharedMemory_Common
         return true;
     }
 
+    // }}}
+    // {{{ engineName()
+
     /**
      * returns name of current engine
      *
@@ -62,6 +66,9 @@ class System_SharedMemory_Common
     {
         return utf8_strtolower(utf8_substr(utf8_basename(__FILE__), 0, -4));
     }
+
+    // }}}
+    // {{{ _default()
 
     /**
      * fill non-set properties by def values
@@ -82,5 +89,7 @@ class System_SharedMemory_Common
 
         return $options;
     }
+    // }}}
 }
+// }}}
 ?>

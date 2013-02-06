@@ -25,6 +25,7 @@ function eyeCalendar_run($params = null)
 {
 	global $checknum;
 	global $myPid;
+	global $procInfo;
 	$processTable = service('proc','getProcessTable');
 	$count = 0;
 	foreach($processTable as $process){

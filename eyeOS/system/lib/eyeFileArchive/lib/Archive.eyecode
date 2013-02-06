@@ -27,10 +27,15 @@
  * @author     Vincent Lascaux <vincentlascaux@php.net>
  * @copyright  1997-2005 The PHP Group
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL
- * @version    CVS: $Id: Archive.php,v 1.85 2005/08/16 08:48:59 vincentlascaux Exp $
+ * @version    CVS: $Id: Archive.php,v 1.90 2008/05/28 19:58:07 cbrunet Exp $
  * @link       http://pear.php.net/package/File_Archive
  */
 
+/**
+ * To have access to PEAR::isError and PEAR::raiseError
+ * We should probably use lazy include and remove this inclusion...
+ */
+// require_once "PEAR.php"; // eyeOS
 
 function File_Archive_cleanCache($file, $group)
 {
@@ -65,8 +70,7 @@ class File_Archive
             'cache' => null,
             'appendRemoveDuplicates' => false,
             'blockSize' => 65536,
-            'cacheCondition' => false,
-            'eqTypes'=>null
+            'cacheCondition' => false
         );
         return $container[$name];
     }
@@ -266,12 +270,11 @@ class File_Archive
      */
     function _readSource(&$toConvert, $URL, &$reachable, &$baseDir, $symbolic = null,
                   $uncompression = 0, $directoryDepth = -1)
-    {            	
-    	$source =& File_Archive::_convertToReader($toConvert);
+    {
+        $source =& File_Archive::_convertToReader($toConvert);
         if (PEAR::isError($source)) {
             return $source;
         }
-        
         if (is_array($URL)) {
             $converted = array();
             foreach($URL as $key => $foo) {
@@ -289,7 +292,7 @@ class File_Archive
             $uncompressionLevel = $uncompression;
         }
 
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader'.EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader' . EYE_CODE_EXTENSION; // eyeOS
         $std = File_Archive_Reader::getStandardURL($URL);
 
         //Modify the symbolic name if necessary
@@ -318,21 +321,21 @@ class File_Archive
                 array('\*', '\?'),
                 array('[^/]*', '[^/]'),
                 preg_quote($lastFile)
-         	);
+            );
             $result = File_Archive::_readSource($source, $baseFile,
                                                 $reachable, $baseDir, null, 0, -1);
             return File_Archive::filter(
                     File_Archive::predEreg('^'.$regexp.'$'),
                     $result
                    );
-        }		
+        }
+
         //If the URL can be interpreted as a directory, and we are reading from the file system
         if ((empty($URL) || is_dir($URL)) && $source === null) {
-			require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/Directory'.EYE_CODE_EXTENSION;
-			require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/ChangeName'.EYE_CODE_EXTENSION;	
-			
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Directory' . EYE_CODE_EXTENSION; // eyeOS
+
             if ($uncompressionLevel != 0) {
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Uncompress".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Uncompress' . EYE_CODE_EXTENSION; // eyeOS
                 $result = new File_Archive_Reader_Uncompress(
                     new File_Archive_Reader_Directory($std, '', $directoryDepth),
                     $uncompressionLevel
@@ -342,8 +345,8 @@ class File_Archive
             }
 
             if ($directoryDepth >= 0) {
-                require_once 'File/Archive/Reader/Filter'.EYE_CODE_EXTENSION;
-                require_once 'File/Archive/Predicate/MaxDepth'.EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Filter' . EYE_CODE_EXTENSION; // eyeOS
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/MaxDepth' . EYE_CODE_EXTENSION; // eyeOS
 
                 $tmp =& File_Archive::filter(
                     new File_Archive_Predicate_MaxDepth($directoryDepth),
@@ -356,7 +359,8 @@ class File_Archive
                 if ($symbolic === null) {
                     $realSymbolic = '';
                 }
-                $tmp =& new File_Archive_Reader_AddBaseName(
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/ChangeName/AddDirectory' . EYE_CODE_EXTENSION; // eyeOS
+                $tmp =& new File_Archive_Reader_ChangeName_AddDirectory(
                     $realSymbolic,
                     $result
                 );
@@ -366,13 +370,13 @@ class File_Archive
 
         //If the URL can be interpreted as a file, and we are reading from the file system
         } else if (is_file($URL) && substr($URL, -1)!='/' && $source === null) {
-            require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/File'.EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/File' . EYE_CODE_EXTENSION; // eyeOS
             $result = new File_Archive_Reader_File($URL, $realSymbolic);
-			
+
         //Else, we will have to build a complex reader
         } else {
-            EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."eyeFileArchive/lib/Archive/Reader/File".EYE_CODE_EXTENSION;
-			
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/File' . EYE_CODE_EXTENSION; // eyeOS
+
             $realPath = $std;
 
             // Try to find a file with a known extension in the path (
@@ -394,7 +398,7 @@ class File_Archive
                 $extension = '';
                 if ($dotPos !== false) {
                     $extension = substr($file, $dotPos+1);
-                }                
+                }
             } while ($pos < strlen($realPath) &&
                 (!File_Archive::isKnownExtension($extension) ||
                  (is_dir($file) && $source==null)));
@@ -404,16 +408,15 @@ class File_Archive
             //If we are reading from the file system
             if ($source === null) {
                 //Create a file reader
-               require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."//eyeFileArchive/lib/Archive/Reader/File".EYE_CODE_EXTENSION;
                 $result = new File_Archive_Reader_File($file);
             } else {
                 //Select in the source the file $file
 
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Select".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Select' . EYE_CODE_EXTENSION; // eyeOS
                 $result = new File_Archive_Reader_Select($file, $source);
             }
 
-            require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Uncompress".EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Uncompress' . EYE_CODE_EXTENSION; // eyeOS
             $tmp = new File_Archive_Reader_Uncompress($result, $uncompressionLevel);
             unset($result);
             $result = $tmp;
@@ -430,7 +433,8 @@ class File_Archive
 
             if ($directoryDepth >= 0) {
                 //Limit the maximum depth if necessary
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/MaxDepth".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Filter' . EYE_CODE_EXTENSION; // eyeOS
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/MaxDepth' . EYE_CODE_EXTENSION; // eyeOS
 
                 $tmp = new File_Archive_Reader_Filter(
                     new File_Archive_Predicate(
@@ -444,10 +448,10 @@ class File_Archive
             }
 
             if ($std != $realSymbolic) {
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/ChangeName".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/ChangeName/Directory' . EYE_CODE_EXTENSION; // eyeOS
 
                 //Change the base name to the symbolic one if necessary
-                $tmp = new File_Archive_Reader_ChangeBaseName(
+                $tmp = new File_Archive_Reader_ChangeName_Directory(
                     $std,
                     $realSymbolic,
                     $result
@@ -524,7 +528,7 @@ class File_Archive
             return PEAR::raiseError("The file is not an uploaded file");
         }
 
-        EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/File".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/File' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Reader_File(
                     $_FILES[$name]['tmp_name'],
                     $_FILES[$name]['name'],
@@ -549,7 +553,7 @@ class File_Archive
             return $source;
         }
 
-        require_once 'File/Archive/Reader/Cache'.EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Cache' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Reader_Cache($source);
     }
 
@@ -561,22 +565,19 @@ class File_Archive
      * @access private
      */
     function &_convertToReader(&$source)
-    {            	
-    	if (is_string($source)) {
+    {
+        if (is_string($source)) {
             $cacheCondition = File_Archive::getOption('cacheCondition');
             if ($cacheCondition !== false &&
                 preg_match($cacheCondition, $source)) {
-                return File_Archive::cache(File_Archive::read($source));
+                $obj = File_Archive::cache(File_Archive::read($source));
+                return $obj;
             } else {
-                /**
-                 * The original file don't have this eq but we need it for evade the notice (in E_ALL reporting mode).                
-                */                
-            	$return = File_Archive::read($source);            	
-            	return $return; 
+                $obj = File_Archive::read($source);
+                return $obj;
             }
         } else if (is_array($source)) {
-            $readMulti = File_Archive::readMulti($source); 
-        	return $readMulti;
+            return File_Archive::readMulti($source);
         } else {
             return $source;
         }
@@ -591,18 +592,16 @@ class File_Archive
      */
     function &_convertToWriter(&$dest)
     {
-    	if (is_string($dest)) {
-            /**
-             * I use return var for evade the NOTICE: in e_ALL error reporting
-             */
-        	$returnVar = File_Archive::appender($dest); 
-        	return $returnVar;
+        if (is_string($dest)) {
+            $obj =& File_Archive::appender($dest);
+            return $obj;
         } else if (is_array($dest)) {
-            require_once 'File/Archive/Writer/Multi'.EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Multi' . EYE_CODE_EXTENSION; // eyeOS
             $writer = new File_Archive_Writer_Multi();
             foreach($dest as $key => $foo) {
                 $writer->addWriter($dest[$key]);
             }
+            return $writer;
         } else {
             return $dest;
         }
@@ -615,13 +614,14 @@ class File_Archive
      *
      * @param string $extension the checked extension
      * @return bool whether this file can be understood reading its extension
-     *         Currently, supported extensions are tar, zip, gz, tgz, tbz, bz2,
-     *         bzip2, ar, deb
+     *         Currently, supported extensions are tar, zip, jar, gz, tgz,
+     *         tbz, bz2, bzip2, ar, deb
      */
-function isKnownExtension($extension)
+    function isKnownExtension($extension)
     {
-            if($extension == 'tar'   ||
+        return $extension == 'tar'   ||
                $extension == 'zip'   ||
+               $extension == 'jar'   ||
                $extension == 'gz'    ||
                $extension == 'tgz'   ||
                $extension == 'tbz'   ||
@@ -630,16 +630,7 @@ function isKnownExtension($extension)
                $extension == 'ar'    ||
                $extension == 'deb'   /* ||
                $extension == 'cab'   ||
-               $extension == 'rar' */){
-               
-               return $extension;
-               }
-			$eqTypes = File_Archive::getOption('eqTypes');
-			
-			$lowerExt = strtolower($extension);
-			if($eqTypes[$lowerExt]){
-				return $eqTypes[$lowerExt];               
-			}
+               $extension == 'rar' */;
     }
 
     /**
@@ -659,11 +650,7 @@ function isKnownExtension($extension)
      */
     function readArchive($extension, &$toConvert, $sourceOpened = false)
     {
-        $eqTypes = File_Archive::getOption('eqTypes');        
-        if($eqTypes[$extension]){
-        	$extension = $eqTypes[$extension];         	
-        }
-    	$source =& File_Archive::_convertToReader($toConvert);
+        $source =& File_Archive::_convertToReader($toConvert);
         if (PEAR::isError($source)) {
             return $source;
         }
@@ -673,41 +660,41 @@ function isKnownExtension($extension)
             return File_Archive::readArchive('tar',
                     File_Archive::readArchive('gz', $source, $sourceOpened)
                     );
-        case 'tbz2':
         case 'tbz':
             return File_Archive::readArchive('tar',
                     File_Archive::readArchive('bz2', $source, $sourceOpened)
-                    );        
+                    );
         case 'tar':
-            require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/Tar'.EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Tar' . EYE_CODE_EXTENSION; // eyeOS
             return new File_Archive_Reader_Tar($source, $sourceOpened);
 
         case 'gz':
         case 'gzip':
-            require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/Gzip'.EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Gzip' . EYE_CODE_EXTENSION; // eyeOS
             return new File_Archive_Reader_Gzip($source, $sourceOpened);
 
         case 'zip':
-            require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/Zip'.EYE_CODE_EXTENSION;
+        case 'jar':
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Zip' . EYE_CODE_EXTENSION; // eyeOS
             return new File_Archive_Reader_Zip($source, $sourceOpened);
 
         case 'bz2':
         case 'bzip2':
-            require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/Bzip2'.EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Bzip2' . EYE_CODE_EXTENSION; // eyeOS
             return new File_Archive_Reader_Bzip2($source, $sourceOpened);
 
         case 'deb':
         case 'ar':
-            require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/Ar'.EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Ar' . EYE_CODE_EXTENSION; // eyeOS
             return new File_Archive_Reader_Ar($source, $sourceOpened);
 
 /*        case 'cab':
-            require_once 'File/Archive/Reader/Cab'.EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Cab' . EYE_CODE_EXTENSION; // eyeOS
             return new File_Archive_Reader_Cab($source, $sourceOpened);
 
 
         case 'rar':
-            EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Rar".EYE_CODE_EXTENSION;
+            require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Rar' . EYE_CODE_EXTENSION; // eyeOS
             return new File_Archive_Reader_Rar($source, $sourceOpened); */
 
         default:
@@ -728,7 +715,7 @@ function isKnownExtension($extension)
      */
     function readMemory($memory, $filename, $stat=array(), $mime=null)
     {
-        EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Memory".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Memory' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Reader_Memory($memory, $filename, $stat, $mime);
     }
 
@@ -744,7 +731,7 @@ function isKnownExtension($extension)
      */
     function readMulti($sources = array())
     {
-       require_once  EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Multi".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Multi' . EYE_CODE_EXTENSION; // eyeOS
         $result = new File_Archive_Reader_Multi();
         foreach ($sources as $index => $foo) {
             $s =& File_Archive::_convertToReader($sources[$index]);
@@ -760,7 +747,7 @@ function isKnownExtension($extension)
      * Make the files of a source appear as one large file whose content is the
      * concatenation of the content of all the files
      *
-     * @param File_Archive_Reader $source The source whose files must be
+     * @param File_Archive_Reader $toConvert The source whose files must be
      *        concatened
      * @param string $filename name of the only file of the created reader
      * @param array $stat statistics of the file. Index 7 (size) will be
@@ -776,8 +763,32 @@ function isKnownExtension($extension)
             return $source;
         }
 
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Concat".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Concat' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Reader_Concat($source, $filename, $stat, $mime);
+    }
+
+    /**
+     * Changes the name of each file in a reader by applying a custom function
+     * The function must return false if the file is to be discarded, or the new
+     * name of the file else
+     *
+     * @param Callable $function Function called to modify the name of the file
+     *        $function takes the name of the file as a parameter and returns the
+     *        new name, or false if the file must be discarded
+     * @param File_Archive_Reader $toConvert The files of this source will be
+     *        modified
+     * @return File_Archive_Reader a new reader that contains the same files
+     *        as $toConvert but with a different name
+     */
+    function changeName($function, &$toConvert)
+    {
+        $source =& File_Archive::_convertToReader($toConvert);
+        if (PEAR::isError($source)) {
+            return $source;
+        }
+
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/ChangeName' . EYE_CODE_EXTENSION; // eyeOS
+        return new File_Archive_Reader_RemoveDirectory($source);
     }
 
     /**
@@ -795,7 +806,7 @@ function isKnownExtension($extension)
             return $source;
         }
 
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Filter".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Filter' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Reader_Filter($predicate, $source);
     }
     /**
@@ -805,7 +816,7 @@ function isKnownExtension($extension)
      */
     function predTrue()
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/True".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/True' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_True();
     }
     /**
@@ -815,7 +826,7 @@ function isKnownExtension($extension)
      */
     function predFalse()
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/False".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/False' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_False();
     }
     /**
@@ -828,7 +839,7 @@ function isKnownExtension($extension)
      */
     function predAnd()
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/And".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/And' . EYE_CODE_EXTENSION; // eyeOS
         $pred = new File_Archive_Predicate_And();
         $args = func_get_args();
         foreach ($args as $p) {
@@ -846,7 +857,7 @@ function isKnownExtension($extension)
      */
     function predOr()
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Or".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Or' . EYE_CODE_EXTENSION; // eyeOS
         $pred = new File_Archive_Predicate_Or();
         $args = func_get_args();
         foreach ($args as $p) {
@@ -862,7 +873,7 @@ function isKnownExtension($extension)
      */
     function predNot($pred)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Not".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Not' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_Not($pred);
     }
     /**
@@ -873,7 +884,7 @@ function isKnownExtension($extension)
      */
     function predMinSize($size)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/MinSize".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/MinSize' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_MinSize($size);
     }
     /**
@@ -885,7 +896,7 @@ function isKnownExtension($extension)
      */
     function predMinTime($time)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/MinTime".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/MinTime' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_MinTime($time);
     }
     /**
@@ -897,7 +908,7 @@ function isKnownExtension($extension)
      */
     function predMaxDepth($depth)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/MaxDepth".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/MaxDepth' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_MaxDepth($depth);
     }
     /**
@@ -909,7 +920,7 @@ function isKnownExtension($extension)
      */
     function predExtension($list)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Extension".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Extension' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_Extension($list);
     }
     /**
@@ -922,7 +933,7 @@ function isKnownExtension($extension)
      */
     function predMIME($list)
     {
-       require_once  EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/MIME".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/MIME' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_MIME($list);
     }
     /**
@@ -934,7 +945,7 @@ function isKnownExtension($extension)
      */
     function predEreg($ereg)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Ereg".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Ereg' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_Ereg($ereg);
     }
     /**
@@ -946,7 +957,7 @@ function isKnownExtension($extension)
      */
     function predEregi($ereg)
     {
-       require_once  EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Eregi".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Eregi' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_Eregi($ereg);
     }
     /**
@@ -960,7 +971,7 @@ function isKnownExtension($extension)
      */
     function predIndex($indexes)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Index".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Index' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_Index($indexes);
     }
     /**
@@ -987,7 +998,7 @@ function isKnownExtension($extension)
      */
     function predCustom($expression)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Custom".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Custom' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Predicate_Custom($expression);
     }
 
@@ -1004,7 +1015,7 @@ function isKnownExtension($extension)
      */
     function toMail($to, $headers, $message, $mail = null)
     {
-       require_once  EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Mail".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Mail' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Writer_Mail($to, $headers, $message, $mail);
     }
     /**
@@ -1016,8 +1027,8 @@ function isKnownExtension($extension)
      * @see   File_Archive_Writer_Files
      */
     function toFiles($baseDir = "")
-    {        
-    	require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Files".EYE_CODE_EXTENSION;
+    {
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Files' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Writer_Files($baseDir);
     }
     /**
@@ -1041,7 +1052,7 @@ function isKnownExtension($extension)
     }
     function toVariable(&$v)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Memory".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Memory' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Writer_Memory($v);
     }
     /**
@@ -1062,7 +1073,7 @@ function isKnownExtension($extension)
             return $b;
         }
 
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Multi".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Multi' . EYE_CODE_EXTENSION; // eyeOS
         $writer = new File_Archive_Writer_Multi();
         $writer->addWriter($a);
         $writer->addWriter($b);
@@ -1078,7 +1089,7 @@ function isKnownExtension($extension)
      */
     function toOutput($sendHeaders = true)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Output".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Output' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Writer_Output($sendHeaders);
     }
     /**
@@ -1097,47 +1108,20 @@ function isKnownExtension($extension)
      */
     function toArchive($filename, &$toConvert, $type = null,
                        $stat = array(), $autoClose = true)
-    {        
-    	$innerWriter =& File_Archive::_convertToWriter($toConvert);
+    {
+        $innerWriter =& File_Archive::_convertToWriter($toConvert);
         if (PEAR::isError($innerWriter)) {
             return $innerWriter;
         }
         $shortcuts = array("tgz"   , "tbz"    );
         $reals     = array("tar.gz", "tar.bz2");
 
-        //Adding equivalences for eyeOS forceType mode
-        $eqTypes = File_Archive::getOption('eqTypes');
-        
         if ($type === null) {
             $extensions = strtolower($filename);
         } else {
             $extensions = strtolower($type);
         }
-        
-        $extension = substr(strrchr($extensions, "."),1);
-        
-        $eqTypes = File_Archive::getOption('eqTypes');       	        
-        if(isset($eqTypes[$extension])){
-        	//Getting the dirname+basename
-        	$extensions = substr($extensions,0,strrpos($extensions,'.')+1);
-        	//put the extension
-        	$extensions .= $eqTypes[$extension]; 
-        }
-        unset($eqTypes);
-        
-        //Creating an extension array with alle extension this is a eyeOS code for fix some bugs.        
-        
-        $extInfo = pathinfo($extensions);//Getting info
-        
-        $extensions = array();//Parse it to array		
-        
-        $extensions[0] = $extInfo['dirname'].'/'.$extInfo['filename'];
-        $extInfo['extension'] = str_replace($shortcuts, $reals, $extInfo['extension']);
-				                      
-        $tmpExt = explode('.',$extInfo['extension'],2);
-        
-        $extensions = array_merge($extensions,$tmpExt);               
-                        
+        $extensions = explode('.', str_replace($shortcuts, $reals, $extensions));
         if ($innerWriter !== null) {
             $writer =& $innerWriter;
         } else {
@@ -1149,14 +1133,14 @@ function isKnownExtension($extension)
             unset($next);
             switch($extension) {
             case "tar":
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Tar".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Tar' . EYE_CODE_EXTENSION; // eyeOS
                 $next = new File_Archive_Writer_Tar(
                     $currentFilename, $writer, $stat, $autoClose
                 );
                 unset($writer); $writer =& $next;
                 break;
             case "zip":
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Zip".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Zip' . EYE_CODE_EXTENSION; // eyeOS
                 $next = new File_Archive_Writer_Zip(
                     $currentFilename, $writer, $stat, $autoClose
                 );
@@ -1164,7 +1148,7 @@ function isKnownExtension($extension)
                 break;
             case "gz":
             case "gzip":
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Gzip".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Gzip' . EYE_CODE_EXTENSION; // eyeOS
                 $next = new File_Archive_Writer_Gzip(
                     $currentFilename, $writer, $stat, $autoClose
                 );
@@ -1172,7 +1156,7 @@ function isKnownExtension($extension)
                 break;
             case "bz2":
             case "bzip2":
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Bzip2".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Bzip2' . EYE_CODE_EXTENSION; // eyeOS
                 $next = new File_Archive_Writer_Bzip2(
                     $currentFilename, $writer, $stat, $autoClose
                 );
@@ -1180,7 +1164,7 @@ function isKnownExtension($extension)
                 break;
             case "deb":
             case "ar":
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Ar".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Ar' . EYE_CODE_EXTENSION; // eyeOS
                 $next = new File_Archive_Writer_Ar(
                     $currentFilename, $writer, $stat, $autoClose
                 );
@@ -1228,13 +1212,12 @@ function isKnownExtension($extension)
      * @return null or a PEAR error if an error occured
      */
     function extract(&$sourceToConvert, &$destToConvert, $autoClose = true, $bufferSize = 0)
-    {            	
-    	$source =& File_Archive::_convertToReader($sourceToConvert);    
-        if (PEAR::isError($source)) {            
-        	return $source;            
-        }        
-
-        $dest =& File_Archive::_convertToWriter($destToConvert);                
+    {
+        $source =& File_Archive::_convertToReader($sourceToConvert);
+        if (PEAR::isError($source)) {
+            return $source;
+        }
+        $dest =& File_Archive::_convertToWriter($destToConvert);
         return $source->extract($dest, $autoClose, $bufferSize);
     }
 
@@ -1270,17 +1253,17 @@ function isKnownExtension($extension)
     function appenderFromSource(&$toConvert, $URL = null, $unique = null,
                                  $type = null, $stat = array())
     {
-        $source =& File_Archive::_convertToReader($toConvert);        
-        if (PEAR::isError($source)) {            
-        	return $source;
+        $source =& File_Archive::_convertToReader($toConvert);
+        if (PEAR::isError($source)) {
+            return $source;
         }
         if ($unique == null) {
             $unique = File_Archive::getOption("appendRemoveDuplicates");
         }
-		
+
         //Do not report the fact that the archive does not exist as an error
         PEAR::pushErrorHandling(PEAR_ERROR_RETURN);
-	
+
         if ($URL === null) {
             $result =& $source;
         } else {
@@ -1298,7 +1281,7 @@ function isKnownExtension($extension)
 
         if (!PEAR::isError($result)) {
             if ($unique) {
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/UniqueAppender".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/UniqueAppender' . EYE_CODE_EXTENSION; // eyeOS
                 return new File_Archive_Writer_UniqueAppender($result);
             } else {
                 return $result->makeAppendWriter();
@@ -1340,14 +1323,14 @@ function isKnownExtension($extension)
             PEAR::popErrorHandling();
 
             if (PEAR::isError($result)) {
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/AddBaseName".EYE_CODE_EXTENSION;
+                require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/AddBaseName' . EYE_CODE_EXTENSION; // eyeOS
                 $result = new File_Archive_Writer_AddBaseName(
                                        $baseDir, $writer);
                 if (PEAR::isError($result)) {
                     return $result;
                 }
             }
-        }        
+        }
         return $result;
     }
 
@@ -1428,7 +1411,7 @@ function isKnownExtension($extension)
             $source = File_Archive::read($URL);
         }
 
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Predicate/Duplicate".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Predicate/Duplicate' . EYE_CODE_EXTENSION; // eyeOS
         $pred = new File_Archive_Predicate_Duplicate($source);
         $source->close();
         return File_Archive::removeFromSource(

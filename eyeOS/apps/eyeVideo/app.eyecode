@@ -37,13 +37,14 @@ function eyeVideo_run($params = '') {
 			'width' => 470
 		));
 		$myWindow->show();
+		eyex('rawjs',array('js' => 'var e = document.getElementById("' . $myPid . '_eyeVideo_Window_Content"); e.style.display = "block"; e.style.height = "350px"; e.style.width = "468px";'));
 		$myHidden = new Hidden(array(
-			'father' => 'eyeVideo_Window_Content',
+			'father' => 'eyeVideo_Window',
 			'name' => 'eyeVideo_Hidden',
 			'text' => $params[0]
 		));
 		$myHidden->show();
-		eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/swfobject.js&type=text'));
+		eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/flowplayer.min.js&type=text'));
 		eyex('rawjs',array('js' => 'sendMsg(' . $checknum . ',"loadVideo","");'));
 	} else {
 		proc('end');

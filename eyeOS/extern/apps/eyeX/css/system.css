@@ -391,10 +391,11 @@ body, html {
 }
 
 .minimizedAppsIn {
-	height: 100%;
+	display: inline-block;
+	height: 29px;
 	overflow: hidden;
-	position: absolute;
-	width: 500%;
+	position: relative;
+	white-space: nowrap;
 }
 
 .movableElement {

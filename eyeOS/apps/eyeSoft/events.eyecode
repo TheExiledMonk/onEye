@@ -323,7 +323,7 @@ function eyeSoft_on_Uninstall($params = '') {
 			'hidden_text' => $app,
 			'hidden_name' => 'uninstall_hidden',
 			'father' => 'eyeSoft_Content',
-			'img' => '?'
+			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png'
 		));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose an applictaion to be uninstalled.'));

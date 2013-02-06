@@ -106,7 +106,7 @@ function eyeDialog_run($params=null) {
 		//2- callback checknum
 		$callback_checknum = $params[2];
 		//3- default filename
-		$defaultFilename = basename($params[3]);
+		$defaultFilename = utf8_basename($params[3]);
 		//4- filestypes
 		if (is_array($params[4])) {
 			$filetypes = $params[4];
@@ -261,8 +261,8 @@ function eyeDialog_run($params=null) {
 			$formattedLabel .= $value.', ';
 			$formattedFiletype .= $value.'|';
 		}
-		$formattedLabel = substr($formattedLabel, 0, strlen($formattedLabel) -2).')';
-		$formattedFiletype = substr($formattedFiletype, 0, strlen($formattedFiletype) -1);
+		$formattedLabel = utf8_substr($formattedLabel, 0, utf8_strlen($formattedLabel) -2).')';
+		$formattedFiletype = utf8_substr($formattedFiletype, 0, utf8_strlen($formattedFiletype) -1);
 		
 		$filetypeSelect->addOption($formattedLabel, $formattedFiletype);
 	}

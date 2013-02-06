@@ -12,7 +12,7 @@
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
@@ -22,7 +22,7 @@
 */
 
 function get_dynamic_content($params = '') {
-	$content = file_get_contents(EYE_ROOT . '/' . EXTERN_DIR . '/' . APP_DIR . '/eyeMedia/js/eyeMedia.js');
-	return $content;
+	header('Content-type: text/javascript; charset=utf-8');
+	return file_get_contents(EYE_ROOT . '/' . EXTERN_DIR . '/' . APP_DIR . '/eyeMedia/js/eyeMedia.js');
 }
 ?>

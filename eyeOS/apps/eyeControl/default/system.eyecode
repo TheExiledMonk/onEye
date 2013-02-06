@@ -52,13 +52,13 @@ if (is_array($contentParams) && $contentParams[0]) {
 // systemTab
 
 $ContentY = 20;
-// Hostname
+// Systemname
 $myLabel = new Label(array(
 	'name' => 'eyeControl_system_system_label_hostname',
 	'father' => $systemTab,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'eyeOS hostname'
+	'text' => 'Systemname'
 ));
 $myLabel->show();
 $myTextbox_hostname = new Textbox(array(
@@ -406,7 +406,7 @@ $myButton->show();
 // officeTab
 
 $ContentY = 20;
-if (strpos(realpath(EYE_ROOT . '/'),'\\')) {
+if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) {
 	$title = 'Configure the office support on a Windows server';
 	$text = i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtowindows\',\'\');" style="cursor: pointer; font-style: italic;">wiki.eyeos.org</span>')));
 } else {
@@ -433,7 +433,7 @@ $myLabel = new Label(array(
 ));
 $myLabel->show();
 eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_system_office_label_text").innerHTML = %s;','tokens' => array($text)));
-if (strpos(realpath(EYE_ROOT . '/'),'\\')) {
+if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) {
 	$ContentY += 50;
 	// OpenOffice.org program folder
 	$myLabel = new Label(array(

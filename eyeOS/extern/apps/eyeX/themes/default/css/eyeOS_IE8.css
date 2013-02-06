@@ -41,16 +41,9 @@
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png);
 }
 
-.inactiveWindow_border_left {}
-.inactiveWindow_border_right {}
-
 .minimizedApps {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_bg.png);
 	bottom: -1px;
-	height: 31px;
-	left: 0px;	
-	position: absolute;
-	width: expression(this.parentNode.offsetWidth - 143);
+	width: expression(this.parentNode.offsetWidth - 144);
 }
 
 .minimizedAppsRight {

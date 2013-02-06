@@ -137,6 +137,7 @@ function eyeDesk_on_Icon_Dropped($params = '') {
 	if (utf8_strtolower($params['arg0'][0]) == 'app') {
 		$app = $params['arg1'][0];
 		$file = $app;
+		$i = 0;
 		while (vfs('real_fileExists',array(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/' . $file . '.' . EYEOS_LINK_EXT))) {
 			$i++;
 			$file = $app . '_' . $i;

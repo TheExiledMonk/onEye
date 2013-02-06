@@ -79,9 +79,6 @@ function eyeDocs_run($params=null) {
 	
 	$myWindow->show();
 	$myTextArea->show();
-	
-	//remove the text in the statusbar of the tinymce
-	$myTextArea->setRichStatusText('');
 
 	eyeDocs_updateServerContent();
 	

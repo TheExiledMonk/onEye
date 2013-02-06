@@ -39,7 +39,7 @@ $myTable = new Sortabletable(array(
 $myTable->show();
 $nMirrors = 0;
 $mirrorXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/ports.xml'));
-foreach($mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'] as $mirror) {
+foreach ($mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'] as $mirror) {
 	$nMirrors++;
 	$myTable->addRow(array($mirror));
 }
@@ -94,7 +94,7 @@ $myButton = new Button(array(
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
-// x mirror (s)
+// x mirror(s)
 $myLabel = new Label(array(
 	'name' => 'eyeControl_eyesoft_label_mirrors',
 	'father' => $eyeContainer,

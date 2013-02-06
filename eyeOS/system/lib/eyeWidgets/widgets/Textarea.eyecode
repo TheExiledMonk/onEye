@@ -86,9 +86,11 @@ class Textarea {
 	function show($noserialize=0) {
 		$langCode = 'en';
 		if ($this->rich) {
-			$language = reqLib('i18n', 'getLang');
-			if (vfs('real_fileExists', array(EYE_ROOT.'/'.EXTERN_DIR.'/libs/eyeWidgets/tiny_mce/langs/'.$language.'.js'))) {
+			$language = i18n('getLang');
+			if (vfs('real_fileExists', array(EYE_ROOT . '/' . EXTERN_DIR . '/libs/eyeWidgets/tiny_mce/langs/' . $language . '.js'))) {
 				$langCode = $language;
+			} else if (vfs('real_fileExists', array(EYE_ROOT . '/' . EXTERN_DIR . '/libs/eyeWidgets/tiny_mce/langs/' . utf8_substr($language, 0, 2) . '.js'))) {
+				$langCode = utf8_substr($language, 0, 2);
 			}
 		}
 		
@@ -208,6 +210,7 @@ class Textarea {
 				eyex('rawjs',array('js'=> "txtAreas['".$myPid.'_'.$this->name."_objTxt'].load()"));
 			}
 		} else {
+			$name = $myPid.'_'.$this->name;
 			service('eyex','rawjs',array('js' => 'cp_'.$name.'.setCode("")'));
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp").value=""'));
 			while(utf8_strlen($totalContent) > 2000) {
@@ -218,7 +221,6 @@ class Textarea {
 			if($totalContent) {
 				service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name.'_cp'));
 			}
-			$name = $myPid.'_'.$this->name;
 			service('eyex','rawjs',array('js' => 'cp_'.$name.'.setCode(document.getElementById("'.$myPid.'_'.$this->name.'_cp").value)'));
 		}
 	}
@@ -316,8 +318,7 @@ class Textarea {
 
 	function richClean() {
 		global $myPid;
-		$name = $myPid.'_'.$this->name;
-		service('eyex','rawjs',array('js' => 'tinyMCE.execCommand("mceRemoveControl", false,"'.$name.'");'));
+		eyex('runjs', array('js' => 'tinymce.Editor(%s).remove();', 'tokens' => array($myPid . '_' . $this->name)));
 	}
 
 	function remove() {
@@ -329,11 +330,6 @@ class Textarea {
 		}
 		service('eyex','removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
-	}
-	function unserialize(){
-	    if($this->rich == 1){
-		eyex('rawjs',array('js' => 'tinyMCE.idCounter = 0'));
-	    }
 	}
 }
 ?>

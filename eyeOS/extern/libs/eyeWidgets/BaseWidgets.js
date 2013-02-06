@@ -1,3 +1,4 @@
+/*jslint evil: true, forin: true */
 /*
                                   ____   _____
                                  / __ \ / ____|
@@ -20,15 +21,14 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-var focusWindow = '';
-var txtAreas = new Object();
+var txtAreas = {};
 
 function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myheight = params["height"];
-	var mywidth = params["width"];
-	var title = params["title"];
-	var titleCss = params["titleCss"];
-	var visible = params["visible"];
+	var myheight = params.height;
+	var mywidth = params.width;
+	var title = params.title;
+	var titleCss = params.titleCss;
+	var visible = params.visible;
 	var theText = document.createTextNode(title);
 
 	var oTable = document.createElement("TABLE");
@@ -77,10 +77,11 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	createWidget(name+'_Container',father,oTable,horiz,vert,x,y,-1,-1,"eyeBoxContainer",cent, 'px', visible,'Box');
 }
+
 function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var mywidth = params['width'];
-	var myheight = params['height'];
-	var visible = params['visible'];
+	var mywidth = params.width;
+	var myheight = params.height;
+	var visible = params.visible;
 
 	var myLine = document.createElement('div');
 	myLine.setAttribute('id',name);
@@ -90,55 +91,57 @@ function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myLine.style.height = myheight+'px';
 	createWidget(name+'_Container',father,myLine,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible,'Line');
 }
+
 function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var callback = params['callback'];
-	var filename = params['filename'];
-	var visible = params['visible'];
-	var multiple = params['multiple'];
-	var pid = params['pid'];
+	var callback = params.callback;
+	var filename = params.filename;
+	var visible = params.visible;
+	var multiple = params.multiple;
+	var pid = params.pid;
 	var myIframe = document.createElement('iframe');
-
-	if(multiple == 1){
-		var withs = '300px';
-		var height = '350px';
-	}else{
-		var withs = '250px';
-		var height = '90px';
+	
+	var width = '250px';
+	var height = '90px';
+	if (multiple == 1) {
+		width = '300px';
+		height = '350px';
 	}
-
+	
 	myIframe.setAttribute('id',name);
-	myIframe.style.width = withs;
+	myIframe.style.width = width;
 	myIframe.style.height = height;
 	myIframe.style.border='none';
 	myIframe.frameBorder='no';
 	if(multiple == 1){
-		myIframe.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/getMultipleFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
+		myIframe.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/getMultipleFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid);
 	}else{
-		myIframe.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/getFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
+		myIframe.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/getFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid);
 	}
 	createWidget(name+'_Container',father,myIframe,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible,'File');
 }
+
 function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myheight = params["height"];
-	var mywidth = params["width"];
-	var visible = params["visible"];
+	var myheight = params.height;
+	var mywidth = params.width;
+	var visible = params.visible;
 
 	var divBox = document.createElement('div');
 	divBox.setAttribute('id',name);
 	divBox.style.width = mywidth+'px';
 	divBox.style.height = myheight+'px';
 
-	if(params["border"] == 1){
+	if(params.border == 1){
 		divBox.className = "eyeSimplebox";
 	}
 
 	createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible,'Simplebox');
 }
+
 function Listbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myheight = params["height"];
-	var mywidth = params["width"];
-	var visible = params["visible"];
-    var orientation = params["orientation"];
+	var myheight = params.height;
+	var mywidth = params.width;
+	var visible = params.visible;
+    var orientation = params.orientation;
 	var divBox = document.createElement('div');
 	divBox.setAttribute('id',name);
     divBox.setAttribute('lastFocus','');
@@ -146,33 +149,37 @@ function Listbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	divBox.style.width = mywidth+'px';
 	divBox.style.height = myheight+'px';
     divBox.className = "eyeListbox_box";
-	if(params["border"] == 1){
+	if(params.border == 1){
 		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible,'Listbox');
 	}else{
 		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible,'Listbox');
 	}
 }
+
 function Listbox_addItem(pid,name,checknum,sig,rowSize,disablemsg,text,id,image) {
     var obj = document.getElementById(pid+'_'+name);
     var orientation = obj.getAttribute('orientation');
+	var divBox;
+	var divImage;
+	var divText;
     if (orientation == 'vertical') {
         obj.style.overflowX = "hidden";
         obj.style.overflowY = "auto";
-        var divBox = document.createElement('div');
+        divBox = document.createElement('div');
         divBox.setAttribute('id',pid+'_'+id);
         divBox.style.height = rowSize + 'px';
         divBox.style.width = 100+'%';
-        if (image!=0) {
-            var divImage = document.createElement('img');
+        if (image != 0) {
+            divImage = document.createElement('img');
             divImage.setAttribute('src',image);
             divImage.setAttribute('id','img_'+id);
             divImage.className = "eyeListbox_img";
-            divImage.style.marginTop = (parseInt(divBox.style.height) * 3 / 10) + "px";
+            divImage.style.marginTop = (parseInt(divBox.style.height, 10) * 3 / 10) + "px";
             divBox.appendChild(divImage);
         }
         
         if (text) {
-            var divText = document.createElement('div');
+            divText = document.createElement('div');
             divText.appendChild(document.createTextNode(text));
             divText.className = "eyeListbox_txt";
             divText.setAttribute('id','txt_'+id);
@@ -182,19 +189,19 @@ function Listbox_addItem(pid,name,checknum,sig,rowSize,disablemsg,text,id,image)
 
         divBox.onmouseover = function() {
             var lastFocus = obj.getAttribute('lastfocus');
-            if (lastFocus.length == 0 || lastFocus != id) {
+            if (lastFocus.length === 0 || lastFocus != id) {
                 this.className = "eyeListbox_over";
             }
-        }
+        };
         divBox.onmouseout = function() {
             var lastFocus = obj.getAttribute('lastfocus');
-            if (lastFocus.length == 0 || lastFocus != id) {
+            if (lastFocus.length === 0 || lastFocus != id) {
                 this.className = "eyeListbox_out";
             }
-        }
+        };
         divBox.onmousedown = function() {
             var lastFocus = obj.getAttribute('lastfocus');
-            if (lastFocus.length == 0) {
+            if (lastFocus.length === 0) {
                 obj.setAttribute('lastfocus',id);
             } else {
                 var lastObj = document.getElementById(pid+'_'+lastFocus);
@@ -202,11 +209,11 @@ function Listbox_addItem(pid,name,checknum,sig,rowSize,disablemsg,text,id,image)
                 obj.setAttribute('lastfocus',id);
             }
             this.className = "eyeListbox_focus";
-        }
-        if (disablemsg==0) {
+        };
+        if (disablemsg == 0) {
             divBox.onmouseup = function() {
                 sendMsg(checknum,sig,eyeParam('id',id));
-            }
+            };
         }
     }
 }
@@ -218,7 +225,7 @@ function Listbox_selectItem(pid,name,id) {
     }
     var obj = document.getElementById(pid+'_'+name);
     var lastid = obj.getAttribute('lastfocus');
-    if (lastid.length != 0) {
+    if (lastid.length !== 0) {
         var tempobj = document.getElementById(pid+'_'+lastid);
         tempobj.className = "eyeListbox_out";
     }
@@ -229,27 +236,28 @@ function Listbox_selectItem(pid,name,id) {
     }
 }
 function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var highlight = params['highlight'];
-	var caption = params["caption"];
-	var enabled = params["enabled"];
-	var visible = params["visible"];
-	var sync = params["sync"];
-	var dis = params["disablemsg"];
-	var sig = params["signal"];
-	var myWidth = params["width"];
-	var myHeight = params["height"];
-	var myImg = params["img"];
-	var myTop = params["imgY"];
-	var myLeft = parseInt(params["imgX"]);
-	var imgWidth = params["imgWidth"];
-	var imgHeight = params["imgHeight"];
-	var forceMsg = params["forceMsg"];
+	var highlight = params.highlight;
+	var caption = params.caption;
+	var enabled = params.enabled;
+	var visible = params.visible;
+	var sync = params.sync;
+	var dis = params.disablemsg;
+	var sig = params.signal;
+	var myWidth = params.width;
+	var myHeight = params.height;
+	var myImg = params.img;
+	var myLeft = parseInt(params.imgX, 10);
+	var imgWidth = params.imgWidth;
+	var imgHeight = params.imgHeight;
+	var forceMsg = params.forceMsg;
 	myLeft = myLeft + 5;
 
 	var myContainer = document.createElement('div');
 	myContainer.setAttribute('id',name+'_GlobalContainer');
+	var myButton;
+	var myContent;
 	if (myImg != null) {
-		var myButton = document.createElement('img');
+		myButton = document.createElement('img');
 		myButton.src=myImg;
 		myButton.setAttribute('id',name+'_cpt_img');
 		if (imgWidth > 0) {
@@ -258,12 +266,12 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		if (imgHeight > 0) {
 			myButton.style.height = imgHeight + 'px';
 		}
-		var myContent = document.createElement('div');
+		myContent = document.createElement('div');
 		myContent.innerHTML = caption;
 		myContent.setAttribute('id',name+'_cpt');
 		myContent.style.position = 'absolute';
 	} else {
-		var myButton = document.createElement('button');
+		myButton = document.createElement('button');
 		myButton.setAttribute('id',name);
 		caption = tinyMCE.entityDecode(caption);
 		theText=document.createTextNode(caption);
@@ -274,12 +282,12 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myButton.style.fontWeight = "bold";
 	}
 
-	if(enabled == 0) {
+	if (enabled == 0) {
 		myButton.disabled=1;
 	}
 
 	if(myWidth > 0) {
-		if(myImg != null) {
+		if (myImg != null) {
 			myContainer.style.width = myWidth+'px';
 			myContent.style.width = (myWidth - imgWidth) + 'px';
 		} else {
@@ -288,14 +296,14 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 
 	if(myHeight > 0) {
-		if(myImg != null) {
+		if (myImg != null) {
 			myContainer.style.height = myHeight+'px';
 		} else {
 			myButton.style.height = myHeight+'px';
 		}
 	}
 
-	if(myImg != null) {
+	if(myImg) {
 		myContent.style.top = '2px';
 		myContent.style.left = myLeft+'px';
 		myContainer.style.cursor = 'Pointer';
@@ -303,12 +311,12 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myButton.className = "eyeButtonClass";
 	}
 
-	if(dis == 0) {
-		if(forceMsg == 0){
-			myContainer.onclick = function(){sendMsg(checknum,sig,eval(sync))};
+	if (dis == 0) {
+		if (forceMsg == 0) {
+			myContainer.onclick = function () { sendMsg(checknum, sig, eval(sync)); };
 		}else{
 			var myParam = eyeParam(sig,forceMsg);
-			myContainer.onclick = function(){sendMsg(checknum,sig,myParam)};
+			myContainer.onclick = function () { sendMsg(checknum, sig, myParam); };
 		}
 	}
 
@@ -322,244 +330,37 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
     }
 	
 }
+
 function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myWidth = params['width'];
-	var myPid = params['myPid'];
-	var myHeight = params['height'];
-	var visible = params['visible'];
-	var selectFunc = params['selectFunc'];
-	var drawOnClick = params['drawOnClick'];
-	var drawHighlight = params['drawHighlight'];
+	var myWidth = params.width;
+	var myHeight = params.height;
+	var visible = params.visible;
+	var selectFunc = params.selectFunc;
+	//var drawOnClick = params.drawOnClick;
 	var weekHighlight = false;
 	var globalDate = new Date();
-	if(params['forceDate'] != ''){
-		globalDate.setTime(params['forceDate']);
+	if (params.forceDate !== '') {
+		globalDate.setTime(params.forceDate);
 	}
-	if(params['drawServerDate'] != ''){
-		var drawServerDate = new Date();
-		drawServerDate.setTime(params['drawServerDate']);
-	}else{
-		var drawServerDate = '';
+	var drawServerDate = '';
+	if (params.drawServerDate !== '') {
+		drawServerDate = new Date();
+		drawServerDate.setTime(params.drawServerDate);
 	}
 
 	var globalMonth = globalDate.getMonth();
 	var myDay = globalDate.getDate();
 	var globalYear = globalDate.getFullYear();
-	var monthNames = getArrayArg(params['monthNames']);
-	var weekDays = getArrayArg(params['weekDays']);
-	var startMonday = params['startMonday'];
+	var monthNames = getArrayArg(params.monthNames);
+	var weekDays = getArrayArg(params.weekDays);
+	var startMonday = params.startMonday;
 	var calendarBase = document.createElement('div');
 	var lastSelect = false;
-
-	calendarBase.setAttribute('id',name+'calendarBase');
-	calendarBase.style.width = myWidth+'px';
-	calendarBase.style.height = myHeight+'px';
-	calendarBase.style.position = 'absolute';
-		var rowsAndDate = getRowsAndDate();
-		var weekDaysNames = getDaysNames();
-		var calendarBody = getCalendarBody(globalDate);
-	calendarBase.appendChild(rowsAndDate);
-	calendarBase.appendChild(weekDaysNames);
-	calendarBase.appendChild(calendarBody);
-
-	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible,'Calendar');
-
-	function getRowsAndDate()
-	{
-		var rowsAndDate = document.createElement('div');
-		rowsAndDate.setAttribute('id',name+'rowsAndDate');
-		rowsAndDate.style.color = params['rowsAndDate'];
-		rowsAndDate.className = 'calendar_rowsAndDate';
-			var rowLeft = document.createElement('div');
-			rowLeft.setAttribute('id',name+'rowLeft');
-			rowLeft.className = 'calendar_rowLeft';
-			xAddEventListener(rowLeft,'click',previousMonth);
-			var text = document.createTextNode('<<');
-			rowLeft.appendChild(text);
-
-			var dateMiddle = document.createElement('div');
-			dateMiddle.setAttribute('id',name+'dateMiddle');
-			dateMiddle.className = 'calendar_dateMiddle';
-			text = document.createTextNode(monthNames[globalMonth]+' '+globalYear);
-			dateMiddle.appendChild(text);
-
-			var rowRight = document.createElement('div');
-			rowRight.setAttribute('id',name+'rowRight');
-			rowRight.className = 'calendar_rowRight';
-			xAddEventListener(rowRight,'click',nextMonth);
-			text = document.createTextNode('>>');
-			rowRight.appendChild(text);
-
-		rowsAndDate.appendChild(rowLeft);
-		rowsAndDate.appendChild(dateMiddle);
-		rowsAndDate.appendChild(rowRight);
-		return rowsAndDate;
-	}
-	function getDaysNames()
-	{
-		//At the moment, only show the week in this order: sunday monday....saturday.
-		var x = 0;//for loops
-		var weekDaysNames = document.createElement('div');
-		weekDaysNames.setAttribute('id',name+'weekDaysNames');
-		weekDaysNames.className = 'calendar_weekDaysNames';
-		weekDaysNames.style.backgroundColor = params['backgroundNames'];
-			var dayNameContent = document.createElement('div');
-			dayNameContent.style.textAlign = 'center';
-				var left = 11;
-				for(x=0;x<7;x++)
-				{
-					var dayName = document.createElement('div');
-					dayName.style.left = left+'%'
-					dayName.style.color = params['dayName'];
-					dayName.className = 'calendar_dayName';
-					var text = document.createTextNode(weekDays[x]);
-					dayName.appendChild(text);
-					dayNameContent.appendChild(dayName);
-					left = left+12;
-				}
-		weekDaysNames.appendChild(dayNameContent);
-		return weekDaysNames;
-	}
-
-	function getCalendarBody()
-	{
-		var date = new Date();
-		date.setMonth(globalMonth);
-		date.setYear(globalYear);
-		var x,y = 0;//For bucles
-		date.setDate(1);//First day of month
-		var dayOfWeek = date.getDay();
-		var calendarBody = document.createElement('div');
-		calendarBody.className = 'calendar_calendarBody';
-		//Calculating the the month lenght.
-		var preMonthLenght = getMonthDays(globalMonth-1);
-		var monthLenght = getMonthDays(globalMonth);
-		var nextMonthLenght = getMonthDays(globalMonth+1);
-
-//Creating the array with day numbers.
-		//First fill the first days of first week.
-		var dayNums = new Array(0);//I will use push ,metoth
-		var dayColors = new Array(0);
-		var monthDay = new Array(0);
-		var dayIds = new Array(0);
-
-		var discount = 1;
-		if(startMonday == 1){
-			if(dayOfWeek == 0){
-				dayOfWeek = 7;
-			}else if(dayOfWeek == 6){
-				dayOfWeek = 0;
-			}
-			discount = 2;
-		}
-		for(x=dayOfWeek-discount;x>=0;x--)
-		{
-			dayNums.push(preMonthLenght-x);
-			dayIds.push(name+'_'+(preMonthLenght-x)+'_pre');
-			dayColors.push(params['preMonthDays']);//Hardcoded at the moment
-		}
-		//Fill all month day
-		for(x=1;x<=monthLenght;x++)
-		{
-			dayNums.push(x);
-			dayIds.push(name+'_'+x+'_current');
-			date.setDate(x);
-			if(date.getDay() == 0 || date.getDay() == 6)
-			{
-				dayColors.push(params['weekEnd']);
-			}else{
-				dayColors.push(params['workDays']);//Hardcoded at the moment
-			}
-		}
-		//Fill rest days
-		var rest = 42-dayNums.length;
-		for(x=1;x<=rest;x++)
-		{
-			dayNums.push(x);
-			dayIds.push(name+'_'+x+'_rest'	);
-			dayColors.push(params['nextMonthDays']);//Hardcoded at the moment
-		}
-
-		//Now, fill the body with days!
-		var top = 7.5;//Hardcoded at the moment
-		var count = 0;
-		var vdate = new Date(); // for today
-		for(x=0;x<6;x++)
-		{
-			var weekMonth = document.createElement('div');
-			weekMonth.className = 'calendar_weekMonth';
-			weekMonth.style.top = top+'%';
-			/*if(weekHighlight != false && weekHighlight == x && drawHighlight != 0){
-				weekMonth.style.backgroundColor = params['clickedWeek'];
-				weekMonth.style.borderColor = params['clickedWeek'];
-				weekMonth.style.borderStyle = 'solid';
-				weekMonth.style.borderWidth = '1px';
-			}*/
-			var left = 11;
-			var vdate = new Date();
-			for(y=0;y<7;y++)
-			{
-				var weekDay = document.createElement('div');
-				weekDay.className = 'calendar_weekDay';
-				weekDay.style.left = left+'%';
-				weekDay.style.color = dayColors[count];
-				weekDay.setAttribute('id',dayIds[count]);
-				//!!! the dayColors fix is only for some time, in the next version this days will send a correct data
-				if(dayColors[count] != params['preMonthDays'] && dayColors[count] != params['nextMonthDays'])
-				{
-					weekDay.style.cursor = 'pointer';
-					if(dayNums[count] == vdate.getDate() && globalMonth == vdate.getMonth() && globalYear == vdate.getFullYear()){
-						weekDay.className = 'calendar_weekDayToday';
-						weekDay.style.borderColor = params['todayBorder'];
-						weekDay.style.color = params['todayFontColor'];
-						weekDay.style.backgroundColor = params['todayBackground'];
-
-						weekMonth.className = 'calendar_weekMonthToday';
-						weekMonth.style.backgroundColor = params['toWeekBackground'];
-						weekMonth.style.borderColor = params['toWeekBackground'];
-
-						weekMonth.current = true;
-						weekDay.current = true;
-						weekHighlight = x;
-					}
-					if(drawServerDate != ''){
-						if(dayNums[count] == drawServerDate.getDate() && globalMonth == drawServerDate.getMonth() && globalYear == drawServerDate.getFullYear()){
-							weekDay.className = 'calendar_weekDayClicked';
-							weekDay.style.borderColor = params['clickedBorder'];
-							weekMonth.className = 'calendar_weekMonthClicked';
-							weekMonth.style.backgroundColor = params['clickedWeek'];
-							weekMonth.style.borderColor = params['clickedWeek'];
-							lastSelect = weekDay;
-						}
-					}
-				}else{
-					weekDay.style.cursor = 'default';
-				}
-				weekDay.day = dayNums[count];//Calcule the day of the month
-
-				var text = document.createTextNode(dayNums[count]);
-				//!!! the dayColors fix is only for some time, in the next version this days will send a correct data
-				if(selectFunc != '' && dayColors[count] != params['preMonthDays'] && dayColors[count] != params['nextMonthDays'])
-				{
-					xAddEventListener(weekDay,'click',selectFunctionParser);
-				}
-				weekDay.appendChild(text);
-
-				weekMonth.appendChild(weekDay);
-				count++;
-				left = left + 12;
-			}
-			calendarBody.appendChild(weekMonth);
-
-			top = top+17;
-		}
-		return calendarBody;
-	}
-
+	
 	function previousMonth()
 	{
 		calendarBase.removeChild(calendarBody);
-		if(globalMonth == 0)
+		if(globalMonth === 0)
 		{
 			globalMonth = 11;
 			globalYear = globalYear-1;
@@ -604,6 +405,60 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		newDate.setDate(myDay);
 		sendMsg(checknum,selectFunc,eyeParam('date',newDate.getTime()));
 	}
+	function getRowsAndDate()
+	{
+		var rowsAndDate = document.createElement('div');
+		rowsAndDate.setAttribute('id',name+'rowsAndDate');
+		rowsAndDate.style.color = params.rowsAndDate;
+		rowsAndDate.className = 'calendar_rowsAndDate';
+			var rowLeft = document.createElement('div');
+			rowLeft.setAttribute('id',name+'rowLeft');
+			rowLeft.className = 'calendar_rowLeft';
+			xAddEventListener(rowLeft,'click',previousMonth);
+			var text = document.createTextNode('<<');
+			rowLeft.appendChild(text);
+
+			var dateMiddle = document.createElement('div');
+			dateMiddle.setAttribute('id',name+'dateMiddle');
+			dateMiddle.className = 'calendar_dateMiddle';
+			text = document.createTextNode(monthNames[globalMonth]+' '+globalYear);
+			dateMiddle.appendChild(text);
+
+			var rowRight = document.createElement('div');
+			rowRight.setAttribute('id',name+'rowRight');
+			rowRight.className = 'calendar_rowRight';
+			xAddEventListener(rowRight,'click',nextMonth);
+			text = document.createTextNode('>>');
+			rowRight.appendChild(text);
+
+		rowsAndDate.appendChild(rowLeft);
+		rowsAndDate.appendChild(dateMiddle);
+		rowsAndDate.appendChild(rowRight);
+		return rowsAndDate;
+	}
+	function getDaysNames()
+	{
+		//At the moment, only show the week in this order: sunday monday....saturday.
+		var weekDaysNames = document.createElement('div');
+		weekDaysNames.setAttribute('id',name+'weekDaysNames');
+		weekDaysNames.className = 'calendar_weekDaysNames';
+		weekDaysNames.style.backgroundColor = params.backgroundNames;
+			var dayNameContent = document.createElement('div');
+			dayNameContent.style.textAlign = 'center';
+				var left = 11;
+				for (var x = 0; x < 7; x++) {
+					var dayName = document.createElement('div');
+					dayName.style.left = left + '%';
+					dayName.style.color = params.dayName;
+					dayName.className = 'calendar_dayName';
+					var text = document.createTextNode(weekDays[x]);
+					dayName.appendChild(text);
+					dayNameContent.appendChild(dayName);
+					left = left+12;
+				}
+		weekDaysNames.appendChild(dayNameContent);
+		return weekDaysNames;
+	}
 	function getMonthDays(myMonth)
 	{
 		if(myMonth == 3 || myMonth == 5 || myMonth == 8 || myMonth == 10)
@@ -619,31 +474,31 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			return 31;
 		}
 	}
-
 	function selectFunctionParser(e)
 	{
 		var event = new xEvent(e);
 		var target = event.target;
-		if(drawOnClick != 0){
-			if(lastSelect != false){
-				if(lastSelect.current != true){
+		var drawOnClick = params.drawOnClick;
+		if (drawOnClick != 0) {
+			if (lastSelect !== false) {
+				if (!lastSelect.current) {
 					lastSelect.style.border = '';
 				}
-				if(lastSelect.parentNode && lastSelect.parentNode.current != true){
+				if (lastSelect.parentNode && !lastSelect.parentNode.current) {
 					lastSelect.parentNode.style.backgroundColor = '';
 					lastSelect.parentNode.style.border = '';
 				}
 			}
-			if(target.current != true){
+			if (!target.current) {
 				target.style.borderStyle = 'solid';
-				target.style.borderColor = params['clickedBorder'];
+				target.style.borderColor = params.clickedBorder;
 				target.style.borderWidth = '1px';
 			}
-			if(target.parentNode.current != true){
+			if (!target.parentNode.current) {
 				target.parentNode.style.borderStyle = 'solid';
-				target.parentNode.style.borderColor = params['clickedWeek'];
+				target.parentNode.style.borderColor = params.clickedWeek;
 				target.parentNode.style.borderWidth = '1px';
-				target.parentNode.style.backgroundColor = params['clickedWeek'];
+				target.parentNode.style.backgroundColor = params.clickedWeek;
 			}
 		}
 		lastSelect = target;
@@ -656,13 +511,153 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		selectDate.setDate(dayClicked);
 		sendMsg(checknum,selectFunc,eyeParam('date',selectDate.getTime()));
 	}
+	function getCalendarBody()
+	{
+		var date = new Date();
+		date.setMonth(globalMonth);
+		date.setYear(globalYear);
+		var x,y = 0;//For bucles
+		date.setDate(1);//First day of month
+		var dayOfWeek = date.getDay();
+		var calendarBody = document.createElement('div');
+		calendarBody.className = 'calendar_calendarBody';
+		//Calculating the the month lenght.
+		var preMonthLenght = getMonthDays(globalMonth-1);
+		var monthLenght = getMonthDays(globalMonth);
+
+//Creating the array with day numbers.
+		//First fill the first days of first week.
+		var dayNums = new Array(0);//I will use push ,metoth
+		var dayColors = new Array(0);
+		var dayIds = new Array(0);
+
+		var discount = 1;
+		if(startMonday == 1){
+			if(dayOfWeek === 0){
+				dayOfWeek = 7;
+			}else if(dayOfWeek == 6){
+				dayOfWeek = 0;
+			}
+			discount = 2;
+		}
+		for (x = dayOfWeek - discount; x >= 0; x--) {
+			dayNums.push(preMonthLenght-x);
+			dayIds.push(name+'_'+(preMonthLenght-x)+'_pre');
+			dayColors.push(params.preMonthDays);//Hardcoded at the moment
+		}
+		//Fill all month day
+		for (x = 1; x <= monthLenght; x++) {
+			dayNums.push(x);
+			dayIds.push(name+'_'+x+'_current');
+			date.setDate(x);
+			if(date.getDay() === 0 || date.getDay() == 6)
+			{
+				dayColors.push(params.weekEnd);
+			}else{
+				dayColors.push(params.workDays);//Hardcoded at the moment
+			}
+		}
+		//Fill rest days
+		var rest = 42-dayNums.length;
+		for (x = 1; x <= rest; x++) {
+			dayNums.push(x);
+			dayIds.push(name+'_'+x+'_rest'	);
+			dayColors.push(params.nextMonthDays);//Hardcoded at the moment
+		}
+
+		//Now, fill the body with days!
+		var top = 7.5;//Hardcoded at the moment
+		var count = 0;
+		for (x = 0; x < 6; x++) {
+			var weekMonth = document.createElement('div');
+			weekMonth.className = 'calendar_weekMonth';
+			weekMonth.style.top = top+'%';
+			/*if(weekHighlight !== false && weekHighlight == x && drawHighlight){
+				weekMonth.style.backgroundColor = params.clickedWeek;
+				weekMonth.style.borderColor = params.clickedWeek;
+				weekMonth.style.borderStyle = 'solid';
+				weekMonth.style.borderWidth = '1px';
+			}*/
+			var left = 11;
+			vdate = new Date();
+			for (y = 0; y < 7; y++) {
+				var weekDay = document.createElement('div');
+				weekDay.className = 'calendar_weekDay';
+				weekDay.style.left = left+'%';
+				weekDay.style.color = dayColors[count];
+				weekDay.setAttribute('id',dayIds[count]);
+				// the dayColors fix is only for some time, in the next version this days will send a correct data
+				if(dayColors[count] != params.preMonthDays && dayColors[count] != params.nextMonthDays)
+				{
+					weekDay.style.cursor = 'pointer';
+					if(dayNums[count] == vdate.getDate() && globalMonth == vdate.getMonth() && globalYear == vdate.getFullYear()){
+						weekDay.className = 'calendar_weekDayToday';
+						weekDay.style.borderColor = params.todayBorder;
+						weekDay.style.color = params.todayFontColor;
+						weekDay.style.backgroundColor = params.todayBackground;
+
+						weekMonth.className = 'calendar_weekMonthToday';
+						weekMonth.style.backgroundColor = params.toWeekBackground;
+						weekMonth.style.borderColor = params.toWeekBackground;
+
+						weekMonth.current = true;
+						weekDay.current = true;
+						weekHighlight = x;
+					}
+					if(drawServerDate !== ''){
+						if(dayNums[count] == drawServerDate.getDate() && globalMonth == drawServerDate.getMonth() && globalYear == drawServerDate.getFullYear()){
+							weekDay.className = 'calendar_weekDayClicked';
+							weekDay.style.borderColor = params.clickedBorder;
+							weekMonth.className = 'calendar_weekMonthClicked';
+							weekMonth.style.backgroundColor = params.clickedWeek;
+							weekMonth.style.borderColor = params.clickedWeek;
+							lastSelect = weekDay;
+						}
+					}
+				}else{
+					weekDay.style.cursor = 'default';
+				}
+				weekDay.day = dayNums[count];//Calcule the day of the month
+
+				var text = document.createTextNode(dayNums[count]);
+				// the dayColors fix is only for some time, in the next version this days will send a correct data
+				if(selectFunc !== '' && dayColors[count] != params.preMonthDays && dayColors[count] != params.nextMonthDays)
+				{
+					xAddEventListener(weekDay,'click',selectFunctionParser);
+				}
+				weekDay.appendChild(text);
+
+				weekMonth.appendChild(weekDay);
+				count++;
+				left = left + 12;
+			}
+			calendarBody.appendChild(weekMonth);
+
+			top = top+17;
+		}
+		return calendarBody;
+	}
+
+	calendarBase.setAttribute('id',name+'calendarBase');
+	calendarBase.style.width = myWidth+'px';
+	calendarBase.style.height = myHeight+'px';
+	calendarBase.style.position = 'absolute';
+		var rowsAndDate = getRowsAndDate();
+		var weekDaysNames = getDaysNames();
+		var calendarBody = getCalendarBody(globalDate);
+	calendarBase.appendChild(rowsAndDate);
+	calendarBase.appendChild(weekDaysNames);
+	calendarBase.appendChild(calendarBody);
+
+	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible,'Calendar');
 }
+
 function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var text = tinyMCE.entityDecode(params["text"]);
-	var checked = params["checked"];
-	var enabled = params["enabled"];
-	var visible = params["visible"];
-	var myWidth = params["width"];
+	var text = tinyMCE.entityDecode(params.text);
+	var checked = params.checked;
+	var enabled = params.enabled;
+	var visible = params.visible;
+	var myWidth = params.width;
 	var myCheckbox = document.createElement('input');
 	myCheckbox.setAttribute('type', 'checkbox');
 	var myContainer = document.createElement('div');
@@ -690,11 +685,12 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myContainer.appendChild(theText);
 	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckboxContainer",cent,'px',visible,'Checkbox');
 }
+
 function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myheight = parseInt(params["height"]);
-	var mywidth = parseInt(params["width"]);
-	var unit = params["unit"];
-	var visible = params["visible"];
+	var myheight = parseInt(params.height, 10);
+	var mywidth = parseInt(params.width, 10);
+	var unit = params.unit;
+	var visible = params.visible;
 
 	var myContainer = document.createElement("div");
 	if(myheight > 0) {
@@ -706,37 +702,45 @@ function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myContainer.setAttribute('id',name);
 	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeContainerContainer",cent,unit,visible,'Container');
 }
-function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var height = params["height"];
-	var width = params["width"];
-	var src = params["src"];
-	var visible = params["visible"];
-	var flashParamsNames = getArrayArg(params["flashParamsNames"]);
-	var flashParamsValues = getArrayArg(params["flashParamsValues"]);
-	var flashvars = '';
 
-	for(key in flashParamsNames){
+function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var height = params.height;
+	var width = params.width;
+	var src = params.src;
+	var visible = params.visible;
+	var flashParamsNames = getArrayArg(params.flashParamsNames);
+	var flashParamsValues = getArrayArg(params.flashParamsValues);
+	var flashvars = '';
+	var myFlash;
+	var key;
+
+	for (key in flashParamsNames) {
 		if (flashParamsNames[key].toLowerCase() == "flashvars") {
 			flashvars = "?"+flashParamsValues[key];
 		}
 	}
 
 	if (!IEversion || IEversion > 7) {
-		var myFlash = document.createElement("object");
+		myFlash = document.createElement("object");
 		myFlash.setAttribute('width',width);
 		myFlash.setAttribute('height',height);
 		myFlash.setAttribute('data',src);
 		myFlash.setAttribute('type','application/x-shockwave-flash');
 		myFlash.setAttribute('id', name);
-
-		for(key in flashParamsNames){
-			var myTempParam = document.createElement('param');
+		
+		var myTempParam = document.createElement('param');
+		myTempParam.setAttribute('name','src');
+		myTempParam.setAttribute('value',src);
+		myFlash.appendChild(myTempParam);
+		
+		for (key in flashParamsNames) {
+			myTempParam = document.createElement('param');
 			myTempParam.setAttribute('name',flashParamsNames[key]);
 			myTempParam.setAttribute('value',flashParamsValues[key]);
 			myFlash.appendChild(myTempParam);
 		}
 	} else {
-		var myFlash = document.createElement("div");
+		myFlash = document.createElement("div");
 		myFlash.setAttribute('id', name);
 		myFlash.setAttribute('width',width);
 		myFlash.setAttribute('height',height);
@@ -754,8 +758,9 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	createWidget(name+'_Container',father,myFlash,horiz,vert,x,y,width,height,"eyeFlash",cent,'px',visible,'Flash');
 }
+
 function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var text = params["text"];
+	var text = params.text;
 
 	var myHidden = document.createElement('input');
 	myHidden.setAttribute('type','hidden');
@@ -769,23 +774,24 @@ function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	createWidget(name+'_Container',father,myHidden,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'Hidden');
 }
+
 function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
-    var text = params["text"];
-    var image = params["image"];
-    var draggable = params["draggable"];
-    var onclick = params["onclick"];
-    var content = params["content"];
-    var myWidth = params["width"];
-    var myHeight = params["height"];
-    var visible = params["visible"];
-    var myOnLoad = params["myonload"];
-    var realname = params["realname"];
-    var overBorder = params["overBorder"];
-    var overBorderBackground = params["overBorderBg"];
-    var overBorderColor = params["overBorderColor"];
-    var textColor = params["textColor"];
-    var useClass = params["useClass"];
-    overClass = params["overClass"];
+    var text = params.text;
+    var image = params.image;
+    var draggable = params.draggable;
+    var onclick = params.onclick;
+    var content = params.content;
+    var myWidth = params.width;
+    var myHeight = params.height;
+    var visible = params.visible;
+    var myOnLoad = params.myonload;
+    var realname = params.realname;
+    var overBorder = params.overBorder;
+    var overBorderBackground = params.overBorderBg;
+    var overBorderColor = params.overBorderColor;
+    var textColor = params.textColor;
+    var useClass = params.useClass;
+    overClass = params.overClass;
 
     var myGlobalContainer = document.createElement('div');
     myGlobalContainer.style.width='65px';
@@ -835,26 +841,26 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
                 myGlobalContainer.style.border = overBorderColor;
                 myIconText.innerHTML = "";
                 myIconText.appendChild(document.createTextNode(realname));
-            }
+            };
 
             myGlobalContainer.onmouseout = function() {
                 myGlobalContainer.style.border = '1px solid transparent';
                 myGlobalContainer.style.backgroundColor = 'transparent';
                 myIconText.innerHTML = "";
                 myIconText.appendChild(document.createTextNode(text));
-            }
+            };
             myGlobalContainer.style.border = '1px solid transparent';
         }
     }
-    if(useClass != 0){
+    if (useClass != 0) {
         myGlobalContainer.onmouseover = function() {
             myIconText.innerHTML = "";
             myIconText.appendChild(document.createTextNode(realname));
-        }
+        };
         myGlobalContainer.onmouseout = function() {
             myIconText.innerHTML = "";
             myIconText.appendChild(document.createTextNode(text));
-        }
+        };
     }
     createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,'eyeIcon_blank',0,'px',visible,'Icon');
     xGetElementById(name + '_globalContainer').className = overClass;
@@ -872,7 +878,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
                 result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
             }
             sendMsg(checknum,'Icon_Clicked',result);
-        }
+        };
     } else if (onclick == 2) {
         myGlobalContainer.ondblclick = function() {
             var myContent = getArrayArg(content);
@@ -881,31 +887,43 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
                 result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
             }
             sendMsg(checknum,'Icon_Clicked',result);
-        }
+        };
     }
     fixPNG(myImage);
 }
-widgetDrop_behaviours = [];
-dropIndex = 400;
+
+var widgetDrop_behaviours = [];
+var dropIndex = 400;
+
 function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 	//I don't know how it works under ie 8
 	var widget = xGetElementById(father);
-	if(widget.xDropEnabled == true){
+	if (widget.xDropEnabled) {
 		return false;
 	}
 
-	var widget = xGetElementById(father);
-	var cOrder = params['cOrder'];
-	var callback = params['callback'];
-	var signal = params['signal'];
-	var sender = params['sender'];
-	var mySelf = params['mySelf'];
+	var cOrder = params.cOrder;
+	var callback = params.callback;
+	var signal = params.signal;
+	var sender = params.sender;
+	var mySelf = params.mySelf;
+
+	function _execDropCallback(callback,drop,drag,x,y,event,checknum,num){
+		if(typeof(callback) == 'string'){
+			try{
+				eval(callback);
+			}catch(err){
+			}
+		}else{
+			callback(drop,drag,x,y,event,checknum,num);
+		}
+	}
 
 	//This is a wrapper function for handle the differents options when drop happens
 	var widgetDrop = function widgetDrop(drop,drag,x,y,event){
 		//If cOrder is 1 or 3, callback is called before send the msg.
 		if(drag.id && drop.id){
-			if(drag.id == drop.id && mySelf == false){
+			if(drag.id == drop.id && !mySelf){
 				return true;
 			}
 		}
@@ -913,11 +931,14 @@ function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 			_execDropCallback(callback,drop,drag,x,y,event,checknum,1);
 		}
 		//If sendMsg is true, a msg will be send
+		var myContent;
+		var result;
+		var i;
 		if(signal){
 			if(drop.content){
-				var myContent = getArrayArg(drop.content);
-				var result = '';
-				for (var i in myContent) {
+				myContent = getArrayArg(drop.content);
+				result = '';
+				for (i in myContent) {
 					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
 				}
 				sendMsg(checknum,signal,result);
@@ -925,9 +946,9 @@ function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 		}
 		if(sender){
 			if(drag.content){
-				var myContent = getArrayArg(drag.content);
-				var result = '';
-				for (var i in myContent) {
+				myContent = getArrayArg(drag.content);
+				result = '';
+				for (i in myContent) {
 					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
 				}
 				sendMsg(drag.checknum,sender,result);
@@ -945,17 +966,7 @@ function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 		if((cOrder == 2 || cOrder == 3) && callback){
 			_execDropCallback(callback,drop,drag,x,y,event,checknum,2);
 		}
-	}
-	function _execDropCallback(callback,drop,drag,x,y,event,checknum,num){
-		if(typeof(callback) == 'string'){
-			try{
-				eval(callback);
-			}catch(err){
-			}
-		}else{
-			callback(drop,drag,x,y,event,checknum,num);
-		}
-	}
+	};
 	xEnableDrop(widget,widgetDrop);
 }
 
@@ -970,17 +981,45 @@ function addDropBehaviour(params,name,type){
 		//Waiting to eyeOS debug
 		try{
 			console.log(err);
-		}catch(err){
-			//none
-		}
+		} catch (error) { }
 	}
+}
+
+function hideSimpleMenu(menuName) {
+	obj = document.getElementById(menuName);
+	if(!obj) {
+		return;
+	}
+	document.getElementById(menuName).style.display='none';
+}
+
+var lastMenu = '';
+
+function showSimpleMenu(e,menuName,rFather) {
+	if (lastMenu !== '') {
+		hideSimpleMenu(lastMenu);
+	}
+	lastMenu = menuName;
+	var top = e.pageY;
+	var left = e.pageX;
+	if(IEversion && IEversion < 7){
+		var father = document.getElementById(rFather);
+		top = e.offsetY;
+		left = e.offsetX;
+		top += xTop(father);
+		left += xLeft(father);
+	}
+	myMenu = document.getElementById(menuName);
+	myMenu.style.top = top+'px';
+	myMenu.style.left = left+'px';
+	myMenu.style.display = 'block';
 }
 
 function widgetDrop_simpleMenu(name){
 	this.params = widgetDrop_behaviours[name][1];
 	this.start = function start(drop,drag,x,y,event,checknum){
 		this.action(drop,drag,x,y,event,checknum);
-	}
+	};
 	this.action = function (drop,drag,x,y,event,checknum){
 		//If drag have content
 		if(drop.father == drag.father){
@@ -988,32 +1027,34 @@ function widgetDrop_simpleMenu(name){
 		}
 		var result = '';
 		var i = 1;
+		var myContent;
+		var x2;
 		if(drag.content){
-			var myContent = getArrayArg(drag.content);
-			for (var x in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+			myContent = getArrayArg(drag.content);
+			for (x2 in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x2]));
 				i++;
 			}
 		}
 		//if simpleMenu behaviour
-		if(this.params['content']){
-			var myContent = getArrayArg(this.params['content']);
-			for (var x in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+		if(this.params.content){
+			myContent = getArrayArg(this.params.content);
+			for (x2 in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x2]));
 				i++;
 			}
 		}
-		sendMsg(checknum,this.params['signal'],result);
+		sendMsg(checknum,this.params.signal,result);
 		//mostramos menu
-		showSimpleMenu(event,this.params['widgetId']);
-	}
+		showSimpleMenu(event,this.params.widgetId);
+	};
 }
 
 function widgetDrop_simpleMsg(name){
 	this.params = widgetDrop_behaviours[name][1];
 	this.start = function start(drop,drag,x,y,event,checknum){
 		this.action(drop,drag,x,y,event,checknum);
-	}
+	};
 	this.action = function (drop,drag,x,y,event,checknum){
 		//If drag have content
 		if(drop.father == drag.father || !drag.myPid){
@@ -1023,17 +1064,17 @@ function widgetDrop_simpleMsg(name){
 		var i = 0;
 		if(drag.content){
 			var myContent = getArrayArg(drag.content);
-			for (var x in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+			for (var x2 in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x2]));
 				i++;
 			}
 		}
-		if(this.params['content']){
-			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params['content']));
+		if(this.params.content){
+			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params.content));
 			i++;
 		}
-		sendMsg(checknum,this.params['signal'],result);
-	}
+		sendMsg(checknum,this.params.signal,result);
+	};
 }
 
 function moveAndClick(name){
@@ -1042,7 +1083,7 @@ function moveAndClick(name){
 		if(!drag.myPid){
 			return false;
 		}
-		var dropPid = this.params['pid'];
+		var dropPid = this.params.pid;
 		var iconPid = drag.myPid;
 		//If drag is an eyeFiles icon child, only move it
 		//If not is a child, trhow th emenu
@@ -1051,33 +1092,33 @@ function moveAndClick(name){
 		}else{
 			this.menuAction(drop,drag,x,y,event,checknum);
 		}
-	}
+	};
 	this.moveAction = function moveAction(drop,drag,x,y,event,checknum){
-		if (this.params['moveType'] < 2) {
+		if (this.params.moveType < 2) {
 			this.moveUpdate(drag.id,xLeft(drag),xTop(drag),drag.diffX,drag.diffY,drag.checknum,drag.content);
 		}
-		if (this.params['moveType'] < 3) {
+		if (this.params.moveType < 3) {
 			drag.style.left = drag.diffX+'px';
 			drag.style.top = drag.diffY+'px';
 		}
-	}
+	};
 	this.menuAction = function menuAction(drop,drag,x,y,event,checknum){
 		var result = '';
 		var i = 0;
 		if(drag.content){
 			var myContent = getArrayArg(drag.content);
-			for (var x in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+			for (var x2 in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x2]));
 				i++;
 			}
 		}
-		if(this.params['content']){
-			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params['content']));
+		if(this.params.content){
+			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params.content));
 			i++;
 		}
 
-		sendMsg(checknum,this.params['signal'],result);
-	}
+		sendMsg(checknum,this.params.signal,result);
+	};
 	this.moveUpdate = function moveUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
 		var minDiff = 0;//hardcoded at the moment
 		var movedX = newX - ancientX;
@@ -1090,18 +1131,27 @@ function moveAndClick(name){
 		}*/
 
 		if ((movedX > minDiff || movedX < (minDiff)) || ((movedY > minDiff || movedY < minDiff))) {
-			if (!this.params['moveMaster']) {
-				this.params['moveMaster'] = 0;
+			if (!this.params.moveMaster) {
+				this.params.moveMaster = 0;
 			}
-			var sendxml = eyeParam('eyeArg',eyeParam('content',myContent[this.params['moveMaster']])+eyeParam('newX',newX)+eyeParam('newY',newY)+eyeParam('rName',myContent[4]),1);
+			var sendxml = eyeParam('eyeArg',eyeParam('content',myContent[this.params.moveMaster])+eyeParam('newX',newX)+eyeParam('newY',newY)+eyeParam('rName',myContent[4]),1);
 			sendMsg(checknum,'Icon_Moved',sendxml);
 		}
-	}
+	};
 }
-
 
 //Handle drag and drop callbacks
 
+function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){
+	if(typeof(callback) == 'string'){
+		try{
+			eval(callback);
+		}catch(err){
+		}
+	}else{
+		callback(ele,mouseX,mouseY,xEventObj);
+	}
+}
 
 //ele = the element that the callback will be applied
 //dragWidget = the widget that will be moved with drag & drop action
@@ -1113,22 +1163,21 @@ function moveAndClick(name){
 //cursorPos = 0: natural position, 1: the mouse is in the top-left corner.
 //overload = When overload is true, only the *Back functions are called.
 //params,name,father,x,y,horiz,vert,checknum
-
 function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 	//Initialing some local vars, needed in some browsers for share it between subfunctions
 	var widget= xGetElementById(father);
 
 	var dragWidget = xGetElementById(father).cloneNode(true);
-	var dragCssNames = getArrayArg(params['dragCssNames']);
-	var dragCssContent = getArrayArg(params['dragCssContent']);
+	var dragCssNames = getArrayArg(params.dragCssNames);
+	var dragCssContent = getArrayArg(params.dragCssContent);
 
-	var content = params['content'];
-	var clickCallback = params['clickCallback'];
-	var clickSignal = params['clickSignal'];
-	var cursor = params['cursor'];
-	var cursorPos = params['cursorPos'];
-	var dragAlpha = params['dragAlpha'];
-	var myPid = params['myPid'];
+	var content = params.content;
+	var clickCallback = params.clickCallback;
+	var clickSignal = params.clickSignal;
+	var cursor = params.cursor;
+	var cursorPos = params.cursorPos;
+	var dragAlpha = params.dragAlpha;
+	var myPid = params.myPid;
 
 	widget.myPid = myPid;
 	widget.drag = dragWidget;
@@ -1172,27 +1221,27 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 		}
  		mouseX -= left;
 		mouseY -= top;
-		if(cursorPos == 0){
+		if (cursorPos == 0) {
 			startX = mouseX-event.offsetX;
 			startY = mouseY-event.offsetY;
 		}else if(cursorPos == 1){
 			startX = mouseX;
 			startY = mouseY;
 		}
-	}
+	};
 
 	//Called when dragWidget is moved (onmousemove)
 	var widgetDragMove = function widgetDragMove(ele,mouseDX,mouseDY,bWithinRect,xEventObj){
 
 		//If the drag isn't started, start it. Set some vars and create the real dragWidget
-		if(dragStarted == false){
+		if (!dragStarted) {
 			dragStarted = true;//Now drag is started because mouse is moved
 
 			var eyeApps = xGetElementById('eyeApps');//Getting global father
 
 			//Setting the style
 			eyeApps.style.cursor = cursor;
-			dragWidget.style.cursor = cursor
+			dragWidget.style.cursor = cursor;
 
 			//Moving the dragWidget to start position
 			xMoveTo(dragWidget,startX,startY);
@@ -1222,11 +1271,11 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 			widget.diffY += mouseDY;
 			xMoveTo(dragWidget,xLeft(dragWidget)+mouseDX,xTop(dragWidget)+mouseDY);
 		}
-	}
+	};
 	//This is called when user "mouseup" the cursor.
 	var widgetDragEnd = function widgetDragEnd(ele,mouseX,mouseY,xEventObj){
 		//If drag isn't started, only simulate a click with a custom function.
-		if(dragStarted == false){
+		if (!dragStarted) {
 			//If callback is passed as argument, call it
 			if(clickCallback){
 				_execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj);
@@ -1245,20 +1294,9 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 			dragWidget.parentNode.removeChild(dragWidget);
 		}
 		xGetElementById('eyeApps').style.cursor=cursorBack;
-	}
+	};
 
 	xEnableDrag(widget,widgetDragStart,widgetDragMove,widgetDragEnd,'eyeApps');
-}
-
-function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){
-	if(typeof(callback) == 'string'){
-		try{
-			eval(callback);
-		}catch(err){
-		}
-	}else{
-		callback(ele,mouseX,mouseY,xEventObj);
-	}
 }
 
 function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
@@ -1281,12 +1319,13 @@ function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
 		sendMsg(checknum,'Icon_Moved',sendxml);
 	}
 }
+
 function Iframe_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var url = params["url"];
-	var myheight = params["height"];
-	var mywidth = params["width"];
-	var visible = params["visible"];
-	var scroll = params["scroll"];
+	var url = params.url;
+	var myheight = params.height;
+	var mywidth = params.width;
+	var visible = params.visible;
+	var scroll = params.scroll;
 
 	var myFrame = document.createElement('iframe');
 	myFrame.setAttribute('id',name);
@@ -1296,21 +1335,22 @@ function Iframe_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myFrame.setAttribute('height',myheight);
 	myFrame.style.border='0px solid black';
 	myFrame.frameBorder='no';
-	if(scroll == 0) {
+	if (scroll == 0) {
 		myFrame.setAttribute('scrolling','no');
 	}
 	createWidget(name+'_Container',father,myFrame,horiz,vert,x,y,-1,-1,"eyeIframe",cent,'px',visible,'Iframe');
 }
+
 function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var url = params["url"];
-	var visible = params["visible"];
-	var alt = params["alt"];
-	var myWidth = params["width"];
-	var myHeight = params["height"];
-	var myClass = params["cssClass"];
-	var sig = params["signal"];
-	var sync = params["sync"];
-	var dis = params["disableMsg"];
+	var url = params.url;
+	var visible = params.visible;
+	var alt = params.alt;
+	var myWidth = params.width;
+	var myHeight = params.height;
+	var myClass = params.cssClass;
+	var sig = params.signal;
+	var sync = params.sync;
+	var dis = params.disableMsg;
 
 	var myImage = document.createElement('img');
 	myImage.src=url;
@@ -1324,39 +1364,41 @@ function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	myImage.setAttribute('id',name);
 
-	if(dis == 0) {
-		myImage.onclick = function(){sendMsg(checknum,sig,eval(sync))};
+	if (dis == 0) {
+		myImage.onclick = function () { sendMsg(checknum, sig, eval(sync)); };
 	}
 
-	if(myClass != '') {
+	if (myClass != '') {
 		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,myClass,cent,'px',visible,'Imagebox');
 	} else {
 		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,"eyeImagebox",cent,'px',visible,'Imagebox');
 	}
 	fixPNG(myImage);
 }
+
 function Label_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var text = params["text"];
-	var visible = params["visible"];
-	var sync = params["sync"];
-	var dis = params["disablemsg"];
-	var sig = params["signal"];
+	var text = params.text;
+	var visible = params.visible;
+	var sync = params.sync;
+	var dis = params.disablemsg;
+	var sig = params.signal;
 
 	var myLabel = document.createElement('div');
 	myLabel.setAttribute('id',name);
-	if(dis == 0) {
-		myLabel.onclick = function() {sendMsg(checknum,sig,eyeParam(name,text)+eval(sync))};
+	if (dis == 0) {
+		myLabel.onclick = function() { sendMsg(checknum, sig, eyeParam(name, text) + eval(sync)); };
 	}
 	text = tinyMCE.entityDecode(text);
 	myLabel.appendChild(document.createTextNode(text));
 	createWidget(name+'_Container',father,myLabel,horiz,vert,x,y,-1,-1,"eyeLabel",cent,'px',visible,'Label');
 }
+
 function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var checked = params["checked"];
-	var enabled = params["enabled"];
-	var visible = params["visible"];
-	var group = params["group"];
-	var text = params["text"];
+	var checked = params.checked;
+	var enabled = params.enabled;
+	var visible = params.visible;
+	var group = params.group;
+	var text = params.text;
 	var myContainer = document.createElement('div');
 	var myRadio = document.createElement('input');
 
@@ -1369,7 +1411,7 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myRadio.onclick = function() {
 			this.checked = 1;
 			inputs = document.getElementsByTagName('input');
-			for (i = 0; i < inputs.length; i++) {
+			for (var i = 0; i < inputs.length; i++) {
 				if (inputs[i].type == 'radio' && inputs[i].name == this.name && inputs[i].id != this.id) {
 					inputs[i].checked = 0;
 				}
@@ -1381,18 +1423,19 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myRadio.setAttribute('checked','checked');
 		myRadio.setAttribute('defaultChecked','true');
 	}
-	if(enabled == 0) {
+	if (enabled == 0) {
 		myRadio.setAttriute('disabled', 'true');
 	}
 	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeRadio",cent,'px',visible,'Radio');
 }
+
 function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var visible = params["visible"];
-	var mywidth = params["width"];
-	var enabled = params["params"];
+	var visible = params.visible;
+	var mywidth = params.width;
+	var enabled = params.params;
 	var mySelect = document.createElement("select");
 
-	if(enabled == 0) {
+	if (enabled == 0) {
 		mySelect.disabled = 1;
 	}
 
@@ -1405,17 +1448,17 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 }
 
 function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var visible = params["visible"];
-	var myTheader = getArrayArg(params["theader"]);
-	var width = params["width"];
-	var height = params["height"];
-	var sizeUnit = params["sizeUnit"];
-	var signal = params["signal"];
-	var dsignal = params["doubleClickSignal"];
-	var sortypes = getArrayArg(params["sortypes"]);
-	var master = params["master"];
-	var realName = params["realName"];
-	var tBorder = params["border"];
+	var visible = params.visible;
+	var myTheader = getArrayArg(params.theader);
+	var width = params.width;
+	var height = params.height;
+	var sizeUnit = params.sizeUnit;
+	var signal = params.signal;
+	var dsignal = params.doubleClickSignal;
+	var sortypes = getArrayArg(params.sortypes);
+	var master = params.master;
+	var realName = params.realName;
+	var tBorder = params.border;
 	var oTable = document.createElement("TABLE");
 	var oTHead = document.createElement("THEAD");
 	var oTBody = document.createElement("TBODY");
@@ -1428,14 +1471,12 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		widget.style.border = '0px';
 	}
 	var oRow, oCell;
-	var i,j;
-	var myRows;
 
 	var strSortypes = '[';
 
-	var myHiddens = new Array();
+	var myHiddens = [];
 
-	for(keyVar in sortypes) {
+	for (var keyVar in sortypes) {
 		if(sortypes[keyVar] == 'Hidden') {
 			myHiddens[keyVar] = 1;
 		} else {
@@ -1452,8 +1493,8 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	//create the header
 	oRow = document.createElement("TR");
-	for(i=0;i<myTheader.length;i++){
-		if(myHiddens[i] == 0) {
+	for (var i = 0; i < myTheader.length; i++) {
+		if (myHiddens[i] == 0) {
 			oCell = document.createElement("TD");
 			oCell.innerHTML = myTheader[i];
 			oRow.appendChild(oCell);
@@ -1471,6 +1512,7 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	createWidget(name+'_Container',father,widget,horiz,vert,x,y,-1,-1,"eyeTable",cent,sizeUnit,visible,'SortableTable');
 	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'","'+dsignal+'");');
 }
+
 function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName, dsignal) {
 
 	this.sortTypes = oSortTypes || [];
@@ -1495,11 +1537,11 @@ function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireN
 
 	this._bodyOnclick = function (e) {
 		oThis.bodyOnclick(e);
-	}
+	};
 
 	this._bodyOndblclick = function (e) {
 		oThis.bodyOndblclick(e);
-	}
+	};
 
 	if (oTable) {
 		this.setTable( oTable );
@@ -1535,16 +1577,18 @@ SortableTable.prototype.defaultDescending = false;
 SortableTable.prototype._sortTypeInfo = {};
 
 SortableTable.prototype.setTable = function (oTable) {
-	if ( this.tHead )
+	if (this.tHead) {
 		this.uninitHeader();
+	}
 	this.element = oTable;
 	this.setTHead( oTable.tHead );
 	this.setTBody( oTable.tBodies[0] );
 };
 
 SortableTable.prototype.setTHead = function (oTHead) {
-	if (this.tHead && this.tHead != oTHead )
+	if (this.tHead && this.tHead != oTHead) {
 		this.uninitHeader();
+	}
 	this.tHead = oTHead;
 	this.initHeader( this.sortTypes );
 };
@@ -1556,12 +1600,11 @@ SortableTable.prototype.addEntry = function(entry) {
 	this.lastID++;
 	var oRow = document.createElement("TR");
 	oRow.setAttribute('id',this.entName+'_row_'+i);
-	var i=0;
 	var oCell=0;
 	var sortypes = this.normalSort;
-	var myHiddens = new Array();
-	var myHtml = new Array();
-	for(keyVar in sortypes) {
+	var myHiddens = [];
+	var myHtml = [];
+	for (var keyVar in sortypes) {
 		if(sortypes[keyVar] == 'Hidden') {
 			myHiddens[keyVar] = 1;
 		} else {
@@ -1575,7 +1618,7 @@ SortableTable.prototype.addEntry = function(entry) {
 			myHtml[keyVar] = 0;
 		}
 	}
-	for(i=0;i<myEntry.length;i++) {
+	for (i = 0; i < myEntry.length; i++) {
 		oCell = document.createElement("TD");
 		myEntry[i] = tinyMCE.entityDecode(myEntry[i]);
 		if(myHtml[i] == 1) {
@@ -1590,15 +1633,14 @@ SortableTable.prototype.addEntry = function(entry) {
 		oRow.appendChild(oCell);
 	}
 	var tBody = document.getElementById(this.entName+'_Body');
-	if(tBody)
+	if (tBody) {
 		tBody.appendChild(oRow);
-}
+	}
+};
 
 SortableTable.prototype.delEntry = function(entry) {
-	var i=0;
-	var j=0;
 	var oRow = document.getElementById(this.entName).rows;
-	for(i=0;i<oRow.length;i++) {
+	for (var i = 0; i < oRow.length; i++) {
 		var oCells = oRow[i].cells;
 		if(oCells[this.myMaster]) {
 			if(oCells[this.myMaster].innerHTML == entry) {
@@ -1606,7 +1648,7 @@ SortableTable.prototype.delEntry = function(entry) {
 			}
 		}
 	}
-}
+};
 
 SortableTable.prototype.setTBody = function (oTBody) {
 	this.tBody = oTBody;
@@ -1624,18 +1666,20 @@ SortableTable.prototype.setTBody = function (oTBody) {
 };
 
 SortableTable.prototype.setSortTypes = function ( oSortTypes ) {
-	if ( this.tHead )
+	if (this.tHead) {
 		this.uninitHeader();
+	}
 	this.sortTypes = oSortTypes || [];
-	if ( this.tHead )
+	if (this.tHead) {
 		this.initHeader( this.sortTypes );
+	}
 };
 
 // adds arrow containers and events
 // also binds sort type to the header cells so that reordering columns does
 // not break the sort types
 SortableTable.prototype.initHeader = function (oSortTypes) {
-	if (!this.tHead) return;
+	if (!this.tHead) { return; }
 	var cells = this.tHead.rows[0].cells;
 	var doc = this.tHead.ownerDocument || this.tHead.document;
 	this.sortTypes = oSortTypes || [];
@@ -1643,18 +1687,20 @@ SortableTable.prototype.initHeader = function (oSortTypes) {
 	var img, c;
 	for (var i = 0; i < l; i++) {
 		c = cells[i];
-		if (this.sortTypes[i] != null && this.sortTypes[i] != "None" && this.sortTypes[i] != "HtmlButNoSort") {
+		if (this.sortTypes[i] !== null && this.sortTypes[i] != "None" && this.sortTypes[i] != "HtmlButNoSort") {
 			img = doc.createElement("IMG");
 			img.src = "index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/widgets/blank.png";
 			c.appendChild(img);
-			if (this.sortTypes[i] != null)
+			if (this.sortTypes[i] != null) {
 				c._sortType = this.sortTypes[i];
-			if (typeof c.addEventListener != "undefined")
+			}
+			if (typeof c.addEventListener != 'undefined') {
 				c.addEventListener("click", this._headerOnclick, false);
-			else if (typeof c.attachEvent != "undefined")
+			} else if (typeof c.attachEvent != 'undefined') {
 				c.attachEvent("onclick", this._headerOnclick);
-			else
+			} else {
 				c.onclick = this._headerOnclick;
+			}
 		}
 		else
 		{
@@ -1671,18 +1717,19 @@ SortableTable.prototype.initHeader = function (oSortTypes) {
 
 // remove arrows and events
 SortableTable.prototype.uninitHeader = function () {
-	if (!this.tHead) return;
+	if (!this.tHead) { return; }
 	var cells = this.tHead.rows[0].cells;
 	var l = cells.length;
 	var c;
 	for (var i = 0; i < l; i++) {
 		c = cells[i];
-		if (c._sortType != null && c._sortType != "None" && c._sortType != "HtmlButNoSort") {
+		if (c._sortType !== null && c._sortType != "None" && c._sortType != "HtmlButNoSort") {
 			c.removeChild(c.lastChild);
-			if (typeof c.removeEventListener != "undefined")
+			if (typeof c.removeEventListener != 'undefined') {
 				c.removeEventListener("click", this._headerOnclick, false);
-			else if (typeof c.detachEvent != "undefined")
+			} else if (typeof c.detachEvent != 'undefined') {
 				c.detachEvent("onclick", this._headerOnclick);
+			}
 			c._sortType = null;
 			c.removeAttribute( "_sortType" );
 		}
@@ -1690,17 +1737,18 @@ SortableTable.prototype.uninitHeader = function () {
 };
 
 SortableTable.prototype.updateHeaderArrows = function () {
-	if (!this.tHead) return;
+	if (!this.tHead) { return; }
 	var cells = this.tHead.rows[0].cells;
 	var l = cells.length;
 	var img;
 	for (var i = 0; i < l; i++) {
-		if (cells[i]._sortType != null && cells[i]._sortType != "None" && cells[i]._sortType != "HtmlButNoSort") {
+		if (cells[i]._sortType !== null && cells[i]._sortType != "None" && cells[i]._sortType != "HtmlButNoSort") {
 			img = cells[i].lastChild;
-			if (i == this.sortColumn)
+			if (i == this.sortColumn) {
 				img.className = "sort-arrow " + (this.descending ? "descending" : "ascending");
-			else
+			} else {
 				img.className = "sort-arrow";
+			}
 		}
 	}
 };
@@ -1715,8 +1763,9 @@ SortableTable.prototype.getSelectValue = function(i) {
 
 SortableTable.prototype.bodyOndblclick = function(e) {
 	var el = e.target || e.srcElement;
-	while (el.tagName != "TR")
+	while (el.tagName != 'TR') {
 		el = el.parentNode;
+	}
 	if(this.lastClick) {
 		this.lastClick.className = '';
 	}
@@ -1725,12 +1774,13 @@ SortableTable.prototype.bodyOndblclick = function(e) {
 	if(this.mydSignal) {
 		sendMsg(this.mychecknum,this.mydSignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)));
 	}
-}
+};
 
 SortableTable.prototype.bodyOnclick = function(e) {
 	var el = e.target || e.srcElement;
-	while (el.tagName != "TR")
+	while (el.tagName != 'TR') {
 		el = el.parentNode;
+	}
 	if(this.lastClick) {
 		this.lastClick.className = '';
 	}
@@ -1739,13 +1789,14 @@ SortableTable.prototype.bodyOnclick = function(e) {
 	if(this.mySignal) {
 		sendMsg(this.mychecknum,this.mySignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)));
 	}
-}
+};
 
 SortableTable.prototype.headerOnclick = function (e) {
 	// find TD element
 	var el = e.target || e.srcElement;
-	while (el.tagName != "TD")
+	while (el.tagName != 'TD') {
 		el = el.parentNode;
+	}
 
 	this.sort(SortableTable.msie ? SortableTable.getCellIndex(el) : el.cellIndex);
 
@@ -1753,11 +1804,9 @@ SortableTable.prototype.headerOnclick = function (e) {
 
 // IE returns wrong cellIndex when columns are hidden
 SortableTable.getCellIndex = function (oTd) {
-	var cells = oTd.parentNode.childNodes
+	var cells = oTd.parentNode.childNodes;
 	var l = cells.length;
-	var i;
-	for (i = 0; cells[i] != oTd && i < l; i++)
-		;
+	for (var i = 0; cells[i] != oTd && i < l; i++) { }
 	return i;
 };
 
@@ -1768,50 +1817,57 @@ SortableTable.prototype.getSortType = function (nColumn) {
 // only nColumn is required
 // if bDescending is left out the old value is taken into account
 // if sSortType is left out the sort type is found from the sortTypes array
-
 SortableTable.prototype.sort = function (nColumn, bDescending, sSortType) {
-	if (!this.tBody) return;
-	if (sSortType == null)
+	if (!this.tBody) { return; }
+	if (sSortType == null) {
 		sSortType = this.getSortType(nColumn);
+	}
 
 	// exit if None or HtmlButNoSort
-	if (sSortType == "None" || sSortType == "HtmlButNoSort")
+	if (sSortType == 'None' || sSortType == 'HtmlButNoSort') {
 		return;
+	}
 
 	if (bDescending == null) {
-		if (this.sortColumn != nColumn)
+		if (this.sortColumn != nColumn) {
 			this.descending = this.defaultDescending;
-		else
+		} else {
 			this.descending = !this.descending;
-	}
-	else
+		}
+	} else {
 		this.descending = bDescending;
+	}
 
 	this.sortColumn = nColumn;
 
-	if (typeof this.onbeforesort == "function")
+	if (typeof this.onbeforesort == 'function') {
 		this.onbeforesort();
+	}
 
 	var f = this.getSortFunction(sSortType, nColumn);
 	var a = this.getCache(sSortType, nColumn);
 	var tBody = this.tBody;
+	var nextSibling;
+	var p;
 
 	a.sort(f);
 
-	if (this.descending)
+	if (this.descending) {
 		a.reverse();
+	}
 
 	if (SortableTable.removeBeforeSort) {
 		// remove from doc
-		var nextSibling = tBody.nextSibling;
-		var p = tBody.parentNode;
+		nextSibling = tBody.nextSibling;
+		p = tBody.parentNode;
 		p.removeChild(tBody);
 	}
 
 	// insert in the new order
 	var l = a.length;
-	for (var i = 0; i < l; i++)
+	for (var i = 0; i < l; i++) {
 		tBody.appendChild(a[i].element);
+	}
 
 	if (SortableTable.removeBeforeSort) {
 		// insert into doc
@@ -1822,8 +1878,9 @@ SortableTable.prototype.sort = function (nColumn, bDescending, sSortType) {
 
 	this.destroyCache(a);
 
-	if (typeof this.onsort == "function")
+	if (typeof this.onsort == 'function') {
 		this.onsort();
+	}
 };
 
 SortableTable.prototype.asyncSort = function (nColumn, bDescending, sSortType) {
@@ -1835,7 +1892,7 @@ SortableTable.prototype.asyncSort = function (nColumn, bDescending, sSortType) {
 };
 
 SortableTable.prototype.getCache = function (sType, nColumn) {
-	if (!this.tBody) return [];
+	if (!this.tBody) { return []; }
 	var rows = this.tBody.rows;
 	var l = rows.length;
 	var a = new Array(l);
@@ -1846,7 +1903,7 @@ SortableTable.prototype.getCache = function (sType, nColumn) {
 			value: this.getRowValue(r, sType, nColumn),
 			element: r
 		};
-	};
+	}
 	return a;
 };
 
@@ -1861,15 +1918,17 @@ SortableTable.prototype.destroyCache = function (oArray) {
 
 SortableTable.prototype.getRowValue = function (oRow, sType, nColumn) {
 	// if we have defined a custom getRowValue use that
-	if (this._sortTypeInfo[sType] && this._sortTypeInfo[sType].getRowValue)
+	if (this._sortTypeInfo[sType] && this._sortTypeInfo[sType].getRowValue) {
 		return this._sortTypeInfo[sType].getRowValue(oRow, nColumn);
+	}
 
 	var s;
 	var c = oRow.cells[nColumn];
-	if (typeof c.innerText != "undefined")
+	if (typeof c.innerText != 'undefined') {
 		s = c.innerText;
-	else
+	} else {
 		s = SortableTable.getInnerText(c);
+	}
 	return this.getValueFromString(s, sType);
 };
 
@@ -1891,8 +1950,9 @@ SortableTable.getInnerText = function (oNode) {
 };
 
 SortableTable.prototype.getValueFromString = function (sText, sType) {
-	if (this._sortTypeInfo[sType])
+	if (this._sortTypeInfo[sType]) {
 		return this._sortTypeInfo[sType].getValueFromString( sText );
+	}
 	return sText;
 	/*
 	switch (sType) {
@@ -1913,8 +1973,9 @@ SortableTable.prototype.getValueFromString = function (sText, sType) {
 	};
 
 SortableTable.prototype.getSortFunction = function (sType, nColumn) {
-	if (this._sortTypeInfo[sType])
+	if (this._sortTypeInfo[sType]) {
 		return this._sortTypeInfo[sType].compare;
+	}
 	return SortableTable.basicCompare;
 };
 
@@ -1947,7 +2008,6 @@ SortableTable.prototype.destroy = function () {
 //	that takes the row and the column index and returns the value used to compare.
 //	If left out then the innerText is first taken for the cell and then the
 //	fGetValueFromString is used to convert that string the desired value and type
-
 SortableTable.prototype.addSortType = function (sType, fGetValueFromString, fCompareFunction, fGetRowValue) {
 	this._sortTypeInfo[sType] = {
 		type: sType,
@@ -1963,10 +2023,12 @@ SortableTable.prototype.removeSortType = function (sType) {
 };
 
 SortableTable.basicCompare = function compare(n1, n2) {
-	if (n1.value < n2.value)
+	if (n1.value < n2.value) {
 		return -1;
-	if (n2.value < n1.value)
+	}
+	if (n2.value < n1.value) {
 		return 1;
+	}
 	return 0;
 };
 
@@ -1987,7 +2049,6 @@ SortableTable.toDate = function (s) {
 	return d.valueOf();
 };
 
-
 // add sort types
 SortableTable.prototype.addSortType("Number", Number);
 SortableTable.prototype.addSortType("CaseInsensitiveString", SortableTable.toUpperCase);
@@ -1996,13 +2057,13 @@ SortableTable.prototype.addSortType("String");
 // None is a special case
 
 function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myheight = parseInt(params["height"]);
-	var mywidth = parseInt(params["width"]);
-	var sig = params["signal"];
+	var myheight = parseInt(params.height, 10);
+	var mywidth = parseInt(params.width, 10);
+	var sig = params.signal;
 
 	var myObj = document.createElement('div');
 	myObj.setAttribute('id',name);
-	myObj.useDisplay = params['useDisplay'];
+	myObj.useDisplay = params.useDisplay;
 	myObj.className = 'eyeTab';
 	if(mywidth > 0) {
 		myObj.style.width = mywidth+'px';
@@ -2011,8 +2072,9 @@ function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myObj.style.height = myheight+'px';
 	}
 	createWidget(name+'_Container',father,myObj,horiz,vert,x,y,-1,-1,"eyeTabContainer",cent,'Tab');
-	eval('tab_'+name+' = new eyeTab(document.getElementById("'+name+'"),"'+sig+'","'+checknum+'","' + parseInt(params["tabwidth"]) + '");');
+	eval('tab_'+name+' = new eyeTab(document.getElementById("'+name+'"),"'+sig+'","'+checknum+'","' + parseInt(params.tabwidth, 10) + '");');
 }
+
 //eyeTab class
 function eyeTab(oTab,signal,mychecknum,tabwidth) {
 	this.csignal = signal; //signal to use when a tab is requested to be closed
@@ -2023,7 +2085,7 @@ function eyeTab(oTab,signal,mychecknum,tabwidth) {
 	this.tabHeight = 23;
 	this.myName = oTab.id;
 	this.moTab = oTab;
-	this.myTabs= new Array();
+	this.myTabs= [];
 
 	var oThis = this; //get the instance of our tab group
 
@@ -2076,7 +2138,7 @@ function eyeTab(oTab,signal,mychecknum,tabwidth) {
 
 	this.oHeader.onclick = function(e) {
 		oThis.headerClick(e);
-	}
+	};
 
 	//when the class is unload, it destroy itself
 	this._onunload = function () {
@@ -2087,7 +2149,7 @@ function eyeTab(oTab,signal,mychecknum,tabwidth) {
 eyeTab.prototype.getCurrentTab = function() {
 	var oThis = this;
 	return oThis.lastClick;
-}
+};
 
 eyeTab.prototype.headerClick = function (e) {
 	var event = new xEvent(e);
@@ -2097,8 +2159,7 @@ eyeTab.prototype.headerClick = function (e) {
 	if(event.target.className == 'eyeTabSelected' || event.target.className == 'eyeTabNotSelected') {
 		this.selectTab(event.target.id);
 	}
-}
-
+};
 
 eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	var oThis = this;
@@ -2129,13 +2190,13 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	myContent.style.height = cHeight+'px';
 	this.moTab.appendChild(myContent);
 	this.selectTab(myNewTab.id);
-	if(noclose == 0) {
+	if (!noclose) {
 		var tabCross = document.createElement('div');
 		tabCross.setAttribute('id',tabName.id+'_cross');
 		tabCross.className = 'eyeTabCross';
 		tabCross.onclick = function(e) {
 			sendMsg(oThis.checknum,oThis.csignal,eyeParam('arg',myNewTab.id));
-		}
+		};
 		myNewTab.appendChild(tabCross);
 	}
 	this.myTabs[myNewTab.id] = offset;
@@ -2148,7 +2209,7 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 		var oRight = document.getElementById(this.moTab.id+'_buttonRight');
 		oRight.style.display = 'block';
 	}
-}
+};
 
 eyeTab.prototype.removeTab = function (tabname) {
 	var myObj = document.getElementById(tabname);
@@ -2167,7 +2228,7 @@ eyeTab.prototype.removeTab = function (tabname) {
 	this.moTab.removeChild(myContent);
 	//TODO: delete the position, no set to null
 	this.myTabs[tabname] = null;
-}
+};
 
 eyeTab.prototype.selectTab = function (tabname) {
 	var myObj = document.getElementById(tabname);
@@ -2177,7 +2238,7 @@ eyeTab.prototype.selectTab = function (tabname) {
 	if(myObj.id != this.lastClick) {
 		myObj.className = 'eyeTabSelected';
 		var myContent = document.getElementById(myObj.id+'_Content');
-		if (this.moTab.useDisplay == 0) {
+		if (!this.moTab.useDisplay) {
 			myContent.style.visibility = 'visible';
 		} else {
 			myContent.style.display = 'block';
@@ -2187,7 +2248,7 @@ eyeTab.prototype.selectTab = function (tabname) {
 			if(tObj) {
 				tObj.className = 'eyeTabNotSelected';
 				var tContent = document.getElementById(tObj.id+'_Content');
-				if (this.moTab.useDisplay == 0) {
+				if (!this.moTab.useDisplay) {
 					tContent.style.visibility = 'hidden';
 				} else {
 					tContent.style.display = 'none';
@@ -2196,19 +2257,20 @@ eyeTab.prototype.selectTab = function (tabname) {
 		}
 		this.lastClick = tabname;
 	}
-}
+};
+
 function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var Wwidth = params["width"];
-	var Hheight = params["height"];
-	var rich = params["rich"];
-	var code = params["code"];
-	var lang = params["lang"];
-	var rows = params["rows"];
-	var cols = params["cols"];
-	var enabled = params["enabled"];
-	var CcssClass = params["cssClass"];
-	var visible = params["visible"];
-	var language = params["language"];
+	var Wwidth = params.width;
+	var Hheight = params.height;
+	var rich = params.rich;
+	var code = params.code;
+	var lang = params.lang;
+	var rows = params.rows;
+	var cols = params.cols;
+	var enabled = params.enabled;
+	var CcssClass = params.cssClass;
+	var visible = params.visible;
+	var language = params.language;
 
 	var myTextarea = document.createElement('textarea');
 	if(code == 1) {
@@ -2232,7 +2294,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myTextarea.style.height = Hheight+'px';
 	}
 
-	if (enabled == 0) {
+	if (!enabled) {
 		myTextarea.readOnly = 1;
 	}
 
@@ -2299,7 +2361,6 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		txtAreas[name+'_objTxt'].render();
 		txtAreas[name+'_objTxt'].onInit.add(function(ed) {
 			document.getElementById(name+'_path_row').innerHTML = '';
-			var obj_tbl = document.getElementById(name+'_tbl');
 			var obj_ifr = document.getElementById(name+'_ifr');
 			//the father of the iframe must have text-aglin center, only god and the IE developers know why...
 			if(IEversion == 6){
@@ -2322,12 +2383,12 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 }
 
 function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var text = tinyMCE.entityDecode(params["text"]);
-	var enabled = params["enabled"];
-	var visible = params["visible"];
-	var myPassword = params["password"];
-	var mywidth = params["width"];
-	var noborder = params["noborder"];
+	var text = tinyMCE.entityDecode(params.text);
+	var enabled = params.enabled;
+	var visible = params.visible;
+	var myPassword = params.password;
+	var mywidth = params.width;
+	var noborder = params.noborder;
 
 	var myTextbox = document.createElement('input');
 	if (myPassword) {
@@ -2340,11 +2401,11 @@ function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myTextbox.value = text;
 	}
 
-	if(mywidth != null) {
+	if (mywidth) {
 		myTextbox.style.width = mywidth+'px';
 	}
 
-	if(enabled == 0) {
+	if (!enabled) {
 		myTextbox.setAttribute('disabled',1);
 	}
 
@@ -2359,251 +2420,295 @@ function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'px',visible,'Textbox');
 }
 
-activeWindow = "";
-
-min_apps_width = 100;
-min_apps_height = 70;
-minspace=new Array();
-openWindows=new Array();
-
-firstButtonPosition = 6;
-secondButtonPosition = 21;
-thirdButtonPosition = 38;
-function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var sync = params["sync"];
-	var title = params["title"];
-	var type = params["type"];
-	var showtitle = params["showtitle"];
-	var listed = params["listed"];
-	var max = params["max"];
-	var max_pos = params["max_pos"];
-	var min = params["min"];
-	var min_pos = params["min_pos"];
-	var close = params["close"];
-	var close_pos = params["close_pos"];
-	var resize = params["resize"];
-	var nodrag = params["nodrag"];
-	var width = params["width"];
-	var minWidth = params["minWidth"];
-	var minHeight = params["minHeight"];
-	var height = params["height"];
-	var sendCloseMsg = params["sendCloseMsg"];
-	var sendResizeMsg = params["sendResizeMsg"];
-	var background = params["background"];
-	var sigResize = params["sigResize"];
-	var removeWin = parseInt(params["removeWin"]);
-	var savePosition = params["savePosition"];
-	var saveFunc = params["saveFunc"];
-	var xChecknum = params["xChecknum"];
-	var sigClose = params["sigClose"];
-	var dragBgColor = params["dragBgColor"];
-	var dragBgAlpha = params["dragBgAlpha"];
-	var showDragContent = params["showDragContent"];
-	var noZindex = params['noZindex'];
-	var allDrag = params['allDrag'];
-
-	//Css classes for each window part
-	var wCssMain = params['wMain'];
-	var wCssTitle = params['wTitle'];
-	var wCssTitleRight = params['wTitleRight'];
-	var wCssTitleLeft = params['wTitleLeft'];
-	var wCssTitleCenter = params['wTitleCenter'];
-	var wCssTitleText = params['wTitleText'];
-	var wCssBottomCenter = params['wBottomCenter'];
-	var wCssBottomRight = params['wBottomRight'];
-	var wCssBottomLeft = params['wBottomLeft'];
-	var wCssLeft = params['wLeft'];
-	var wCssRight = params['wRight'];
-	var wCssContent = params['wContent'];
-
-	var theText = document.createTextNode('');
-	var createdWindow = createWidget(name,father,theText,horiz,vert,x,y,width,height,wCssMain,cent,null,null,'Window');
-
-	createdWindow.dragBgColor = dragBgColor;
-	createdWindow.dragBgAlpha = dragBgAlpha;
-	createdWindow.showDragContent = showDragContent;
-	createdWindow.minWidth = minWidth;
-	createdWindow.minHeight = minHeight;
-
-	createdWindow.xDropEnabled = false;
-	xEnableDrag.drops[xEnableDrag.drops.length] = {e:createdWindow};
-	//Getting window for set a few properties
-	title = tinyMCE.entityDecode(title);
-
-	if (type == 2) {
-		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
-		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,null,sync);
-	} else if ((type == 3 || type == 4) && background != null) {
-		var myImage = document.createElement('img');
-		myImage.setAttribute('id',name+'_background');
-		myImage.src=background;
-		myImage.style.width = width + 'px';
-		var myDiv = document.createElement('div');
-		myDiv.style.overflow = "hidden";
-		myDiv.appendChild(myImage);
-		createWidget(name+"_Content",name,myDiv,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
-		myImage.style.position = 'static';
-		if(type == 3) {
-			makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag,sync);
-		} else {
-			makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag,sync);
+var Taskbars = {
+	Entries : {},
+	
+	Add: function () {
+		document.getElementById('minIconLeft').onclick = function () { Taskbars.MoveLeft(); };
+		document.getElementById('minIconRight').onclick = function () { Taskbars.MoveRight(); };
+		xAddEventListener(window,'resize',Taskbars.SetWidth,false);
+	},
+	
+	AddEntry: function (id,title,onclick) {
+		Taskbars.Entries[id] = {};
+		Taskbars.Entries[id].title = title;
+		Taskbars.Entries[id].onclick = onclick;
+		document.getElementById('minimizedAppsIn').innerHTML += '<div class="eyeWindowOnBar_Container" id="' + id + '_WindowOnBarContainer"><div class="eyeWindowOnBar_On" id="' + id + '_WindowOnBar" onclick="' + onclick + '"><div class="eyeWindowOnBar_text" id="' + id + '_WindowOnBar_text">' + tinyMCE.entityDecode(title) + '</div></div></div>';
+		Taskbars.SetWidth();
+	},
+	
+	FocusEntry: function (id) {
+		if (Taskbars.Entries[id]) {
+			document.getElementById(id + '_WindowOnBar').className = 'eyeWindowOnBar_On';
 		}
-		fixPNG(myImage,'crop');
-	} else {
-		/* CreateWidgets for Title Bar */
-		createWidget(name+"_WindowTitle",name,theText,0,0,-1,-1,-1,-1,wCssTitle,0);
-		createWidget(name+"_WindowTitle_border_right",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,wCssTitleRight,0);
-		createWidget(name+"_WindowTitle_border_left",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,wCssTitleLeft,0);
-		createWidget(name+"_WindowTitle_center",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,wCssTitleCenter,0);
-		createWidget(name+"_WindowTitle_text",name+"_WindowTitle",document.createTextNode(title),0,0,-1,-1,-1,-1,wCssTitleText,0);
-		/* CreateWidgets for Window Bottom */
-		createWidget(name+"_WindowBottom_center",name,theText,0,0,-1,-1,-1,-1,wCssBottomCenter,0);
-		createWidget(name+"_WindowBottom_right",name,theText,0,0,-1,-1,-1,-1,wCssBottomRight,0);
-		createWidget(name+"_WindowBottom_left",name,theText,0,0,-1,-1,-1,-1,wCssBottomLeft,0);
-		/* Left */
-		createWidget(name+"_WindowLeft",name,theText,0,0,-1,-1,-1,-1,wCssLeft,0);
-		/* Right */
-		createWidget(name+"_WindowRight",name,theText,0,0,-1,-1,-1,-1,wCssRight,0);
-		/* CreateWidgets for Window Content */
-		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,wCssContent,0);
-
-
-		if (showtitle == 0) {
-			showtitle = null;
-		} else {
-			showtitle = name+"_WindowTitle";
+	},
+	
+	MoveLeft: function () {
+		var left = xLeft('minimizedAppsIn') + 100;
+		var width = xWidth('minimizedApps') - xWidth('minimizedAppsIn');
+		if (left > 0) {
+			left = 0;
+		} else if (left < width) {
+			left = width;
 		}
-
-		if (listed == 0) {
-			listed = 1;
-		} else {
-			listed = 0;
+		xSlideTo('minimizedAppsIn',left,0,1000);
+	},
+	
+	MoveRight: function () {
+		var left = xLeft('minimizedAppsIn') - 100;
+		var width = xWidth('minimizedApps') - xWidth('minimizedAppsIn');
+		if (left < width) {
+			left = width;
+		} else if (left > 0) {
+			left = 0;
 		}
-
-		if (min == 0) {
-			min = null;
-		} else {
-			if (min_pos == 1) {
-				min_pos = firstButtonPosition;
-			} else if (min_pos == 2) {
-				min_pos = secondButtonPosition;
-			} else if (min_pos == 3) {
-				min_pos = thirdButtonPosition;
+		xSlideTo('minimizedAppsIn',left,0,1000);
+	},
+	
+	RemoveEntry: function (id) {
+		if (Taskbars.Entries[id]) {
+			Taskbars.Entries[id] = 0;
+			var e = document.getElementById(id + '_WindowOnBarContainer');
+			e.parentNode.removeChild(e);
+			Taskbars.SetWidth();
+		}
+	},
+	
+	RenameEntry: function (id, title) {
+		if (Taskbars.Entries[id]) {
+			Taskbars.Entries[id].title = title;
+			document.getElementById(id + '_WindowOnBar_text').innerHTML = tinyMCE.entityDecode(title);
+		}
+	},
+	
+	SetWidth : function () {
+		var minIconLeft = document.getElementById('minIconLeft');
+		var minimizedApps = document.getElementById('minimizedApps');
+		var minimizedAppsIn = document.getElementById('minimizedAppsIn');
+		var width = xWidth(minimizedApps) - 128;
+		var widthEntries = xWidth(minimizedAppsIn);
+		if (widthEntries > width) {
+			minIconLeft.style.display = 'block';
+			document.getElementById('minIconRight').style.display = 'block';
+			var minIconLeftWidth = xWidth(minIconLeft);
+			minimizedApps.style.left = String(minIconLeftWidth) + 'px';
+			width -= minIconLeftWidth;
+			if (xLeft(minimizedAppsIn) < width - widthEntries) {
+				xSlideTo(minimizedAppsIn,width - widthEntries,0,1000);
 			}
-			createWidget(name+"_WindowMinimizeButton",name,theText,1,0,min_pos,-1,-1,-1,"eyeWindowMinimizeButton",0);
-			min = name+"_WindowMinimizeButton";
-		}
-
-		if (max == 0) {
-			max = null;
 		} else {
-			if (max_pos == 1) {
-				max_pos = firstButtonPosition;
-			} else if (max_pos == 2) {
-				max_pos = secondButtonPosition;
-			} else if (max_pos == 3) {
-				max_pos = thirdButtonPosition;
+			minIconLeft.style.display = 'none';
+			document.getElementById('minIconRight').style.display = 'none';
+			minimizedApps.style.left = '0';
+			if (xLeft(minimizedAppsIn)) {
+				xSlideTo(minimizedAppsIn,0,0,1000);
 			}
-			createWidget(name+"_WindowMaxButton",name,theText,1,0,max_pos,-1,-1,-1,"eyeWindowMaxButton",0);
-			max = name+"_WindowMaxButton";
 		}
-
-		if (close == 0) {
-			close = null;
-		} else {
-			if (close_pos == 1) {
-				close_pos = firstButtonPosition;
-			} else if (close_pos == 2) {
-				close_pos = secondButtonPosition;
-			} else if (close_pos == 3) {
-				close_pos = thirdButtonPosition;
-			}
-			createWidget(name+"_WindowCloseButton",name,theText,1,0,close_pos,-1,-1,-1,"eyeWindowCloseButton",0);
-			close = name+"_WindowCloseButton";
+	},
+	
+	UnfocusEntry: function (id) {
+		if (Taskbars.Entries[id]) {
+			document.getElementById(id + '_WindowOnBar').className = 'eyeWindowOnBar_Off';
 		}
-
-		if (resize == 0) {
-			resize = null;
-		} else {
-			createWidget(name+"_WindowResizeButton",name,theText,0,0,-1,-1,-1,-1,"eyeWindowResizeButton",0);
-			resize = name+"_WindowResizeButton";
-		}
-
-		if (nodrag == 1) {
-			nodrag = 1;
-		} else {
-			nodrag = 0;
-		}
-		makeWindow(name,title,father,"",checknum,max,resize,showtitle,close,min,listed,nodrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag,sync);
-        // Fix Title
-//         var maxlong = xGetElementById(name+"_WindowTitle_center").offsetWidth - 10;
-//         if (max) {
-//             maxlong -= xGetElementById(name+"_WindowMaxButton").offsetWidth;
-//         }
-//         if (close) {
-//             maxlong -= xGetElementById(name+"_WindowCloseButton").offsetWidth;
-//         }
-//         if (min) {
-//             maxlong -= xGetElementById(name+"_WindowMinimizeButton").offsetWidth;
-//         }
-
-//         Window_fixTitle(name,xGetElementById(name+"_WindowTitle_text").title,maxlong,false);
-    }
-}
-
-        // Fix large title
-// function Window_fixTitle(name,title,maxlong,pass) {
-    // var titlediv = xGetElementById(name+"_WindowTitle_text");
-    // if (titlediv.offsetWidth > maxlong) {
-        // title = title.substr(0,title.length-4);
-        // while(title.substr(title.length-1) == " ") {
-            // title = title.substr(0,title.length-1);
-        // }
-        // title = title + "...";
-        // titlediv.innerHTML = title;
-        // Window_fixTitle(name,title,maxlong,true);
-    // } else if (!pass) {
-        // titlediv.innerHTML = title;
-    // }
-// }
-
-function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag,sync) {
-    var widget = xGetElementById(widgetid);
-	widget.notDrag = notDrag;
-	widget.noZindex = noZindex;
-
-	if (!widget) {
-		return;
 	}
-	var father = xGetElementById(fatherid);
-	var mBtn = xGetElementById(maxButton);
-	var minBtn = xGetElementById(minButton);
-	var rBtn = xGetElementById(resButton);
-	var cBtn = xGetElementById(closeButton);
-	var barX = xGetElementById(barId);
-	if (fatherid != "eyeApps") {
-		var rightBorder = xWidth(xGetElementById(widgetid+"_WindowBottom_right"));
-		var leftBorder = xWidth(xGetElementById(widgetid+"_WindowBottom_left"));
-		var barX_height = xHeight(barX);
-		var grandfatid = fatherid;
-		var height_minimized = 0;
-		var height_minimized = 0;
-	} else {
-		var rightBorder = 0;
-		var leftBorder = 0;
-		var barX_height = 0;
-		var height_minimized = 55;
-		var start_at_y = 30;
-		fatherid = "minimizedAppsIn";
-		var grandfatid = "minimizedApps";
-	}
+};
 
-	if (document.getElementById(widgetid + '_Content').className != 'eyeWindowContentInvisible') {
-		if (IEversion && IEversion < 7) {
-			aw = document.getElementById(activeWindow);
-			if (aw) {
-				selects = aw.getElementsByTagName('select');
-				for (i = 0;i < selects.length;i++) {
+var Windows = {
+	Infos : {},
+	List : {},
+	
+	Clear : function (id) {
+		var e = document.getElementById(id + '_Content');
+		if (e) {
+			e.innerHTML = '';
+		}
+	},
+	
+	Close : function (id,closingType,noCloseMessage) {
+		if (!closingType) {
+			closingType = Windows.List[id].closingType;
+		}
+		if (!noCloseMessage && typeof(Windows.List[id].closeMessage) != 'undefined') {
+			sendMsg(Windows.List[id].checknum,Windows.List[id].closeMessage,eval(Windows.List[id].closeEvalParam));
+		}
+		if (closingType == 1) {
+			var e = document.getElementById(id);
+			if (e) {
+				e.parentNode.removeChild(e);
+			}
+			Taskbars.RemoveEntry(id);
+			Windows.List[id] = 0;
+		} else if (closingType != 2) {
+			Windows.Hide(id);
+		}
+	},
+	
+	CloseButton : function (id,show) {
+		var e = document.getElementById(id + '_WindowCloseButton');
+		if (e) {
+			if (show == 2 && e.style.display != 'none' || typeof(show) != 'undefined' && !show) {
+				e.style.display = 'none';
+			} else {
+				e.style.display = 'block';
+			}
+		}
+	},
+	
+	Create : function (id,checknum,params) {
+		Windows.List[id] = {};
+		Windows.List[id].checknum = checknum;
+		Windows.List[id].closeEvalParam = params.sync;
+		Windows.List[id].closingType = params.removeWin;
+		Windows.List[id].dragBgAlpha = params.dragBgAlpha;
+		Windows.List[id].dragBgColor = params.dragBgColor;
+		Windows.List[id].maxHeight = params.maxHeight;
+		Windows.List[id].maxWidth = params.maxWidth;
+		Windows.List[id].maximized = 0;
+		Windows.List[id].minHeight = params.minHeight;
+		Windows.List[id].minWidth = params.minWidth;
+		Windows.List[id].minimized = 0;
+		Windows.List[id].noDrag = params.nodrag;
+		Windows.List[id].noZIndex = params.noZindex;
+		Windows.List[id].resizing = 0;
+		Windows.List[id].showDragContent = params.showDragContent;
+		if (params.closeElement) {
+			params.closeElement.onclick = function () {
+				Windows.Close(id);
+			};
+		}
+		if (params.maxElement) {
+			params.maxElement.onclick = function () {
+				Windows.Maximize(id);
+			};
+		}
+		if (params.resizeElement) {
+			xEnableDrag(params.resizeElement,function () { Windows.ResizeBefore(id,1,1); },function (e,x,y) { Windows.ResizeEvent(id,1,x,1,y); },function () { Windows.ResizeAfter(id,1,1); });
+			document.getElementById(id + '_WindowBottom_left').style.cursor = 'sw-resize';
+			xEnableDrag(id + '_WindowBottom_left',function () { Windows.ResizeBefore(id,2,1); },function (e,x,y) { Windows.ResizeEvent(id,2,x,1,y); },function () { Windows.ResizeAfter(id,2,1); });
+			document.getElementById(id + '_WindowBottom_center').style.cursor = 's-resize';
+			xEnableDrag(id + '_WindowBottom_center',function () { Windows.ResizeBefore(id,0,1); },function (e,x,y) { Windows.ResizeEvent(id,0,x,1,y); },function () { Windows.ResizeAfter(id,0,1); });
+			document.getElementById(id + '_WindowBottom_right').style.cursor = 'se-resize';
+			xEnableDrag(id + '_WindowBottom_right',function () { Windows.ResizeBefore(id,1,1); },function (e,x,y) { Windows.ResizeEvent(id,1,x,1,y); },function () { Windows.ResizeAfter(id,1,1); });
+			document.getElementById(id + '_WindowLeft').style.cursor = 'w-resize';
+			xEnableDrag(id + '_WindowLeft',function () { Windows.ResizeBefore(id,2,0); },function (e,x,y) { Windows.ResizeEvent(id,2,x,0,y); },function () { Windows.ResizeAfter(id,2,0); });
+			document.getElementById(id + '_WindowRight').style.cursor = 'e-resize';
+			xEnableDrag(id + '_WindowRight',function () { Windows.ResizeBefore(id,1,0); },function (e,x,y) { Windows.ResizeEvent(id,1,x,0,y); },function () { Windows.ResizeAfter(id,1,0); });
+			document.getElementById(id + '_WindowTitle_border_left').style.cursor = 'nw-resize';
+			xEnableDrag(id + '_WindowTitle_border_left',function () { Windows.ResizeBefore(id,2,2); },function (e,x,y) { Windows.ResizeEvent(id,2,x,2,y); },function () { Windows.ResizeAfter(id,2,2); });
+			document.getElementById(id + '_WindowTitle_border_right').style.cursor = 'ne-resize';
+			xEnableDrag(id + '_WindowTitle_border_right',function () { Windows.ResizeBefore(id,1,2); },function (e,x,y) { Windows.ResizeEvent(id,1,x,2,y); },function () { Windows.ResizeAfter(id,1,2); });
+			document.getElementById(id + '_WindowTitle_center').style.cursor = 'n-resize';
+			xEnableDrag(id + '_WindowTitle_center',function () { Windows.ResizeBefore(id,0,2); },function (e,x,y) { Windows.ResizeEvent(id,0,x,2,y); },function () { Windows.ResizeAfter(id,0,2); });
+		}
+		if (params.sendCloseMsg) {
+			Windows.List[id].closeMessage = params.sigClose;
+		}
+		if (params.savePosition) {
+			if (params.saveFunc) {
+				Windows.List[id].moveChecknum = checknum;
+				Windows.List[id].moveMessage = params.saveFunc;
+			} else {
+				Windows.List[id].moveChecknum = params.xChecknum;
+				Windows.List[id].moveMessage = 'saveWinPosition';
+			}
+		}
+		if (params.sendResizeMsg) {
+			Windows.List[id].resizeMessage = params.sigResize;
+		}
+		if (params.titleElement) {
+			params.titleElement.ondblclick = function () {
+				Windows.Maximize(id);
+			};
+			if (!params.allDrag) {
+				xEnableDrag(params.titleElement,function () { Windows.MoveBefore(id); },function (e,x,y) { Windows.MoveEvent(id,x,y); },function () { Windows.MoveAfter(id); });
+			}
+		}
+		if (params.allDrag) {
+			xEnableDrag(id,function () { Windows.MoveBefore(id); },function (e,x,y) { Windows.MoveEvent(id,x,y); },function () { Windows.MoveAfter(id); });
+		}
+		if (params.minElement && params.listed && document.getElementById(id).parentNode.id == 'eyeApps') {
+			params.minElement.onclick = function () {
+				Windows.Minimize(id);
+			};
+			Taskbars.AddEntry(id,params.title,"Windows.OnClickTaskbar('" + id + "');");
+		}
+		document.getElementById(id).onmousedown = function () {
+			Windows.Focus(id);
+		};
+		Windows.Focus(id);
+	},
+	
+	DragAfter : function (id) {
+		if (!Windows.List[id].showDragContent) {
+			document.getElementById(id + '_Content').style.display = 'block';
+			var e = document.getElementById(id);
+			e.className = 'eyeWindowMain';
+			if (Windows.List[id].dragBgColor) {
+				e.style.backgroundColor = 'transparent';
+			}
+			if (!IEversion || IEversion > 6) {
+				updateOpacityOnce(100,id);
+			}
+		}
+	},
+	
+	DragBefore : function (id) {
+		if (!Windows.List[id].showDragContent) {
+			document.getElementById(id + '_Content').style.display = 'none';
+			var e = document.getElementById(id);
+			e.className = 'eyeWindowMainDrag';
+			if (Windows.List[id].dragBgColor) {
+				e.style.backgroundColor = Windows.List[id].dragBgColor;
+			}
+			if (!IEversion || IEversion > 6) {
+				updateOpacityOnce(Windows.List[id].dragBgAlpha,id);
+			}
+		}
+	},
+	
+	Focus : function (id) {
+		var e = document.getElementById(id);
+		if (id && e) {
+			if (e.parentNode.id == 'eyeApps') {
+				Windows.Unfocus(Windows.Infos.focus);
+				Windows.Infos.focus = id;
+				Taskbars.FocusEntry(id);
+			}
+			if (!Windows.List[id].noZIndex) {
+				xZIndex(id,zindex);
+				zindex++;
+			}
+			var e1 = document.getElementById(id + '_WindowTitle');
+			var e2 = document.getElementById(id + '_WindowTitle_border_left');
+			var e3 = document.getElementById(id + '_WindowTitle_border_right');
+			if (e1 && e2 && e3) {
+				e1.className = 'activeWindow';
+				e2.className = 'activeWindow_border_left';
+				e3.className = 'activeWindow_border_right';
+			}
+		}
+	},
+	
+	Hide : function (id) {
+		var e = document.getElementById(id);
+		if (e) {
+			if (Windows.List[id].showDragContent) {
+				e.style.visibility = 'hidden';
+			} else {
+				e.style.display = 'none';
+			}
+			var i;
+			if (IEversion && IEversion < 7) {
+				selects = e.getElementsByTagName('select');
+				for (i = 0; i < selects.length; i++) {
+					if (selects[i].name == 'visible') {
+						selects[i].style.visibility = 'visible';
+					}
+				}
+			}
+			if (IEversion && IEversion < 7) {
+				selects = e.getElementsByTagName('select');
+				for (i = 0; i < selects.length; i++) {
 					if (selects[i].style.visibility != 'hidden') {
 						selects[i].name = 'visible';
 						selects[i].style.visibility = 'hidden';
@@ -2611,338 +2716,361 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 				}
 			}
 		}
-		activeWindow = widgetid;
-	}
-
-	if (notList != 1) {
-		var x, y, w, h, minimized, maximized = false;
-		if (!minspace[fatherid]) {
-			minspace[fatherid] = 0;
+	},
+	
+	Maximize : function (id) {
+		var height;
+		var width;
+		if (Windows.List[id].maximized) {
+			Windows.List[id].maximized = 0;
+			height = Windows.List[id].height;
+			Windows.SetHeight(id,height,1);
+			width = Windows.List[id].width;
+			Windows.SetWidth(id,width,1);
+			Windows.SetX(id,Windows.List[id].x);
+			Windows.SetY(id,Windows.List[id].y);
+		} else {
+			Windows.List[id].maximized = 1;
+			Windows.List[id].height = xHeight(id);
+			Windows.List[id].width = xWidth(id);
+			Windows.List[id].x = xLeft(id);
+			Windows.List[id].y = xTop(id);
+			var e = document.getElementById(id);
+			if (e) {
+				height = xHeight(e.parentNode);
+				Windows.SetHeight(id,height,2);
+				width = xWidth(e.parentNode);
+				Windows.SetWidth(id,width,2);
+			}
+			Windows.SetX(id,0,1);
+			Windows.SetY(id,0,1);
 		}
-		createWidget(widgetid+"_WindowOnBarContainer",fatherid,"",0,0,-1,-1,-1,-1,"eyeWindowOnBar_Container");
-		var myTitleWinDiv = document.createElement('div');
-		myTitleWinDiv.className='eyeWindowOnBar_text';
-		myTitleWinDiv.innerHTML = title;
-		createWidget(widgetid+"_WindowOnBar",widgetid+"_WindowOnBarContainer",myTitleWinDiv,0,1,minspace[fatherid],-1,-1,-1,"eyeWindowOnBar_Off");
-		var barWin = xGetElementById(widgetid+"_WindowOnBar");
-		var barWin_height = xHeight(barWin);
-		var barWin_width = xWidth(barWin);
-		var appsList = xGetElementById(widgetid+"_WindowOnBarContainer");
-		openWindows[openWindows.length] = widgetid;
-		minspace[fatherid] = minspace[fatherid] + barWin_width;
-		//TODO: WARNING: remove lame html code and replace xWidth
-		if (minspace[fatherid] > xWidth(grandfatid) && minArrows == 0) {
-			var minIconLeft = document.getElementById("minIconLeft");
-			var minIconRight = document.getElementById("minIconRight");
-			var myImgRight = document.createElement('img');
-			myImgRight.setAttribute('id','minIconRight_img');
-			myImgRight.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/desktop/right.png');
-			myImgRight.onclick = function(e) {
-				minArrowRight();
-			}
-			minIconRight.appendChild(myImgRight);
-
-			var myImgLeft = document.createElement('img');
-			myImgLeft.setAttribute('id','minIconLeft_img');
-			myImgLeft.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/desktop/left.png');
-			myImgLeft.onclick = function(e) {
-				minArrowLeft();
-			}
-			minIconLeft.appendChild(myImgLeft);
-
-			minIconLeft.style.display="block";
-			minIconRight.style.display="block";
-			minArrows = 1;
-			if(IEversion && IEversion < 7) {
-				fixPNG(myImgRight);
-				fixPNG(myImgLeft);
+		if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
+			sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',width) + eyeParam('arg',height));
+		}
+	},
+	
+	MaximizeButton : function (id,show) {
+		var e = document.getElementById(id + '_WindowMaxButton');
+		if (e) {
+			if (show == 2 && e.style.display != 'none' || typeof(show) != 'undefined' && !show) {
+				e.style.display = 'none';
+			} else {
+				e.style.display = 'block';
 			}
 		}
-		if(fatherid != 'eyeApps'){
-			var bar = document.getElementById(focusWindow+'_WindowOnBar');
-			var obj = document.getElementById(focusWindow+'_WindowTitle');
-			if(obj){
-				obj.className = 'inactiveWindow';
-				document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'inactiveWindow_border_left';
-				document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'inactiveWindow_border_right';
-				bar.className = 'eyeWindowOnBar_Off';
-			}
-			focusWindow = widgetid;
-			var bar = document.getElementById(focusWindow+'_WindowOnBar');
-			var obj = document.getElementById(focusWindow+'_WindowTitle');
-			if(obj){
-				obj.className = 'activeWindow';
-				document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'activeWindow_border_left';
-				document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'activeWindow_border_right';
-				bar.className = 'eyeWindowOnBar_On';
+	},
+	
+	Minimize : function (id,special) {
+		if (special) {
+			Windows.List[id].minimized = 2;
+		} else {
+			Windows.List[id].minimized = 1;
+		}
+		Windows.Hide(id);
+		Taskbars.UnfocusEntry(id);
+	},
+	
+	MinimizeButton : function (id,show) {
+		var e = document.getElementById(id + '_WindowMinimizeButton');
+		if (e) {
+			if (show == 2 && e.style.display != 'none' || typeof(show) != 'undefined' && !show) {
+				e.style.display = 'none';
+			} else {
+				e.style.display = 'block';
 			}
 		}
-		function barWinOnClick()
-		{
-			if(fatherid != 'eyeApps'){
-				if (!minimized) {
-					if(activeWindow == this.id){
-						minimized = true;
-						if (widget.showDragContent == 2) {
-							widget.style.visibility = 'hidden';
-						} else {
-							widget.style.display = 'none';
-						}
-						barWin.className = "eyeWindowOnBar_Off";
-					}else{
-						if (IEversion && IEversion < 7) {
-							aw = document.getElementById(activeWindow);
-							if (aw) {
-								selects = aw.getElementsByTagName('select');
-								for (i = 0;i < selects.length;i++) {
-									if (selects[i].style.visibility != 'hidden') {
-										selects[i].name = 'visible';
-										selects[i].style.visibility = 'hidden';
-									}
-								}
-							}
-						}
-						xZIndex(widget, zindex);
-						zindex++;
-						var bar = xGetElementById(focusWindow+"_WindowOnBar");
-						var obj = document.getElementById(focusWindow+'_WindowTitle');
-						if(obj){
-							obj.className = 'inactiveWindow';
-							document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'inactiveWindow_border_left';
-							document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'inactiveWindow_border_right';
-							bar.className = 'eyeWindowOnBar_Off';
-						}
-						focusWindow = widgetid;
-						activeWindow = this.id;
-						if (IEversion && IEversion < 7) {
-							selects = this.getElementsByTagName('select');
-							for (i = 0;i < selects.length;i++) {
-								if (selects[i].name == 'visible') {
-									selects[i].style.visibility = 'visible';
-								}
-							}
-						}
-						var bar = xGetElementById(focusWindow+"_WindowOnBar");
-						var obj = document.getElementById(focusWindow+'_WindowTitle');
-						if(obj){
-							obj.className = 'activeWindow';
-							document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'activeWindow_border_left';
-							document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'activeWindow_border_right';
-							bar.className = 'eyeWindowOnBar_On';
-						}
-					}
+	},
+	
+	MinMaxAll : function () {
+		var id;
+		if (Windows.List[Windows.Infos.focus].minimized) {
+			for (id in Windows.List) {
+				if (Windows.List[id] && Windows.List[id].minimized == 2 && document.getElementById(id).parentNode.id == 'eyeApps') {
+					Windows.List[id].minimized = 0;
+					Windows.Unhide(id);
+				}
+			}
+		} else {
+			for (id in Windows.List) {
+				if (Windows.List[id] && document.getElementById(id).parentNode.id == 'eyeApps') {
+					Windows.Minimize(id,1);
+				}
+			}
+		}
+	},
+	
+	MoveAfter : function (id) {
+		if (!Windows.List[id].noDrag && !Windows.List[id].maximized) {
+			Windows.DragAfter(id);
+			if (typeof(Windows.List[id].moveMessage) != 'undefined') {
+				if (Windows.List[id].moveChecknum == Windows.List[id].checknum) {
+					sendMsg(Windows.List[id].checknum,Windows.List[id].moveMessage,eyeParam('x',xLeft(id)) + eyeParam('y',xTop(id)) + eyeParam('winName',id));
 				} else {
-					if (IEversion && IEversion < 7) {
-						aw = document.getElementById(activeWindow);
-						if (aw) {
-							selects = aw.getElementsByTagName('select');
-							for (i = 0;i < selects.length;i++) {
-								if (selects[i].style.visibility != 'hidden') {
-									selects[i].name = 'visible';
-									selects[i].style.visibility = 'hidden';
-								}
-							}
-						}
-					}
-					minimized = false;
-					if (widget.showDragContent == 2) {
-						widget.style.visibility = 'visible';
-					} else {
-						widget.style.display = 'block';
-					}
-					var bar = document.getElementById(focusWindow+'_WindowOnBar');
-					var obj = document.getElementById(focusWindow+'_WindowTitle');
-					if(obj){
-						obj.className = 'inactiveWindow';
-						document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'inactiveWindow_border_left';
-						document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'inactiveWindow_border_right';
-						bar.className = "eyeWindowOnBar_Off";
-					}
-					focusWindow = widgetid;
-					activeWindow = this.id;
-					xZIndex(widget, zindex);zindex++;
-					if (IEversion && IEversion < 7) {
-						selects = this.getElementsByTagName('select');
-						for (i = 0;i < selects.length;i++) {
-							if (selects[i].name == 'visible') {
-								selects[i].style.visibility = 'visible';
-							}
-						}
-					}
-					var bar = document.getElementById(focusWindow+'_WindowOnBar');
-					var obj = document.getElementById(focusWindow+'_WindowTitle');
-					if(obj){
-						obj.className = 'activeWindow';
-						document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'activeWindow_border_left';
-						document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'activeWindow_border_right';
-						bar.className = "eyeWindowOnBar_On";
-					}
+					sendMsg(Windows.List[id].moveChecknum,'saveWinPosition',eyeParam('left',xLeft(id)) + eyeParam('top',xTop(id)) + eyeParam('winName',id) + eyeParam('appChecknum',Windows.List[id].checknum));
 				}
 			}
 		}
-
-		barWin.onclick = barWinOnClick;
-		if (minBtn) {
-			function minOnClick()
-			{
-				if (!minimized) {
-					minimized = true;
-					if (widget.showDragContent == 2) {
-						widget.style.visibility = 'hidden';
-					} else {
-						widget.style.display = 'none';
-					}
-					barWin.className = "eyeWindowOnBar_Off";
+	},
+	
+	MoveBefore : function (id) {
+		if (!Windows.List[id].noDrag && !Windows.List[id].maximized) {
+			Windows.List[id].x = xLeft(id);
+			Windows.List[id].y = xTop(id);
+			Windows.DragBefore(id);
+		}
+	},
+	
+	MoveEvent : function (id,x,y) {
+		if (!Windows.List[id].noDrag && !Windows.List[id].maximized && !Windows.List[id].resizing) {
+			Windows.List[id].x += x;
+			Windows.List[id].y += y;
+			Windows.SetX(id,Windows.List[id].x);
+			Windows.SetY(id,Windows.List[id].y);
+		}
+	},
+	
+	OnClickTaskbar : function (id) {
+		if (Windows.List[id].minimized) {
+			Windows.List[id].minimized = 0;
+			Windows.Unhide(id);
+			Windows.Focus(id);
+		} else if (Windows.Infos.focus == id) {
+			Windows.Minimize(id);
+		} else {
+			Windows.Focus(id);
+		}
+	},
+	
+	ResizeAfter : function (id,xtype,ytype) {
+		if (!Windows.List[id].maximized) {
+			Windows.List[id].resizing = 0;
+			Windows.DragAfter(id);
+			if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
+				sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',xWidth(id)) + eyeParam('arg',xHeight(id)));
+			}
+			if ((xtype == 2 || ytype == 2) && typeof(Windows.List[id].moveMessage) != 'undefined') {
+				if (Windows.List[id].moveChecknum == Windows.List[id].checknum) {
+					sendMsg(Windows.List[id].checknum,Windows.List[id].moveMessage,eyeParam('x',xLeft(id)) + eyeParam('y',xTop(id)) + eyeParam('winName',id));
+				} else {
+					sendMsg(Windows.List[id].moveChecknum,'saveWinPosition',eyeParam('left',xLeft(id)) + eyeParam('top',xTop(id)) + eyeParam('winName',id) + eyeParam('appChecknum',Windows.List[id].checknum));
 				}
 			}
-			minBtn.onclick = minOnClick;
 		}
-	} else {
-		var barWin_height = 0;
-	}
-
-	if (mBtn) {
-		function maxOnClick()
-		{
-			if (maximized) {
-				maximized = false;
-				xResizeTo(widget, w, h);
-				xMoveTo(widget, x, y);
-			}
-			else {
-				w = xWidth(widget);
-				h = xHeight(widget);
-				x = xLeft(widget);
-				y = xTop(widget);
-				maximized = true;
-				xResizeTo(widget, xWidth(father)-leftBorder-rightBorder, xHeight(father)-barX_height-barX_height-height_minimized);
-				xMoveTo(widget,leftBorder,barX_height+start_at_y);
-			}
-			if(sendResizeMsg==1) {
-				wndresize();
-			}
-		}
-		mBtn.onclick = maxOnClick;
-		xGetElementById(widgetid+"_WindowTitle").ondblclick = maxOnClick;
-	}
-
-	if (cBtn) {
-		function closeOnClick()
-		{
-			if(removeWin == 1) {
-				father.removeChild(widget);
-				if (notList != 1) {
-					slideClose(fatherid,widgetid);
+	},
+	
+	ResizeBefore : function (id,xtype,ytype) {
+		if (!Windows.List[id].maximized) {
+			Windows.List[id].resizing = 1;
+			if (xtype) {
+				Windows.List[id].width = xWidth(id);
+				if (xtype == 2) {
+					Windows.List[id].x = xLeft(id);
 				}
-			} else if(removeWin != 2) {
-				widget.style.display = 'none';
 			}
-			if(sendCloseMsg == 1) {
-				sendMsg(checknum,sigClose,eval(sync));
+			if (ytype) {
+				Windows.List[id].height = xHeight(id);
+				if (ytype == 2) {
+					Windows.List[id].y = xTop(id);
+				}
+			}
+			Windows.DragBefore(id);
+		}
+	},
+	
+	ResizeButton : function (id,show) {
+		var e = document.getElementById(id + '_WindowResizeButton');
+		if (e) {
+			if (show == 2 && e.style.display != 'none' || typeof(show) != 'undefined' && !show) {
+				e.style.display = 'none';
+			} else {
+				e.style.display = 'block';
 			}
 		}
-		cBtn.onclick = closeOnClick;
-	}
-
-	if (rBtn){
-		if(sendResizeMsg==1) {
-			xEnableDrag(rBtn, wndsresize, resOnDrag, wndresize);
+	},
+	
+	ResizeEvent : function (id,xtype,x,ytype,y) {
+		if (!Windows.List[id].maximized) {
+			if (xtype == 2) {
+				Windows.List[id].width -= x;
+				Windows.SetWidth(id,Windows.List[id].width);
+				Windows.List[id].x += x;
+				Windows.SetX(id,Windows.List[id].x);
+			} else if (xtype) {
+				Windows.List[id].width += x;
+				Windows.SetWidth(id,Windows.List[id].width);
+			}
+			if (ytype == 2) {
+				Windows.List[id].height -= y;
+				Windows.SetHeight(id,Windows.List[id].height);
+				Windows.List[id].y += y;
+				Windows.SetY(id,Windows.List[id].y);
+			} else if (ytype) {
+				Windows.List[id].height += y;
+				Windows.SetHeight(id,Windows.List[id].height);
+			}
 		}
-	}
-
-	function wndsresize() {
-		if(!xGetElementById(widgetid).showDragContent){
-			widgetDragStart(widgetid);
+	},
+	
+	SetHeight : function (id,height,force) {
+		var e = document.getElementById(id);
+		var heightEparent = xHeight(e.parentNode);
+		if ((typeof(force) == 'undefined' || !force) && height > heightEparent) {
+			height = heightEparent;
 		}
-	}
-
-	function wndresize() {
-		widgetDragEnd(widgetid);
-		var element = xGetElementById(widgetid);
-		var wWidth = xWidth(widgetid);
-		var wHeight = xHeight(widgetid);
-		if(wWidth < element.minWidth){
-			wWidth = element.minWidth;
+		if ((typeof(force) == 'undefined' || !force) && height < 50) {
+			height = 50;
 		}
-		if(wHeight < element.minHeight){
-			wHeight = element.minHeight;
+		if (force < 2 && Windows.List[id].minHeight && height < Windows.List[id].minHeight) {
+			height = Windows.List[id].minHeight;
 		}
-		xResizeTo(element,wWidth,wHeight);
-		var myParams = eyeParam('arg',wWidth)+eyeParam('arg',wHeight);
-		sendMsg(checknum,sigResize,myParams);
-        // Fix Large Title
-// 		var thetitle = xGetElementById(widgetid+"_WindowTitle_text");
-// 		thetitle.innerHTML = thetitle.title;
-//         var maxlong = xGetElementById(widgetid+"_WindowTitle_center").offsetWidth - 10;
-//         if (maxButton) {
-//             maxlong -= xGetElementById(widgetid+"_WindowMaxButton").offsetWidth;
-//         }
-//         if (closeButton) {
-//             maxlong -= xGetElementById(widgetid+"_WindowCloseButton").offsetWidth;
-//         }
-//         if (minButton) {
-//             maxlong -= xGetElementById(widgetid+"_WindowMinimizeButton").offsetWidth;
-//         }
-//         Window_fixTitle(widgetid,thetitle.title,maxlong,false);
-	}
-
-	if (barId && !notDrag && !allDrag) {
-		xGetElementById(barId).onselectstart = function(){
-				return false;
+		if (force < 2 && Windows.List[id].maxHeight && height > Windows.List[id].maxHeight) {
+			height = Windows.List[id].maxHeight;
 		}
-		xEnableDrag(barId, begindrag, barOnDrag, callafterfunction);
-	}
-	if (allDrag && !notDrag) {
-		xEnableDrag(widget, begindrag, barOnDrag, callafterfunction);
-	}
-	function begindrag() {
-		if(!xGetElementById(widgetid).showDragContent && !xGetElementById(widgetid).notDrag){
-			widgetDragStart(widgetid);
+		if (e) {
+			e.style.height = height + 'px';
 		}
-	}
-
-	function GoToTop()
-	{
-		if(fatherid != 'eyeApps'){
+	},
+	
+	SetRawContent : function (id,content,base64encoded) {
+		var e = document.getElementById(id + '_Content');
+		if (e) {
+			if (base64encoded) {
+				content = Base64.decode(content);
+			}
+			e.innerHTML = content;
+		}
+	},
+	
+	SetTitle : function (id,title) {
+		var e = document.getElementById(id + '_WindowTitle_text');
+		if (e) {
+			e.innerHTML = title;
+		}
+		Taskbars.RenameEntry(id,title);
+	},
+	
+	SetWidth : function (id,width,force) {
+		var e = document.getElementById(id);
+		var widthEparent = xWidth(e.parentNode);
+		if ((typeof(force) == 'undefined' || !force) && width > widthEparent) {
+			width = widthEparent;
+		}
+		if ((typeof(force) == 'undefined' || !force) && width < 100) {
+			width = 100;
+		}
+		if (force < 2 && Windows.List[id].minWidth && width < Windows.List[id].minWidth) {
+			width = Windows.List[id].minWidth;
+		}
+		if (force < 2 && Windows.List[id].maxWidth && width > Windows.List[id].maxWidth) {
+			width = Windows.List[id].maxWidth;
+		}
+		if (e) {
+			e.style.width = width + 'px';
+		}
+	},
+	
+	SetX : function (id,x,force) {
+		var e = document.getElementById(id);
+		var widthE = xWidth(e);
+		if (typeof(force) == 'undefined' || !force) {
+			var father = e.parentNode.id;
+			var widthEparent = xWidth(e.parentNode);
+			if (father != 'eyeApps') {
+				if (x < 0) {
+					x = 0;
+				} else if (x > widthEparent - widthE) {
+					x = widthEparent - widthE;
+				}
+			} else {
+				if (x < 25 - widthE) {
+					x = 25 - widthE;
+				} else if (x > widthEparent - 25) {
+					x = widthEparent - 25;
+				}
+			}
+		}
+		if (e) {
+			e.style.left = x + 'px';
+		}
+	},
+	
+	SetY : function (id,y,force) {
+		var e = document.getElementById(id);
+		if (typeof(force) == 'undefined' || !force) {
+			if (y < 0) {
+				y = 0;
+			} else {
+				var father = e.parentNode.id;
+				var heightE = xHeight(e);
+				var heightEparent = xHeight(e.parentNode);
+				if (father != 'eyeApps' && y > heightEparent - heightE) {
+					y = heightEparent - heightE;
+				} else if (y > heightEparent - 25) {
+					y = heightEparent - 25;
+				}
+			}
+		}
+		if (e) {
+			e.style.top = y + 'px';
+		}
+	},
+	
+	SplitX : function (objects) {
+		var height = xHeight('eyeApps');
+		var width = xWidth('eyeApps') / objects.length;
+		var x = 0;
+		for (var i = 0; i < objects.length; i++) {
+			Windows.SetHeight(objects[i],height);
+			Windows.SetWidth(objects[i],width);
+			Windows.SetX(objects[i],x);
+			Windows.SetY(objects[i],0);
+			x += width;
+		}
+	},
+	
+	SplitY : function (objects) {
+		var height = xHeight('eyeApps') / objects.length;
+		var width = xWidth('eyeApps');
+		var y = 0;
+		for (var i = 0; i < objects.length; i++) {
+			Windows.SetHeight(objects[i],height);
+			Windows.SetWidth(objects[i],width);
+			Windows.SetX(objects[i],0);
+			Windows.SetY(objects[i],y);
+			y += height;
+		}
+	},
+	
+	Unfocus : function (id) {
+		var e = document.getElementById(id);
+		if (id && e && e.parentNode.id == 'eyeApps') {
+			var e1 = document.getElementById(id + '_WindowTitle');
+			var e2 = document.getElementById(id + '_WindowTitle_border_left');
+			var e3 = document.getElementById(id + '_WindowTitle_border_right');
+			if (e1 && e2 && e3) {
+				e1.className = 'inactiveWindow';
+				e2.className = 'inactiveWindow_border_left';
+				e3.className = 'inactiveWindow_border_right';
+			}
+			Taskbars.UnfocusEntry(id);
+			if (id == Windows.Infos.focus) {
+				Windows.Infos.focus = 0;
+			}
+		}
+	},
+	
+	Unhide : function (id) {
+		var e = document.getElementById(id);
+		if (e) {
+			if (Windows.List[id].showDragContent) {
+				e.style.visibility = 'visible';
+			} else {
+				e.style.display = 'block';
+			}
 			if (IEversion && IEversion < 7) {
-				aw = document.getElementById(activeWindow);
-				if (aw) {
-					selects = aw.getElementsByTagName('select');
-					for (i = 0;i < selects.length;i++) {
-						if (selects[i].style.visibility != 'hidden') {
-							selects[i].name = 'visible';
-							selects[i].style.visibility = 'hidden';
-						}
-					}
-				}
-			}
-
-			var bar = document.getElementById(focusWindow+'_WindowOnBar');
-			var obj = document.getElementById(focusWindow+'_WindowTitle');
-			if(obj && bar){
-				obj.className = 'inactiveWindow';
-				document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'inactiveWindow_border_left';
-				document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'inactiveWindow_border_right';
-				bar.className = 'eyeWindowOnBar_Off';
-			}
-			activeWindow = this.id; //Set window active.
-			focusWindow = activeWindow;
-			var bar = document.getElementById(focusWindow+'_WindowOnBar');
-			var obj = document.getElementById(focusWindow+'_WindowTitle');
-			if(obj && bar){
-				obj.className = 'activeWindow';
-				document.getElementById(focusWindow+'_WindowTitle_border_left').className = 'activeWindow_border_left';
-				document.getElementById(focusWindow+'_WindowTitle_border_right').className = 'activeWindow_border_right';
-				bar.className = 'eyeWindowOnBar_On';
-			}
-
-			if (!widget.noZindex) {
-				xZIndex(widget, zindex);
-				zindex++;
-			}
-			if (IEversion && IEversion < 7) {
-				selects = this.getElementsByTagName('select');
-				for (i = 0;i < selects.length;i++) {
+				selects = e.getElementsByTagName('select');
+				for (var i = 0; i < selects.length; i++) {
 					if (selects[i].name == 'visible') {
 						selects[i].style.visibility = 'visible';
 					}
@@ -2950,164 +3078,88 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			}
 		}
 	}
+};
 
-	function barOnDrag(e, mdx, mdy)
-	{
-		var ele = xGetElementById(widgetid);
-		if(ele.notDrag == 1){
-			return true;
-		}
-		var x = xLeft(widget) + mdx;
-		var y = xTop(widget) + mdy;
-		var xright = xWidth(father) - xWidth(widget) - rightBorder;
-		var ybottom = xHeight(father) - xHeight(widget);
+Windows.Infos.focus = 0;
 
-		if(ele.parentNode.id == "eyeApps") {
-			if (x < leftBorder - xWidth(widget) + 75) x = leftBorder - xWidth(widget) + 75;
-			if (x > xright + xWidth(widget) - 75) x = xright + xWidth(widget) - 75;
-			if (y > ybottom + xHeight(widget) - 50) y = ybottom + xHeight(widget) - 50;
+function Window_show(params,id,father,x,y,horiz,vert,checknum,cent) {
+	params.closeElement = 0;
+	params.maxElement = 0;
+	params.minElement = 0;
+	params.resizeElement = 0;
+	params.titleElement = 0;
+	
+	var textNode = document.createTextNode('');
+	var widget = createWidget(id,father,textNode,horiz,vert,x,y,params.width,params.height,params.wMain,cent,null,null,'Window');
+	
+	widget.xDropEnabled = false;
+	xEnableDrag.drops[xEnableDrag.drops.length] = { e : widget };
+	
+	if (params.type == 2) {
+		createWidget(id + '_Content',id,textNode,0,0,-1,-1,-1,-1,'eyeWindowContentInvisible',0);
+		params.allDrag = 0;
+		params.nodrag = 1;
+		params.listed = 0;
+	} else if ((params.type == 3 || params.type == 4) && params.background) {
+		var imageElement = document.createElement('img');
+		imageElement.id = id + '_background';
+		imageElement.src = params.background;
+		imageElement.style.position = 'static';
+		imageElement.style.width = params.width + 'px';
+		var divElement = document.createElement('div');
+		divElement.style.overflow = 'hidden';
+		divElement.appendChild(imageElement);
+		createWidget(id + '_Content',id,divElement,0,0,-1,-1,-1,-1,'eyeWindowContentInvisible',0);
+		params.nodrag = 0;
+		if (params.type == 3) {
+			params.listed = 1;
 		} else {
-			if (x < 0) x = 0;
-			if (x > xright) x = xright;
-			if (y > ybottom) y = ybottom;
+			params.listed = 0;
 		}
-		if (y < 0) y = 0;
-
-		xMoveTo(widget, x, y);
-	}
-
-	function callafterfunction()
-	{
-
-		var ele = xGetElementById(widgetid);
-
-		if(ele.notDrag == 1){
-			return true;
-		}
-		if(!ele.showDragContent){
-			widgetDragEnd(widgetid);
-		}
-		if(savePosition == 1){
-			if(saveFunc != ''){
-				try{
-					sendMsg(checknum,saveFunc,eyeParam('x',xLeft(widget))+eyeParam('y',xTop(widget))+eyeParam('winName',widget.id));
-				}catch(err){}
-			}else{
-				//Getting vars here because at the moment, callafterfunction only to anything if savePosition are setted
-				var top = xTop(widget);//Getting the top.
-				var left = xLeft(widget);//Getting the left
-				sendMsgParam = eyeParam('top',top);
-				sendMsgParam = sendMsgParam + eyeParam('left',left);
-				sendMsgParam = sendMsgParam + eyeParam('winName',widget.id);
-				sendMsgParam = sendMsgParam + eyeParam('appChecknum',checknum);
-				sendMsg(xChecknum,'saveWinPosition',sendMsgParam);
-			}
-		}
-	}
-	widget.onmousedown = GoToTop;
-	xShow(widget);
-}
-
-function widgetDragStart(widgetid){
-	document.getElementById(widgetid+'_Content').style.display = 'none';
-	var window = document.getElementById(widgetid);
-	window.className = 'eyeWindowMainDrag';
-	if (window.dragBgColor) {
-		window.style.backgroundColor = window.dragBgColor;
-	}
-	if (!IEversion || IEversion > 6) {
-		updateOpacityOnce(window.dragBgAlpha, window.id);
-	}
-}
-function widgetDragEnd(widgetid){
-	document.getElementById(widgetid+'_Content').style.display = 'block';
-	xShow(widgetid+'_Content');
-	var window = document.getElementById(widgetid);
-	window.className = 'eyeWindowMain';
-	if (window.dragBgColor) {
-		window.style.backgroundColor = 'transparent';
-	}
-	if (!IEversion || IEversion > 6) {
-		updateOpacityOnce(100, window.id);
-	}
-}
-function slideClose(fatherid,widgetid) {
-
-	if (fatherid != "eyeApps" && fatherid != "minimizedAppsIn" && fatherid != "minimizedApps") {
-		var grandfatid = fatherid;
-		var eyeAppsId = 1;
+		fixPNG(imageElement,'crop');
 	} else {
-		fatherid = "minimizedAppsIn";
-		var grandfatid = "minimizedApps";
-		var eyeAppsId = 0;
-	}
-
-	var barWin = xGetElementById(widgetid+"_WindowOnBar");
-	var barWin_width = xWidth(barWin);
-	minspace[fatherid] = minspace[fatherid] - barWin_width;
-
-	if (openWindows.length > 0)
-	{
-		var minLeft = xLeft(barWin);
-		var reduceWidth = xWidth(barWin);
-
-		for (var i = 0; i < openWindows.length; i++)
-		{
-			var actWin = openWindows[i]+"_WindowOnBar";
-			if (xLeft(actWin) > minLeft) {
-				xMoveTo(actWin,xLeft(actWin),xTop(actWin));
-				xSlideTo(actWin,xLeft(actWin)-reduceWidth,xTop(actWin),1000);
-			}
+		createWidget(id + '_WindowBottom_center',id,textNode,0,0,-1,-1,-1,-1,params.wBottomCenter,0);
+		createWidget(id + '_WindowBottom_left',id,textNode,0,0,-1,-1,-1,-1,params.wBottomLeft,0);
+		createWidget(id + '_WindowBottom_right',id,textNode,0,0,-1,-1,-1,-1,params.wBottomRight,0);
+		
+		createWidget(id + '_Content',id,textNode,0,0,-1,-1,-1,-1,params.wContent,0);
+		createWidget(id + '_WindowLeft',id,textNode,0,0,-1,-1,-1,-1,params.wLeft,0);
+		createWidget(id + '_WindowRight',id,textNode,0,0,-1,-1,-1,-1,params.wRight,0);
+		
+		params.titleElement = createWidget(id + '_WindowTitle',id,textNode,0,0,-1,-1,-1,-1,params.wTitle,0);
+		createWidget(id + '_WindowTitle_border_left',id + '_WindowTitle',textNode,0,0,-1,-1,-1,-1,params.wTitleLeft,0);
+		createWidget(id + '_WindowTitle_border_right',id + '_WindowTitle',textNode,0,0,-1,-1,-1,-1,params.wTitleRight,0);
+		createWidget(id + '_WindowTitle_center',id + '_WindowTitle',textNode,0,0,-1,-1,-1,-1,params.wTitleCenter,0);
+		createWidget(id + '_WindowTitle_text',id + '_WindowTitle',document.createTextNode(tinyMCE.entityDecode(params.title)),0,0,-1,-1,-1,-1,params.wTitleText,0);
+		
+		if (params.min) {
+			params.minElement = createWidget(id + '_WindowMinimizeButton',id,textNode,1,0,params.min_pos * 16 - 10,-1,-1,-1,'eyeWindowMinimizeButton',0);
+		}
+		if (params.max) {
+			params.maxElement = createWidget(id + '_WindowMaxButton',id,textNode,1,0,params.max_pos * 16 - 10,-1,-1,-1,'eyeWindowMaxButton',0);
+		}
+		if (params.close) {
+			params.closeElement = createWidget(id + '_WindowCloseButton',id,textNode,1,0,params.close_pos * 16 - 10,-1,-1,-1,'eyeWindowCloseButton',0);
+		}
+		if (params.resize) {
+			params.resizeElement = createWidget(id + '_WindowResizeButton',id,textNode,0,0,-1,-1,-1,-1,'eyeWindowResizeButton',0);
+		}
+		if (!params.showtitle) {
+			params.titleElement = 0;
 		}
 	}
-
-	if (eyeAppsId == 0 && minspace[fatherid] < xWidth(grandfatid) && minArrows == 1) {
-		var minIconLeft = document.getElementById("minIconLeft");
-		var minIconRight = document.getElementById("minIconRight");
-		minIconLeft.innerHTML = "";
-		minIconRight.innerHTML = "";
-		minIconLeft.style.display="none";
-		minIconRight.style.display="none";
-		minArrows = 0;
-		xSlideTo("minimizedAppsIn",0,0,1000);
-	}
-
-	if (document.getElementById(widgetid+"_WindowOnBarContainer")){
-		var ele = xGetElementById(widgetid+"_WindowOnBarContainer");
-		ele.removeChild(barWin);
-		ele.parentNode.removeChild(ele);
-	}
-}
-
-function resOnDrag(e, mdx, mdy) {
-	widget = e.parentNode;
-	var x = xWidth(widget) + mdx;
-	var y = xHeight(widget) + mdy;
-	if (x < widget.minWidth) x = widget.minWidth;
-	if (y < widget.minHeight) y = widget.minHeight;
-	xResizeTo(widget, x, y);
-}
-
-function minArrowLeft() {
-	if (xLeft("minimizedAppsIn") < 0 && minArrows == 1){
-		xSlideTo("minimizedAppsIn",xLeft("minimizedAppsIn")+125,0,1000);
-	}
-}
-
-function minArrowRight() {
-	if(minArrows == 1){
-		xSlideTo("minimizedAppsIn",xLeft("minimizedAppsIn")-125,0,1000);
-	}
+	
+	Windows.Create(id,checknum,params);
 }
 
 function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var visible = params["visible"];
-	var mywidth = params["width"];
-	var pogress = params['progress'];
+	var visible = params.visible;
+	var mywidth = params.width;
+	var pogress = params.progress;
 
 	var myProgress = document.createElement('div');
 
-	if(mywidth != null) {
+	if (mywidth) {
 		myProgress.style.width = mywidth+'px';
 	}
 
@@ -3143,9 +3195,9 @@ function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myBar = document.createElement('div');
 	myBar.setAttribute('id',name);
 	myBar.className = 'blockbar';
-	myBar.paintClick = params['paintOnClick'];
-	myBar.pressed = params['pressed'];
-	myBar.select = params['select'];
+	myBar.paintClick = params.paintOnClick;
+	myBar.pressed = params.pressed;
+	myBar.select = params.select;
 	myBar.widgetType = 'Toolbar';
 	obj.appendChild(myBar);
 }
@@ -3177,9 +3229,9 @@ function Toolbar_groups(params,checknum,mypid,sync) {
 					sendMsg(checknum,this.getAttribute("name"),eval(myFriends));
 				}
 			}
-		}
+		};
 		obj.onmouseup = function() {
-		}
+		};
 	}
 }
 
@@ -3217,7 +3269,6 @@ function addLineToBar(myToolbar,id,right) {
 function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight,myWidth,right,mypid) {
 	var obj = document.getElementById(myToolbar);
 	var paintClick = obj.paintClick;
-	var select = obj.select;
 
 	var container = document.createElement('div');
 	var myFriends = Base64.decode(sync);
@@ -3236,7 +3287,7 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight
 			}else{
 				container.className = 'blockbarItemPress';
 			}
-		}
+		};
 		container.onmouseup = function(){
 			if(right == 1){
 				container.className = 'blockbarItem_right';
@@ -3244,7 +3295,7 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight
 				container.className = 'blockbarItem';
 			}
 			sendMsg(checknum,itemName,eval(myFriends));
-		}
+		};
 	}
 
 	var myImg = document.createElement('img');
@@ -3269,20 +3320,20 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight
 }
 
 function Tree_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myWidth = params["width"];
-	var myHeight = params["height"];
-	var signal = params["signal"];
-	var clickTree = params["clickTree"];
-	var sync = params["sync"];
+	var myWidth = params.width;
+	var myHeight = params.height;
+	var signal = params.signal;
+	var clickTree = params.clickTree;
+	var sync = params.sync;
 	eval('tree_'+name+' = new Tree("'+father+'","'+signal+'","'+checknum+'","'+name+'",'+myHeight+','+myWidth+','+x+','+y+',"'+clickTree+'","'+sync+'");');
 }
 
-treeClass="mktree";
-nodeClosedClass="liClosed";
-nodeOpenClass="liOpen";
-nodeBulletClass="liBullet";
-nodeLinkClass="bullet";
-preProcessTrees=true;
+var treeClass = 'mktree';
+var nodeClosedClass = 'liClosed';
+var nodeOpenClass = 'liOpen';
+var nodeBulletClass = 'liBullet';
+var nodeLinkClass = 'bullet';
+var preProcessTrees = true;
 
 function Tree(father, signal, checknum, name, height, width, x, y, clickTree,sync) {
 	this.father = father;
@@ -3300,7 +3351,7 @@ function Tree(father, signal, checknum, name, height, width, x, y, clickTree,syn
 
 	this._listOnClick = function (e) {
 		oThis.listOnClick(e);
-	}
+	};
 
 	var oFather = document.getElementById(this.father);
 	if(!oFather) {
@@ -3319,27 +3370,26 @@ function Tree(father, signal, checknum, name, height, width, x, y, clickTree,syn
 	this.setLBody(tree);
 }
 
-
 Tree.prototype.setLBody = function (oLBody) {
 	this.lBody = oLBody;
 	var c = oLBody;
-	if (typeof c.addEventListener != "undefined")
+	if (typeof c.addEventListener != 'undefined') {
 		c.addEventListener("click", this._listOnClick, false);
-	else if (typeof c.attachEvent != "undefined")
+	} else if (typeof c.attachEvent != 'undefined') {
 		c.attachEvent("onclick", this._listOnClick);
-	else
+	} else {
 		c.onclick = this._listOnClick;
+	}
 };
 
 Tree.prototype.getValue = function(e) {
 	if(this.lastClick) {
 		var obj = this.lastClick;
+		var content = '';
 		if(obj.tagName != 'SPAN') {
 			var str=obj.innerHTML;
 			str = str.replace(/^<[^>]+>[^>]+>/i,"");
-			var content = str;
-		} else {
-			var content = "";
+			content = str;
 		}
 		obj = obj.parentNode;
 		var tmpContent="";
@@ -3360,7 +3410,7 @@ Tree.prototype.getValue = function(e) {
 		return content;
 	}
 	return false;
-}
+};
 
 Tree.prototype.listOnClick = function(e) {
 	var el = e.target || e.srcElement;
@@ -3369,15 +3419,16 @@ Tree.prototype.listOnClick = function(e) {
 	var myValue = this.getValue();
 	if(this.myClickTree == 1) {
 		//send the path to the clicked element + its internal name
-		if (el.tagName == 'LI')
+		if (el.tagName == 'LI') {
 			itemName = el.id.substring(6,el.id.length); //simple item
-		else
+		} else {
 			itemName = el.parentNode.id.substring(6,el.parentNode.id.length); //sublist
-		if (myValue != false) {
+		}
+		if (myValue !== false) {
 			sendMsg(this.myChecknum,this.mySignal,eval(this.mySync)+eyeParam('itemName',itemName));
 		}
 	}
-}
+};
 
 Tree.prototype.selectItem = function(el) {
 	if(el.tagName != "LI" && el.tagName != 'SPAN') {
@@ -3391,13 +3442,71 @@ Tree.prototype.selectItem = function(el) {
 	}
 	this.lastClick = el;
 	el.style.backgroundColor = '#99CCFF';
+};
+
+// Performs 3 functions:
+// a) Expand all nodes
+// b) Collapse all nodes
+// c) Expand all nodes to reach a certain ID
+function expandCollapseList(ul,cName,itemId) {
+	if (!ul.childNodes || ul.childNodes.length === 0) { return false; }
+	// Iterate UL's children
+	for (var i=0;i<ul.childNodes.length;i++) {
+		var item = ul.childNodes[i];
+		// Searched item has been reached
+		if (itemId && item.id == itemId) { return true; }
+
+		// Current item is a LI
+		if (item.nodeName == "LI") {
+			// Iterate things in this LI
+			var itemHasSubList = false;
+			var nbOfSubItems = 0;
+			for (var j=0; j<item.childNodes.length; j++) {
+				var subItem = item.childNodes[j];
+				// Current sub item is a potential list
+				if (subItem.nodeName=="UL") {
+					// The sublist has children items
+					if (subItem.childNodes.length > 0) {
+						nbOfSubItems = subItem.childNodes.length;
+					}
+					itemHasSubList = true;
+					var ret = expandCollapseList(subItem,cName,itemId);
+					if (itemId && ret) {
+						item.className=cName;
+						//That's is to evade some odd behaviour in the most sucking browser around the world,
+						//Our friend, IE!
+						//I've discover a secred style property to evade it, it's TETAS!
+						xGetElementById('background').style.border = '0px solid';
+						return true;
+					}
+				}
+				else {
+					// The sub item is a final node
+					if (subItem.nodeName == "LI") {
+						nbOfSubItems = 1;
+					}
+				}
+			}
+			if (nbOfSubItems && itemHasSubList && !itemId) {
+				item.className = cName;
+				xGetElementById('background').style.border = '0px solid';
+			}
+		}
+	}
+}
+
+// Expands enough nodes to expose an LI with a given ID
+function expandToItem(treeId,itemId) {
+	var ul = document.getElementById(treeId);
+	if (!ul) { return false; }
+	expandCollapseList(ul,nodeOpenClass,itemId);
 }
 
 function selectTreeItem(list,name) {
 	var item = document.getElementById(name);
-	if (item == null) { return false; }
+	if (!item) { return false; }
 	if(item.className == 'liOpen' || item.className == 'liClosed') {
-		for(var i=0; i<item.childNodes.length; i++) {
+		for (var i = 0; i < item.childNodes.length; i++) {
 			if (item.childNodes[i].tagName == 'SPAN') {
 				item = item.childNodes[i];
 				break;
@@ -3422,80 +3531,23 @@ function addItem(list, name, content) {
 	item.innerHTML = content;
 	father.appendChild(item);
 }
+
 // Full expands a tree with a given ID
 function expandTree(treeId) {
 	var ul = document.getElementById(treeId);
-	if (ul == null) { return false; }
+	if (!ul) { return false; }
 	expandCollapseList(ul,nodeOpenClass);
 }
 
 // Fully collapses a tree with a given ID
 function collapseTree(treeId) {
 	var ul = document.getElementById(treeId);
-	if (ul == null) { return false; }
+	if (!ul) { return false; }
 	expandCollapseList(ul,nodeClosedClass);
 }
 
-// Expands enough nodes to expose an LI with a given ID
-function expandToItem(treeId,itemId) {
-	var ul = document.getElementById(treeId);
-	if (ul == null) { return false; }
-	expandCollapseList(ul,nodeOpenClass,itemId);
-}
-
-// Performs 3 functions:
-// a) Expand all nodes
-// b) Collapse all nodes
-// c) Expand all nodes to reach a certain ID
-function expandCollapseList(ul,cName,itemId) {
-	if (!ul.childNodes || ul.childNodes.length == 0) { return false; }
-	// Iterate UL's children
-	for (var i=0;i<ul.childNodes.length;i++) {
-		var item = ul.childNodes[i];
-		// Searched item has been reached
-		if (itemId != null && item.id == itemId) { return true; }
-
-		// Current item is a LI
-		if (item.nodeName == "LI") {
-			// Iterate things in this LI
-			var itemHasSubList = false;
-			var nbOfSubItems = 0;
-			for (var j=0; j<item.childNodes.length; j++) {
-				var subItem = item.childNodes[j];
-				// Current sub item is a potential list
-				if (subItem.nodeName=="UL") {
-					// The sublist has children items
-					if (subItem.childNodes.length > 0) {
-						nbOfSubItems = subItem.childNodes.length;
-					}
-					itemHasSubList = true;
-					var ret = expandCollapseList(subItem,cName,itemId);
-					if (itemId!=null && ret) {
-						item.className=cName;
-						//That's is to evade some odd behaviour in the most sucking browser around the world,
-						//Our friend, IE!
-						//I've discover a secred style property to evade it, it's TETAS!
-						xGetElementById('background').style.border = '0px solid';
-						return true;
-					}
-				}
-				else {
-					// The sub item is a final node
-					if (subItem.nodeName == "LI") {
-						nbOfSubItems = 1;
-					}
-				}
-			}
-			if (nbOfSubItems != 0 && itemHasSubList && itemId==null) {
-				item.className = cName;
-				xGetElementById('background').style.border = '0xp solid';
-			}
-		}
-	}
-}
-
 function processList(ul) {
-	if (!ul.childNodes || ul.childNodes.length==0) { return; }
+	if (!ul.childNodes || ul.childNodes.length === 0) { return; }
 	// Iterate LIs
 	for (var itemi=0;itemi<ul.childNodes.length;itemi++) {
 		var item = ul.childNodes[itemi];
@@ -3514,7 +3566,7 @@ function processList(ul) {
 			s.className = nodeLinkClass;
 			if (subLists) {
 				// This LI has UL's in it, so it's a +/- node
-				if (item.className==null || item.className=="") {
+				if (!item.className || item.className === '') {
 					item.className = nodeClosedClass;
 				}
 				// If it's just text, make the text work as the link also
@@ -3525,12 +3577,12 @@ function processList(ul) {
 				s.onclick = function () {
 					this.parentNode.className = (this.parentNode.className==nodeOpenClass) ? nodeClosedClass : nodeOpenClass;
 					return false;
-				}
+				};
 			}
 			else {
 				// No sublists, so it's just a bullet node
 				item.className = nodeBulletClass;
-				s.onclick = function () { return false; }
+				s.onclick = function () { return false; };
 			}
 			s.appendChild(document.createTextNode(t));
 			item.insertBefore(s,item.firstChild);
@@ -3539,9 +3591,7 @@ function processList(ul) {
 }
 
 function SimpleMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var sFather = params["sFather"];
-	var myFather = params["mFather"];
-	var rFather = params['rFather'];
+	var myFather = params.mFather;
 	var obj = document.getElementById(father);
 	if(!obj) {
 		return false;
@@ -3568,26 +3618,6 @@ function SimpleMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	addClickHandler(openedDiv,codeClick);
 }
 
-function showSimpleMenu(e,menuName,rFather) {
-	if(lastMenu != "") {
-		hideSimpleMenu(lastMenu);
-	}
-	lastMenu = menuName;
-	var top = e.pageY;
-	var left = e.pageX;
-	if(IEversion && IEversion < 7){
-		var father = document.getElementById(rFather);
-		top = e.offsetY;
-		left = e.offsetX;
-		top += xTop(father);
-		left += xLeft(father);
-	}
-	myMenu = document.getElementById(menuName);
-	myMenu.style.top = top+'px';
-	myMenu.style.left = left+'px';
-	myMenu.style.display = 'block';
-}
-
 function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	var obj = document.getElementById(menuName);
 	if(!obj) {
@@ -3603,7 +3633,7 @@ function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params,imgId
 	fixPNG(imgId);
 }
 
-function hideSimpleMenu(menuName) {
+function hideContextMenu(menuName) {
 	obj = document.getElementById(menuName);
 	if(!obj) {
 		return;
@@ -3611,55 +3641,8 @@ function hideSimpleMenu(menuName) {
 	document.getElementById(menuName).style.display='none';
 }
 
-function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var sFather = params["sFather"];
-	var myFather = params["mFather"];
-	var obj = document.getElementById(father);
-	if(!obj) {
-		return false;
-	}
-
-	var myMenu = document.createElement('div');
-	myMenu.setAttribute('id',name);
-	myMenu.className = 'eyeContextMenu';
-	myMenu.widgetType = 'ContextMenu';
-	myMenu.style.display = 'none';
-	if(IEversion && IEversion < 7){
-		myMenu.style.position = 'absolute';
-	}else{
-		myMenu.style.position = 'fixed';
-	}
-	myMenu.style.zIndex = 9000000;
-	if(myFather) {
-		document.getElementById(myFather).appendChild(myMenu);
-	} else {
-		obj.appendChild(myMenu);
-	}
-	obj.oncontextmenu = function(e) {
-		var e = new xEvent(e);
-		if(e.target.id == father || ( (e.target.parentNode.id == father) && (sFather == 1) ) ) {
-			showContextMenu(e,name);
-			return false;
-		}
-	}
-	obj.onmousemove = function (e) {
-		if (eyeKeyDown == 17) {
-			var e = new xEvent(e);
-			if (e.target.id == father || ((e.target.parentNode.id == father) && (sFather == 1))) {
-				showContextMenu(e,name);
-				eyeKeyDown = 0;
-				return false;
-			}
-		}
-	}
-
-	var openedDiv = name;
-	var codeClick = "hideContextMenu('"+name+"');";
-	addClickHandler(openedDiv,codeClick);
-}
-lastMenu = "";
 function showContextMenu(e,menuName) {
-	if (lastMenu != '') {
+	if (lastMenu !== '') {
 		hideContextMenu(lastMenu);
 	}
 	lastMenu = menuName;
@@ -3695,6 +3678,53 @@ function showContextMenu(e,menuName) {
 	myMenu.style.top = top + 'px';
 }
 
+function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var sFather = params.sFather;
+	var myFather = params.mFather;
+	var obj = document.getElementById(father);
+	if(!obj) {
+		return false;
+	}
+
+	var myMenu = document.createElement('div');
+	myMenu.setAttribute('id',name);
+	myMenu.className = 'eyeContextMenu';
+	myMenu.widgetType = 'ContextMenu';
+	myMenu.style.display = 'none';
+	if(IEversion && IEversion < 7){
+		myMenu.style.position = 'absolute';
+	}else{
+		myMenu.style.position = 'fixed';
+	}
+	myMenu.style.zIndex = 9000000;
+	if(myFather) {
+		document.getElementById(myFather).appendChild(myMenu);
+	} else {
+		obj.appendChild(myMenu);
+	}
+	obj.oncontextmenu = function(e) {
+		e = new xEvent(e);
+		if(e.target.id == father || ( (e.target.parentNode.id == father) && (sFather == 1) ) ) {
+			showContextMenu(e,name);
+			return false;
+		}
+	};
+	obj.onmousemove = function (e) {
+		if (eyeKeyDown == 17) {
+			e = new xEvent(e);
+			if (e.target.id == father || ((e.target.parentNode.id == father) && (sFather == 1))) {
+				showContextMenu(e,name);
+				eyeKeyDown = 0;
+				return false;
+			}
+		}
+	};
+
+	var openedDiv = name;
+	var codeClick = "hideContextMenu('"+name+"');";
+	addClickHandler(openedDiv,codeClick);
+}
+
 function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	var obj = document.getElementById(menuName);
 	if(!obj) {
@@ -3712,40 +3742,34 @@ function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	}
 }
 
-function hideContextMenu(menuName) {
-	obj = document.getElementById(menuName);
-	if(!obj) {
-		return;
-	}
-	document.getElementById(menuName).style.display='none';
-}
-
 function Applet_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var height = params["height"];
-	var width = params["width"];
-	var codebase = params["codebase"];
-	var visible = params["visible"];
-	var appletParamsNames = getArrayArg(params["appletParamsNames"]);
-	var appletParamsValues = getArrayArg(params["appletParamsValues"]);
+	var height = params.height;
+	var width = params.width;
+	var codebase = params.codebase;
+	var visible = params.visible;
+	var appletParamsNames = getArrayArg(params.appletParamsNames);
+	var appletParamsValues = getArrayArg(params.appletParamsValues);
+	var myApplet;
+	var key;
 
 	if(!IEversion || IEversion > 8) {
-		var myApplet = document.createElement("embed");
+		myApplet = document.createElement("embed");
 		myApplet.setAttribute('type', 'application/x-java-applet');
 		myApplet.setAttribute('width', width);
 		myApplet.setAttribute('height', height);
 		myApplet.setAttribute('id', name);
 
-		for(key in appletParamsNames){
+		for (key in appletParamsNames) {
 			myApplet.setAttribute(appletParamsNames[key], appletParamsValues[key]);
 		}
 	} else {
-		var myApplet = document.createElement("object");
+		myApplet = document.createElement("object");
 
 		myApplet.setAttribute('width',width);
 		myApplet.setAttribute('height',height);
 		myApplet.setAttribute('id', name);
 
-		for(key in appletParamsNames){
+		for (key in appletParamsNames) {
 			var myTempParam = document.createElement('param');
 			myTempParam.setAttribute('name',appletParamsNames[key]);
 			myTempParam.setAttribute('value',appletParamsValues[key]);
@@ -3760,19 +3784,17 @@ function Applet_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 }
 
 function Split_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var myheight = params["height"];
-	var mywidth = params["width"];
-	var orientation = parseInt(params["orientation"]);
-	var position = params["position"];
-	var visible = params["visible"];
-	var sendResizeMsg = parseInt(params["sendResizeMsg"]);
-	var sigResize = params["sigResize"];
+	var myheight = params.height;
+	var mywidth = params.width;
+	var orientation = parseInt(params.orientation, 10);
+	var position = params.position;
+	var visible = params.visible;
+	var sigResize = params.sigResize;
 
 	var globalContainer = document.createElement('div');
 	globalContainer.className = 'eyeSplit';
 	globalContainer.setAttribute('id',name+'_split');
 	globalContainer.style.position='absolute';
-	globalContainer.style
 	if(visible == 1) {
 		globalContainer.style.display='block';
 	} else {
@@ -3842,40 +3864,44 @@ function Split_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	globalContainer.appendChild(lastPanel);
 	globalContainer.appendChild(splitter);
 
-	xEnableDrag2(splitter,
+	xEnableDrag2(
+		splitter,
 		function(el, x, y, ev) {
 			firstPanel.style.display = 'none';
 			lastPanel.style.display = 'none';
-		},null,function(el, x, y, ev) {
+		},
+		null,
+		function(el, x, y, ev) {
 			var myY = el.style.top;
-			myY = parseInt(myY.substring(0,myY.length-2));
+			myY = parseInt(myY.substring(0,myY.length-2), 10);
 			var myX = el.style.left;
-			myX = parseInt(myX.substring(0,myX.length-2));
+			myX = parseInt(myX.substring(0,myX.length-2), 10);
 			if(orientation == 1) {
 				position = myX;
 				totalWidth = globalContainer.style.width;
-				totalWidth = parseInt(totalWidth.substring(0,totalWidth.length-2))-3;
+				totalWidth = parseInt(totalWidth.substring(0,totalWidth.length-2), 10)-3;
 				firstPanel.style.width = totalWidth - (totalWidth - position)+'px';
 				lastPanel.style.width = totalWidth - position-1+'px';
 				sendMsg(checknum,sigResize,eyeParam('arg',totalWidth - (totalWidth - position))+eyeParam('arg',totalWidth - position));
 			} else {
 				position = myY;
 				totalHeight = globalContainer.style.height;
-				totalHeight = parseInt(totalHeight.substring(0,totalHeight.length-2))-3;
+				totalHeight = parseInt(totalHeight.substring(0,totalHeight.length-2), 10)-3;
 				firstPanel.style.height = totalHeight - (totalHeight - position)+'px';
 				lastPanel.style.height = totalHeight - position-1+'px';
 				sendMsg(checknum,sigResize,eyeParam('arg',totalHeight - (totalHeight - position))+eyeParam('arg',totalHeight - position));
 			}
 			firstPanel.style.display = 'block';
 			lastPanel.style.display = 'block';
-		}
-	,globalContainer);
+		},
+		globalContainer
+	);
 
 	createWidget(name+'_Container',father,globalContainer,horiz,vert,x,y,-1,-1,"eyeSplitContainer",cent, 'px', visible);
 }
 
 function splitter_setPosition(id,pos,orientation,checknum,sigResize) {
-	var position = parseInt(pos);
+	var position = parseInt(pos, 10);
 	var globalContainer = document.getElementById(id+'_split');
 	var firstPanel = document.getElementById(id+'_first');
 	var lastPanel = document.getElementById(id+'_last');
@@ -3883,14 +3909,14 @@ function splitter_setPosition(id,pos,orientation,checknum,sigResize) {
 	if(orientation == 1) {
 		splitter.style.left = position+'px';
 		totalWidth = globalContainer.style.width;
-		totalWidth = parseInt(totalWidth.substring(0,totalWidth.length-2))-3;
+		totalWidth = parseInt(totalWidth.substring(0,totalWidth.length-2), 10)-3;
 		firstPanel.style.width = totalWidth - (totalWidth - position)+'px';
 		lastPanel.style.width = totalWidth - position-1+'px';
 		sendMsg(checknum,sigResize,eyeParam('arg',totalWidth - (totalWidth - position))+eyeParam('arg',totalWidth - position));
 	} else {
 		splitter.style.top = position+'px';
 		totalHeight = globalContainer.style.height;
-		totalHeight = parseInt(totalHeight.substring(0,totalHeight.length-2))-3;
+		totalHeight = parseInt(totalHeight.substring(0,totalHeight.length-2), 10)-3;
 		firstPanel.style.height = totalHeight - (totalHeight - position)+'px';
 		lastPanel.style.height = totalHeight - position-1+'px';
 		sendMsg(checknum,sigResize,eyeParam('arg',totalHeight - (totalHeight - position))+eyeParam('arg',totalHeight - position));
@@ -3900,13 +3926,13 @@ function splitter_setPosition(id,pos,orientation,checknum,sigResize) {
 function increaseWidth(ele,w) {
 	var myEle = document.getElementById(ele);
 	var myW = myEle.style.width;
-	myW = parseInt(myW.substring(0,myW.length-2));
+	myW = parseInt(myW.substring(0,myW.length-2), 10);
 	myEle.style.width = myW+w+'px';
 }
 
 function increaseHeight(ele,h) {
 	var myEle = document.getElementById(ele);
 	var myH = myEle.style.height;
-	myH = parseInt(myH.substring(0,myH.length-2));
+	myH = parseInt(myH.substring(0,myH.length-2), 10);
 	myEle.style.height = myH+h+'px';
 }

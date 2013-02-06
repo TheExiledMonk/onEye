@@ -93,8 +93,8 @@ function lib_eyeSessions_getSessionId(){
 	if(isset($_GET[FLASH_UPLOAD_FIX]) && isset($_GET[COOKIE_ID])){
 		return $_GET[COOKIE_ID];
 	}
-	if(isset($_REQUEST[COOKIE_ID])){
-		return $_REQUEST[COOKIE_ID];
+	if(isset($_COOKIE[COOKIE_ID])){
+		return $_COOKIE[COOKIE_ID];
 	}
 	return false;
 }

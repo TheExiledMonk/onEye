@@ -15,7 +15,7 @@
 // | Authors: Aidan Lister <aidan@php.net>                                |
 // +----------------------------------------------------------------------+
 //
-// $Id: var_export.php,v 1.2 2005/11/21 10:57:23 ggiunta Exp $
+// $Id: var_export.php 2 2009-03-16 20:22:51Z ggiunta $
 
 
 /**

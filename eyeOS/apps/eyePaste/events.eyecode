@@ -56,7 +56,7 @@ function eyePaste_libs_Dialog($from,$file,$to,$callback) {
 		'buttons' => $buttons,
 		'content' => '"%s" already exists. Please enter a new name or replace the existing one.',
 		'hiddens' => array(array('eyePaste_Hidden_FromPath',$from),array('eyePaste_Hidden_FromFilename',$file),array('eyePaste_Hidden_ToPath',$to),array('eyePaste_Hidden_Callback',$callback)),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/q.png',
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/rename.png',
 		'savePosition' => 1,
 		'textbox_event' => 'Rename',
 		'textbox_name' => 'eyePaste_Textbox',
@@ -78,7 +78,7 @@ function eyePaste_libs_Do($from,$file,$to,$file2,$callback,$replace = 0) {
 		eyex('messageBox',array('content' => '"%s" cannot be copied from trash.','tokens' => array($file)));
 	} elseif ($to[1] == 'trash') {
 		eyex('messageBox',array('content' => '"%s" cannot be copied to trash.','tokens' => array($file)));
-	} elseif ($path[1] != 'real' && utf8_strtolower(strrchr($file,'.')) == '.' . utf8_strtolower(EYEOS_LINK_EXT) && vfs('real_fileExists',array($from[0] . '/' . $file))) {
+	} elseif ($from[1] != 'real' && utf8_strtolower(strrchr($file,'.')) == '.' . utf8_strtolower(EYEOS_LINK_EXT) && vfs('real_fileExists',array($from[0] . '/' . $file))) {
 		eyex('messageBox',array('content' => 'Links cannot be pasted!'));
 	} else {
 		if ($from[1] . '://' . $from[2] . '/' . $file == $to[1] . '://' . $to[2] . '/' . $file2) {

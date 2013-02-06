@@ -90,11 +90,13 @@ class ArchiveExtractor {
   }  
 }
 
+
 /**
-* @version $Id: pclerror.lib.php,v 1.2 2004/08/26 05:20:52 rcastley Exp $
-* @package Mambo_4.5.1
+* @package Mambo
 */
 
+/** ensure this file is being included by a parent file */
+// defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' ); // eyeOS
 
 // --------------------------------------------------------------------------------
 // PhpConcept Library (PCL) Error 1.0
@@ -102,11 +104,11 @@ class ArchiveExtractor {
 // License GNU/GPL - Vincent Blavet - Mars 2001
 // http://www.phpconcept.net & http://phpconcept.free.fr
 // --------------------------------------------------------------------------------
-// Fran�ais :
+// Français :
 //   La description de l'usage de la librairie PCL Error 1.0 n'est pas encore
-//   disponible. Celle-ci n'est pour le moment distribu�e qu'avec les
-//   d�veloppements applicatifs de PhpConcept.
-//   Une version ind�pendante sera bientot disponible sur http://www.phpconcept.net
+//   disponible. Celle-ci n'est pour le moment distribuée qu'avec les
+//   développements applicatifs de PhpConcept.
+//   Une version indépendante sera bientot disponible sur http://www.phpconcept.net
 //
 // English :
 //   The PCL Error 1.0 library description is not available yet. This library is
@@ -117,22 +119,26 @@ class ArchiveExtractor {
 //
 //   * Avertissement :
 //
-//   Cette librairie a �t� cr��e de fa�on non professionnelle.
-//   Son usage est au risque et p�ril de celui qui l'utilise, en aucun cas l'auteur
-//   de ce code ne pourra �tre tenu pour responsable des �ventuels d�gats qu'il pourrait
+//   Cette librairie a été créée de façon non professionnelle.
+//   Son usage est au risque et péril de celui qui l'utilise, en aucun cas l'auteur
+//   de ce code ne pourra être tenu pour responsable des éventuels dégats qu'il pourrait
 //   engendrer.
-//   Il est entendu cependant que l'auteur a r�alis� ce code par plaisir et n'y a
-//   cach� aucun virus, ni malveillance.
-//   Cette libairie est distribu�e sous la license GNU/GPL (http://www.gnu.org)
+//   Il est entendu cependant que l'auteur a réalisé ce code par plaisir et n'y a
+//   caché aucun virus, ni malveillance.
+//   Cette libairie est distribuée sous la license GNU/GPL (http://www.gnu.org)
 //
 //   * Auteur :
 //
-//   Ce code a �t� �crit par Vincent Blavet (vincent@blavet.net) sur son temps
+//   Ce code a été écrit par Vincent Blavet (vincent@blavet.net) sur son temps
 //   de loisir.
 //
 // --------------------------------------------------------------------------------
 
 // ----- Look for double include
+if (!defined("PCLERROR_LIB"))
+{
+  define( "PCLERROR_LIB", 1 );
+
   // ----- Version
   $g_pcl_error_version = "1.0";
 
@@ -169,8 +175,8 @@ class ArchiveExtractor {
     global $g_pcl_error_code;
 
     $v_message =  "<html><body>";
-    $v_message .= "<p align=center><font color=red bgcolor=white><b>PclError Library has detected a fatal error on file '$p_file', line $p_line</b></font></p>";
-    $v_message .= "<p align=center><font color=red bgcolor=white><b>$p_error_string</b></font></p>";
+    $v_message .= "<p align=center><font color=red bgcolor=white><strong>PclError Library has detected a fatal error on file '$p_file', line $p_line</strong></font></p>";
+    $v_message .= "<p align=center><font color=red bgcolor=white><strong>$p_error_string</strong></font></p>";
     $v_message .= "</body></html>";
     die($v_message);
   }
@@ -221,11 +227,15 @@ class ArchiveExtractor {
 
 
 // ----- End of double include look
+}
+
 
 /**
-* @version $Id: pcltrace.lib.php,v 1.2 2004/08/26 05:20:52 rcastley Exp $
-* @package Mambo_4.5.1
-*/
+* @package Mambo
+*/ 
+
+/** ensure this file is being included by a parent file */
+// defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' ); // eyeOS
 
 // --------------------------------------------------------------------------------
 // PhpConcept Library (PCL) Trace 1.0
@@ -233,11 +243,11 @@ class ArchiveExtractor {
 // License GNU/GPL - Vincent Blavet - Janvier 2001
 // http://www.phpconcept.net & http://phpconcept.free.fr
 // --------------------------------------------------------------------------------
-// Fran�ais :
+// Français :
 //   La description de l'usage de la librairie PCL Trace 1.0 n'est pas encore
-//   disponible. Celle-ci n'est pour le moment distribu�e qu'avec l'application
+//   disponible. Celle-ci n'est pour le moment distribuée qu'avec l'application
 //   et la librairie PhpZip.
-//   Une version ind�pendante sera bientot disponible sur http://www.phpconcept.net
+//   Une version indépendante sera bientot disponible sur http://www.phpconcept.net
 //
 // English :
 //   The PCL Trace 1.0 library description is not available yet. This library is
@@ -248,20 +258,25 @@ class ArchiveExtractor {
 //
 //   * Avertissement :
 //
-//   Cette librairie a �t� cr��e de fa�on non professionnelle.
-//   Son usage est au risque et p�ril de celui qui l'utilise, en aucun cas l'auteur
-//   de ce code ne pourra �tre tenu pour responsable des �ventuels d�gats qu'il pourrait
+//   Cette librairie a été créée de façon non professionnelle.
+//   Son usage est au risque et péril de celui qui l'utilise, en aucun cas l'auteur
+//   de ce code ne pourra être tenu pour responsable des éventuels dégats qu'il pourrait
 //   engendrer.
-//   Il est entendu cependant que l'auteur a r�alis� ce code par plaisir et n'y a
-//   cach� aucun virus, ni malveillance.
-//   Cette libairie est distribu�e sous la license GNU/GPL (http://www.gnu.org)
+//   Il est entendu cependant que l'auteur a réalisé ce code par plaisir et n'y a
+//   caché aucun virus, ni malveillance.
+//   Cette libairie est distribuée sous la license GNU/GPL (http://www.gnu.org)
 //
 //   * Auteur :
 //
-//   Ce code a �t� �crit par Vincent Blavet (vincent@blavet.net) sur son temps
+//   Ce code a été écrit par Vincent Blavet (vincent@blavet.net) sur son temps
 //   de loisir.
 //
 // --------------------------------------------------------------------------------
+
+// ----- Look for double include
+if (!defined("PCLTRACE_LIB"))
+{
+  define( "PCLTRACE_LIB", 1 );
 
   // ----- Version
   $g_pcl_trace_version = "1.0";
@@ -344,7 +359,7 @@ class ArchiveExtractor {
 
     // ----- Clean
     $g_pcl_trace_mode = "memory";
-    //unset($g_pcl_trace_entries);
+    // unset($g_pcl_trace_entries); // eyeOS
     unset($g_pcl_trace_name);
     unset($g_pcl_trace_index);
 
@@ -663,19 +678,25 @@ class ArchiveExtractor {
       for ($i=0; $i<$p_entry["index"]; $i++)
         echo "---";
       if ($p_entry["type"] == 1)
-        echo "<b>".$p_entry["name"]."</b>(".$p_entry["param"].") : ".$p_entry["message"]." [".$p_entry["file"].", ".$p_entry["line"]."]<br>";
+        echo "<b>".$p_entry["name"]."</b>(".$p_entry["param"].") : ".$p_entry["message"]." [".$p_entry["file"].", ".$p_entry["line"]."]<br />";
       else if ($p_entry["type"] == 2)
-        echo "<b>".$p_entry["name"]."</b>()=".$p_entry["param"]." : ".$p_entry["message"]." [".$p_entry["file"].", ".$p_entry["line"]."]<br>";
+        echo "<b>".$p_entry["name"]."</b>()=".$p_entry["param"]." : ".$p_entry["message"]." [".$p_entry["file"].", ".$p_entry["line"]."]<br />";
       else
-        echo $p_entry["message"]." [".$p_entry["file"].", ".$p_entry["line"]."]<br>";
+        echo $p_entry["message"]." [".$p_entry["file"].", ".$p_entry["line"]."]<br />";
     }
   }
   // --------------------------------------------------------------------------------
+
+// ----- End of double include look
+}
+
+
 /**
-* @version $Id: pcltar.lib.php,v 1.4 2004/09/22 06:41:22 prazgod Exp $
-* @package Mambo_4.5.1
+* @package Mambo
 */
 
+/** ensure this file is being included by a parent file */
+// defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' ); // eyeOS
 
 // --------------------------------------------------------------------------------
 // PhpConcept Library - Tar Module 1.3
@@ -691,7 +712,7 @@ class ArchiveExtractor {
 //   gzip tools and WinZip application.
 //
 // Description :
-//   See readme.txt (English & Fran�ais) and http://www.phpconcept.net
+//   See readme.txt (English & Français) and http://www.phpconcept.net
 //
 // Warning :
 //   This library and the associated files are non commercial, non professional
@@ -701,6 +722,11 @@ class ArchiveExtractor {
 //   The use of this software is at the risk of the user.
 //
 // --------------------------------------------------------------------------------
+
+// ----- Look for double include
+if (!defined("PCL_TAR"))
+{
+  define( "PCL_TAR", 1 );
 
   // ----- Configuration variable
   // Theses values may be changed by the user of PclTar library
@@ -734,6 +760,18 @@ class ArchiveExtractor {
 //  $g_pcltar_extension = utf8_substr(strrchr(utf8_basename($PATH_TRANSLATED), '.'), 1);
   $g_pcltar_extension = utf8_substr(strrchr(utf8_basename(@$_SERVER["PATH_TRANSLATED"]), '.'), 1);
 
+  // ----- Include other libraries
+  // This library should be called by each script before the include of PhpZip
+  // Library in order to limit the potential 'lib' directory path problem.
+
+  if (!defined("PCLERROR_LIB"))
+  {
+    include($g_pcltar_lib_dir."/pclerror.lib.".$g_pcltar_extension);
+  }
+  if (!defined("PCLTRACE_LIB"))
+  {
+    include($g_pcltar_lib_dir."/pcltrace.lib.".$g_pcltar_extension);
+  }
 
   // --------------------------------------------------------------------------------
   // Function : PclTarCreate()
@@ -1063,7 +1101,7 @@ class ArchiveExtractor {
   //   $p_filelist, in the directory
   //   $p_path. The relative path of the archived files are keep and become
   //   relative to $p_path.
-  //   If a directory is sp�cified in the list, all the files from this directory
+  //   If a directory is spécified in the list, all the files from this directory
   //   will be extracted.
   //   If a file with the same name already exists it will be replaced.
   //   If the path to the file does not exist, it will be created.
@@ -2295,7 +2333,7 @@ class ArchiveExtractor {
     if ($p_stored_filename == "")
       $p_stored_filename = $p_filename;
     $v_reduce_filename = PclTarHandlePathReduction($p_stored_filename);
-    TrFctMessage(__FILE__, __LINE__, 2, "Filename (reduced) '$v_reduce_filename', utf8_strlen ".utf8_strlen($v_reduce_filename));
+    TrFctMessage(__FILE__, __LINE__, 2, "Filename (reduced) '$v_reduce_filename', strlen ".utf8_strlen($v_reduce_filename));
 
     // ----- Get file info
     $v_info = stat($p_filename);
@@ -2695,16 +2733,16 @@ class ArchiveExtractor {
             $v_extract_file = 0;
           }
           // ----- Look if the extracted file is older
-          else if (filemtime($v_header['filename']) > $v_header["mtime"])
+          else if (filemtime($v_header["filename"]) > $v_header["mtime"])
           {
-            TrFctMessage(__FILE__, __LINE__, 2, "Existing file '".$v_header['filename']."' is newer (".date("l dS of F Y h:i:s A", filemtime($v_header['filename'])).") than the extracted file (".date("l dS of F Y h:i:s A", $v_header['mtime']).")");
+            TrFctMessage(__FILE__, __LINE__, 2, "Existing file '" . $v_header['filename'] . "' is newer (".date("l dS of F Y h:i:s A", filemtime($v_header['filename'])).") than the extracted file (".date("l dS of F Y h:i:s A", $v_header['mtime']).")"); // eyeOS
 
             // ----- Change the file status
             $v_header["status"] = "newer_exist";
 
             // ----- Skip the extract
-            //$v_extraction_stopped = 1;
-            //$v_extract_file = 0;
+            // $v_extraction_stopped = 1; // eyeOS
+            // $v_extract_file = 0; // eyeOS
           }
         }
 
@@ -2828,9 +2866,9 @@ class ArchiveExtractor {
         if ($p_tar_mode == "tar")
           fseek($v_tar, ($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))+(ceil(($v_header[size]/512))*512));
         else
-          gzseek($v_tar, gztell($v_tar)+(ceil(($v_header['size']/512))*512));
+          gzseek($v_tar, gztell($v_tar)+(ceil(($v_header['size']/512))*512)); // eyeOS
 
-        TrFctMessage(__FILE__, __LINE__, 4, "Position apr�s jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
+        TrFctMessage(__FILE__, __LINE__, 4, "Position après jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
       }
 
       if ($p_tar_mode == "tar")
@@ -3061,7 +3099,7 @@ class ArchiveExtractor {
         else
           gzseek($v_tar, gztell($v_tar)+(ceil(($v_header[size]/512))*512));
 
-        TrFctMessage(__FILE__, __LINE__, 4, "Position apr�s jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
+        TrFctMessage(__FILE__, __LINE__, 4, "Position après jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
       }
 
       if ($p_tar_mode == "tar")
@@ -3183,8 +3221,8 @@ class ArchiveExtractor {
             $v_header[status] = "newer_exist";
 
             // ----- Skip the extract
-            //$v_extraction_stopped = 1;
-            //$v_extract_file = 0;
+            // $v_extraction_stopped = 1; // eyeOS
+            // $v_extract_file = 0; // eyeOS
           }
         }
 
@@ -3498,7 +3536,7 @@ class ArchiveExtractor {
         else
           gzseek($v_tar, gztell($v_tar)+(ceil(($v_header[size]/512))*512));
 
-        TrFctMessage(__FILE__, __LINE__, 4, "Position apr�s jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
+        TrFctMessage(__FILE__, __LINE__, 4, "Position après jump [".($p_tar_mode=="tar"?ftell($v_tar):gztell($v_tar))."]");
       }
 
       // ----- Look for end of file
@@ -4147,7 +4185,7 @@ class ArchiveExtractor {
     TrFctStart(__FILE__, __LINE__, "PclTarHandleExtension", "tar=$p_tarname");
 
     // ----- Look for file extension
-    if ((utf8_substr($p_tarname, -7) == ".tar.gz") || (utf8_substr($p_tarname, -4) == ".tgz") || (utf8_substr($p_tarname, -11) == ".eyepackage"))
+    if ((utf8_substr($p_tarname, -7) == ".tar.gz") || (utf8_substr($p_tarname, -4) == ".tgz") || (utf8_substr($p_tarname, -11) == ".eyepackage")) // eyeOS
     {
       TrFctMessage(__FILE__, __LINE__, 2, "Archive is a gzip tar");
       $v_tar_mode = "tgz";
@@ -4221,4 +4259,9 @@ class ArchiveExtractor {
     TrFctEnd(__FILE__, __LINE__, $v_result);
     return $v_result;
   }
+  // --------------------------------------------------------------------------------
+
+
+// ----- End of double include look
+}
 ?>

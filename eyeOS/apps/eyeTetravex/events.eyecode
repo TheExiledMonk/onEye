@@ -320,11 +320,11 @@ function eyeTetravex_compareRegularHighscores($a, $b) {
 		$return = 1;
 	}
 	else {
-		$a_min = intval(substr($a['time'][0], 0, strpos($a['time'][0],':')));
-		$a_sec = intval(substr($a['time'][0], strpos($a['time'][0],':') +1));
+		$a_min = intval(utf8_substr($a['time'][0], 0, utf8_strpos($a['time'][0],':')));
+		$a_sec = intval(utf8_substr($a['time'][0], utf8_strpos($a['time'][0],':') +1));
 
-		$b_min = intval(substr($b['time'][0], 0, strpos($b['time'][0],':')));
-		$b_sec = intval(substr($b['time'][0], strpos($b['time'][0],':') +1));
+		$b_min = intval(utf8_substr($b['time'][0], 0, utf8_strpos($b['time'][0],':')));
+		$b_sec = intval(utf8_substr($b['time'][0], utf8_strpos($b['time'][0],':') +1));
 
 		if ($a_min < $b_min) {
 			$return = -1;

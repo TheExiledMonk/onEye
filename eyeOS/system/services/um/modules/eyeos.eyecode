@@ -60,6 +60,7 @@
 * @date 2008/03/11
 */
 function service_um_createUser($params = null){
+	global $currentUser;
 //Check arguments
 	if(!$params['username'] || !$params['password']) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
@@ -674,6 +675,7 @@ function service_um_getAllUsersBy($params = '') {
 	if (isset($params['count'])) {
 		$count = intval($params['count']);
 	}
+	$allUsers = array();
 	$counted = 0;
 	$acronyms = vfs('real_getDirContent',array(EYE_ROOT . '/' . ACCOUNT_DIR . '/'));
 	foreach ($acronyms as $acronymUrl) {
@@ -685,7 +687,7 @@ function service_um_getAllUsersBy($params = '') {
 					$user = utf8_basename($userUrl,'.xml');
 					if (isset($count) && $count <= $counted) {
 						return $allUsers;
-					} elseif (!isset($beginning) && !isset($after) || isset($beginning) && !isset($after) && utf8_strtolower(utf8_substr($user,0,strlen($beginning))) == $beginning && utf8_strtolower(utf8_substr($user,- strlen($after))) == $after || isset($beginning) && !isset($after) && utf8_strtolower(utf8_substr($user,0,strlen($beginning))) == $beginning || !isset($beginning) && isset($after) && utf8_strtolower(utf8_substr($user,- strlen($after))) == $after) {
+					} elseif (!isset($beginning) && !isset($after) || isset($beginning) && !isset($after) && utf8_strtolower(utf8_substr($user,0,utf8_strlen($beginning))) == $beginning && utf8_strtolower(utf8_substr($user,- utf8_strlen($after))) == $after || isset($beginning) && !isset($after) && utf8_strtolower(utf8_substr($user,0,utf8_strlen($beginning))) == $beginning || !isset($beginning) && isset($after) && utf8_strtolower(utf8_substr($user,- utf8_strlen($after))) == $after) {
 						$allUsers[] = $user;
 						$counted++;
 					}
@@ -872,6 +874,7 @@ function recursiveCopy($from,$to) {
 
 // To remove e.g. double groups from the users xml file array.
 function rmDoubleUserArrays($array) {
+	$temp = array();
 	foreach ($array as $value) {
 		if (!$temp[$value]) {
 			$return[] = $value;

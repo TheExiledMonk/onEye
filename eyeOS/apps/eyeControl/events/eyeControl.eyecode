@@ -50,6 +50,7 @@ function eyeControl_on_selectUser($params = '') {
 				'buttons' => array(array('selectUser_select','Select'),array('selectUser_cancel','Cancel')),
 				'content' => 'Please type the username here:',
 				'father' => 'eyeControl_window',
+				'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/eyeGroups.png',
 				'textbox_event' => 'selectUser_select',
 				'textbox_name' => 'eyeControl_searchuser_textbox',
 				'title' => 'Search user...',

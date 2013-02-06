@@ -1,3 +1,4 @@
+/*jslint */
 /*
                                   ____   _____
                                  / __ \ / ____|
@@ -20,9 +21,35 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-eyeBarMenuState = 0;
-eyeSystem_handled = 0;
-init_eyeBar($myPid,$checknum);
+var eyeBarMenuState = 0;
+var eyeSystem_handled = 0;
+
+function eyeSystemClickHandler(pid) {
+	eyeSystem_handled = 1;
+	addClickHandler(pid + '_eyeMenu_content','if (eyeBarMenuState) { eyeBut = xGetElementById("' + pid + '_eyeBut"); eyeBut.src = "index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png"; if (IEversion) { hideMenu(' +  pid + '); fixPNG(eyeBut); } else { updateOpacity("' + pid + '_eyeMenu",100,0,150,"hideMenu(' + pid + ');"); } eyeBarMenuState = 0; }');
+	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeBut');
+	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_top');
+	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_bot');
+	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_cen');
+}
+
+function hideMenu2(pid) {
+	var eyeBut = xGetElementById(pid + '_eyeBut');
+	eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
+	fixPNG(eyeBut);
+	xGetElementById(pid + '_eyeMenu').style.visibility = 'hidden';
+// 	xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10';
+	xGetElementById(pid + '_eyeMenuDiv').setAttribute('class','eyeMenuButton');
+}
+
+function hideMenu(pid) {
+	eyeBarMenuState = 0;
+	if (IEversion) {
+		hideMenu2(pid);
+	} else {
+		updateOpacity(pid + '_eyeMenu',100,0,150,'hideMenu2(' + pid + ');');
+	}
+}
 
 function ButOnClick(e,pid,checknum) {
 	if (!eyeSystem_handled) {
@@ -60,33 +87,6 @@ function ButOnMouseOver(e,pid,checknum) {
 	}
 }
 
-function eyeSystemClickHandler(pid) {
-	eyeSystem_handled = 1;
-	addClickHandler(pid + '_eyeMenu_content','if (eyeBarMenuState) { eyeBut = xGetElementById("' + pid + '_eyeBut"); eyeBut.src = "index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png"; if (IEversion) { hideMenu(' +  pid + '); fixPNG(eyeBut); } else { updateOpacity("' + pid + '_eyeMenu",100,0,150,"hideMenu(' + pid + ');"); } eyeBarMenuState = 0; }');
-	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeBut');
-	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_top');
-	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_bot');
-	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_cen');
-}
-
-function hideMenu(pid) {
-	eyeBarMenuState = 0;
-	if (IEversion) {
-		hideMenu2(pid);
-	} else {
-		updateOpacity(pid + '_eyeMenu',100,0,150,'hideMenu2(' + pid + ');');
-	}
-}
-
-function hideMenu2(pid) {
-	var eyeBut = xGetElementById(pid + '_eyeBut');
-	eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
-	fixPNG(eyeBut);
-	xGetElementById(pid + '_eyeMenu').style.visibility = 'hidden';
-// 	xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10';
-	xGetElementById(pid + '_eyeMenuDiv').setAttribute('class','eyeMenuButton');
-}
-
 function init_eyeBar(pid,checknum) {
 	var obj = xGetElementById(pid + '_eyeBut');
 	obj.onmousedown = function(e) { ButOnClick(e,pid,checknum); };
@@ -105,3 +105,5 @@ function updateMenuStateOn(menu) {
 	imgmenu.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/icons/' + imgmenu.alt + '_on.png';
 	fixPNG(imgmenu);
 }
+
+init_eyeBar($myPid,$checknum);

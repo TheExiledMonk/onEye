@@ -46,7 +46,7 @@ function eyeProcess_com_onLaunch($params = '') {
 		$GLOBALS['eyeProcess_Sortabletable']->addRow(array($key,$value['appName'],$value['currentUser']));
 		//If one of them is marked as Application in its info.xml show it in application table	
 		foreach($dirContent as $appName){
-			if(basename($appName) == $value['appName']){
+			if(utf8_basename($appName) == $value['appName']){
 				$appName .= '/info.xml';
 				if(vfs('real_fileExists', array($appName))){
 					$config = eyeXML('getXMLfile', array($appName));

@@ -117,7 +117,7 @@ function eyeFeeds_createAddFeedDialog($params=null) {
 	$data = eyeFeeds_getSavedFeeds();
 	if(is_array($data['feed'])) {
 		foreach($data['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('addFeed#folder_root', 'addFeed#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('addFeed#item_'.$node['id'][0], 'addFeed#folder_'.$node['id'][0]);
@@ -206,7 +206,7 @@ function eyeFeeds_createAddFeedDialog($params=null) {
 	$selectedFolder = new Hidden(array(
 		'name' =>'addFeed_selectedFolder_HID',
 		'father' => 'addFeed_DLG_Content',
-		'text' => substr($parentFolderId, stripos($parentFolderId, '_')+1)
+		'text' => utf8_substr($parentFolderId, stripos($parentFolderId, '_')+1)
 	));
 	reqLib('eyeWidgets','serialize',array($selectedFolder));
 }
@@ -214,7 +214,7 @@ function eyeFeeds_createAddFeedDialog($params=null) {
 //		'ADD FEED' DIALOG EVENTS
 /*********************************************************************************************/
 function eyeFeeds_on_addFeed_folders_TREE($params=null) {
-	$folderId = substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
+	$folderId = utf8_substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
 	$GLOBALS['addFeed_selectedFolder_HID']->setText($folderId);
 }
 function eyeFeeds_on_addFeed_add_BTN($params=null) {
@@ -315,7 +315,7 @@ function eyeFeeds_createAddFolderDialog($params=null) {
 	$data = eyeFeeds_getSavedFeeds();
 	if(is_array($data['feed'])) {
 		foreach($data['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('addFolder#folder_root', 'addFolder#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('addFolder#item_'.$node['id'][0], 'addFolder#folder_'.$node['id'][0]);
@@ -378,7 +378,7 @@ function eyeFeeds_createAddFolderDialog($params=null) {
 	$selectedFolder = new Hidden(array(
 		'name' =>'addFolder_selectedFolder_HID',
 		'father' => 'addFolder_DLG_Content',
-		'text' => substr($parentFolderId, stripos($parentFolderId, '_')+1)
+		'text' => utf8_substr($parentFolderId, stripos($parentFolderId, '_')+1)
 	));
 	reqLib('eyeWidgets','serialize',array($selectedFolder));
 }
@@ -386,7 +386,7 @@ function eyeFeeds_createAddFolderDialog($params=null) {
 //		'ADD FOLDER' DIALOG EVENTS
 /*********************************************************************************************/
 function eyeFeeds_on_addFolder_folders_TREE($params=null) {
-	$folderId = substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
+	$folderId = utf8_substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
 	$GLOBALS['addFolder_selectedFolder_HID']->setText($folderId);
 }
 function eyeFeeds_on_addFolder_add_BTN($params=null) {
@@ -440,7 +440,7 @@ function eyeFeeds_createConfirmDeleteDialog($params=null) {
 		'hidden_name' => 'delete_feedId_HID',
 		'hidden_text' => $params['id'][0],
 		'father' => 'eyeFeeds_WND',
-		'img' => '?'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png'
 	));
 }
 /*********************************************************************************************/
@@ -530,7 +530,7 @@ function eyeFeeds_createEditFeedDialog($params=null) {
 	$data = eyeFeeds_getSavedFeeds();
 	if(is_array($data['feed'])) {
 		foreach($data['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('editFeed#folder_root', 'editFeed#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('editFeed#item_'.$node['id'][0], 'editFeed#folder_'.$node['id'][0]);
@@ -626,7 +626,7 @@ function eyeFeeds_createEditFeedDialog($params=null) {
 	$selectedFolder = new Hidden(array(
 		'name' =>'editFeed_selectedFolder_HID',
 		'father' => 'editFeed_DLG_Content',
-		'text' => substr($parentFolderId, stripos($parentFolderId, '_')+1)			//default is current parent folder
+		'text' => utf8_substr($parentFolderId, stripos($parentFolderId, '_')+1)			//default is current parent folder
 	));
 	reqLib('eyeWidgets','serialize',array($selectedFolder));
 }
@@ -634,7 +634,7 @@ function eyeFeeds_createEditFeedDialog($params=null) {
 //		'EDIT FEED' DIALOG EVENTS
 /*********************************************************************************************/
 function eyeFeeds_on_editFeed_folders_TREE($params=null) {
-	$folderId = substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
+	$folderId = utf8_substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
 	$GLOBALS['editFeed_selectedFolder_HID']->setText($folderId);
 }
 function eyeFeeds_on_editFeed_apply_BTN($params=null) {
@@ -738,7 +738,7 @@ function eyeFeeds_createEditFolderDialog($params=null) {
 	$data = eyeFeeds_getSavedFeeds();
 	if(is_array($data['feed'])) {
 		foreach($data['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('editFolder#folder_root', 'editFolder#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('editFolder#item_'.$node['id'][0], 'editFolder#folder_'.$node['id'][0]);
@@ -810,7 +810,7 @@ function eyeFeeds_createEditFolderDialog($params=null) {
 	$selectedFolder = new Hidden(array(
 		'name' =>'editFolder_selectedFolder_HID',
 		'father' => 'editFolder_DLG_Content',
-		'text' => substr($parentFolderId, stripos($parentFolderId, '_')+1)			//default is current parent folder
+		'text' => utf8_substr($parentFolderId, stripos($parentFolderId, '_')+1)			//default is current parent folder
 	));
 	reqLib('eyeWidgets','serialize',array($selectedFolder));
 }
@@ -818,7 +818,7 @@ function eyeFeeds_createEditFolderDialog($params=null) {
 //		'EDIT FOLDER' DIALOG EVENTS
 /*********************************************************************************************/
 function eyeFeeds_on_editFolder_folders_TREE($params=null) {
-	$folderId = substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
+	$folderId = utf8_substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
 	$GLOBALS['editFolder_selectedFolder_HID']->setText($folderId);
 }
 function eyeFeeds_on_editFolder_apply_BTN($params=null) {
@@ -928,7 +928,7 @@ function eyeFeeds_createImportFeedsDialog($params=null) {
 	$data = eyeFeeds_getSavedFeeds();
 	if(is_array($data['feed'])) {
 		foreach($data['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('importFeeds#folder_root', 'importFeeds#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('importFeeds#item_'.$node['id'][0], 'importFeeds#folder_'.$node['id'][0]);
@@ -1015,7 +1015,7 @@ function eyeFeeds_createImportFeedsDialog($params=null) {
 	$selectedFolder = new Hidden(array(
 		'name' =>'importFeeds_selectedFolder_HID',
 		'father' => 'importFeeds_DLG_Content',
-		'text' => substr($parentFolderId, stripos($parentFolderId, '_')+1)
+		'text' => utf8_substr($parentFolderId, stripos($parentFolderId, '_')+1)
 	));
 	reqLib('eyeWidgets','serialize',array($selectedFolder));
 }
@@ -1043,7 +1043,7 @@ function eyeFeeds_on_importFeeds_selectFile($params=null) {
 	$GLOBALS['importFeeds_filePath_TXTBOX']->setText($params['arg'][0]);
 }
 function eyeFeeds_on_importFeeds_folders_TREE($params=null) {
-	$folderId = substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
+	$folderId = utf8_substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
 	$GLOBALS['importFeeds_selectedFolder_HID']->setText($folderId);
 }
 function eyeFeeds_on_importFeeds_import_BTN($params=null) {

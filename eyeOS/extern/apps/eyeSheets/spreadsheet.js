@@ -1,7 +1,12 @@
+// eyeOS
+var myPid = $myPid;
+var myChecknum = $checknum;
+var EXTERN_CACHE_VERSION = $EXTERN_CACHE_VERSION;
+
 /**************************************************************************\
-	* Simple Groupware 0.424                                                   *
+	* Simple Groupware 0.520                                                   *
 	* http://www.simple-groupware.de                                           *
-	* Copyright (C) 2002-2008 by Thomas Bley                                   *
+	* Copyright (C) 2002-2009 by Thomas Bley                                   *
 	* ------------------------------------------------------------------------ *
 	*  This program is free software; you can redistribute it and/or           *
 	*  modify it under the terms of the GNU General Public License Version 2   *
@@ -20,10 +25,6 @@
 	\**************************************************************************/
 
 // Translations implemented by Sophie Lee.
-
-var myPid = $myPid;
-var myChecknum = $checknum;
-var EXTERN_CACHE_VERSION = $EXTERN_CACHE_VERSION;
 
 var agent = navigator.userAgent.toLowerCase();
 if (agent.indexOf("konqueror")!=-1) agent = "konqueror";
@@ -428,7 +429,7 @@ function previewValue() {
 	 (value.length>25 || value.indexOf("\\n")!=-1 || value.indexOf("html:")==0)) {
     getObj("multiline").style.display = "inline";
 	//getObj("content").style.overflow = "hidden"; // needed for invisible cursor
-    if (getObj("multiline").contentWindow.update) {
+    if (getObj("multiline").contentWindow.update) { // eyeOS
 	  getObj("multiline").contentWindow.update();
 	}
   }
@@ -544,7 +545,7 @@ function load(code) {
   } else {
     try { eval(code); }
     catch (err) {
-      // alert(trans("Error loading data:")+" "+err);
+      // alert(trans("Error loading data:")+" "+err); // eyeOS
 	  return;
     }
 	window.registerFuncs = registerFuncs;
@@ -571,7 +572,7 @@ function load(code) {
       }
     }
     catch (err) {
-      // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\"");
+      // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\""); // eyeOS
 	  return;
     }
   }
@@ -613,7 +614,7 @@ function loadTSV(code) {
 function loadDbCells(code) {
   try { eval(code); }
   catch (err) {
-    // alert(trans("Error loading data:")+" "+err);
+    // alert(trans("Error loading data:")+" "+err); // eyeOS
 	return false;
   }
   // process 1 dimensional dbCells to 2 dimensional data
@@ -626,7 +627,7 @@ function loadDbCells(code) {
           cells[i-1][i2] = new Array(dbCells[i][i2]+"","","","");
   } } } }
   catch (err) {
-    // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\"");
+    // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\""); // eyeOS
 	return false;
   }
   return cells;
@@ -764,26 +765,25 @@ function loadSheetFromUrl(location) {
   document.getElementsByTagName("head").item(0).appendChild(script);
 }
 
-function resetPath() {
+function resetPath() { // eyeOS
 	window.parent.sendMsg($checknum,'resetPath','');
 }
 
-function loadCode() {
-	window.parent.sendMsg($checknum,'openFile','');
-}
-
-function saveCode() {
+function saveCode() { // eyeOS
 	window.parent.sendMsg($checknum,'saveFile','<arg1>' + Base64.encode(cellsToJS()) + '</arg1>');
 }
 
-function saveCodeClose() {
+function saveCodeClose() { // eyeOS
 	window.parent.sendMsg($checknum,'yDelete','<arg1>' + Base64.encode(cellsToJS()) + '</arg1>');
 }
 
-function saveAs() {
+function saveAs() { // eyeOS
 	window.parent.sendMsg($checknum,'saveAs','');
 }
 
+function loadCode() { // eyeOS
+	window.parent.sendMsg($checknum,'openFile','');
+}
 function print() {
   var out = document.getElementById("content").innerHTML;
   out = out.replace(/(<\/tr>|<\/table>)/g,"$1\n");
@@ -1189,7 +1189,7 @@ function showCell(row,col,calls) {
     }
     try { eval("value"+cmd); }
     catch (err) {
-      // alert(trans("Error evaluating")+" "+buildColName(col)+(row+1)+" \""+value+"\"\n\n"+err+"\n\n"+trans("value")+cmd);
+      // alert(trans("Error evaluating")+" "+buildColName(col)+(row+1)+" \""+value+"\"\n\n"+err+"\n\n"+trans("value")+cmd); // eyeOS
     }
   }
   if (cells[row] && cells[row][col]) cells[row][col][3] = value;
@@ -1243,7 +1243,7 @@ function gotoCell(pos) {
 	  return;
 	}
   }
-  // alert(trans("Invalid cell."));
+  // alert(trans("Invalid cell.")); // eyeOS
 }
 function editCell(row,col,keyCode) {
   active = "content";
@@ -1278,7 +1278,7 @@ function editCell(row,col,keyCode) {
 }
 function copyCell(row,col,cRow,cCol) {
   if (!isWritable(getCellsR(cRow,cCol,1))) {
-    // alert(trans("Cannot edit: cell is marked as readonly."));
+    // alert(trans("Cannot edit: cell is marked as readonly.")); // eyeOS
 	return;
   }
   if (row!=cRow || col!=cCol) {
@@ -1319,7 +1319,7 @@ function cancelCell() {
 }
 function removeCell(row,col) {
   if (!isWritable(getCellsR(row,col,1))) {
-    // alert(trans("Cannot edit: cell is marked as readonly."));
+    // alert(trans("Cannot edit: cell is marked as readonly.")); // eyeOS
 	return;
   }
   setCellsR(row,col,0,"");
@@ -1417,7 +1417,7 @@ function htmlEscape(str,fill) {
   return str;
 }
 function handleErr(msg,url,l) {
-  // alert(trans("There was an error on this page.")+"\n\n"+trans("Error:")+" "+msg+"\n"+trans("Url")+": "+url+"\n"+trans("Line:")+" "+l);
+  // alert(trans("There was an error on this page.")+"\n\n"+trans("Error:")+" "+msg+"\n"+trans("Url")+": "+url+"\n"+trans("Line:")+" "+l); // eyeOS
   return true;
 }
 
@@ -1528,7 +1528,8 @@ function formatNumber(val) {
   return sign+output;
 }
 function param(str) {
-  if (str.replace) return str.replace(/&/g,"&amp;");
+  if (str.join) str = str.join(",");
+  if (str.replace) return escape(str);
   return str;
 }
 function graph(type,title,data,keys,xtitle,ytitle,width,height) {
@@ -1565,6 +1566,61 @@ function graph2(type,title,data,data2,keys,xtitle,ytitle,width,height) {
   }
   return url;
 }
+/*
+function param2(str) {
+  if (str.join) str = str.join(",");
+  if (str.replace) return escape(str.replace(/,/g,"|"));
+  return str;
+}
+function graph(type,title,data,keys,xtitle,ytitle,width,height) {
+  if (type=="line") type = "lc";
+    else if (type=="pie") type = "p3";
+    else if (type=="bar") type = "bvg";
+    else if (type=="scatter") type = "s";
+// Check: linesteps, 
+
+  var url = "img:http://chart.apis.google.com/chart?cht="+param(type)+"&chtt="+param(title);
+  if (type!="s") {
+	url += "&chd=t:"+param(data)+"&chl="+param2(keys);
+    url += "&chds="+min(data)+","+max(data);
+    url += "&chm=N*f0*,0000FF,0,-1,11";
+  } else {
+    url += "&chxt=x,y&chd=t:"+param(keys)+"|"+param(data);
+  }
+  /* Check: map
+  if (typeof xtitle != "undefined") {
+    url += "&xtitle="+param(xtitle);
+  }
+  if (typeof ytitle != "undefined") {
+    url += "&ytitle="+param(ytitle);
+  }
+  if (typeof(width)!= "undefined" && typeof(height)!= "undefined") {
+    url += "&chs="+width+"x"+height;
+  } else url += "&chs=300x125";
+  return url+"&.png";
+}
+
+function graph2(type,title,data,data2,keys,xtitle,ytitle,width,height) {
+  if (type=="bar") type = "bvg";
+    else if (type=="baraccumulate") type = "bvs";
+    else if (type=="bar") type = "bvg";
+    else if (type=="scatter") type = "s";
+// Check linesteps, line
+
+  var url = "img:http://chart.apis.google.com/chart?cht="+param(type)+"&chtt="+param(title);
+  url += "&chd=t:"+param(data)+"|"+param(data2)+"&chl="+param2(keys);
+  if (typeof xtitle != "undefined") {
+    url += "&xtitle="+param(xtitle);
+  }
+  if (typeof ytitle != "undefined") {
+    url += "&ytitle="+param(ytitle);
+  }
+  if (typeof(width)!= "undefined" && typeof(height)!= "undefined") {
+    url += "&chs="+width+"x"+height;
+  } else url += "&chs=300x125";
+  return url;
+}
+  */
 function sum(arr) {
   var result = 0;
   for (var i=0; i<arr.length; i++) result += arr[i];
@@ -1593,8 +1649,14 @@ function count(arr) {
   return arr.length;
 }
 
-//base64 class from webtoolkit
-Base64 = {
+/**
+*
+*  Base64 encode / decode
+*  http://www.webtoolkit.info/
+*
+**/
+
+var Base64 = {
 
 	// private property
 	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",

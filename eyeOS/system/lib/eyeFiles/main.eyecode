@@ -231,6 +231,7 @@ function lib_eyeFiles_getDeskContent($params = '') {
 		$currentUser = $oldUser;
 	}
 	$files = eyeFiles('getDirContent',array($path));
+	$config = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
 	if ($config['eyeDesk'][0]['loadIconPositions'][0] != 3) {
 		$icons = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
 		if (is_array($icons['icon'])) {
@@ -329,7 +330,7 @@ function lib_eyeFiles_getDirContent($params = '') {
 				$element[] = 'folder';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
-					$element[] = ' ';
+					$element[] = vfs('filemtime',array($file));
 					$element[] = ' ';
 					$element[] = ' ';
 					$listFolders[] = $element;
@@ -339,7 +340,7 @@ function lib_eyeFiles_getDirContent($params = '') {
 				$element[] = 'file';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
-					$element[] = filemtime($file);
+					$element[] = vfs('filemtime',array($file));
 					$element[] = vfs('real_filesize',array($file));
 					$element[] = ' ';
 					$listFiles[] = $element;
@@ -349,7 +350,7 @@ function lib_eyeFiles_getDirContent($params = '') {
 				$element[] = 'link';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
-					$element[] = filemtime($file);
+					$element[] = vfs('filemtime',array($file));
 					$element[] = ' ';
 					$element[] = ' ';
 					$listLinks[] = $element;
@@ -360,7 +361,7 @@ function lib_eyeFiles_getDirContent($params = '') {
 				$element[] = 'file';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
-					$element[] = filemtime(vfs('getRealName',array($file)));
+					$element[] = vfs('filemtime',array($file));
 					$element[] = vfs('filesize',array($file));
 					$info['eyeFile'][0]['author'][0] ? $element[] = $info['eyeFile'][0]['author'][0] : $element[] = ' ';
 					$listFiles[] = $element;
@@ -389,7 +390,7 @@ function lib_eyeFiles_getDirContent($params = '') {
 }
 
 function intern_eyeFiles_SortFilesArrays($a,$b) {
-	return strcasecmp($a[2],$b[2]);
+	return utf8_strcasecmp($a[2],$b[2]);
 }
 
 /*
@@ -408,17 +409,17 @@ function lib_eyeFiles_imagecreatefrombmp($params = '') {
 	}
 	$temp = unpack('H*',$read);
 	$hex = $temp[1];
-	$header = substr($hex,0,108);
-	if (substr($header,0,4) == '424d') {
-		$header_parts = str_split($header,2);
+	$header = utf8_substr($hex,0,108);
+	if (utf8_substr($header,0,4) == '424d') {
+		$header_parts = utf8_str_split($header,2);
 		$width = hexdec($header_parts[19] . $header_parts[18]);
 		$height = hexdec($header_parts[23] . $header_parts[22]);
 	}
 	$x = 0;
 	$y = 1;
 	$image  = imagecreatetruecolor($width,$height);
-	$body = substr($hex,108);
-	$body_size = (strlen($body) / 2);
+	$body = utf8_substr($hex,108);
+	$body_size = (utf8_strlen($body) / 2);
 	$header_size = ($width * $height);
 	$usePadding = ($body_size > $header_size * 3 + 4);
 	for ($i = 0; $i < $body_size; $i += 3) {

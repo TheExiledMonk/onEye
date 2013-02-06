@@ -25,11 +25,11 @@
  * @author     Vincent Lascaux <vincentlascaux@php.net>
  * @copyright  1997-2005 The PHP Group
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL
- * @version    CVS: $Id: Files.php,v 1.21 2005/06/18 23:08:16 vincentlascaux Exp $
+ * @version    CVS: $Id: Files.php,v 1.25 2008/06/05 21:30:47 cbrunet Exp $
  * @link       http://pear.php.net/package/File_Archive
  */
 
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer".EYE_CODE_EXTENSION;
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer' . EYE_CODE_EXTENSION; // eyeOS
 
 /**
   * Writer to files
@@ -105,7 +105,7 @@ class File_Archive_Writer_Files extends File_Archive_Writer
     {
         $this->close();
 
-        $this->handle = vfs('real_open',array($filename, 'r+'));
+        $this->handle = vfs('real_open',array($filename, 'r+')); // eyeOS
         $this->stat = array();
         $this->filename = $filename;
 
@@ -134,7 +134,7 @@ class File_Archive_Writer_Files extends File_Archive_Writer
         if (!empty($blocks)) {
             //This will be used to read the initial file
             //The data, with the unusefull block removed will be written to $this->handle
-            $read = vfs('real_open',array($filename, 'r'));
+            $read = vfs('real_open',array($filename, 'r')); // eyeOS
             if ($pos > 0) {
                 if (fseek($this->handle, $pos) == -1) {
                     fread($this->handle, $pos);
@@ -177,17 +177,24 @@ class File_Archive_Writer_Files extends File_Archive_Writer
         $this->stat = $stat;
         $this->filename = $this->getFilename($filename);
 
-        $pos = strrpos($this->filename, "/");
-        if ($pos !== false) {
-            $error = $this->mkdirr(substr($this->filename, 0, $pos));
+        if (substr($this->filename, -1) == '/') {
+            $error = $this->mkdirr(substr($this->filename, 0, -1));
             if (PEAR::isError($error)) {
                 return $error;
             }
-        }
-        @vfs('real_create',array($this->filename));        
-        $this->handle = vfs('real_open',array($this->filename,'w'));
-        if (!is_resource($this->handle)) {
-            return PEAR::raiseError("Unable to write to file $filename");
+        } else {
+            $pos = strrpos($this->filename, "/");
+            if ($pos !== false) {
+                $error = $this->mkdirr(substr($this->filename, 0, $pos));
+                if (PEAR::isError($error)) {
+                    return $error;
+                }
+            }
+            @vfs('real_create',array($this->filename)); // eyeOS
+            $this->handle = @vfs('real_open',array($this->filename,'w')); // eyeOS
+            if (!is_resource($this->handle)) {
+                return PEAR::raiseError("Unable to write to file $filename");
+            }
         }
     }
     /**
@@ -199,7 +206,7 @@ class File_Archive_Writer_Files extends File_Archive_Writer
      */
     function newFromTempFile($tmpfile, $filename, $stat = array(), $mime = "application/octet-stream")
     {
-        $this->filename = filename;
+        $this->filename = $filename;
         $complete = $this->getFilename($filename);
         $pos = strrpos($complete, "/");
         if ($pos !== false) {
@@ -221,7 +228,7 @@ class File_Archive_Writer_Files extends File_Archive_Writer
      */
     function close()
     {
-        if ($this->handle !== null) {
+        if (is_resource($this->handle)) {
             fclose($this->handle);
             $this->handle = null;
 
@@ -239,10 +246,12 @@ class File_Archive_Writer_Files extends File_Archive_Writer
                 chmod($this->filename, $this->stat[2]);
             }
             if (isset($this->stat[5])) {
-                chgrp($this->filename, $this->stat[5]);
+                // I will try, but if I dont have permissions, it will fail
+                @chgrp($this->filename, $this->stat[5]);
             }
             if (isset($this->stat[4])) {
-                chown($this->filename, $this->stat[4]);
+                // I will try, but if I dont have permissions, it will fail
+                @chown($this->filename, $this->stat[4]);
             }
         }
     }

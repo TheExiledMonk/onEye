@@ -70,7 +70,7 @@ function eyeProperties_run($params = '') {
 		$info = eyeXML('getXMLfile',array($path[0] . '/' . $file));
 		$icon = $info['eyeLink'][0]['icon'][0];
 		$type = 'Launcher';
-		$filetime = filemtime($path[0] . '/' . $file);
+		$filetime = vfs('filemtime',array($path[0] . '/' . $file));
 		$size = vfs('real_filesize',array($path[0] . '/' . $file));
 		$command = $info['eyeLink'][0]['content'][0];
 // Files
@@ -93,7 +93,7 @@ function eyeProperties_run($params = '') {
 		} else {
 			$type = 'File';
 		}
-		$filetime = filemtime(vfs('getRealName',array($path[0] . '/' . $file)));
+		$filetime = vfs('filemtime',array($path[0] . '/' . $file));
 		$size = vfs('filesize',array($path[0] . '/' . $file));
 		$author = $fileInfo['eyeFile'][0]['author'][0];
 		$creationdate = $fileInfo['eyeFile'][0]['created'][0];
@@ -118,7 +118,7 @@ function eyeProperties_run($params = '') {
 			$type = 'File';
 		}
 		$size = vfs('real_filesize',array($path[0] . '/' . $file));
-		$filetime = filemtime($path[0] . '/' . $file);
+		$filetime = vfs('filemtime',array($path[0] . '/' . $file));
 	} else {
 		eyex('messageBox',array('content' => 'The file does not exist!'));
 		proc('end');

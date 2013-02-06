@@ -21,6 +21,8 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
+global $currentUser;
+
 $ContentY = 10;
 // Configure the startpage
 $myLabel = new Label(array(
@@ -92,7 +94,10 @@ $mySelect = new Select(array(
 $mySelect->show();
 $mySelect->addOption('Iframe (' . i18n('translate',array('Default')) . ')','iframe');
 $conf = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
+$oldUser = $currentUser;
+$currentUser = ROOTUSER;
 $openDir = vfs('real_getDirContent',array(EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/','*' . EYE_CODE_EXTENSION));
+$currentUser = $oldUser;
 foreach ($openDir as $plugin) {
 	$plugin = utf8_basename($plugin,EYE_CODE_EXTENSION);
 	if ($plugin != 'iframe') {
@@ -101,7 +106,7 @@ foreach ($openDir as $plugin) {
 		} else {
 			$select = 0;
 		}
-		$mySelect->addOption(ucfirst($plugin),$plugin,$select);
+		$mySelect->addOption(utf8_ucfirst($plugin),$plugin,$select);
 	}
 }
 $ContentY += 30;

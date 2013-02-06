@@ -29,7 +29,7 @@
  * @link       http://pear.php.net/package/File_Archive
  */
 
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer".EYE_CODE_EXTENSION;
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer' . EYE_CODE_EXTENSION; // eyeOS
 
 /**
  * Write the concatenation of the files in a buffer
@@ -115,7 +115,7 @@ class File_Archive_Writer_Memory extends File_Archive_Writer
      */
     function makeReader($filename = null, $stat = null, $mime = null)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/Memory".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/Memory' . EYE_CODE_EXTENSION; // eyeOS
         return new File_Archive_Reader_Memory(
             $this->data,
             $filename === null ? $this->filename : $filename,

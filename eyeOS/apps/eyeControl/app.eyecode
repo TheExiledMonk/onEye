@@ -76,10 +76,10 @@ function eyeControl_run($params = '') {
 		$myWindow_box = new Window(array(
 			'name' => 'eyeControl_window_box',
 			'father' => 'eyeControl_window_Content',
-			'y' => 10,
-			'x' => 10,
-			'width' => 165,
-			'height' => 475,
+			'y' => 0,
+			'x' => 15,
+			'width' => 156,
+			'height' => 495,
 			'type' => INVISIBLE_WINDOW
 		));
 		$myWindow_box->show();
@@ -93,9 +93,7 @@ function eyeControl_run($params = '') {
 			'name' => 'eyeControl_box',
 			'father' => 'eyeControl_window_box',
 			'y' => 0,
-			'x' => 0,
-			'width' => 145,
-			'height' => 475
+			'x' => 0
 		));
 		$myContainer->show();
 		$myContainer->setCss(array(
@@ -113,7 +111,7 @@ function eyeControl_run($params = '') {
 		$myLine->show();
 // Load content links to $myBox
 		$content = getConfig('eyeControl','categories.xml');
-		$content = $content['index'][0];
+		$content = $content['eyeControl'][0]['index'][0];
 		$myHiddenCAT = new Hidden(array(
 			'name' => 'eyeControl_box_hiddenCAT_0',
 			'father' => 'eyeControl_box',
@@ -130,8 +128,8 @@ function eyeControl_run($params = '') {
 			'name' => 'eyeControl_box_label_0',
 			'father' => 'eyeControl_box',
 			'text' => $content['display'][0],
-			'x' => 10,
-			'y' => 0,
+			'x' => 0,
+			'y' => 10,
 			'disablemsg' => 0,
 			'signal' => 'box_label'
 		));
@@ -146,10 +144,10 @@ function eyeControl_run($params = '') {
 			'white-space' => 'nowrap'
 		));
 		$x = 1;
-		$boxY = 20;
+		$boxY = 30;
 		$categoriesXML = getConfig('eyeControl','categories.xml');
 		$content = $content['content'][0];
-		foreach($categoriesXML['category'] as $category) {
+		foreach($categoriesXML['eyeControl'][0]['category'] as $category) {
 			if ($category['show'][0] != 'no' && $category['show'][0] != 'nolist' && ($category['permissions'][0] == 'all'
 			|| $category['permissions'][0] == 'root' && eyeControl_lib_getConfigUser() == ROOTUSER
 			|| $category['permissions'][0] == 'maintainer' && (eyeControl_lib_getConfigUser() == ROOTUSER || um('checkMaintainer',array(eyeControl_lib_getConfigUser())))
@@ -166,7 +164,7 @@ function eyeControl_run($params = '') {
 					'name' => 'eyeControl_box_label_' . $x,
 					'father' => 'eyeControl_box',
 					'text' => $category['display'][0],
-					'x' => 20,
+					'x' => 10,
 					'y' => $boxY + 10,
 					'disablemsg' => 0,
 					'signal' => 'box_label'
@@ -204,7 +202,7 @@ function eyeControl_run($params = '') {
 							'name' => 'eyeControl_box_label_' . $x,
 							'father' => 'eyeControl_box',
 							'text' => $content['display'][0],
-							'x' => 30,
+							'x' => 20,
 							'y' => $boxY,
 							'disablemsg' => 0,
 							'signal' => 'box_label'
@@ -220,7 +218,6 @@ function eyeControl_run($params = '') {
 						$x++;
 					}
 				}
-				$boxY += 10;
 			}
 		}
 		$dir = EYE_ROOT. '/' . APP_DIR .'/' . APP_CONF_SHARE . '/eyeControl/others/';
@@ -261,7 +258,7 @@ function eyeControl_run($params = '') {
 						'name' => 'eyeControl_box_label_' . $x,
 						'father' => 'eyeControl_box',
 						'text' => $content['display'][0],
-						'x' => 30,
+						'x' => 20,
 						'y' => $boxY,
 						'disablemsg' => 0,
 						'signal' => 'box_label'
@@ -288,7 +285,7 @@ function eyeControl_run($params = '') {
 					'name' => 'eyeControl_box_label_' . $x_others,
 					'father' => 'eyeControl_box',
 					'text' => 'Others',
-					'x' => 20,
+					'x' => 10,
 					'y' => $boxY_others + 10,
 					'disablemsg' => 0,
 					'signal' => 'box_label'
@@ -356,7 +353,7 @@ function eyeControl_run($params = '') {
 				$mySelect->addOption('Search user...','');
 			}
 			$mySelect->addEvent('onchange','sendMsg(' . $checknum . ',"selectUser",eyeParam("selected",this.value));');
-			eyeControl_lib_addEnterEvent($mySelect,'selectUser');
+			$mySelect->addEnterEventMsg('selectUser');
 // Used space:
 		} else {
 			$size = vfs('getDirSize',array(eyeControl_lib_getConfigUserPath()));

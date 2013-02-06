@@ -47,7 +47,7 @@ function eyeControl_on_account_delete($params = '') {
 		'buttons' => array(array('account_delete_yes','Yes'),array('account_delete_no','No')),
 		'content' => 'Please type your password to remove this account.',
 		'father' => 'eyeControl_container_big',
-		'img' => '?',
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
 		'textbox_event' => 'account_delete_yes',
 		'textbox_name' => 'account_delete_password',
 		'textbox_password' => 2,

@@ -61,7 +61,7 @@ function eyeNav_run($params = '') {
 		'width' => $myWindow->width - 80,
 		'x' => 55,
 		'y' => $myY,
-		'text' => $startpage
+		'text' => ''
 	));
 	$myTextbox->show();
 	$myTextbox->focus();

@@ -192,7 +192,7 @@ function eyeFTP_refreshHostsTable() {
 	
 	foreach($hosts as $id => $hostData) {
 		$hiddenPassword = "";
-		for($i = 0 ; $i < strlen($hostData['password']) ; $i++) { $hiddenPassword .= '*'; }
+		for($i = 0 ; $i < utf8_strlen($hostData['password']) ; $i++) { $hiddenPassword .= '*'; }
 		$GLOBALS['eyeFTP_manageHosts_savedHosts_TAB']->addRow(array(
 			'<img src="'.EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON.'" />',
 			$hostData['name'],

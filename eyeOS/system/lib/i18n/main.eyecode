@@ -39,16 +39,16 @@ function lib_i18n_init() {
 		if ($request_lang) {
 			if (in_array($request_lang,$langs)) {
 				$_SESSION['lang'] = $request_lang;
-			} elseif (in_array(substr($request_lang,0,2),$langs)) {
-				$_SESSION['lang'] = substr($request_lang,0,2);
+			} elseif (in_array(utf8_substr($request_lang,0,2),$langs)) {
+				$_SESSION['lang'] = utf8_substr($request_lang,0,2);
 			}
 		}
 		// Use lang from the user's browser
 		if (!$_SESSION['lang']) {
 			$temp_user_langs = explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
 			foreach ($temp_user_langs as $user_lang) {
-				$user_lang = substr($user_lang,0,strlen($user_lang) - strlen(strstr($user_lang,';')));
-				$user_langs[] = substr($user_lang,0,strlen($user_lang) - strlen(strstr($user_lang,'-')));
+				$user_lang = utf8_substr($user_lang,0,utf8_strlen($user_lang) - utf8_strlen(strstr($user_lang,';')));
+				$user_langs[] = utf8_substr($user_lang,0,utf8_strlen($user_lang) - utf8_strlen(strstr($user_lang,'-')));
 			}
 			foreach ($user_langs as $user_lang) {
 				if (!$_SESSION['lang'] && in_array($user_lang,$langs)) {
@@ -57,8 +57,8 @@ function lib_i18n_init() {
 			}
 			if (!$_SESSION['lang']) {
 				foreach ($user_langs as $user_lang) {
-					if (!$_SESSION['lang'] && in_array(substr($user_lang,0,2),$langs)) {
-						$_SESSION['lang'] = substr($user_lang,0,2);
+					if (!$_SESSION['lang'] && in_array(utf8_substr($user_lang,0,2),$langs)) {
+						$_SESSION['lang'] = utf8_substr($user_lang,0,2);
 					}
 				}
 				// If the current session doesn't have a lang, set the default

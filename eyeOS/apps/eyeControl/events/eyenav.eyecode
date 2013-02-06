@@ -76,7 +76,7 @@ function eyeControl_on_eyenav_bookmarks_default($params = '') {
 		'buttons' => array(array('eyenav_bookmarks_default_yes','Yes'),array('eyenav_bookmarks_default_no','No')),
 		'content' => 'Do you really want to restore the default eyeNav bookmarks?',
 		'father' => 'eyeControl_container_big',
-		'img' => '?',
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/exec.png',
 		'title' => 'Use defaults',
 		'type' => 3,
 		'win_name' => 'eyeControl_eyenav_window_bookmarks_default',
@@ -133,7 +133,7 @@ function eyeControl_on_eyenav_search_default($params = '') {
 		'btn2_capt' => 'No',
 		'btn2_name' => 'eyenav_search_default_no',
 		'father' => 'eyeControl_container_big',
-		'img' => '?'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/exec.png'
 	));
 }
 

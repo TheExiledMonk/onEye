@@ -104,7 +104,6 @@ class zipfile
 {
 	/*
 		zipfile class, for reading or writing .zip files
-		See http://www.gamingg.net for more of my work
 		Based on tutorial given by John Coggeshall at http://www.zend.com/zend/spotlight/creating-zip-files3.php
 		Copyright (C) Joshua Townsend and licensed under the GPL
 		Version 1.0
@@ -174,7 +173,6 @@ class zipfile
 		// optional extra field, file comment goes here
 		// save to array
 		$this->ctrl_dir[] = $cdrec;
-		$this->dirs[] = $name;
 	}
 
 
@@ -447,5 +445,4 @@ class zipfile
 				"\x00\x00"; // .zip file comment length
 	}
 }
-
 ?>

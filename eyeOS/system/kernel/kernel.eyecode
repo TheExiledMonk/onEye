@@ -421,24 +421,24 @@ function checkACL($sec_servicename,$servicefunction,$params) {
 			
 			foreach($rule['target'] as $target) {
 				foreach($target['targetname'] as $targetname) {
-					if(strtolower($target['type'][0]) == 'user') {
+					if(utf8_strtolower($target['type'][0]) == 'user') {
 						$targetname = '/^'.$targetname.'$/';
 						if(preg_match($targetname,$currentUser)) {
 							if(checkACLparams($target['params'],$params)) {
-								if(strtolower($rule['action'][0]) == 'accept') {
+								if(utf8_strtolower($rule['action'][0]) == 'accept') {
 									return true;
 								} else {
 									return false;
 								}
 							}
 						} 
-					} elseif(strtolower($target['type'][0]) == 'group') {
+					} elseif(utf8_strtolower($target['type'][0]) == 'group') {
 						$targetname = '/^'.$targetname.'$/';
 						$userGroups = um('getCurrentGroups');
 						foreach($userGroups as $groupName=>$value) {
 							if(checkACLparams($target['params'],$params)) {
 								if(preg_match($targetname,$groupName)) {
-									if(strtolower($rule['action'][0]) == 'accept') {
+									if(utf8_strtolower($rule['action'][0]) == 'accept') {
 										return true;
 									} else {
 										return false;
@@ -446,12 +446,12 @@ function checkACL($sec_servicename,$servicefunction,$params) {
 								}
 							}
 						}
-					} elseif(strtolower($target['type'][0]) == 'admin') {
+					} elseif(utf8_strtolower($target['type'][0]) == 'admin') {
 						if($currentUser == ROOTUSER) {
 							$targetname = '/^'.$targetname.'$/';
 							if(checkACLparams($target['params'],$params)) {
 								if(preg_match($targetname,$currentUser)) {
-									if(strtolower($rule['action'][0]) == 'accept') {
+									if(utf8_strtolower($rule['action'][0]) == 'accept') {
 										return true;
 									} else {
 										return false;

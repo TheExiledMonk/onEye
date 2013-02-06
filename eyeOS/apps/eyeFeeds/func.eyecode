@@ -63,7 +63,7 @@ function eyeFeeds_drawFeedsTree($folderNode) {
 
 	if(is_array($folderNode['feed'])) {
 		foreach($folderNode['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('feeds#folder_root', 'feeds#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('feeds#item_'.$node['id'][0], 'feeds#folder_'.$node['id'][0]);
@@ -81,7 +81,7 @@ function eyeFeeds_drawFeedsTree($folderNode) {
 function eyeFeeds_drawFeedsTreeNode($treeObject, $parentNode, $folderNode, $foldersOnly=false, $itemsNamesPrefix='') {
 	if(is_array($folderNode['feed'])) {
 		foreach($folderNode['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$treeObject->addItem($parentNode,
 									$itemsNamesPrefix.'item_'.$node['id'][0],
@@ -102,7 +102,7 @@ function eyeFeeds_drawFeedsTreeNode($treeObject, $parentNode, $folderNode, $fold
 	}
 }
 function eyeFeeds_drawFeedsTree_addContextMenu($menuName, $nodeName, $addOnly=false) {
-	$feedId = substr($nodeName, stripos($nodeName, '_')+1);
+	$feedId = utf8_substr($nodeName, stripos($nodeName, '_')+1);
 
 	//add context menu
 	$myMenu = new ContextMenu(array(
@@ -244,7 +244,7 @@ function eyeFeeds_displayItemContent($item) {
 	} else {
 		$content = $item['content'];
 		if (utf8_strlen($content) > $settings['contentSize'][0]) {
-			$content = substr($content, 0 , $settings['contentSize'][0]);
+			$content = utf8_substr($content, 0 , $settings['contentSize'][0]);
 			$content .= ' (...)';
 		}
 		$content = cleanString(eyeFeeds_replaceUrlMarksByEyeNavCalls($content));
@@ -416,7 +416,7 @@ function eyeFeeds_sortFeeds($feeds) {
 function eyeFeeds_sortFeeds_compare($a,$b) {
 	$return = 0;
 	if ($a['type'][0] == $b['type'][0]) {
-		$return = strcasecmp($a['name'][0],$b['name'][0]);
+		$return = utf8_strcasecmp($a['name'][0],$b['name'][0]);
 	}
 	if ($a['type'][0] == 'folder' && $b['type'][0] != 'folder')
 		$return -1;
@@ -637,7 +637,7 @@ function eyeFeeds_fetchFeedItemsFromUrl($url, $forceRefresh=false) {
 			foreach($enclosures_tmp as $enc) {
 				$enclosures[] = array(
 					'title' => $enc->get_title(),
-					'filename' => substr($enc->get_link(), strrpos($enc->get_link(), '/') + 1),
+					'filename' => utf8_substr($enc->get_link(), utf8_strrpos($enc->get_link(), '/') + 1),
 					'link' => $enc->get_link(),
 					'type' => $enc->get_type(),
 					'embed' => $enc->embed('',true)
@@ -720,9 +720,9 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 	 * @see http://fr3.php.net/manual/en/book.simplexml.php#85674
 	 */
 	$title = $xmlObject['title']->asXML();
-	$title = trim(preg_replace('/.*="(.*?)".*/', '$1', $title));
+	$title = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $title));
 	$text = $xmlObject['text']->asXML();
-	$text = trim(preg_replace('/.*="(.*?)".*/', '$1', $text));
+	$text = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $text));
 	
 	$name ='';
 	if ($title) {
@@ -753,7 +753,7 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 	else {
 		/** BIG HACK AGAIN */
 		$url = $xmlObject['xmlUrl']->asXML();
-		$url = trim(preg_replace('/.*="(.*?)".*/', '$1', $url));
+		$url = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $url));
 		$feed = array(
 			'id' => array(md5($url.microtime())),
 			'type' => array('feed'),

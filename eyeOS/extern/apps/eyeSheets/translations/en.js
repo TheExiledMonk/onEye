@@ -1,36 +1,54 @@
+/**
+ * Translation source file for Simple Spreadsheet
+ * Language: English
+ * Author: Sophie Lee (spylee § gmail.com)
+ * Created on: 11.11.2006
+ * ---------------------------------------------- 
+ * Released under GPL version 2 
+ **/ 
+ 
 var strings = new Array();
-strings['April'] = 'April';
-strings['August'] = 'August';
-strings['Copy / paste this code to other spreadsheet applications (e.g. Excel)'] = 'Copy / paste this code to other spreadsheet applications (e.g. Excel)';
-strings['December'] = 'December';
-strings['Del. Column'] = 'Del. Column';
-strings['Del. Row'] = 'Del. Row';
-strings['February'] = 'February';
-strings['Formula'] = 'Formula';
-strings['Friday'] = 'Friday';
-strings['Ins. Column'] = 'Ins. Column';
-strings['Ins. Row'] = 'Ins. Row';
-strings['January'] = 'January';
-strings['July'] = 'July';
-strings['June'] = 'June';
-strings['March'] = 'March';
-strings['May'] = 'May';
-strings['Monday'] = 'Monday';
-strings['New'] = 'New';
-strings['November'] = 'November';
-strings['October'] = 'October';
-strings['Open'] = 'Open';
-strings['Position'] = 'Position';
-strings['Print'] = 'Print';
-strings['Really empty cell(s) ?'] = 'Really empty cell(s) ?';
-strings['Saturday'] = 'Saturday';
-strings['Save'] = 'Save';
-strings['Save As'] = 'Save As';
-strings['September'] = 'September';
-strings['Sheet Size'] = 'Sheet Size';
-strings['Style'] = 'Style';
-strings['Sunday'] = 'Sunday';
-strings['Thursday'] = 'Thursday';
-strings['Tuesday'] = 'Tuesday';
-strings['Wednesday'] = 'Wednesday';
-strings['X'] = 'X';
+
+// Menu
+strings["New"] = "New";
+strings["Save"] = "Save";
+strings["Print"] = "Print";
+strings["Position"] = "Position";
+strings["Formula"] = "Formula";
+strings["Style"] = "Style";
+strings["X"] = "X";
+
+// Confirmation messages
+strings["Really empty cell(s) ?"] = "Really empty cell(s) ?";
+
+// Months and Days
+strings["January"] = "January";
+strings["February"] = "February";
+strings["March"] = "March";
+strings["April"] = "April";
+strings["May"] = "May";
+strings["June"] = "June";
+strings["July"] = "July";
+strings["August"] = "August";
+strings["September"] = "September";
+strings["October"] = "October";
+strings["November"] = "November";
+strings["December"] = "December"; 
+
+strings["Monday"] = "Monday";
+strings["Tuesday"] = "Tuesday";
+strings["Wednesday"] = "Wednesday";
+strings["Thursday"] = "Thursday";
+strings["Friday"] = "Friday";
+strings["Saturday"] = "Saturday";
+strings["Sunday"] = "Sunday";
+
+// eyeOS
+strings["Copy / paste this code to other spreadsheet applications (e.g. Excel)"] = "Copy / paste this code to other spreadsheet applications (e.g. Excel)";
+strings["Del. Column"] = "Del. Column";
+strings["Del. Row"] = "Del. Row";
+strings["Ins. Column"] = "Ins. Column";
+strings["Ins. Row"] = "Ins. Row";
+strings["Open"] = "Open";
+strings["Save As"] = "Save As";
+strings["Sheet Size"] = "Sheet Size";

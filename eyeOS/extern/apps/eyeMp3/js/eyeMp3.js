@@ -1,3 +1,4 @@
+/*jslint */
 /*
                                   ____   _____
                                  / __ \ / ____|
@@ -20,9 +21,9 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeMp3_loadSound(myPid,path,title) {
-	xGetElementById(myPid + '_eyeMp3_Flash').SetVariable('jsValue',path);
-	xGetElementById(myPid + '_eyeMp3_Flash').SetVariable('jsMethod','newfile');
-	xGetElementById(myPid + '_eyeMp3_Window_WindowTitle_text').innerHTML = title;
-	xGetElementById(myPid + '_eyeMp3_Window_WindowOnBar').childNodes[0].innerHTML = title;
+function eyeMp3_loadSound(myPid, path, title) {
+	var e = document.getElementById(myPid + '_eyeMp3_Flash');
+	e.SetVariable('jsValue', path);
+	e.SetVariable('jsMethod', 'newfile');
+	Windws.setTitle(myPid + '_eyeMp3_Window', title);
 }

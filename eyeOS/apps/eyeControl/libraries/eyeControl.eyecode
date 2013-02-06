@@ -21,18 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeControl_lib_addEnterEvent($widget,$message) {
-	global $checknum;
-	if (!$widget || !$message) {
-		return false;
-	}
-	$widget->addEvent('onkeypress','var event = new xEvent(e);
-		if (event.keyCode == 13) {
-			sendMsg("' . $checknum . '","' . $message . '","' . $widget->getSyncString() . '");
-		}','e');
-	return true;
-}
-
 function eyeControl_lib_deleteDirContent($dir) {
 	if ($handler = opendir($dir)) {
 		while (false !== ($file = readdir($handler))) {
@@ -56,10 +44,10 @@ function eyeControl_lib_loadContent($category = '',$content = '',$contentParams 
 	$dir = EYE_ROOT . '/' . APP_DIR . '/eyeControl/default/';
 	if ($category == 'index' || !$category && !$content) {
 		$contentXML = getConfig('eyeControl','categories.xml');
-		$contentXML = $contentXML['index'][0];
+		$contentXML = $contentXML['eyeControl'][0]['index'][0];
 	} elseif ($category && !$content) {
 		$contentXML = getConfig('eyeControl','categories.xml');
-		$contentXML = $contentXML['cat_content'][0];
+		$contentXML = $contentXML['eyeControl'][0]['cat_content'][0];
 		$contentParams[0] = $category;
 	} elseif ($category == 'others') {
 		$dir = EYE_ROOT . '/' . APP_DIR . '/eyeControl/others/';
@@ -68,7 +56,7 @@ function eyeControl_lib_loadContent($category = '',$content = '',$contentParams 
 		$contentXML = $contentXML['content'][0];
 	} else {
 		$contentXML = getConfig('eyeControl','categories.xml');
-		$temp_0 = eyeControl_lib_findArrayByText(array($contentXML['category'],$category,array('name',0)));
+		$temp_0 = eyeControl_lib_findArrayByText(array($contentXML['eyeControl'][0]['category'],$category,array('name',0)));
 		$temp_1 = eyeControl_lib_findArrayByText(array($temp_0[0]['content'],$content,array('name',0)));
 		$contentXML = $temp_1[0];
 	}

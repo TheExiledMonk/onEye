@@ -29,8 +29,8 @@
  * @link       http://pear.php.net/package/File_Archive
  */
 
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader'.EYE_CODE_EXTENSION;
-require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/MIME/Type'.EYE_CODE_EXTENSION;;
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader' . EYE_CODE_EXTENSION; // eyeOS
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/MIME/Type' . EYE_CODE_EXTENSION; // eyeOS
 
 /**
  * Reader that represents a single file
@@ -162,7 +162,7 @@ class File_Archive_Reader_File extends File_Archive_Reader
     function _ensureFileOpened()
     {
         if ($this->handle === null) {
-            $this->handle = @vfs('real_open',array($this->filename, "r"));
+            $this->handle = @vfs('real_open',array($this->filename, "r")); // eyeOS
 
             if (!is_resource($this->handle)) {
                 $this->handle = null;
@@ -268,7 +268,7 @@ class File_Archive_Reader_File extends File_Archive_Reader
      */
     function makeWriterRemoveBlocks($blocks, $seek = 0)
     {
-        require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Files".EYE_CODE_EXTENSION;
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Files' . EYE_CODE_EXTENSION; // eyeOS
 
         $writer = new File_Archive_Writer_Files();
 

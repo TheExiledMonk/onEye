@@ -3,21 +3,21 @@
 	<services>
 		<service>
 			<name>vfs</name>
-			<function>mkdir</function>
-			<return>boolean</return>
-			<doc>service.vfs.mkdir(path) - creates a directory in a given path</doc>
-		</service>
-		<service>
-			<name>vfs</name>
-			<function>rmdir</function>
-			<return>boolean</return>
-			<doc>service.vfs.rmdir(path) - delete a directory in a given path</doc>
-		</service>
-		<service>
-			<name>vfs</name>
 			<function>create</function>
 			<return>boolean</return>
 			<doc>service.vfs.create(path, [creationApp]) - create a new file in path</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>restore</function>
+			<return>boolean</return>
+			<doc>service.vfs.restore(source path, destination path) - restores a trash file to a given path</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>restoreDir</function>
+			<return>boolean</return>
+			<doc>service.vfs.restoreDir(source path, destination path) - restores a trash directory to a given path</doc>
 		</service>
 		<service>
 			<name>vfs</name>
@@ -63,6 +63,12 @@
 		</service>
 		<service>
 			<name>vfs</name>
+			<function>filemtime</function>
+			<return>boolean</return>
+			<doc>service.vfs.filemtime(path) - get the filemtime of a given path</doc>
+		</service>
+		<service>
+			<name>vfs</name>
 			<function>fileExists</function>
 			<return>boolean</return>
 			<doc>service.vfs.fileExists(path) - check if a given path exists</doc>
@@ -75,9 +81,27 @@
 		</service>
 		<service>
 			<name>vfs</name>
+			<function>mkdir</function>
+			<return>boolean</return>
+			<doc>service.vfs.mkdir(path) - creates a directory in a given path</doc>
+		</service>
+		<service>
+			<name>vfs</name>
 			<function>isdir</function>
 			<return>boolean</return>
 			<doc>service.vfs.isdir(path) - checks if a given path is a directory</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>rmdir</function>
+			<return>boolean</return>
+			<doc>service.vfs.rmdir(path) - delete a directory in a given path</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>checkPermissions</function>
+			<return>boolean</return>
+			<doc>service.vfs.checkPermissions(path) - checks the permissions of a given path</doc>
 		</service>
 		<service>
 			<name>vfs</name>
@@ -99,15 +123,45 @@
 		</service>
 		<service>
 			<name>vfs</name>
+			<function>getDirSize</function>
+			<return>integer</return>
+			<doc>service.vfs.getDirSize(path) - get the size of a given directory</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>checkQuota</function>
+			<return>boolean</return>
+			<doc>service.vfs.checkQuota(path,isNoFilename) - check the quota of the current user and adds the size of a given file</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>checkSpecialChars</function>
+			<return>boolean</return>
+			<doc>service.vfs.checkSpecialChars(filename) - checks the filename for special characters</doc>
+		</service>
+		<service>
+			<name>vfs</name>
 			<function>appendToFileBinary</function>
 			<return>boolean</return>
 			<doc>service.vfs.appendToFileBinary(path,base64_content) - write a new content for a file, it takes binary xml-rpc as argument</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>getFileBinary</function>
+			<return>string</return>
+			<doc>service.vfs.getFileBinary(path) - get the content of a file base64-encoded</doc>
 		</service>
 		<service>
 			<name>um</name>
 			<function>getCurrentUserDir</function>
 			<return>string</return>
 			<doc>service.um.getCurrentUserDir() - get current user home directory</doc>
+		</service>
+		<service>
+			<name>vfs</name>
+			<function>getFileBinary</function>
+			<return>string</return>
+			<doc>service.vfs.getFileBinary() - get the content of a file base64-encoded</doc>
 		</service>
 	</services>
 	<libs>
@@ -134,6 +188,6 @@
 			<function>clear</function>
 			<return>boolean</return>
 			<doc>lib.eyeBoard.clear() - clear the messages of the board, requires root</doc>
-		</lib>			
+		</lib>
 	</libs>
 </api>

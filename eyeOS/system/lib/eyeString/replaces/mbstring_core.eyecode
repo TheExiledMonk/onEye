@@ -5,6 +5,12 @@
 * @subpackage strings
 */
 
+/**
+* Define UTF8_CORE as required
+*/
+if ( !defined('UTF8_CORE') ) {
+    define('UTF8_CORE',TRUE);
+}
 
 //--------------------------------------------------------------------
 /**
@@ -17,8 +23,8 @@
 * @package utf8
 * @subpackage strings
 */
-function utf8_strlen($str){    
-	return @mb_strlen($str);
+function utf8_strlen($str){
+    return @mb_strlen($str); // eyeOS
 }
 
 
@@ -36,7 +42,7 @@ function utf8_strlen($str){
 */
 function utf8_strpos($str, $search, $offset = FALSE){
     if ( $offset === FALSE ) {
-        return @mb_strpos($str, $search);
+        return @mb_strpos($str, $search); // eyeOS
     } else {
         return mb_strpos($str, $search, $offset);
     }
@@ -56,14 +62,14 @@ function utf8_strpos($str, $search, $offset = FALSE){
 */
 function utf8_strrpos($str, $search, $offset = FALSE){
     if ( $offset === FALSE ) {
-        # Emulate behaviour of utf8_strrpos rather than raising warning
+        # Emulate behaviour of strrpos rather than raising warning
         if ( empty($str) ) {
             return FALSE;
         }
-        return @mb_strrpos($str, $search);
+        return @mb_strrpos($str, $search); // eyeOS
     } else {
         if ( !is_int($offset) ) {
-            //trigger_error('utf8_strrpos expects parameter 3 to be long',E_USER_WARNING);
+            trigger_error('utf8_strrpos expects parameter 3 to be long',E_USER_WARNING);
             return FALSE;
         }
         
@@ -132,3 +138,4 @@ function utf8_strtolower($str){
 function utf8_strtoupper($str){
     return mb_strtoupper($str);
 }
+?>

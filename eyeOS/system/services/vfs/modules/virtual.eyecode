@@ -354,7 +354,7 @@ function service_vfs_copy($params) {
 		return false;
 	}
 	
-	if(!vfs('checkQuota',array($orig))) {
+	if(!vfs('checkQuota',array(vfs('getRealName', array($orig))))) {
 		return false;
 	}
 	//Check if exists	 
@@ -433,7 +433,7 @@ function service_vfs_copyDir($params) {
 	
 	$orig_real = realpath($orig . '/');
 	$orig_dest = realpath(dirname($dest) . '/');
-	if(strpos($orig_dest,$orig_real) !== 0){
+	if(utf8_strpos($orig_dest,$orig_real) !== 0){
 		dircopy($orig,$dest);
 		return true;
 	} else {
@@ -601,6 +601,43 @@ function service_vfs_filesize($params) {
 	
 	$file = service('vfs','getRealName',array($file));
 	return filesize($file);
+}
+
+
+/**
+* Gets the last modification time of an abstract file.
+* 
+* @param $params array(file)
+* @param $file Path to the file to check.
+* @return If the function succeeds, returns the size of the given file.
+*	Otherwise, it returns false and sets the error code according to 
+*	the error occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to check the file's size.
+* @exception VFS_FILE_NOT_EXISTS The file does not exist.
+* @date 2009/07/29
+*/
+function service_vfs_filemtime($params) {
+	
+	if($params == null || count($params) < 1){
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$file = $params[0];
+	//Check the permissions.	
+	if(!service('vfs','checkPermissions',array($file,'r'))) {		
+		return false;
+	}	
+	
+	if(!service('vfs','fileExists',array($file)))
+	{
+		reqLib('errorCodes','setErrorCode',array(VFS_FILE_NOT_EXISTS));
+		return false;
+	}
+	
+	$file = service('vfs','getRealName',array($file));
+	return filemtime($file);
 }
 
 
@@ -1083,8 +1120,6 @@ function service_vfs_readFile($params) {
 	readfile(vfs('getRealName',array($file)));
 }
 
-
-
 function service_vfs_writeFile($params) {
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -1093,7 +1128,7 @@ function service_vfs_writeFile($params) {
 	$file = $params[0];
 	$content = $params[1];
 	
-	if(!vfs('checkQuota',array(strlen($content),1))) {
+	if(!vfs('checkQuota',array(utf8_strlen($content),1))) {
 		return false;
 	}
 	
@@ -1195,7 +1230,7 @@ function service_vfs_real_copyDir($params) {
 	
 	$orig_real = realpath($orig . '/');
 	$orig_dest = realpath(dirname($dest) . '/');
-	if(strpos($orig_dest,$orig_real) !== 0){
+	if(utf8_strpos($orig_dest,$orig_real) !== 0){
 		dircopy($orig,$dest);
 		return true;
 	} else {
@@ -1572,7 +1607,7 @@ function service_vfs_real_checkPermissions($params) {
 	$file_path = realpath($file);
 	$group_path = realpath(GROUPS_DIR);
 	//That's about groups :)
- 	if(strpos($file_path,$group_path) === 0){
+ 	if(utf8_strpos($file_path,$group_path) === 0){
 		$groups = service('um','getCurrentGroups');
 		foreach($groups as $key=>$value) {
 			$groupDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.CONF_GROUP_DIR;
@@ -2362,7 +2397,7 @@ function service_vfs_appendToFileBinary($params) {
 	$file = $params[0];
 	$content = base64_decode($params[1]);
 	
-	if(!vfs('checkQuota',array(strlen($content),1))) {
+	if(!vfs('checkQuota',array(utf8_strlen($content),1))) {
 		return false;
 	}
 	
@@ -2380,5 +2415,21 @@ function service_vfs_appendToFileBinary($params) {
 	return true;
 }
 
-
+/**
+ * Returns the content of a file.
+ * 
+ * @param $params array(file)
+ * @param $file Path to the file.
+ * @return If the function succeeds, returns its base64-encoded content. Otherwise, it returns false and sets the error code according to the error occurred.
+ * @date 2009/08/01
+ */
+function service_vfs_getFileBinary($params) {
+	if (!is_array($params) || count($params) < 1 || !vfs('fileExists', array($params[0]))) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	} else if (!vfs('checkPermissions', array($params[0], 'r'))) {
+		return false;
+	}
+	return base64_encode(@file_get_contents(vfs('getRealName',array($params[0]))));
+}
 ?>
