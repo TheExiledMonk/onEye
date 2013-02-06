@@ -23,8 +23,8 @@
 
 /**
  * @author Nanawel (nanawel@eyeos.org)
- * @version 1.2-2
- * @updated 10-Feb-2009
+ * @version 1.2-3
+ * @updated 11-Sept-2009
  */
 
 define('EYEFEEDS_WIN_HEIGHT',600);

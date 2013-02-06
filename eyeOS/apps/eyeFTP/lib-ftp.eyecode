@@ -226,6 +226,12 @@ function eyeFTP_ftpGetToeyeOS_file($filePath,$localDirPath) {
 	$filePath = eyeFTP_getFormatedDirPath($filePath);
 	$filename = utf8_basename($filePath);
 	$localFilePath = eyeFTP_getFormatedDirPath($localDirPath.'/'.$filename);
+	
+	$filesize = ftp_size($GLOBALS['eyeFTP_ftpConnectionResource'], $filePath);
+	if (!service('vfs','checkQuota',array($filesize))) {
+		eyeFTP_logConsole('Unable to download file "%s": quota reached.', array($filename), EYEFTP_LOGSTYLE_ERROR);
+		return false;
+	}
 	if(service('vfs','fileExists',array($localFilePath,'eyeFTP'))) {
 		eyeFTP_logConsole('File "%s" already exists, overwriting.', array($filePath), EYEFTP_LOGSTYLE_WARNING);
 	}

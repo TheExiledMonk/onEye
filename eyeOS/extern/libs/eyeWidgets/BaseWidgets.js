@@ -1432,7 +1432,7 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params.visible;
 	var mywidth = params.width;
-	var enabled = params.params;
+	var enabled = params.enabled;
 	var mySelect = document.createElement("select");
 
 	if (enabled == 0) {
@@ -2791,6 +2791,7 @@ var Windows = {
 					Windows.Unhide(id);
 				}
 			}
+			Windows.Focus(Windows.Infos.focus);
 		} else {
 			for (id in Windows.List) {
 				if (Windows.List[id] && document.getElementById(id).parentNode.id == 'eyeApps') {
@@ -3652,23 +3653,27 @@ function showContextMenu(e,menuName) {
 	myMenu.style.display = 'block';
 	var widthMenu = xWidth(myMenu);
 	var widthApps = xWidth('eyeApps');
-	if (left > widthApps - widthMenu - 5) {
-		left = widthApps - widthMenu - 5;
+	var leftApps = xLeft('eyeApps');
+	if (left < leftApps + 5) {
+		left = leftApps + 5;
+	}
+	if (left > leftApps + widthApps - widthMenu - 5) {
+		left = leftApps + widthApps - widthMenu - 5;
 		if (left < 0) {
 			left = 0;
 		}
-	} else if (left < 5) {
-		left = 5;
 	}
 	var heightMenu = xHeight(myMenu);
 	var heightApps = xHeight('eyeApps');
-	if (top > heightApps - heightMenu - 5) {
-		top = heightApps - heightMenu - 5;
+	var topApps = xTop('eyeApps');
+	if (top < topApps + 5) {
+		top = topApps + 5;
+	}
+	if (top > topApps + heightApps - heightMenu - 5) {
+		top = topApps + heightApps - heightMenu - 5;
 		if (top < 0) {
 			top = 0;
 		}
-	} else if (top < 5) {
-		top = 5;
 	}
 	if (IEversion && IEversion < 7) {
 		left -= xPageX(myMenu.parentNode);

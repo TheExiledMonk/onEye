@@ -163,6 +163,12 @@
 			<return>string</return>
 			<doc>service.vfs.getFileBinary() - get the content of a file base64-encoded</doc>
 		</service>
+		<service>
+			<name>vfs</name>
+			<function>getFolderList</function>
+			<return>array</return>
+			<doc>service.vfs.getFolderList() - get the folders and subfolders of a given directory</doc>
+		</service>
 	</services>
 	<libs>
 		<lib>

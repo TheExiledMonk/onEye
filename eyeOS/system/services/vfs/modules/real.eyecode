@@ -1137,7 +1137,7 @@ function service_vfs_getDirContent($params) {
 	$dirFiles = array();
 	
 	if(vfs('isGroupDir',array($dirToRead))) {
-		$files = glob($dirToRead."/$exp");
+		$files = glob($dirToRead."/$exp", $params[2]);
 		if($files != false && is_array($files)){
 			foreach ($files as $fileName) {
 				$info = utf8_pathinfo($fileName);
@@ -1814,7 +1814,7 @@ function service_vfs_real_getDirContent($params) {
 	isset($params[1]) ? $exp = $params[1] : $exp = '*';
 	$dirFiles = array();
 
-	$files = glob($dirToRead."/$exp");
+	$files = glob($dirToRead."/$exp", $params[2]);
 	if($files != false && is_array($files)){
 		foreach ($files as $fileName) {
 			$dirFiles[] = $fileName;
@@ -1867,7 +1867,7 @@ function service_vfs_real_getDirContent_group($params) {
 	isset($params[1]) ? $exp = $params[1] : $exp = '*';
 	$dirFiles = array();
 
-	$files = glob($dirToRead."/$exp");
+	$files = glob($dirToRead."/$exp", $params[2]);
 	if($files != false && is_array($files)){
 		foreach ($files as $fileName) {
 			$dirFiles[] = $fileName;
@@ -2571,5 +2571,29 @@ function service_vfs_getFileBinary($params) {
 		return false;
 	}
 	return base64_encode(@file_get_contents(vfs('getRealName',array($params[0]))));
+}
+
+/**
+ * Returns an array with all folders and subfolders.
+ * 
+ * @param $params array(folder)
+ * @param $folder Path to be used as root folder.
+ * @return If the function succeeds, returns its array. Otherwise, it returns false and sets the error code according to the error occurred.
+ * @date 2009/09/18
+ */
+function service_vfs_getFolderList($params) {
+	if (!is_array($params) || count($params) < 1 || !vfs('fileExists', array($params[0]))) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	}
+	$return = array();
+	foreach (vfs('getDirContent', array($params[0])) as $folder) {
+		$return[] = $folder;
+		$content = vfs('getFolderList', array($folder, '*', GLOB_ONLYDIR));
+		if (is_array($content)) {
+			$return = array_merge($return, $content);
+		}
+	}
+	return $return;
 }
 ?>

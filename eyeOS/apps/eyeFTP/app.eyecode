@@ -23,8 +23,8 @@
 
 /**
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.3.0
- * @updated 8-Feb-2009
+ * @version 3.3.0-1
+ * @updated 17-Sept-2009
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);

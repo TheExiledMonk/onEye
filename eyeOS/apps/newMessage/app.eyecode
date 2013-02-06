@@ -140,7 +140,7 @@ function newMessage_run($params=null) {
 		'father' => 'newMessageWND_Content',
 		'x' => 80,
 		'y' => $myY-1,
-		'width' => 200,
+		'width' => 150,
 		'enabled' => 0
 	));
 	$tboxAttach->show();
@@ -150,7 +150,7 @@ function newMessage_run($params=null) {
 		'x' => $tboxAttach->width+90,
 		'y' => $myY-2,
 		'caption' => 'Add file',
-		'width' => 94
+		'width' => 144
 	));
 	$bttnAddAttach->show();
 	

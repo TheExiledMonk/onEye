@@ -913,8 +913,9 @@
 
 .eyeWindowOnBar_Container {
 	bottom: 0;
+	display: inline-block;
 	left: 0;
-	position: absolute;
+	position: relative;
 	z-index: 10000;
 }
 
@@ -922,10 +923,11 @@
 	background: url(index.php?version=3EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/minimized/minbar_off.png) top center no-repeat;
 	color: #ffffff;
 	cursor: pointer;
+	display: inline-block;
 	height: 18px;
 	overflow: hidden;
-	position: absolute;
-	top: -27px;
+	position: relative;
+	top: 4px;
 	width: 159px;
 	z-index: 20;
 }
@@ -934,10 +936,11 @@
 	background: url(index.php?version=3EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/minimized/minbar_on.png) top center no-repeat;
 	color: #d9e4f3;
 	cursor: pointer;
+	display: inline-block;
 	height: 18px;
 	overflow: hidden;
-	position: absolute;
-	top: -27px;
+	position: relative;
+	top: 4px;
 	width: 159px;
 	z-index: 20;
 }
@@ -1090,7 +1093,7 @@
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/minimized/minbar_bg.png)repeat-x;
 	bottom: -6px;
 	height: 30px;
-	left: 66px;
+	margin-left: 66px;
 	overflow: hidden;
 	position: absolute;
 	right: 0px;

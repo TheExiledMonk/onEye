@@ -724,15 +724,12 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 	$text = $xmlObject['text']->asXML();
 	$text = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $text));
 	
-	$name ='';
+	$name = '';
 	if ($title) {
 		$name = $title;
 	}
 	elseif ($text) {
 		$name = $text;
-	}
-	else {
-		$name = i18n('translate',array('(Unknown name)'));
 	}
 
 	//folder
@@ -754,6 +751,20 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 		/** BIG HACK AGAIN */
 		$url = $xmlObject['xmlUrl']->asXML();
 		$url = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $url));
+		
+		//if no name/title is provided in the OPML file, use the hostname instead
+		if ($name == '') {
+			$urlParts = parse_url($url);
+			if (is_array($urlParts)) {
+				if (preg_match('/^www\.(.*)/i', $urlParts['host'], $matches)) {
+					$name = $matches[1];
+				} else {
+					$name = $urlParts['host'];
+				}
+			} else {
+				$name = i18n('translate',array('(Unknown name)'));
+			}
+		}
 		$feed = array(
 			'id' => array(md5($url.microtime())),
 			'type' => array('feed'),

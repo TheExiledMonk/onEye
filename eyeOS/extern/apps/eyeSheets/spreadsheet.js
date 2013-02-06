@@ -4,7 +4,7 @@ var myChecknum = $checknum;
 var EXTERN_CACHE_VERSION = $EXTERN_CACHE_VERSION;
 
 /**************************************************************************\
-	* Simple Groupware 0.520                                                   *
+	* Simple Groupware 0.532                                                   *
 	* http://www.simple-groupware.de                                           *
 	* Copyright (C) 2002-2009 by Thomas Bley                                   *
 	* ------------------------------------------------------------------------ *

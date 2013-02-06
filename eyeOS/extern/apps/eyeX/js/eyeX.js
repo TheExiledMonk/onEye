@@ -230,10 +230,13 @@ function sendMsg(checknum,msg,parameters) {
 
 //Add param to xml
 function eyeParam(name,value,nocode) {
+	name = String(name);
+	value = String(value);
 	if (!nocode) {
+		name = htmlspecialchars(name);
 		value = htmlspecialchars(value);
 	}
-	return '<' + String(name) + '>' + String(value) + '</' + String(name) + '>';
+	return '<' + name + '>' + value + '</' + name + '>';
 }
 
 //Load script dynamically
@@ -1238,7 +1241,7 @@ var Base64 = {
 function htmlspecialchars (string, quote_style) {
     // Convert special characters to HTML entities  
     // 
-    // version: 907.503
+    // version: 909.322
     // discuss at: http://phpjs.org/functions/htmlspecialchars
     // +   original by: Mirek Slugen
     // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -1269,7 +1272,7 @@ function htmlspecialchars (string, quote_style) {
 function get_html_translation_table (table, quote_style) {
     // Returns the internal translation table used by htmlspecialchars and htmlentities  
     // 
-    // version: 908.406
+    // version: 909.322
     // discuss at: http://phpjs.org/functions/get_html_translation_table
     // +   original by: Philip Peterson
     // +    revised by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -1431,7 +1434,7 @@ function get_html_translation_table (table, quote_style) {
 function md5 (str) {
     // Calculate the md5 hash of a string  
     // 
-    // version: 908.406
+    // version: 909.322
     // discuss at: http://phpjs.org/functions/md5
     // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
     // + namespaced by: Michael White (http://getsprink.com)
@@ -1537,7 +1540,7 @@ function md5 (str) {
     str = this.utf8_encode(str);
     x = convertToWordArray(str);
     a = 0x67452301; b = 0xEFCDAB89; c = 0x98BADCFE; d = 0x10325476;
-
+    
     xl = x.length;
     for (k=0;k<xl;k+=16) {
         AA=a; BB=b; CC=c; DD=d;
@@ -1619,7 +1622,7 @@ function md5 (str) {
 function utf8_encode ( argString ) {
     // Encodes an ISO-8859-1 string to UTF-8  
     // 
-    // version: 908.406
+    // version: 909.322
     // discuss at: http://phpjs.org/functions/utf8_encode
     // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
     // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -1628,9 +1631,10 @@ function utf8_encode ( argString ) {
     // +   bugfixed by: Onno Marsman
     // +   improved by: Yves Sucaet
     // +   bugfixed by: Onno Marsman
+    // +   bugfixed by: Ulrich
     // *     example 1: utf8_encode('Kevin van Zonneveld');
     // *     returns 1: 'Kevin van Zonneveld'
-    var string = (argString+'').replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    var string = (argString+''); // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
     var utftext = "";
     var start, end;

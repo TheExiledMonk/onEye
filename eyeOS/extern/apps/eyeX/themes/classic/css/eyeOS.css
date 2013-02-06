@@ -788,17 +788,19 @@
 
 .eyeWindowOnBar_Container {
 	bottom: 0;
+	display: inline-block;
 	left: 0;
-	position: absolute;
+	position: relative;
 	z-index: 10000;
 }
 
 .eyeWindowOnBar_Off, .eyeWindowOnBar_On {
 	cursor: pointer;
+	display: inline-block;
 	height: 18px;
 	overflow: hidden;
-	position: absolute;
-	top: -26px;
+	position: relative;
+	top: 3px;
 	width: 159px;
 	z-index: 20;
 }
@@ -910,7 +912,7 @@
 
 .minimizedApps {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=classic&extern=images/minimized/minbar_bg.png) repeat-x;
-	left: 23px;
+	margin-left: 23px;
 	right: 114px;
 }
 

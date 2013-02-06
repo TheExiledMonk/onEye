@@ -742,7 +742,11 @@ function eyeFeeds_createEditFolderDialog($params=null) {
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('editFolder#folder_root', 'editFolder#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('editFolder#item_'.$node['id'][0], 'editFolder#folder_'.$node['id'][0]);
-				eyeFeeds_drawFeedsTreeNode($myTree, 'editFolder#folder_'.$node['id'][0], $node, true, 'editFolder#');
+				
+				//hide subfolders of the edited folder (to prevent the user from moving it inside of one of them)
+				if ($node['id'][0] != $feedId) {
+					eyeFeeds_drawFeedsTreeNode($myTree, 'editFolder#folder_'.$node['id'][0], $node, true, 'editFolder#');
+				}
 			}
 		}
 	}

@@ -863,8 +863,9 @@ padding:1px;
 
 .eyeWindowOnBar_Container {
 	bottom: 0;
+	display: inline-block;
 	left: 0px;
-	position: absolute;
+	position: relative;
 	z-index: 10000;
 }
 
@@ -872,10 +873,11 @@ padding:1px;
 	background: url(index.php?version=32EXTERN_CACHE_VERSION&theme=oxygen&extern=images/minimized/minbar_off.png) top center no-repeat;
 	color: #ffffff;
 	cursor: pointer;
+	display: inline-block;
 	height: 23px;
 	overflow: hidden;
-	position: absolute;
-	top: -25px;
+	position: relative;
+	top: 5px;
 	width: 159px;
 	z-index: 20;
 }
@@ -888,10 +890,11 @@ padding:1px;
 	background: url(index.php?version=32EXTERN_CACHE_VERSION&theme=oxygen&extern=images/minimized/minbar_on.png) top center no-repeat;
 	color: #d9e4f3;
 	cursor: pointer;
+	display: inline-block;
 	height: 23px;
 	overflow: hidden;
-	position: absolute;
-	top: -25px;
+	position: relative;
+	top: 5px;
 	width: 159px;
 	z-index: 20;
 }

@@ -76,6 +76,7 @@ function eyeX_on_resizedBrowser($params = '') {
 	$appHeight = $_SESSION['SCREEN']['eyeApps']['height'] - $diffHeight;
 	$appWidth = $_SESSION['SCREEN']['eyeApps']['width'] - $diffWidth;
 	eyex('resizedBrowser',array('height' => $height,'width' => $width,'appWidth' => $appWidth,'appHeight' => $appHeight));
+	eyex('rawjs', array('js' => 'var e = document.getElementById("eyeApps"); e.style.height = "' . $_SESSION['SCREEN']['eyeApps']['height'] . 'px"; e.style.width = "' . $_SESSION['SCREEN']['eyeApps']['width'] . 'px";'));
 }
 
 function eyeX_on_viewTempImg($params = '') {
