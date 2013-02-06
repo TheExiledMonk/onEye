@@ -41,9 +41,11 @@ document.onkeydown = function (e) { var e = new xEvent(e); if (e.which) { eyeKey
 document.onkeyup = function () { eyeKeyDown = 0; }
 
 //For fix Internet explorer <6 png24 no alpha.
-function fixPNG(img,type){
+function fixPNG(myImage,type){
 	if (IEversion && IEversion < 7) {
-		var myImage = xGetElementById(img);
+		if (!myImage.src) {
+			var myImage = xGetElementById(myImage);
+		}
 		if (myImage.src.substr(myImage.src.length - 4).toLowerCase() == '.png' && myImage.src.substr(myImage.src.length - 24).toLowerCase() != 'apps/eyex/gfx/spacer.gif') {
 			if (!type) {
 				type = 'scale';
@@ -253,164 +255,159 @@ function localEngine(msg) {
 		var mySize = actions.length;
 		for(count=0;count < mySize;count++) {
 			try {
-				task = actions[count].getElementsByTagName('task')[0].firstChild.nodeValue;
+				task = getNodeValue(actions[count].getElementsByTagName('task')[0]);
 				if(task == 'createWidget') {						
-					x = actions[count].getElementsByTagName('position')[0].getElementsByTagName('x')[0].firstChild.nodeValue;
-					y = actions[count].getElementsByTagName('position')[0].getElementsByTagName('y')[0].firstChild.nodeValue;
-					horiz = actions[count].getElementsByTagName('position')[0].getElementsByTagName('horiz')[0].firstChild.nodeValue;
-					vert = actions[count].getElementsByTagName('position')[0].getElementsByTagName('vert')[0].firstChild.nodeValue;
-					name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					checknum = actions[count].getElementsByTagName('checknum')[0].firstChild.nodeValue;
-					father = actions[count].getElementsByTagName('father')[0].firstChild.nodeValue;
-					widgetname = actions[count].getElementsByTagName('widgetname')[0].firstChild.nodeValue;
-					cent = actions[count].getElementsByTagName('cent')[0].firstChild.nodeValue;
-					paramStr = '';
-					var paramsT = actions[count].getElementsByTagName('params');
-					for(var h=0;h<paramsT.length;h++){
-						paramStr += paramsT[h].firstChild.nodeValue;
-					}
-					
+					x = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('x')[0]);
+					y = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('y')[0]);
+					horiz = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('horiz')[0]);
+					vert = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('vert')[0]);
+					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					checknum = getNodeValue(actions[count].getElementsByTagName('checknum')[0]);
+					father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
+					widgetname = getNodeValue(actions[count].getElementsByTagName('widgetname')[0]);
+					cent = getNodeValue(actions[count].getElementsByTagName('cent')[0]);
+					paramStr = getNodeValue(actions[count].getElementsByTagName('params')[0]);
 					try{
 						eval (widgetname+"_show("+paramStr+",'"+name+"','"+father+"','"+x+"','"+y+"','"+horiz+"','"+vert+"','"+checknum+"','"+cent+"');");
 					}catch(err){
 						
 					}
 				} else if(task == 'messageBox') {
-					content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
+					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
 					content = tinyMCE.entityDecode(content);
-					type = actions[count].getElementsByTagName('type')[0].firstChild.nodeValue;
+					type = getNodeValue(actions[count].getElementsByTagName('type')[0]);
 					if (!type || type == 1) {
 						eyeMessageBoxShow(content);
 					} else if (type == 2) {
 						alert(content);
 					}
 				} else if(task == 'setValue') {
-					content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
-					widget = actions[count].getElementsByTagName('widget')[0].firstChild.nodeValue;
+					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = content;
 					}
 				} else if(task == 'setValueB64') {
-					content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
-					widget = actions[count].getElementsByTagName('widget')[0].firstChild.nodeValue;
+					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = Base64.decode(content);
 					}
 				} else if(task == 'concatValue') {
-					content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
-					widget = actions[count].getElementsByTagName('widget')[0].firstChild.nodeValue;
+					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = document.getElementById(widget).value+content;
 					}
 				} else if(task == 'concatValueB64') {
-					content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
-					widget = actions[count].getElementsByTagName('widget')[0].firstChild.nodeValue;
+					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = document.getElementById(widget).value+Base64.decode(content);
 					}
 				} else if(task == 'concatDiv') {												
-					content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
-					widget = actions[count].getElementsByTagName('widget')[0].firstChild.nodeValue;						
+					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);						
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).innerHTML = document.getElementById(widget).innerHTML+content;
 					}
 				} else if(task == 'rawjs') {
-					js = actions[count].getElementsByTagName('js')[0].firstChild.nodeValue;
+					js = getNodeValue(actions[count].getElementsByTagName('js')[0]);
 					js=js.replace(/\n/,"");
 					js=js.replace(/\r/,"");
 					eval(js);
 				} else if(task == 'setDiv') {
-					content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
-					name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
+					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 					document.getElementById(name).innerHTML = content;
 				} else if(task == 'loadScript') {
-					url = actions[count].getElementsByTagName('url')[0].firstChild.nodeValue;
+					url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
 					dhtmlLoadScript(url);
 				} else if(task == 'loadCSS') {
-					url = actions[count].getElementsByTagName('url')[0].firstChild.nodeValue;
-					id = actions[count].getElementsByTagName('id')[0].firstChild.nodeValue;
+					url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
+					id = getNodeValue(actions[count].getElementsByTagName('id')[0]);
 					dhtmlLoadCSS(url,id);
 				} else if(task == 'removeCSS') {
-					id = actions[count].getElementsByTagName('id')[0].firstChild.nodeValue;
+					id = getNodeValue(actions[count].getElementsByTagName('id')[0]);
 					dhtmlRemoveCSS(id);
 				} else if(task == 'removeWidget') {
-					name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
+					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 					removeWidget(name);
 				} else if(task == 'createDiv') {
-					name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					myClass = actions[count].getElementsByTagName('class')[0].firstChild.nodeValue;
-					father = actions[count].getElementsByTagName('father')[0].firstChild.nodeValue;
+					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					myClass = getNodeValue(actions[count].getElementsByTagName('class')[0]);
+					father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
 					var myDiv = document.createElement('div');
 					myDiv.setAttribute("id", name);
 					myDiv.className = myClass;
 					var divFather = document.getElementById(father);
 					divFather.appendChild(myDiv);
 				} else if(task == 'setWallpaper') {
-					url = actions[count].getElementsByTagName('url')[0].firstChild.nodeValue;
-					repeat = actions[count].getElementsByTagName('repeat')[0].firstChild.nodeValue;
-					center = actions[count].getElementsByTagName('center')[0].firstChild.nodeValue;
+					url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
+					repeat = getNodeValue(actions[count].getElementsByTagName('repeat')[0]);
+					center = getNodeValue(actions[count].getElementsByTagName('center')[0]);
 					setWallpaper(url,repeat,center);
 				} else if(task == 'updateCss') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					var prop = actions[count].getElementsByTagName('property')[0].firstChild.nodeValue;
-					var val = actions[count].getElementsByTagName('value')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var prop = getNodeValue(actions[count].getElementsByTagName('property')[0]);
+					var val = getNodeValue(actions[count].getElementsByTagName('value')[0]);
 					updateCss(name,prop,val);
 				} else if(task == 'makeDrag') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					var father = actions[count].getElementsByTagName('father')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
 					//We use try catch for evade the differents beteewn browsers
 					try{
-						var noIndex = actions[count].getElementsByTagName('noIndex')[0].firstChild;							
+						var noIndex = getNodeValue(actions[count].getElementsByTagName('noIndex')[0]);							
 						makeDrag(name,father,'','','',noIndex);
 					}catch(err){							
 						makeDrag(name,father,'','','','');
 					}						
 				} else if(task == 'rawSendMessage') {
-					var myMsg = actions[count].getElementsByTagName('msg')[0].firstChild.nodeValue;
+					var myMsg = getNodeValue(actions[count].getElementsByTagName('msg')[0]);
 					
 					if(actions[count].getElementsByTagName('par')[0].firstChild){
-						var myPar = actions[count].getElementsByTagName('par')[0].firstChild.nodeValue;
+						var myPar = getNodeValue(actions[count].getElementsByTagName('par')[0]);
 					}else{
 						var myPar = '';
 					}
-					var myCheck = actions[count].getElementsByTagName('checknum')[0].firstChild.nodeValue;
+					var myCheck = getNodeValue(actions[count].getElementsByTagName('checknum')[0]);
 					sendMsg(myCheck,myMsg,myPar);	
 				} else if(task == 'addEvent') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					var event = actions[count].getElementsByTagName('event')[0].firstChild.nodeValue;
-					var func = actions[count].getElementsByTagName('func')[0].firstChild.nodeValue;
-					var args = actions[count].getElementsByTagName('args')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var event = getNodeValue(actions[count].getElementsByTagName('event')[0]);
+					var func = getNodeValue(actions[count].getElementsByTagName('func')[0]);
+					var args = getNodeValue(actions[count].getElementsByTagName('args')[0]);
 					if(args == 0) {
 						eval('document.getElementById("'+name+'").'+event+'=function(){'+func+'}');
 					} else {
 						eval('document.getElementById("'+name+'").'+event+'=function('+args+'){'+func+'}');
 					}
 				} else if(task == 'createLayer') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					var myClass = actions[count].getElementsByTagName('class')[0].firstChild.nodeValue;
-					var father = actions[count].getElementsByTagName('father')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var myClass = getNodeValue(actions[count].getElementsByTagName('class')[0]);
+					var father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
 					createLayer(name,father,myClass);
 				} else if(task == 'removeLayer') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 				 	removeLayer(name);
 				} else if(task == 'showLayer') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 					showLayer(name);
 				} else if(task == 'hideLayer') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 					hideLayer(name);
 				} else if(task == 'fadeOutLayer') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					var time = actions[count].getElementsByTagName('time')[0].firstChild.nodeValue;
-					var startAlpha = actions[count].getElementsByTagName('startAlpha')[0].firstChild.nodeValue;
-					var endAlpha = actions[count].getElementsByTagName('endAlpha')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var time = getNodeValue(actions[count].getElementsByTagName('time')[0]);
+					var startAlpha = getNodeValue(actions[count].getElementsByTagName('startAlpha')[0]);
+					var endAlpha = getNodeValue(actions[count].getElementsByTagName('endAlpha')[0]);
 
 					fadeOutLayer(name,startAlpha,endAlpha,time);
 				} else if(task == 'fadeInLayer') {
-					var name = actions[count].getElementsByTagName('name')[0].firstChild.nodeValue;
-					var time = actions[count].getElementsByTagName('time')[0].firstChild.nodeValue;
-					var startAlpha = actions[count].getElementsByTagName('startAlpha')[0].firstChild.nodeValue;
-					var endAlpha = actions[count].getElementsByTagName('endAlpha')[0].firstChild.nodeValue;
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var time = getNodeValue(actions[count].getElementsByTagName('time')[0]);
+					var startAlpha = getNodeValue(actions[count].getElementsByTagName('startAlpha')[0]);
+					var endAlpha = getNodeValue(actions[count].getElementsByTagName('endAlpha')[0]);
 					fadeInLayer(name,startAlpha,endAlpha,time);
 				}
 			} catch (err) {
@@ -418,6 +415,23 @@ function localEngine(msg) {
 			}
 		}
 	}
+}
+
+/*
+*
+*This function is needed because firefox dom is a crap, so we have to use the
+*firefox only "textContent" instead of nodeValue to be sure that we'll get the entire
+*Node value, and not only the first 4096 chars.
+*anyway, have an abstraction never is bad... or almost never
+*/
+function getNodeValue(node){
+	if(!node){
+		return '';
+	}
+	if(typeof(node.textContent) != 'undefined'){
+		return node.textContent;
+	}
+	return node.firstChild.nodeValue;
 }
 
 function checkEnterKey(e) {
@@ -1093,7 +1107,45 @@ function xEnableDrag2(id,fS,fD,fE,x1,y1,x2,y2)
 xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xAddClass(e,c){if((e=xGetElementById(e))!=null){var s='';if(e.className.length&&e.className.charAt(e.className.length-1)!=' '){s=' ';}if(!xHasClass(e,c)){e.className+=s+c;return true;}}return false;}function xBackground(e,c,i){if(!(e=xGetElementById(e)))return'';var bg='';if(e.style){if(xStr(c)){e.style.backgroundColor=c;}if(xStr(i)){e.style.backgroundImage=(i!='')?'url('+i+')':null;}bg=e.style.backgroundColor;}return bg;}function xColor(e,s){if(!(e=xGetElementById(e)))return'';var c='';if(e.style&&xDef(e.style.color)){if(xStr(s))e.style.color=s;c=e.style.color;}return c;}function xDisplay(e,s){if((e=xGetElementById(e))&&e.style&&xDef(e.style.display)){if(xStr(s)){try{e.style.display=s;}catch(ex){e.style.display='';}}return e.style.display;}return null;}function xFindAfterByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToLast(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xFindBeforeByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToFirst(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xGetCSSRules(ss){return ss.rules?ss.rules:ss.cssRules;}function xGetComputedStyle(e,p,i){if(!(e=xGetElementById(e)))return null;var s,v='undefined',dv=document.defaultView;if(dv&&dv.getComputedStyle){s=dv.getComputedStyle(e,'');if(s)v=s.getPropertyValue(p);}else if(e.currentStyle){v=e.currentStyle[xCamelize(p)];}else return null;return i?(parseInt(v)||0):v;}function xGetStyleSheetFromLink(cl){return cl.styleSheet?cl.styleSheet:cl.sheet;}function xHasClass(e,c){e=xGetElementById(e);if(!e||e.className=='')return false;var re=new RegExp("(^|\\s)"+c+"(\\s|$)");return re.test(e.className);}function xHasStyleSelector(ss){if(!xHasStyleSheets())return undefined;function testSelector(cr){return cr.selectorText.indexOf(ss)>=0;}return xTraverseDocumentStyleSheets(testSelector);}function xHasStyleSheets(){return document.styleSheets?true:false;}function xHide(e){return xVisibility(e,0);}function xInsertRule(ss,sel,rule,idx){if(!(ss=xGetElementById(ss)))return false;if(ss.insertRule){ss.insertRule(sel+"{"+rule+"}",(idx>=0?idx:ss.cssRules.length));}else if(ss.addRule){ss.addRule(sel,rule,idx);}else return false;return true;}function xOpacity(e,o){var set=xDef(o);if(!(e=xGetElementById(e)))return 2;if(xStr(e.style.opacity)){if(set)e.style.opacity=o+'';else o=parseFloat(e.style.opacity);}else if(xStr(e.style.filter)){if(set)e.style.filter='alpha(opacity='+(100*o)+')';else if(e.filters&&e.filters.alpha){o=e.filters.alpha.opacity/100;}}else if(xStr(e.style.MozOpacity)){if(set)e.style.MozOpacity=o+'';else o=parseFloat(e.style.MozOpacity);}else if(xStr(e.style.KhtmlOpacity)){if(set)e.style.KhtmlOpacity=o+'';else o=parseFloat(e.style.KhtmlOpacity);}return isNaN(o)?1:o;}function xRemoveClass(e,c){if(!(e=xGetElementById(e)))return false;e.className=e.className.replace(new RegExp("(^|\\s)"+c+"(\\s|$)",'g'),function(str,p1,p2){return(p1==' '&&p2==' ')?' ':'';});return true;}function xShow(e){return xVisibility(e,1);}function xStyle(sProp,sVal){var i,e;for(i=2;i<arguments.length;++i){e=xGetElementById(arguments[i]);if(e.style){try{e.style[sProp]=sVal;}catch(err){e.style[sProp]='';}}}}function xToggleClass(e,c){if(!(e=xGetElementById(e)))return null;if(!xRemoveClass(e,c)&&!xAddClass(e,c))return false;return true;}function xTraverseDocumentStyleSheets(cb){var ssList=document.styleSheets;if(!ssList)return undefined;for(i=0;i<ssList.length;i++){var ss=ssList[i];if(!ss)continue;if(xTraverseStyleSheet(ss,cb))return true;}return false;}function xTraverseStyleSheet(ss,cb){if(!ss)return false;var rls=xGetCSSRules(ss);if(!rls)return undefined;var result;for(var j=0;j<rls.length;j++){var cr=rls[j];if(cr.selectorText){result=cb(cr);if(result)return true;}if(cr.type&&cr.type==3&&cr.styleSheet)xTraverseStyleSheet(cr.styleSheet,cb);}if(ss.imports){for(var j=0;j<ss.imports.length;j++){if(xTraverseStyleSheet(ss.imports[j],cb))return true;}}return false;}function xVisibility(e,bShow){if(!(e=xGetElementById(e)))return null;if(e.style&&xDef(e.style.visibility)){if(xDef(bShow))e.style.visibility=bShow?'visible':'hidden';return e.style.visibility;}return null;}function xZIndex(e,uZ){if(!(e=xGetElementById(e)))return 0;if(e.style&&xDef(e.style.zIndex)){if(xNum(uZ))e.style.zIndex=uZ;uZ=parseInt(e.style.zIndex);}return uZ;}
 
 /*  (x_drag.js) Compiled from X 4.17 by XC 1.06 on 20Mar08*/
-xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xDisableDrag(id){xGetElementById(id).xDragEnabled=false;}function xDisableDrop(id){xGetElementById(id).xDropEnabled=false;}function xEnableDrag(id,fS,fD,fE){var mx=0,my=0,el=xGetElementById(id);if(el){el.xDragEnabled=true;xAddEventListener(el,'mousedown',dragStart,false);}function dragStart(e){if(el.xDragEnabled){var ev=new xEvent(e);xPreventDefault(e);if(ev.button != 0) {return false; }mx=ev.pageX;my=ev.pageY;xAddEventListener(document,'mousemove',drag,false);xAddEventListener(document,'mouseup',dragEnd,false);if(fS){fS(el,ev.pageX,ev.pageY,ev);}}}function drag(e){var ev,dx,dy;xPreventDefault(e);ev=new xEvent(e);dx=ev.pageX-mx;dy=ev.pageY-my;mx=ev.pageX;my=ev.pageY;if(fD){fD(el,dx,dy,ev);}else{xMoveTo(el,el.offsetLeft+dx,el.offsetTop+dy);}}function dragEnd(e){var ev=new xEvent(e);xPreventDefault(e);xRemoveEventListener(document,'mouseup',dragEnd,false);xRemoveEventListener(document,'mousemove',drag,false);if(fE){fE(el,ev.pageX,ev.pageY,ev);}if(xEnableDrag.drop){xEnableDrag.drop(el,ev);}}}xEnableDrag.drops=[];function xEnableDrop(id,f){var e=xGetElementById(id);if(e){e.xDropEnabled=true;xEnableDrag.drops[xEnableDrag.drops.length]={e:e,f:f};}}xEnableDrag.drop=function(el,ev){var i,z,hz=0,d=null,da=xEnableDrag.drops;for(i=0;i<da.length;++i){if(da[i]&&da[i].e.xDropEnabled&&xHasPoint(da[i].e,ev.pageX,ev.pageY)){z=parseInt(da[i].e.style.zIndex)||0;if(z>=hz){hz=z;d=da[i];}}}if(d){d.f(d.e,el,ev.pageX,ev.pageY,ev);}}
+xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xDisableDrag(id){xGetElementById(id).xDragEnabled=false;}function xDisableDrop(id){xGetElementById(id).xDropEnabled=false;}function xEnableDrag(id,fS,fD,fE){var mx=0,my=0,el=xGetElementById(id);if(el){el.xDragEnabled=true;xAddEventListener(el,'mousedown',dragStart,false);}function dragStart(e){if(el.xDragEnabled){var ev=new xEvent(e);xPreventDefault(e);if(ev.button != 0) {return false; }mx=ev.pageX;my=ev.pageY;xAddEventListener(document,'mousemove',drag,false);xAddEventListener(document,'mouseup',dragEnd,false);if(fS){fS(el,ev.pageX,ev.pageY,ev);}}}function drag(e){var ev,dx,dy;xPreventDefault(e);ev=new xEvent(e);dx=ev.pageX-mx;dy=ev.pageY-my;mx=ev.pageX;my=ev.pageY;if(fD){fD(el,dx,dy,ev);}else{xMoveTo(el,el.offsetLeft+dx,el.offsetTop+dy);}}function dragEnd(e){var ev=new xEvent(e);xPreventDefault(e);xRemoveEventListener(document,'mouseup',dragEnd,false);xRemoveEventListener(document,'mousemove',drag,false);if(fE){fE(el,ev.pageX,ev.pageY,ev);}if(xEnableDrag.drop){xEnableDrag.drop(el,ev);}}}xEnableDrag.drops=[];
+
+function xEnableDrop(id, f) {
+	var e = xGetElementById(id);
+	if (e) {
+		e.xDropEnabled = true;
+		xEnableDrag.drops[xEnableDrag.drops.length] = {e:e, f:f};
+	}
+}
+
+xEnableDrag.drop = function (el, ev) {
+	var i, z, hz = 'none', d = null, da = xEnableDrag.drops;
+	for (i = 0; i < da.length; ++i) {
+		if (da[i] && xHasPoint(da[i].e, ev.pageX, ev.pageY)) {
+			z = getZindex(da[i].e);
+			if (hz == 'none' || z >= hz) {
+				hz = z;
+				if (!da[i].e.xDropEnabled) {
+					d = null;
+				} else {
+					d = da[i];
+				}
+			}
+		}
+	}
+	if (d) {
+		d.f(d.e, el, ev.pageX, ev.pageY);
+	}
+}
+
+function getZindex(e) {
+	var z = 0;
+	while (e) {
+		if (e.style && parseInt(e.style.zIndex)) z += parseInt(e.style.zIndex);
+		e = e.parentNode ? e.parentNode : null;
+	}
+	return z;
+}
+
 
 /* (x_event.js) Compiled from X 4.17 by XC 1.06 on 10Jul07 */
 function xEvent(evt){var e=evt||window.event;if(!e)return;this.type=e.type;this.target=e.target||e.srcElement;this.relatedTarget=e.relatedTarget;/*@cc_on if(e.type=='mouseover')this.relatedTarget=e.fromElement;else if(e.type=='mouseout')this.relatedTarget=e.toElement;@*//*ZXllT1Mgd2ViIG9wZXJhdGluZyBzeXN0ZW0KQ29weXJpZ2h0IDIwMDUtMjAwOCBleWVPUyBUZWFtICh0ZWFtQGV5ZW9zLm9yZykgRG8gbm90IHJlcGxhY2UgdGhpcyA6KQ==*/if(xDef(e.pageX)){this.pageX=e.pageX;this.pageY=e.pageY;}else if(xDef(e.clientX)){this.pageX=e.clientX+xScrollLeft();this.pageY=e.clientY+xScrollTop();}if(xDef(e.offsetX)){this.offsetX=e.offsetX;this.offsetY=e.offsetY;}else if(xDef(e.layerX)){this.offsetX=e.layerX;this.offsetY=e.layerY;}else{this.offsetX=this.pageX-xPageX(this.target);this.offsetY=this.pageY-xPageY(this.target);}this.keyCode=e.keyCode||e.which||0;this.shiftKey=e.shiftKey;this.ctrlKey=e.ctrlKey;this.altKey=e.altKey;if(typeof e.type=='string'){if(e.type.indexOf('click')!=-1){this.button=0;}else if(e.type.indexOf('mouse')!=-1){this.button=e.button;/*@cc_on if(e.button&1)this.button=0;else if(e.button&4)this.button=1;else if(e.button&2)this.button=2;@*/}}}xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xAddEventListener(e,eT,eL,cap){if(!(e=xGetElementById(e)))return;eT=eT.toLowerCase();if(e.addEventListener)e.addEventListener(eT,eL,cap||false);else if(e.attachEvent)e.attachEvent('on'+eT,eL);else{var o=e['on'+eT];e['on'+eT]=typeof o=='function'?function(v){o(v);eL(v);}:eL;}}function xPreventDefault(e){if(e&&e.preventDefault)e.preventDefault();else if(window.event)window.event.returnValue=false;}function xRemoveEventListener(e,eT,eL,cap){if(!(e=xGetElementById(e)))return;eT=eT.toLowerCase();if(e.removeEventListener)e.removeEventListener(eT,eL,cap||false);else if(e.detachEvent)e.detachEvent('on'+eT,eL);else e['on'+eT]=null;}function xStopPropagation(evt){if(evt&&evt.stopPropagation)evt.stopPropagation();else if(window.event)window.event.cancelBubble=true;}

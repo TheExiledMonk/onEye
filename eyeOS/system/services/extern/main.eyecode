@@ -169,7 +169,11 @@ function service_extern_getFile($params) {
 				//If the file needs be replaced, and any of the auto modes are enabled...
 				if($cacheReplace == true && EXTERN_CACHE_AUTO > 0){
 					//needed by all ways
-					$contents = file_get_contents($myFile);
+					$contents = '';
+					while($contents == ''){
+						$contents = file_get_contents($myFile);
+						usleep(200);//Should be enough if this happens...
+					}
 					$path = EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/eyeX/eyex.xml';
 					$eyexConfig = eyeXML('getXMLfile',array($path));
 					isset($_SESSION['usertheme']) ? $usertheme = $_SESSION['usertheme'] : $usertheme = 'oldCache';

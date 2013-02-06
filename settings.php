@@ -23,7 +23,7 @@
 
 /*
 	Main configuration file.
-	Please read the eyeOS configuration documentation 
+	Please read the eyeOS configuration documentation
 	for more information before modifying anything here.
 */
 
@@ -68,7 +68,7 @@ define('REAL_ROOTUSER','root');
 //Extras
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('EYEOS_VERSION','1.8.0.1');
+define('EYEOS_VERSION','1.8.0.2');
 
 //eyeDialog that defines should be moved to another place desinged for it.
 define('EYEDIALOG_TYPE_OPENFILE', 0);

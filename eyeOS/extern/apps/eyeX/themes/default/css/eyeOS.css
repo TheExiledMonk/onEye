@@ -61,8 +61,10 @@ ul.mktree li ul li ul li ul li {
 }
 
 #background {
+	background-color: #0a377d;
 	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/wallpapers/default.jpg);
 	background-position: center;
+	background-repeat: no-repeat;
 	height: 100%;
 	min-height: 400px;
 	min-width: 500px;
@@ -274,7 +276,7 @@ ul.mktree li ul li ul li ul li {
 
 .eyeBoxTable {
 	background-color: #ffffff;
-	border: 1px solid #777;
+	border: 1px solid #777777;
 }
 
 .eyeBoxText {
@@ -406,6 +408,18 @@ ul.mktree li ul li ul li ul li {
 	right: 5px;
 	width: 170px;
 	z-index: 10000;
+}
+
+.eyeDesk_iconsOver {
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: #ffffff;
+	cursor: pointer;
+}
+
+.eyeDesk_iconsOver:hover {
+	background-color: #0a2c5e;
+	border: 1px solid #3b567e;
 }
 
 .eyeDock_center {
@@ -589,7 +603,30 @@ ul.mktree li ul li ul li ul li {
 	width: 11px;
 }
 
-.eyeIcon {}
+.eyeFiles_icons {
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: #000000;
+	cursor: pointer;
+}
+
+.eyeFiles_icons:hover {
+	background-color: #c7ddf8;
+	border: 1px solid #9ec8fb;
+}
+
+.eyeIcon {
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: #ffffff;
+}
+
+.eyeIcon:hover {
+	background-color: #c7ddf8;
+	border: 1px solid #00ff00;
+}
+
+.eyeIcon_blank {}
 
 .eyeIcon_Image {
 	margin-left: 8px;

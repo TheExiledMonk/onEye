@@ -21,12 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-/** 
- * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.0
- * @updated 24-May-2008
- */
-
 /*********************************************************************************************/
 /*********************************************************************************************/
 /*					LIB FUNCTIONS - LOCAL FILES VIEW										 */
@@ -42,15 +36,15 @@ function eyeFTP_emptyLocalFilesTable() {
 	if ($GLOBALS['eyeFTP_localFiles_TAB']) {
 		$GLOBALS['eyeFTP_localFiles_TAB']->remove();
 	}
-	
+
 	/* TABLE FOR LOCAL FILES LIST */
 	$localFilesTable = new Sortabletable(array(
 		'name' => 'eyeFTP_localFiles_TAB',
-		'father' => 'eyeFTP_localBrowser_CTNR',
+		'father' => 'eyeFTP_leftRight_SPLT_first',
 		'x' => 0,
 		'y' => 24,
-		'width' => ($GLOBALS['eyeFTP_WND']->width / 2) - 25,
-		'height' => $GLOBALS['eyeFTP_WND']->height - 225,
+		'width' => $GLOBALS['eyeFTP_leftRight_SPLT']->position - 15,
+		'height' => $GLOBALS['eyeFTP_leftRight_SPLT']->height - 30,
 		'sortypes' => array('Html','String','Number','String','String','Hidden'),
 		'master' => 5,
 		'theader' => array(' ','Filename','Filesize (B)','Date','Author','id'),
@@ -64,9 +58,9 @@ function eyeFTP_emptyLocalFilesTable() {
 		'event' => 'onclick',
 		'args'=>''
 	));
-	$localFilesTable->setCss(array('white-space' => 'nowrap'));	
+	$localFilesTable->setCss(array('white-space' => 'nowrap'));
 	eyeFTP_setActiveView($GLOBALS['eyeFTP_selectedView_HID']->text);
-	
+
 	$GLOBALS['eyeFTP_serializedLocalFilesData_HID']->setText(serialize(array()));
 	$GLOBALS['eyeFTP_localPath_TXTBOX']->setText("");
 }
@@ -76,13 +70,13 @@ function eyeFTP_emptyLocalFilesTable() {
  */
 function eyeFTP_browseLocal($path = '/') {
 	eyeFTP_emptyLocalFilesTable();
-	
+
 	$path = eyeFTP_resolvePathInUserDir($path);
 	if ($path === false) {
 		eyeFTP_logConsole('Error while trying to browse local folder!', null, EYEFTP_LOGSTYLE_ERROR);
 		return;
 	}
-	
+
 	$fullPath = eyeFTP_resolvePathInUserDir($path,false);
 	$filesData = eyeFTP_listDir($fullPath);
 	foreach($filesData as $id => $fileInfo) {
@@ -91,12 +85,12 @@ function eyeFTP_browseLocal($path = '/') {
 				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typefolder.png';
 				$size = ' ';
 				break;
-			
+
 			case 'l':
 				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typelink.png';
 				$size  = ' ';
 				break;
-			
+
 			default:
 				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typedefault.png';
 				$size  = $fileInfo['size'];
@@ -112,7 +106,7 @@ function eyeFTP_browseLocal($path = '/') {
 	}
 	$GLOBALS['eyeFTP_serializedLocalFilesData_HID']->setText(serialize($filesData));
 	$GLOBALS['eyeFTP_currentLocalDir_HID']->setText($path);
-	
+
 	//FIXME: unable to use setText(), otherwise causes an "undefined entity" error on special chars in browser
 	//$GLOBALS['eyeFTP_path_TXTBOX']->setText($dir);
 	global $myPid;
@@ -126,7 +120,7 @@ function eyeFTP_browseLocal($path = '/') {
 function eyeFTP_listDir($dir) {
 	$dir = eyeFTP_getFormatedDirPath($dir);
 	$content = vfs('getDirContent', array($dir));
-	
+
 	$i = 1;
 	$filesData = array();
 	//add parent entry (..) only if we are not in the root directory
@@ -147,7 +141,7 @@ function eyeFTP_listDir($dir) {
 		);
 		$filesData[$i++] = $fileInfo;
 	}
-	
+
 	if (is_array($content)) {
 		foreach($content as $file) {
 			$fileInfo = vfs('readInfo', array($file));
@@ -173,7 +167,7 @@ function eyeFTP_listDir($dir) {
 				$name = $fileInfo['eyeFile'][0]['filename'][0];
 			}
 			$path = $dir.'/'.$name;
-			
+
 			$fileInfo = array(
 				'type'=>$type,
 				//'perms'=>' ',
@@ -191,14 +185,14 @@ function eyeFTP_listDir($dir) {
 			$filesData[$i++] = $fileInfo;
 		}
 	}
-	
+
 	usort($filesData, eyeFTP_compareFilesData);
 	$return = array();
 	$i = 1;
 	foreach($filesData as $fileData) {
 		$return[$i++] = $fileData;
 	}
-	
+
 	return $return;
 }
 

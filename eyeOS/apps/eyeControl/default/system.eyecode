@@ -427,25 +427,10 @@ $myButton->show();
 $ContentY = 20;
 if (strpos(realpath(EYE_ROOT . '/'),'\\')) {
 	$title = 'Configure the office support on a Windows server';
-	$text = '<ol>';
-		$text .= '<li>' . i18n('translate',array('Copy %s to %s.',array('<span style="font-style: italic;">extras/OpenOffice/eyeOS.xba</span>','<span style="font-style: italic;">C:\\Program Files\\OpenOffice.org 2.4\\share\\basic\\Tools\\</span>'))) . '</li>';
-		$text .= '<li>' . i18n('translate',array('Edit %s and add %s under %s.',array('<span style="font-style: italic;">C:\\Program Files\\OpenOffice.org 2.4\\share\\basic\\Tools\\script.xlb</span>','<span style="font-style: italic;">&lt;library:element library:name="eyeOS"/&gt;</span>','<span style="font-style: italic;">&lt;library:element library:name="Debug"/&gt;</span>'))) . '</li>';
-		$text .= '<li>' . i18n('translate',array('Install OpenOffice.org from %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_openofficeorg\',\'\');" style="cursor: pointer; font-style: italic;">www.openoffice.org</span>'))) . '</li>';
-		$text .= '<li>';
-			$text .= i18n('translate',array('Run Apache as Administrator.'));
-			$text .= '<ul>';
-				$text .= '<li>' . i18n('translate',array('Launch "services.msc" and right-click the Apache service.')) . '</li>';
-				$text .= '<li>' . i18n('translate',array('Click "Properties" and choose the "Log On" tab.')) . '</li>';
-				$text .= '<li>' . i18n('translate',array('Activate "This account" and click "Browse...".')) . '</li>';
-				$text .= '<li>' . i18n('translate',array('Confirm an administrator account and click "Check Names".')) . '</li>';
-				$text .= '<li>' . i18n('translate',array('Click OK, than save and restart the Apache service.')) . '</li>';
-			$text .= '</ul>';
-		$text .= '</li>';
-		$text .= '<li>' . i18n('translate',array('Set the program folder. Default:')) . ' <span onclick="document.getElementById(\'' . $myPid . '_eyeControl_system_office_textbox_folder\').value = \'C:\\\\Program Files\\\\OpenOffice.org 2.4\\\\program\\\\\';" style="cursor: pointer; font-style: italic;">C:\\Program Files\\OpenOffice.org 2.4\\program\\</span></li>';
-	$text .= '</ol>';
+	$text = i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtowindows\',\'\');" style="cursor: pointer; font-style: italic;">wiki.eyeos.org</span>')));
 } else {
 	$title = 'Configure the office support on a Linux server';
-	$text = '<ul><li>' . i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtolinux\',\'\');" style="cursor: pointer; font-style: italic;">wiki.eyeos.org</span>'))) . '</li></ul>';
+	$text = i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtolinux\',\'\');" style="cursor: pointer; font-style: italic;">wiki.eyeos.org</span>')));
 }
 // Configure the office support
 $myLabel = new Label(array(
@@ -457,7 +442,7 @@ $myLabel = new Label(array(
 ));
 $myLabel->show();
 $myLabel->setCss(array('font-weight' => 'bold'));
-$ContentY += 20;
+$ContentY += 50;
 $myLabel = new Label(array(
 	'name' => 'eyeControl_system_office_label_text',
 	'father' => $officeTab,
@@ -468,26 +453,27 @@ $myLabel = new Label(array(
 $myLabel->show();
 eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_system_office_label_text").innerHTML = %s;','tokens' => array($text)));
 if (strpos(realpath(EYE_ROOT . '/'),'\\')) {
-	$ContentY += 200;
+	$ContentY += 50;
 	// OpenOffice.org program folder
 	$myLabel = new Label(array(
 		'name' => 'eyeControl_system_office_label_folder',
 		'father' => $officeTab,
 		'x' => 20,
 		'y' => $ContentY + 3,
-		'text' => 'Office program folder'
+		'text' => 'OpenOffice program folder:'
 	));
 	$myLabel->show();
+	$ContentY += 20;
 	$myTextbox = new Textbox(array(
 		'name' => 'eyeControl_system_office_textbox_folder',
 		'father' => $officeTab,
-		'x' => 160,
+		'x' => 60,
 		'y' => $ContentY + 2,
 		'text' => OFFICE_COMMAND,
 		'width' => 240
 	));
 	$myTextbox->show();
-	$ContentY += 40;
+	$ContentY += 50;
 	$myButton = new Button(array(
 		'name' => 'eyeControl_system_office_button_folder',
 		'father' => $officeTab,

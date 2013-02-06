@@ -59,6 +59,8 @@ function eyeControl_on_edituser_save($params = '') {
 	$currentUser = ROOTUSER;
 	$openDir = vfs('real_getDirContent',array(EYE_ROOT . '/' . GROUPS_DIR . '/'));
 	$xmlUser = um('retrieveUser',array($array['username']));
+	$array['group'] = array();
+	$array['maintain'] = array();
 	foreach ($openDir as $group) {
 		if (is_dir($group)) {
 			$group = utf8_basename($group);

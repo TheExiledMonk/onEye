@@ -215,7 +215,9 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myContainer.appendChild(myContent);
 	}
 	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible,'Button');
-	fixPNG(name + '_cpt_img');
+	if (myImg != null) {
+		fixPNG(myButton);
+	}
 }
 function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 {
@@ -711,6 +713,8 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	var overBorderBackground = params["overBorderBg"];
 	var overBorderColor = params["overBorderColor"];
 	var textColor = params["textColor"];
+	var useClass = params["useClass"];
+	overClass = params["overClass"];
 	
 	var myGlobalContainer = document.createElement('div');
 	myGlobalContainer.style.width='65px';
@@ -771,8 +775,18 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 			myGlobalContainer.style.border = '1px solid transparent';
 		}
 	}
-	
-	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0,'px',visible,'Icon');
+	if(useClass != 0){
+		myGlobalContainer.onmouseover = function() {
+			myIconText.innerHTML = "";
+			myIconText.appendChild(document.createTextNode(realname));
+		}
+		myGlobalContainer.onmouseout = function() {
+			myIconText.innerHTML = "";
+			myIconText.appendChild(document.createTextNode(text));
+		}
+	}
+	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,'eyeIcon_blank',0,'px',visible,'Icon');
+	xGetElementById(name + '_globalContainer').className = overClass;
 	var globalContainer = xGetElementById(name+'_Container');
 	globalContainer.checknum = checknum;
 	globalContainer.style.color = textColor;
@@ -798,7 +812,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 			sendMsg(checknum,'Icon_Clicked',result);
 		}
 	}
-	fixPNG('img_' + name);
+	fixPNG(myImage);
 }
 widgetDrop_behaviours = [];
 dropIndex = 400;
@@ -870,16 +884,6 @@ function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 		}else{
 			callback(drop,drag,x,y,event,checknum,num);
 		}
-	}
-	try{
-		var windowP = getParentWidgetType(widget,'Window');
-		if(windowP){
-			if(windowP.xDropEnabled){
-				windowP.xDropEnabled = false
-			}
-		}
-	}catch(err){
-		//Waiting for ddebug api
 	}
 	xEnableDrop(widget,widgetDrop);
 }
@@ -1258,7 +1262,7 @@ function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	} else {
 		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,"eyeImagebox",cent,'px',visible,'Imagebox');
 	}
-	fixPNG(name);
+	fixPNG(myImage);
 }
 function Label_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = params["text"];
@@ -2223,7 +2227,8 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	createdWindow.minWidth = minWidth;
 	createdWindow.minHeight = minHeight;
 
-	xEnableDrop(createdWindow,function foo(){});
+	createdWindow.xDropEnabled = false;
+	xEnableDrag.drops[xEnableDrag.drops.length] = {e:createdWindow};
 	//Getting window for set a few properties
 	title = tinyMCE.entityDecode(title);
 	
@@ -2245,7 +2250,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		} else {
 			makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag);
 		}
-		fixPNG(name + '_background','crop');
+		fixPNG(myImage,'crop');
 	} else {
 		/* CreateWidgets for Title Bar */
 		createWidget(name+"_WindowTitle",name,theText,0,0,-1,-1,-1,-1,wCssTitle,0);
@@ -2421,8 +2426,8 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			minIconRight.style.display="block";
 			minArrows = 1;
 			if(IEversion && IEversion < 7) {
-				fixPNG(myImgRight.id);
-				fixPNG(myImgLeft.id);
+				fixPNG(myImgRight);
+				fixPNG(myImgLeft);
 			}
 		}
 		
@@ -2878,7 +2883,7 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight
 	myText.innerHTML = itemText;
 	container.appendChild(myText);
 	obj.appendChild(container);
-	fixPNG(itemName + '_img');
+	fixPNG(myImg);
 }
 
 function Tree_show(params,name,father,x,y,horiz,vert,checknum,cent) {

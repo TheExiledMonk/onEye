@@ -56,7 +56,7 @@ function eyeDialog_on_folders_TREE($params=null) {
 	switch($GLOBALS['currentPlace_HID']->text) {
 		case __EYEDIALOG_PLACE_GROUPS:
 			//TODO
-			/*$selectedPath = utf8_substr($params['folders_TREE'][0], utf8_strlen(__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS));
+			/*$selectedPath = utf8_substr($params['folders_TREE'][0], utf8_strlen(i18n('translate',array(__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS))));
 			$selectedPath = eyeDialog_getFormatedDirPath($selectedPath);
 			$groupname = '';
 			
@@ -71,7 +71,7 @@ function eyeDialog_on_folders_TREE($params=null) {
 			break;
 		
 		default:
-			$selectedPath = utf8_substr($params['folders_TREE'][0], utf8_strlen(__EYEDIALOG_FOLDERSTREE_ROOTNODE_HOME));
+			$selectedPath = utf8_substr($params['folders_TREE'][0], utf8_strlen(i18n('translate',array(__EYEDIALOG_FOLDERSTREE_ROOTNODE_HOME))));
 			eyeDialog_browseHome($selectedPath);
 			break;
 	}

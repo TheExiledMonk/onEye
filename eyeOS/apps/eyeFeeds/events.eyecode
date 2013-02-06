@@ -26,6 +26,10 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/func'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/dialogs'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/settings'.EYE_CODE_EXTENSION);
 
+//==============================================
+//== General XML structure of a RSS save file ==
+//==============================================
+//
 //<eyeFeeds>
 //	<base>
 //		<feed>
@@ -102,7 +106,7 @@ function eyeFeeds_on_export_ITM($params=null) {
 		'',
 		array(
 			'OPML files' => '*.opml|*.xml',
-			'All files' => '*.*'
+			'All files' => '*'
 		),
 		false,
 		true
@@ -121,15 +125,15 @@ function eyeFeeds_on_refreshFeed_ITM($params=null) {
 		$selectedFeed = eyeFeeds_getFeedFromId($feeds['feed'], $GLOBALS['selectedFeedId_HID']->text);
 		if (!$selectedFeed)
 			return;
-		
+
 		eyeFeeds_displayFeedItems($selectedFeed, true);
 		return;
 	}
-	
+
 	eyeFeeds_clearFeedItems();
 	eyeFeeds_clearItemContent();
-	$GLOBALS['loading_LBL']->unhide();
-	
+	$GLOBALS['loading_CTN']->unhide();
+
 	$bouncedRequestParams = array(
 		'__signal' => 'refreshFeed_ITM'
 	);
@@ -153,19 +157,19 @@ function eyeFeeds_on_feeds_TREE($params=null) {
 		$GLOBALS['eyeFeeds_WND']->setTitle($feed['name'][0].' - '.i18n('translate',array('RSS Feed Reader')));
 		return;
 	}
-	
+
 	//the name of an item of the tree is 'typeOfNode_feedId'
 	//(the first underscore separates the type of the node from the feed's id)
 	$feedId = substr($params['itemName'][0], stripos($params['itemName'][0], '_')+1);
 	$feeds = eyeFeeds_getSavedFeeds();
 	$feed = eyeFeeds_getFeedFromId($feeds['feed'], $feedId);
-	
+
 	$GLOBALS['selectedFeedId_HID']->setText($feedId);
-	
+
 	if ($feed !== false && $feed['type'][0] != 'folder') {
-		$GLOBALS['loading_LBL']->unhide();
+		$GLOBALS['loading_CTN']->unhide();
 		$GLOBALS['currentFeedUrl_HID']->setText(serialize($feed['url'][0]));
-		
+
 		eyeFeeds_clearFeedItems();
 		eyeFeeds_clearItemContent();
 		$bouncedRequestParams = array(
@@ -208,7 +212,7 @@ function eyeFeeds_on_feeds_CMN_del_ENT($params=null) {
 function eyeFeeds_on_feedItemClick($params=null) {
 	$item = eyeFeeds_getSelectedFeedItem();
 	eyeFeeds_displayItemContent($item);
-	
+
 	global $myPid;
 	$itemId = md5($item['id']);
 	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_titleIcon_'.$itemId.'").src="'.EYEFEEDS_FEEDITEM_ICONURL_READ.'";'));
@@ -219,17 +223,17 @@ function eyeFeeds_on_feedItemDblClick($params=null) {
 	service('proc', 'launch', array('eyeNav', $item['permalink']));
 }
 
-function eyeFeeds_on_openEnclosure($params=null) {	
+function eyeFeeds_on_openEnclosure($params=null) {
 	global $myPid;
 	$itemId = $params['itemId'][0];
 	$enc = $params['enc'][0];
 	$item = eyeFeeds_getFeedItem($itemId);
-	
+
 	//prevent opening several times the same window
 	if ($GLOBALS['enclosure_WND_'.$itemId]) {
 		$GLOBALS['enclosure_WND_'.$itemId]->close();
 	}
-	
+
 	$enclosureWindow = new Window(array(
 		'name' => 'enclosure_WND_'.$itemId,
 		'father' => 'eyeApps',
@@ -258,37 +262,67 @@ function eyeFeeds_on_contentLinkClick($params=null) {
 /*********************************************************************************************/
 
 function eyeFeeds_on_windowResize($params=null) {
-	global $myPid;
-	
 	$newWidth = intval($params['arg'][0]);
 	$newHeight = intval($params['arg'][1]);
-		
+
 	//update window properties
 	$GLOBALS['eyeFeeds_WND']->setWidth($newWidth);
 	$GLOBALS['eyeFeeds_WND']->setHeight($newHeight);
 
-	$dWidth = $newWidth - EYEFEEDS_WIN_WIDTH;
-	$dHeight = $newHeight - EYEFEEDS_WIN_HEIGHT;
-	
-	//LEFT PANEL - BOX
-	$GLOBALS['left_BOX']->setHeight(504 + $dHeight);
-	$GLOBALS['tree_CTN']->setHeight(480 + $dHeight);
-	$GLOBALS['feeds_TREE']->setHeight(470 + $dHeight);
-	
-	//RIGHT PANEL - ITEMS BOX
-	$GLOBALS['right_CTNR']->setWidth(580 + $dWidth);
-	$GLOBALS['right_CTNR']->setHeight(504 + $dHeight);
-	$GLOBALS['itemsList_BOX']->setHeight(300 + ($dHeight / 2));
-	$GLOBALS['itemsList_BOX']->setWidth(580 + $dWidth);
-	$GLOBALS['feedItems_TAB']->setWidth(570 + $dWidth);
-	$GLOBALS['feedItems_TAB']->setHeight(270 + ($dHeight / 2));
-	
-	//RIGHT PANEL - CONTENT BOX
-	$GLOBALS['itemContent_BOX']->setY(304 + ($dHeight / 2));
-	$GLOBALS['itemContent_BOX']->setHeight(200 + ($dHeight / 2));
-	$GLOBALS['itemContent_BOX']->setWidth(580 + $dWidth);
-	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.height="'.(150 + ($dHeight / 2)).'px";'));
+	//LEFT/RIGHT SPLITTER
+	$GLOBALS['leftRight_SPLT']->setWidth($newWidth - 8);
+	$GLOBALS['leftRight_SPLT']->setHeight($newHeight - 96);
+
+	//ITEMS/CONTENT SPLITTER
+	$GLOBALS['itemsContent_SPLT']->setWidth($GLOBALS['leftRight_SPLT']->width - $GLOBALS['leftRight_SPLT']->position - 8);
+	$GLOBALS['itemsContent_SPLT']->setHeight($newHeight - 96);
+
+	eyeFeeds_doResize();
 }
+function eyeFeeds_on_leftRightSplitResize($params=null) {
+	$newLeftWidth = intval($params['arg'][0]);
+	$newRightWidth = intval($params['arg'][1]);
+
+	$GLOBALS['leftRight_SPLT']->position = $newLeftWidth;
+	eyeWidgets('serialize',array($GLOBALS['leftRight_SPLT']));
+
+	$GLOBALS['itemsContent_SPLT']->setWidth($newRightWidth - 5);
+
+	eyeFeeds_doResize();
+}
+function eyeFeeds_on_itemsContentSplitResize($params=null) {
+	$newItemsHeight = intval($params['arg'][0]);
+	$GLOBALS['itemsContent_SPLT']->position = $newItemsHeight;
+	eyeWidgets('serialize',array($GLOBALS['itemsContent_SPLT']));
+
+	eyeFeeds_doResize();
+}
+function eyeFeeds_doResize() {
+	global $myPid;
+
+	//LEFT PANEL - BOX
+	$GLOBALS['left_BOX']->setHeight($GLOBALS['leftRight_SPLT']->height);
+	$GLOBALS['left_BOX']->setWidth($GLOBALS['leftRight_SPLT']->position - 1);
+	$GLOBALS['tree_CTN']->setHeight($GLOBALS['leftRight_SPLT']->height - 36);
+	$GLOBALS['tree_CTN']->setWidth($GLOBALS['leftRight_SPLT']->position - 20);
+	$GLOBALS['feeds_TREE']->setHeight($GLOBALS['itemsList_BOX']->height - 30);
+
+	//RIGHT PANEL - ITEMS BOX
+	$GLOBALS['itemsList_BOX']->setHeight($GLOBALS['itemsContent_SPLT']->position - 2);
+	$GLOBALS['itemsList_BOX']->setWidth($GLOBALS['itemsContent_SPLT']->width);
+	$GLOBALS['feedItems_TAB']->setWidth($GLOBALS['itemsList_BOX']->width - 8);
+	$GLOBALS['feedItems_TAB']->setHeight($GLOBALS['itemsList_BOX']->height - 30);
+	
+	//RIGHT PANEL - LOADING LABEL
+	$GLOBALS['loading_CTN']->setX(($GLOBALS['itemsList_BOX']->width / 2) - 60);
+	$GLOBALS['loading_CTN']->setY(($GLOBALS['itemsList_BOX']->height / 2));
+
+	//RIGHT PANEL - CONTENT BOX
+	$GLOBALS['itemContent_BOX']->setHeight($GLOBALS['itemsContent_SPLT']->height - $GLOBALS['itemsContent_SPLT']->position - 6);
+	$GLOBALS['itemContent_BOX']->setWidth($GLOBALS['itemsContent_SPLT']->width);
+	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.height="'.($GLOBALS['itemContent_BOX']->height - 36).'px";'));
+}
+
 function eyeFeeds_on_fullScreen(){
 	global $myPid;
 	$GLOBALS['eyeFeeds_WND']->setFullScreen();

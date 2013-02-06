@@ -23,8 +23,8 @@
 
 /**
  * @author Nanawel (nanawel@eyeos.org)
- * @version 1.1
- * @updated 22-May-2008
+ * @version 1.2
+ * @updated 24-Jan-2009
  */
 
 define('EYEFEEDS_WIN_HEIGHT',600);
@@ -32,7 +32,7 @@ define('EYEFEEDS_WIN_WIDTH',800);
 
 function eyeFeeds_run($params=null) {
 	global $checknum, $myPid;
-	
+
 	$mainWindow = new Window(array(
 		'name' => 'eyeFeeds_WND',
 		'father' => 'eyeApps',
@@ -45,8 +45,8 @@ function eyeFeeds_run($params=null) {
 		'savePosition' => 1
 	));
 	$mainWindow->show();
-	
-	
+
+
 	/**********************************************************/
 	//		TOOLBAR
 	/**********************************************************/
@@ -114,79 +114,97 @@ function eyeFeeds_run($params=null) {
 		'',
 		1
 	);
-	
-	
-	/**********************************************************/
-	//		LEFT CONTAINERS
-	/**********************************************************/
-	$leftBox = new Box(array(
-		'name' => 'left_BOX',
+
+	//LEFT/RIGHT SPLITTER
+	$leftRightSplitter = new Split(array(
+		'name' => 'leftRight_SPLT',
 		'father' => 'eyeFeeds_WND_Content',
 		'x' => 4,
 		'y' => 64,
-		'width' => 200,
-		'height' => 504,
+		'orientation' => SPLIT_VERTICAL,
+		'width' => $mainWindow->width - 8,
+		'height' => $mainWindow->height - 96,
+		'position' => 200,
+		'sendResizeMsg' => 1,
+		'sigResize' => 'leftRightSplitResize'
+	));
+	$leftRightSplitter->show(0);
+
+
+	/**********************************************************/
+	//		LEFT PANEL
+	/**********************************************************/
+	$leftBox = new Box(array(
+		'name' => 'left_BOX',
+		'father' => 'leftRight_SPLT_first',
+		'x' => 0,
+		'y' => 0,
+		'height' => $leftRightSplitter->height,
+		'width' => $leftRightSplitter->position - 1,
 		'title' => 'Feeds'
 	));
 	$leftBox->show(0);
-	
+
 	//tree container (for scrolling)
 	$treeContainer = new Container(array(
 		'name'=>'tree_CTN',
 		'father'=>'left_BOX',
 		'x'=>1,
 		'y'=>24,
-		'width'=>180,
-		'height'=>460
+		'width'=>$leftRightSplitter->position - 20,
+		'height'=>$leftRightSplitter->height - 36
 	));
 	$treeContainer->show();
 	eyeWidgets('serialize',array($treeContainer));
 	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_tree_CTN_Container").style.overflow="auto";'));
-	
+
 	//FEEDS TREE
-	//@see [func.eyecode] eyeFeeds_drawFeedsTree()
-	
+	//@see func.eyecode#eyeFeeds_drawFeedsTree()
+
 	/**********************************************************/
-	//		RIGHT CONTAINER (ITEMS LIST + OUTLINE)
+	//		RIGHT PANEL (ITEMS LIST + OUTLINE)
 	/**********************************************************/
-	$rightContainer = new Container(array(
-		'name' => 'right_CTNR',
-		'father' => 'eyeFeeds_WND_Content',
-		'x' => 208,
-		'y' => 64,
-		'width' => 586,
-		'height' => 504
+	$itemsContentSplitter = new Split(array(
+		'name' => 'itemsContent_SPLT',
+		'father' => 'leftRight_SPLT_last',
+		'x' => 2,
+		'y' => 0,
+		'orientation' => SPLIT_HORIZONTAL,
+		'width' => $leftRightSplitter->width - $leftRightSplitter->position - 8,
+		'height' => $mainWindow->height - 96,
+		'position' => round(($mainWindow->height - 96) * 3/5),
+		'sendResizeMsg' => 1,
+		'sigResize' => 'itemsContentSplitResize'
 	));
-	$rightContainer->show();
-	eyeWidgets('serialize',array($rightContainer));
-	
+	$itemsContentSplitter->show(0);
+
 	//ITEMS BOX
 	$titlesBox = new Box(array(
 		'name' => 'itemsList_BOX',
-		'father' => 'right_CTNR',
+		'father' => 'itemsContent_SPLT_first',
 		'x' => 0,
 		'y' => 0,
-		'width' => 586,
-		'height' => 300,
+		'width' => $itemsContentSplitter->width,
+		'height' => $itemsContentSplitter->position - 2,
 		'title' => 'Select a feed to browse...'
 	));
 	$titlesBox->show(0);
-	
+
 	//ITEMS LIST
 	//@see [func.eyecode] eyeFeeds_clearFeedItems()
-	
+
 	//ITEM'S CONTENT BOX
 	$titlesBox = new Box(array(
 		'name' => 'itemContent_BOX',
-		'father' => 'right_CTNR',
+		'father' => 'itemsContent_SPLT_last',
 		'x' => 0,
-		'y' => 304,
-		'width' => 586,
-		'height' => 200,
+		'y' => 2,
+		'width' => $itemsContentSplitter->width,
+		'height' => $itemsContentSplitter->height - $itemsContentSplitter->position - 6,
 		'title' => ''
 	));
 	$titlesBox->show(0);
-	
+
 	$contentLabel = new Label(array(
 		'name' => 'content_LBL',
 		'father' => 'itemContent_BOX',
@@ -198,38 +216,59 @@ function eyeFeeds_run($params=null) {
 	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.width="99%";'));
 	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.height="170px";'));
 	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.overflow="auto";'));
+
+
+	//"LOADING" IMAGE+LABEL 
+	$loadingContainer = new Container(array(
+		'name'=>'loading_CTN',
+		'father'=>'itemsList_BOX',
+		'x'=>($titlesBox->width / 2) - 60,
+		'y'=>($titlesBox->height / 2),
+		'width'=>180
+	));
+	$loadingContainer->show();
+	eyeWidgets('serialize',array($loadingContainer));
+	$loadingContainer->hide();
 	
-	//"LOADING" LABEL
+	$loadingImage = new Imagebox(array(
+		'name' => 'loading_IMG',
+		'father' => 'loading_CTN',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/clock.png',
+		'x' => 50,
+		'y' => 0
+	));
+	$loadingImage->show();
+	
 	$loadingLabel = new Label(array(
 		'name' => 'loading_LBL',
-		'father' => 'itemsList_BOX',
-		'x' => 220,
-		'y' => 160,
+		'father' => 'loading_CTN',
+		'x' => 0,
+		'y' => 30,
 		'text' => 'Loading, please wait...'
 	));
-	$loadingLabel->show(0);
-	$loadingLabel->hide();
+	$loadingLabel->show();
+
 	
 	/**********************************************************/
 	//		HIDDEN ELEMENTS
 	/**********************************************************/
-	
+
 	$currentFeedUrl = new Hidden(array(
 		'name' =>'currentFeedUrl_HID',
 		'father' => 'eyeFeeds_WND_Content',
 		'text' => serialize('')
 	));
 	reqLib('eyeWidgets','serialize',array($currentFeedUrl));
-	
+
 	$selectedFeedId = new Hidden(array(
 		'name' =>'selectedFeedId_HID',
 		'father' => 'eyeFeeds_WND_Content',
 		'text' => ''
 	));
 	reqLib('eyeWidgets','serialize',array($selectedFeedId));
-	
-	
-	//check the user's configuration directory and create it if needed 
+
+
+	//check the user's configuration directory and create it if needed
 	$confDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeFeeds';
 	if(!vfs('real_fileExists',array($confDir))) {
 		vfs('real_mkdir',array($confDir));

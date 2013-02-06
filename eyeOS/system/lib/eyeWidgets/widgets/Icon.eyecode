@@ -64,7 +64,9 @@ class Icon {
 	var $overBorderBg;
 	var $overBorderColor;
 	var $textColor;
-	
+	var $overClass;
+	var $useClass;
+
 	function Icon($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
@@ -92,6 +94,9 @@ class Icon {
 		isset($params['overBorderBg']) ? $this->overBorderBg = $params['overBorderBg'] : $this->overBorderBg = '#c7ddf8';
 		isset($params['overBorderColor']) ? $this->overBorderColor = $params['overBorderColor'] : $this->overBorderColor = '1px solid #9ec8fb';
 		isset($params['moveout']) ? $this->moveout = $params['moveout'] : $this->moveout = 0;
+		isset($params['overClass']) ? $this->overClass = $params['overClass'] : $this->overClass = 'eyeIcon';
+		isset($params['useClass']) ? $this->useClass = $params['useClass'] : $this->useClass = 0;
+
 		if ($this->cent || strstr($this->image,'extern=') && IE && IE < 7) {
 			$info = @getimagesize(eyex('getThemeImage',array($this->image,3)));
 			$this->width = $info[0];
@@ -142,7 +147,9 @@ class Icon {
 			'overBorder' => $this->overBorder,
 			'overBorderBg'=>$this->overBorderBg,
 			'overBorderColor'=>$this->overBorderColor,
-			'textColor'=>$this->textColor
+			'textColor'=>$this->textColor,
+			'overClass'=>$this->overClass,
+			'useClass'=>$this->useClass
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));		
 		$myButton = array(

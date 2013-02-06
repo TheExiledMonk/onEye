@@ -25,6 +25,7 @@ define('IS_MOBILE',0);
 
 //Loading basic settings for eyeOS Kernel and Services
 include_once('settings.php');
+
 //change directory to EYE_ROOT
 chdir('./'.REAL_EYE_ROOT);
 
@@ -76,7 +77,7 @@ ini_set('default_charset', DEFAULT_CHARSET);
 //Check if index.php is being used to load images/files from extern directory
 if (isset($_GET['extern'])) {
 		$myExtern = $_GET['extern'];
-		//get the type for the header content-type		
+		//get the type for the header content-type
 		if(isset($_GET['type'])) {
 			$type = $_GET['type'];
 		} else {
@@ -92,13 +93,13 @@ if (isset($_GET['extern'])) {
 } else {
 	//Loading eyeWidgets definitions
 	reqLib('eyeWidgets','loadWidgets');
-	
+
 	//Starting a simple session
 	reqLib('eyeSessions','startSession');
-	
-	//If widget table does not exist, create it 
+
+	//If widget table does not exist, create it
 	reqLib('eyeWidgets','checkTable');
-	
+
 	//if there are a shorturl in the url, like index.php/file
 	if(isset($_SERVER['PATH_INFO'])) {
 		$myInfo = $_SERVER['PATH_INFO'];
@@ -120,7 +121,7 @@ if (isset($_GET['extern'])) {
 			$_REQUEST['checknum'] = $checknum;
 		}
 	}
-	//Checking if checknum and message are set	
+	//Checking if checknum and message are set
 	if(isset($_GET['checknum']) && !empty($_GET['checknum'])) {
 		if(isset($_REQUEST['params']) && !empty($_REQUEST['params'])) {
 			$params = $_REQUEST['params'];
@@ -142,9 +143,9 @@ if (isset($_GET['extern'])) {
 			echo "<eyeMessage><action><task>pong</task></action></eyeMessage>";
 			$_SESSION['ping'] = time();
 			exit;
-		}		
-		//Loading the default application (usually Login App)		
-		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/init'.EYE_CODE_EXTENSION);		
+		}
+		//Loading the default application (usually Login App)
+		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/init'.EYE_CODE_EXTENSION);
 	}
 }
 

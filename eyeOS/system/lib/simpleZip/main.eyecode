@@ -47,7 +47,7 @@ function lib_simpleZip_createZip($params) {
 	$file = $params[0]; //full path to directory
 	if(is_dir($file)) {
 		$zipfile = new zipfile;
-		recursiveZip($file,$zipfile,$file,$suffix);
+		recursiveZip($file,$zipfile,$file,$suffix,$params[2]);
 		return $zipfile->zipped_file(); 
 	} else {
 		$zipfile = new zipfile;
@@ -64,21 +64,26 @@ function lib_simpleZip_createZip($params) {
 	}
 }
 
-function recursiveZip($file,$zipfile,$orig,$suffix) {
+function recursiveZip($file,$zipfile,$orig,$suffix,$inner) {
 	if($file == $orig) {
-		$name = utf8_basename($file);
-		$zipfile->create_dir($name);
+		if (!$inner) {
+			$dirPath = utf8_basename($file) . '/';
+			$zipfile->create_dir($dirPath);
+		}
 	} else {
-		$name = utf8_basename($orig);
-		$dirPath = utf8_substr($file,utf8_strlen($orig));
-		$zipfile->create_dir($name.$dirPath);
+		$dirPath = ltrim(utf8_substr($file,utf8_strlen($orig)) . '/','/');
+		if (!$inner) {
+			$name = utf8_basename($orig);
+			$dirPath = $name . '/' . $dirPath;
+		}
+		$zipfile->create_dir($dirPath);
 	}
 	$content = vfs($suffix . 'getDirContent',array($file));	
 	if($content) {
 		if(is_array($content)) {
 			foreach($content as $current) {
 				if(is_dir($current)) {
-					recursiveZip($current,$zipfile,$orig,$suffix);
+					recursiveZip($current,$zipfile,$orig,$suffix,$inner);
 				} else {
 					$fp = vfs($suffix . 'open',array($current,'r'));
 					if(!$fp) {
@@ -88,7 +93,7 @@ function recursiveZip($file,$zipfile,$orig,$suffix) {
 					$myContent = fread($fp,$size);
 					fclose($fp);
 					$sName = utf8_basename($current);
-					$zipfile->create_file($myContent, $name.$dirPath.'/'.$sName);
+					$zipfile->create_file($myContent,$dirPath . $sName);
 				}
 			}
 		}

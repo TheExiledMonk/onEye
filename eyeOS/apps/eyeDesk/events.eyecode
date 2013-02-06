@@ -57,8 +57,13 @@ function eyeDesk_on_Action($params = '') {
 	global $myPid;
 	if ($params['Action'][0] == 'launch') {
 		$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/' . $params['File'][0]));
-		if (strrchr($xml['eyeLink'][0]['content'][0],'.') == '.app') {
-			proc('launch',array(utf8_basename($xml['eyeLink'][0]['content'][0],'.app')));
+		$link = explode(' ', utf8_trim($xml['eyeLink'][0]['content'][0]));
+		if (strrchr($link[0],'.') == '.app') {
+			proc('launch',array(utf8_basename($link[0],'.app'),array_slice($link,1)));
+		} elseif (utf8_substr($xml['eyeLink'][0]['content'][0],0,7) == 'http://' || utf8_substr($xml['eyeLink'][0]['content'][0],0,8) == 'https://') {
+			proc('launch',array('eyeNav',$xml['eyeLink'][0]['content'][0]));
+		} elseif (utf8_substr($xml['eyeLink'][0]['content'][0],0,7) == 'ftp://') {
+			proc('launch',array('eyeFTP',$xml['eyeLink'][0]['content'][0]));
 		} else {
 			$file = utf8_basename($xml['eyeLink'][0]['content'][0]);
 			$path = eyeFiles('cleanPath',array(utf8_substr(utf8_trim($xml['eyeLink'][0]['content'][0],'/\\'),0,- utf8_strlen($file))));
@@ -322,10 +327,9 @@ function eyeDesk_on_OpenPath($params = '') {
 			'image' => $image,
 			'name' => 'eyeDesk_View_Icons_Icon_' . $i,
 			'onclick' => $confFiles['eyeFiles'][0]['clickMethod'][0],
-			'overBorder' => 1,
-			'overBorderBg' => '#0a2c5e',
-			'overBorderColor' => '1px #3b567e solid',
+			'overClass' => 'eyeDesk_iconsOver',
 			'text' => $file[2],
+			'useClass' => 1,
 			'x' => $x2,
 			'y' => $y2
 		));

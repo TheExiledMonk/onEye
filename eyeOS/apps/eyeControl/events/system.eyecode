@@ -102,12 +102,12 @@ function eyeControl_on_system_office($params = '') {
 	}
 }
 
-function eyeControl_on_system_office_openofficeorg($params = '') {
-	proc('launch',array('eyeNav','http://openoffice.org/'));
+function eyeControl_on_system_office_howtowindows($params = '') {
+	proc('launch',array('eyeNav','http://wiki.eyeos.org/Setting_Up_Office_Microsoft'));
 }
 
 function eyeControl_on_system_office_howtolinux($params = '') {
-	proc('launch',array('eyeNav','http://wiki.eyeos.org/HOWTO_Install_eyeOS_Office_Support'));
+	proc('launch',array('eyeNav','http://wiki.eyeos.org/Setting_Up_Office_Linux'));
 }
 
 function eyeControl_on_system_uninstall($params = '') {

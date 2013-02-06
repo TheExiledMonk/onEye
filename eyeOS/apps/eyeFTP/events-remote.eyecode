@@ -21,12 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-/** 
- * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.0
- * @updated 24-May-2008
- */
-
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-local'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-remote'.EYE_CODE_EXTENSION);
@@ -59,7 +53,7 @@ function eyeFTP_on_eyeFTP_refreshRemote() {
 /**
  * @see eyeFTP_browseRemote()
  */
-function eyeFTP_on_eyeFTP_browseRemote_bounced($params="") {
+function eyeFTP_on_eyeFTP_browseRemote_bounced($params=null) {
 	$conf = eyeFTP_getConf();
 	// === BOUNCED REQUEST PROCESSING ===
 	if (eyeFTP_isFromBouncedRequest($params)) {
@@ -84,7 +78,7 @@ function eyeFTP_on_eyeFTP_createFolderRemote() {
 	}
 }
 /* EVENT FOR 'CREATE FOLDER' DIALOG BOX */
-function eyeFTP_on_eyeFTP_newFolder_createFolder_BTN($params="") {
+function eyeFTP_on_eyeFTP_newFolder_createFolder_BTN($params=null) {
 	$conf = eyeFTP_getConf();
 	$newFolderName = $GLOBALS['eyeFTP_newFolder_TXTBOX']->text;
 	
@@ -125,7 +119,7 @@ function eyeFTP_on_eyeFTP_renameMoveRemote() {
 	}
 }
 /* EVENT FOR 'RENAME FILE/FOLDER' DIALOG BOX */
-function eyeFTP_on_eyeFTP_rename_rename_BTN($params="") {
+function eyeFTP_on_eyeFTP_rename_rename_BTN($params=null) {
 	$conf = eyeFTP_getConf();
 	$currentFileLocation = $GLOBALS['eyeFTP_rename_currentLocation_HID']->text;
 	$newFileLocation = $GLOBALS['eyeFTP_rename_TXTBOX']->text;
@@ -168,7 +162,7 @@ function eyeFTP_on_eyeFTP_deleteRemote() {
 	}
 }
 /* EVENTS FOR 'DELETE FILE/FOLDER' DIALOG BOX */
-function eyeFTP_on_eyeFTP_delete_deleteYes_BTN($params="") {
+function eyeFTP_on_eyeFTP_delete_deleteYes_BTN($params=null) {
 	$conf = eyeFTP_getConf();
 	$fileInfos = unserialize($GLOBALS['eyeFTP_delete_serializedFileInfos_HID']->text);
 	
@@ -183,11 +177,11 @@ function eyeFTP_on_eyeFTP_delete_deleteYes_BTN($params="") {
 
 	$GLOBALS['eyeFTP_delete_DLG']->close();
 }
-function eyeFTP_on_eyeFTP_delete_deleteNo_BTN($params="") {
+function eyeFTP_on_eyeFTP_delete_deleteNo_BTN($params=null) {
 	$GLOBALS['eyeFTP_delete_DLG']->close();
 }
 
-function eyeFTP_on_eyeFTP_downloadRemote($params="") {
+function eyeFTP_on_eyeFTP_downloadRemote($params=null) {
 	// === BOUNCED REQUEST PROCESSING ===
 	if (eyeFTP_isFromBouncedRequest($params)) {
 		$downloadParams = array(
@@ -251,7 +245,7 @@ function eyeFTP_on_eyeFTP_downloadRemote_finished($params=null) {
 	exit;
 }
 
-function eyeFTP_on_eyeFTP_uploadRemote($params="") {
+function eyeFTP_on_eyeFTP_uploadRemote($params=null) {
 	$conf = eyeFTP_getConf();
 	if ($conf['isConnectionActive']) {
 		showUploadDialog(array('path' => $conf['currentRemoteDir'],
@@ -264,7 +258,7 @@ function eyeFTP_on_eyeFTP_uploadRemote($params="") {
 }
 
 /* EVENTS FOR 'UPLOAD FILE' DIALOG BOX */
-function eyeFTP_on_eyeFTP_uploadRemote_initForm($params="") {
+function eyeFTP_on_eyeFTP_uploadRemote_initForm($params=null) {
 	global $checknum;
 	$pathDisplayed = urldecode($_GET['params'][0]);
 	if (! $pathDisplayed) {
@@ -332,7 +326,7 @@ function eyeFTP_on_eyeFTP_uploadRemote_uploadComplete() {
 		'</body></html>';
 	exit;
 }
-function eyeFTP_on_eyeFTP_uploadRemote_notifyEndOfUpload($params="") {
+function eyeFTP_on_eyeFTP_uploadRemote_notifyEndOfUpload($params=null) {
 	$conf = eyeFTP_getConf();
 	
 	$GLOBALS['eyeFTP_upload_DLG']->close();
@@ -376,11 +370,11 @@ function eyeFTP_on_eyeFTP_uploadRemote_notifyEndOfUpload($params="") {
 //		TABLE CLICKS MANAGEMENT
 /*********************************************************************************************/
 
-function eyeFTP_on_eyeFTP_remoteFilesClick($params="") {
+function eyeFTP_on_eyeFTP_remoteFilesClick($params=null) {
 	eyeFTP_setActiveView('remote');
 }
 
-function eyeFTP_on_eyeFTP_remoteFilesDblClick($params="") {
+function eyeFTP_on_eyeFTP_remoteFilesDblClick($params=null) {
 	$conf = eyeFTP_getConf();
 	if ($conf['isConnectionActive']) {
 		//browse only if selected element is a directory

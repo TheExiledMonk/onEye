@@ -115,6 +115,7 @@ function eyeControl_on_users_delete_yes($params = '') {
 		$oldUser = $currentUser;
 		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 			$currentUser = ROOTUSER;
+			$mngUsers = array();
 			foreach ($myUserXml['eyeUser'][0]['mngUser'] as $mngUser) {
 				if ($mngUser != $user) {
 					$mngUsers[] = $mngUser;

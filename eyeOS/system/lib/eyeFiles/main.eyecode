@@ -76,8 +76,9 @@ function lib_eyeFiles_cleanPath($params = '') {
 			$path = str_replace('\\','/',utf8_substr(realpath($path),utf8_strlen(realpath($sub))));
 		}
 		$path = str_replace('//','/',str_replace('//','/',utf8_trim($path,'/')));
-		if (utf8_strpos(realpath($sub . $path),realpath($sub)) === 0 && (substr_count($path,'/') > 1 || substr_count($path,'/') && $type != 'users')) {
-			$path = str_replace('\\','/',utf8_substr(realpath($sub . $path),utf8_strlen(realpath($sub))));
+		$sPath = $sub.$path;
+		if ((utf8_strpos(realpath($sPath),realpath($sub)) === 0 && vfs('isdir',array($sPath))) && (substr_count($path,'/') > 1 || substr_count($path,'/') && $type != 'users')) {
+			$path = str_replace('\\','/',utf8_substr(realpath($sPath),utf8_strlen(realpath($sub))));
 		} else {
 			$path .= '/';
 			$temp = utf8_substr($path,0,utf8_strpos($path,'/'));

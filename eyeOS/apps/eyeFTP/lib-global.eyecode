@@ -21,12 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-/** 
- * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.0
- * @updated 07-Dec-2008
- */
-
 /*********************************************************************************************/
 /*********************************************************************************************/
 /*					TOOLS FUNCTIONS															 */
@@ -42,7 +36,7 @@
  * @param array $params An array with at least the following content:
  *                      array('__signal' => the_name_of_the_signal_to_send)
  */
-function eyeFTP_bounceRequest($params="") {
+function eyeFTP_bounceRequest($params=null) {
 	global $checknum;
 	
 	$sendMsgParams = '';
@@ -62,7 +56,7 @@ function eyeFTP_bounceRequest($params="") {
  * @return boolean TRUE if the arguments indicate that the function is called from a "bounced" request,
  *                 FALSE otherwise
  */
-function eyeFTP_isFromBouncedRequest($params="") {
+function eyeFTP_isFromBouncedRequest($params=null) {
 	return (is_array($params) && $params['__bounce'][0] == 1);
 }
 

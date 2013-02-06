@@ -21,12 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-/** 
- * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.0
- * @updated 07-Dec-2008
- */
-
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/events'.EYE_CODE_EXTENSION);
 
 /*********************************************************************************************/
@@ -45,15 +39,15 @@ define('EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON', 'index.php?version='.EXTERN_CACHE_V
 /*********************************************************************************************/
 /*********************************************************************************************/
 
-function eyeFTP_on_eyeFTP_manageHosts_initComplete($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_initComplete($params=null) {
 	eyeFTP_refreshHostsTable();
 }
 
-function eyeFTP_on_eyeFTP_manageHosts_savedHosts_TAB_dblClick($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_savedHosts_TAB_dblClick($params=null) {
 	eyeFTP_on_eyeFTP_manageHosts_load_BTN();
 }
 
-function eyeFTP_on_eyeFTP_manageHosts_add_BTN($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_add_BTN($params=null) {
 	$GLOBALS['eyeFTP_manageHosts_idEdition_HID']->setText('new');
 	
 	eyeFTP_enableHostForm(true);
@@ -68,7 +62,7 @@ function eyeFTP_on_eyeFTP_manageHosts_add_BTN($params="") {
 	$GLOBALS['eyeFTP_manageHosts_password_TXTBOX']->setText('eyeftp@eyeos.org');
 }
 
-function eyeFTP_on_eyeFTP_manageHosts_edit_BTN($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_edit_BTN($params=null) {
 	$displayedHosts = unserialize($GLOBALS['eyeFTP_manageHosts_serializedHostsData_HID']->text);
 	if (! $GLOBALS['eyeFTP_manageHosts_savedHosts_TAB']->selected) {
 		eyeX('messageBox',array('content'=>'You must select a host to edit'));
@@ -95,7 +89,7 @@ function eyeFTP_on_eyeFTP_manageHosts_edit_BTN($params="") {
 	}
 }
 
-function eyeFTP_on_eyeFTP_manageHosts_delete_BTN($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_delete_BTN($params=null) {
 	$displayedHosts = unserialize($GLOBALS['eyeFTP_manageHosts_serializedHostsData_HID']->text);
 	if (! $GLOBALS['eyeFTP_manageHosts_savedHosts_TAB']->selected) {
 		eyeX('messageBox',array('content'=>'You must select a host to delete'));
@@ -113,7 +107,7 @@ function eyeFTP_on_eyeFTP_manageHosts_delete_BTN($params="") {
 	eyeFTP_refreshHostsTable();
 }
 
-function eyeFTP_on_eyeFTP_manageHosts_load_BTN($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_load_BTN($params=null) {
 	global $checknum;
 	$conf = eyeFTP_getConf();
 	$displayedHosts = unserialize($GLOBALS['eyeFTP_manageHosts_serializedHostsData_HID']->text);
@@ -141,7 +135,7 @@ function eyeFTP_on_eyeFTP_manageHosts_load_BTN($params="") {
 	eyeFTP_on_eyeFTP_connect_ITM();
 }
 
-function eyeFTP_on_eyeFTP_manageHosts_save_BTN($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_save_BTN($params=null) {
 	$displayedHosts = unserialize($GLOBALS['eyeFTP_manageHosts_serializedHostsData_HID']->text);
 	
 	//adding a new host configuration
@@ -178,7 +172,7 @@ function eyeFTP_on_eyeFTP_manageHosts_save_BTN($params="") {
 	eyeFTP_refreshHostsTable();
 }
 
-function eyeFTP_on_eyeFTP_manageHosts_cancel_BTN($params="") {
+function eyeFTP_on_eyeFTP_manageHosts_cancel_BTN($params=null) {
 	eyeFTP_enableHostForm(false);
 }
 
@@ -327,7 +321,7 @@ function eyeFTP_enableHostForm($enable) {
  * @param array $params
  * @see eyeFTP_on_eyeFTP_rename_rename_BTN()
  */
-function showManageHostsDialog($params="") {
+function showManageHostsDialog($params=null) {
 	global $checknum;
 	
 	//prevent multiple instances of the window

@@ -22,8 +22,6 @@
 */
 
 function eyeDesk_com_onEvent($params = '') {
-	global $checknum;
-	global $myPid;
 	eyeWidgets('updateContent');
 	foreach ($params as $value) {
 		$value = eyeFiles('cleanPath',array($value));

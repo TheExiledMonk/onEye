@@ -26,10 +26,8 @@ function eyePdf_on_Message($params = '') {
 }
 
 function eyePdf_on_Resize($params = '') {
-	$width = intval($params['arg'][0]);
-	$height = intval($params['arg'][1]);
-	$GLOBALS['eyePdf_iframe']->setWidth($width - 2);
-	$GLOBALS['eyePdf_iframe']->setHeight($height - 24);
+	$GLOBALS['eyePdf_iframe']->setWidth(intval($params['arg'][0]) - 4);
+	$GLOBALS['eyePdf_iframe']->setHeight(intval($params['arg'][1]) - 25);
 }
 
 function eyePdf_on_showPdf($params = '') {
@@ -62,8 +60,8 @@ function eyePdf_on_showPdf($params = '') {
 		'father' => 'eyePdf_window_Content',
 		'x' => 0,
 		'y' => 0,
-		'height' => 576,
-		'width' => 798,
+		'height' => 575,
+		'width' => 796,
 		'url' => 'index.php?checknum=' . $checknum . '&msg=getPdf'
 	));
 	$myIframe->show();

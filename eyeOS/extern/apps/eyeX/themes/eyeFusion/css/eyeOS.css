@@ -303,22 +303,23 @@ ul.mktree, ul.mktree ul, ul.mktree li {
 }
 
 .eyeButtonClass {
-	-moz-border-radius: 15px;
-	-webkit-border-radius: 15px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
 	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/widgets/buttonbg.png);
-	border-bottom: 1px solid #858585;
+	border-bottom: 1px solid #7f7f7f;
 	border-left: 1px solid #aeaeae;
-	border-right: 1px solid #aeaeae;
-	border-top: 1px solid #858585;
+	border-right: 1px solid #7f7f7f;
+	border-top: 1px solid #aeaeae;
+	cursor: pointer;
 	font-size: 11px;
-	height: 20px;
+	padding: 1px;
 }
 
 .eyeButtonClass:hover {
-	border-bottom: 1px solid #6fa1e0;
+	border-bottom: 1px solid #6a9bd8;
 	border-left: 1px solid #a1c6f3;
-	border-right: 1px solid #a1c6f3;
-	border-top: 1px solid #6fa1e0;
+	border-right: 1px solid #6a9bd8;
+	border-top: 1px solid #a1c6f3;
 }
 
 .eyeChess_b {
@@ -426,6 +427,28 @@ ul.mktree, ul.mktree ul, ul.mktree li {
 	right: 5px;
 	width: 170px;
 	z-index: 10000;
+}
+
+.eyeDesk_iconsOver {
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: #ffffff;
+	cursor: pointer;
+	margin-top: -7px;
+	padding-top: 7px;
+}
+
+.eyeDesk_iconsOver:hover {
+	-icab-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-moz-border-radius: 7px;
+	-o-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	background-color: transparent;
+	background-repeat: repeat-x;
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/desktop/iconhover.png);
+	background-position: top;
+	border-radius: 7px;
 }
 
 .eyeDock_center {
@@ -608,7 +631,50 @@ ul.mktree, ul.mktree ul, ul.mktree li {
 	width: 11px;
 }
 
-.eyeIcon {}
+.eyeFiles_icons {
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: #000000;
+	cursor: pointer;
+	margin-top: -5px;
+	padding: 5px 0 0 0;
+}
+
+.eyeFiles_icons:hover {
+	-icab-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-moz-border-radius: 7px;
+	-o-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	background-color: transparent;
+	background-repeat: repeat-x;
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/desktop/iconhover.png);
+	background-position: top;
+	border-radius: 7px;
+}
+
+.eyeIcon {
+	background-color: transparent;
+	border: 1px solid transparent;
+	color: #ffffff;
+	margin-top: -5px;
+	padding: 5px 0 0 0;
+}
+
+.eyeIcon:hover {
+	-icab-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-moz-border-radius: 7px;
+	-o-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	background-color: transparent;
+	background-repeat: repeat-x;
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/desktop/iconhover.png);
+	background-position: top;
+	border-radius: 7px;
+}
+
+.eyeIcon_blank {}
 
 .eyeIcon_Image {
 	margin-left: 8px;
@@ -1172,7 +1238,7 @@ ul.mktree, ul.mktree ul, ul.mktree li {
 	border-color: #a4a5ac #96979e #4b4e5a;
 	border-style: solid;
 	border-width: 1px;
-	cursor: default;
+	cursor: context-menu;
 }
 
 .sort-table thead td:active {

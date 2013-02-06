@@ -30,6 +30,10 @@ function eyeCalendar_on_Launch($params="") {
 	global $checknum;
 	$defaultView = reqLib('eyeCalendar','getDefaultView');
 	_changeView($defaultView);
+	if(IE > 5){
+		eyeX('sendMessage',array('msg'=>'reshow'));
+		return true;
+	}
 }
 //Event recivers maybe we'll use messageTables instead recivers functions
 function eyeCalendar_on_WeekView(){
@@ -439,7 +443,14 @@ function eyeCalendar_on_updateTitle($params=""){
 	$oldNoteInfo['note'][0]['title'][0] = base64_encode($title);
 	reqLib('eyeCalendar','updateNote',array('calendar'=>$calendar,'info'=>$oldNoteInfo,'oldId'=>$idNote));
 }
-
+function eyeCalendar_on_reshow($params=""){
+	if(IE > 5){
+		$params = array();
+		$params['date'][0] = time();
+		$params['date'][0] *= 1000;
+		eyeCalendar_on_changeDate($params);
+	}
+}
 function eyeCalendar_on_changeDate($params=""){
 	$date = $params['date'][0];
 	$date = $date / 1000;//MiliSecons to seconds

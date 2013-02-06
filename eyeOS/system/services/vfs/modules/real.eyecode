@@ -2211,10 +2211,14 @@ function service_vfs_getDirSize($params){
 		}
 		$size = $ref->size;
 	}elseif($os == 'unix'){		
-		$size = shell_exec("du -sb ".escapeshellarg($dir));		
+		$size = shell_exec("du -sb ".escapeshellarg($dir));	
 		preg_match("/^\d*/",$size,$int);
-		$size = $int[0];						
-	}		
+		$size = $int[0];
+	}
+	//if system do fails, try a pure php function
+	if(!is_numeric($size)){
+		$size = _getDirSizePurePhp($dir);
+	}
 	return $size;	
 }
 
@@ -2361,6 +2365,34 @@ function service_vfs_resolvePath($params) {
 	//replace backslashes by slashes (Windows servers)
 	$resolvedPath = str_replace('\\','/',$resolvedPath);
 	return $resolvedPath;
+}
+
+function _getDirSizePurePhp($dir){
+	$size = 0;
+	$dir .= '/';
+	//That's not needed but well, doesn't bother :)
+	if(!vfs('real_checkPermissions',array($dir))){
+		return false;
+	}
+	if($handle = opendir($dir)){
+		while(($file = readdir($handle)) !== false){
+			if($file != '.' && $file != '..'){
+				$filePath = $dir.'/'.$file;
+				//TODO: Maybe is_file doesn't follow syms link, we want sym links? 
+				if(is_file($filePath)){
+					$size += filesize($filePath);
+				}elseif(is_dir($filePath)){
+					$size  += _getDirSizePurePhp($filePath);
+				}
+			}
+		}
+	}
+	closedir($handle);
+	if($size != 0){
+		return $size;
+	}else{
+		return false;
+	}
 }
 
 /*

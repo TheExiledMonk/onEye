@@ -226,7 +226,7 @@ function eyeProperties_run($params = '') {
 	$myLine = new Line(array(
 		'father' => 'eyeProperties_Window_Content',
 		'name' => 'eyeProperties_Line_FileInformation',
-		'width' => 248,
+		'width' => 246,
 		'x' => 0,
 		'y' => $contentY
 	));
@@ -361,7 +361,7 @@ if ($size != '0 ') {
 		$myLine = new Line(array(
 			'father' => 'eyeProperties_Window_Content',
 			'name' => 'eyeProperties_Line_CreationInformation',
-			'width' => 248,
+			'width' => 246,
 			'x' => 0,
 			'y' => $contentY
 		));
@@ -432,7 +432,7 @@ if ($size != '0 ') {
 		$myLine = new Line(array(
 			'father' => 'eyeProperties_Window_Content',
 			'name' => 'eyeProperties_Line_DeletionInformation',
-			'width' => 248,
+			'width' => 246,
 			'x' => 0,
 			'y' => $contentY
 		));

@@ -69,7 +69,7 @@ function dockButOnMouseOut(id,icon,pid) {
 function dockButOnMouseOver(id,icon,pid) {
 	var but = xGetElementById(pid + '_' + id);
 	but.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeDock/icons/' + icon + '_x.png';
-	fixPNG(pid + '_' + id);
+	fixPNG(but);
 	xGetElementById(pid + '_menu_text_items_' + id).style.display = 'block';
 	if (eyeDockMenuState != '') {
 		dockDesactiveMenu(pid);
@@ -89,7 +89,7 @@ function dockCenter(id,pid) {
 
 function dockDesactiveMenu(pid) {
 	eyeDockLastObject.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeDock/icons/' + eyeDockLastIcon + '.png';
-	fixPNG(eyeDockLastObject.id);
+	fixPNG(eyeDockLastObject);
 	xGetElementById(pid + '_menu_items_' + eyeDockLastId).style.display = 'none';
 	eyeDockMenuState = '';
 }

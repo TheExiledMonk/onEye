@@ -283,10 +283,12 @@ function service_um_updateUser($params = null){
 		if (isset($params['group'])) { // Because of the deprecated argument "group".
 			$params['groups'] = $params['group'];
 		}
-		if (is_array($params['groups'])) {
-			$array2['group'] = $params['groups'];
-		} elseif (isset($params['groups'])) {
-			$array['group'][0] = $params['groups'];
+		if (isset($params['groups'])) {
+			if (is_array($params['groups'])) {
+				$array2['group'] = $params['groups'];
+			} else {
+				$array['group'][0] = $params['groups'];
+			}
 		}
 		if (isset($params['admin']) && $params['admin'] == 1) {
 			$array['admin'][0] = 1;
@@ -295,16 +297,20 @@ function service_um_updateUser($params = null){
 			unset($array['mngUser']);
 		} elseif (isset($params['maintainer']) && $params['maintainer'] == 1 || $array['maintainer'][0] == '1') {
 			unset($array['admin']);
-			if (is_array($params['maintain'])) {
-				$array2['maintain'] = $params['maintain'];
-			} elseif ($params['maintain']) {
-				$array['maintain'][0] = $params['maintain'];
+			if (isset($params['maintain'])) {
+				if (is_array($params['maintain'])) {
+					$array2['maintain'] = $params['maintain'];
+				} else {
+					$array['maintain'][0] = $params['maintain'];
+				}
 			}
 			$array['maintainer'][0] = 1;
-			if (is_array($params['mngUser'])) {
-				$array2['mngUser'] = $params['mngUser'];
-			} elseif ($params['mngUser']) {
-				$array['mngUser'][0] = $params['mngUser'];
+			if (isset($params['mngUser'])) {
+				if (is_array($params['mngUser'])) {
+					$array2['mngUser'] = $params['mngUser'];
+				} else {
+					$array['mngUser'][0] = $params['mngUser'];
+				}
 			}
 		} elseif (isset($params['maintainer']) && $params['maintainer'] == 0) {
 			unset($array['admin']);
@@ -318,13 +324,13 @@ function service_um_updateUser($params = null){
 	}
 	
 	//rmDoubleUserArrays
-	if ($array2['group']) {
+	if (isset($array2['group'])) {
 		$array['group'] = rmDoubleUserArrays($array2['group']);
 	}
-	if ($array2['maintain']) {
+	if (isset($array2['maintain'])) {
 		$array['maintain'] = rmDoubleUserArrays($array2['maintain']);
 	}
-	if ($array2['mngUser']) {
+	if (isset($array2['mngUser'])) {
 		$array['mngUser'] = rmDoubleUserArrays($array2['mngUser']);
 	}
 	

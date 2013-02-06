@@ -21,12 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-/** 
- * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.0
- * @updated 29-Jan-2008
- */
-
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-local'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-remote'.EYE_CODE_EXTENSION);
@@ -111,11 +105,11 @@ function eyeFTP_on_eyeFTP_uploadLocal() {
 /*********************************************************************************************/
 //		TABLE CLICKS MANAGEMENT
 /*********************************************************************************************/
-function eyeFTP_on_eyeFTP_localFilesClick($params="") {
+function eyeFTP_on_eyeFTP_localFilesClick($params=null) {
 	eyeFTP_setActiveView('local');
 }
 
-function eyeFTP_on_eyeFTP_localFilesDblClick($params="") {
+function eyeFTP_on_eyeFTP_localFilesDblClick($params=null) {
 	$conf = eyeFTP_getConf();
 	//browse only if selected element is a directory
 	switch ($conf['selectedLocalFile']['type']) {

@@ -21,12 +21,6 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-/** 
- * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.0
- * @updated 23-May-2008
- */
-
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/hosts'.EYE_CODE_EXTENSION);
 
 /*********************************************************************************************/
@@ -119,7 +113,7 @@ function showConfirmDeleteDialog($params = '') {
  * 
  * @see 
  */
-function showUploadDialog($params="") {
+function showUploadDialog($params=null) {
 	global $checknum;
 	$uploadWindow = new Window(array(
 		'name' => 'eyeFTP_upload_DLG',

@@ -134,6 +134,7 @@ function genericListener($type,$sec_servicename,$minfunction,$noListen,$params){
 						$myPid = $key;
 						$checknum = service('proc','findNChecknumByPid',array($myPid));
 						$procInfo = service('proc','getProcByPid',array($myPid));
+						i18n('loadLang',array($appName));
 						call_user_func($appName.'_com_'.$value,$params);
 						$procInfo = $oldProcInfo;
 						$myPid = $oldPid;

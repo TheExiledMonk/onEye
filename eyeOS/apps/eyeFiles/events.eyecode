@@ -155,8 +155,13 @@ function eyeFiles_on_Action($params = '') {
 	if ($params['File'][0]) {
 		if ($params['Action'][0] == 'launch') {
 			$xml = eyeXML('getXMLfile',array($path[0] . '/' . $params['File'][0]));
-			if (strrchr($xml['eyeLink'][0]['content'][0],'.') == '.app') {
-				proc('launch',array(utf8_basename($xml['eyeLink'][0]['content'][0],'.app')));
+			$link = explode(' ', utf8_trim($xml['eyeLink'][0]['content'][0]));
+			if (strrchr($link[0],'.') == '.app') {
+				proc('launch',array(utf8_basename($link[0],'.app'),array_slice($link,1)));
+			} elseif (utf8_substr($xml['eyeLink'][0]['content'][0],0,7) == 'http://' || utf8_substr($xml['eyeLink'][0]['content'][0],0,8) == 'https://') {
+				proc('launch',array('eyeNav',$xml['eyeLink'][0]['content'][0]));
+			} elseif (utf8_substr($xml['eyeLink'][0]['content'][0],0,7) == 'ftp://') {
+				proc('launch',array('eyeFTP',$xml['eyeLink'][0]['content'][0]));
 			} else {
 				$file = utf8_basename($xml['eyeLink'][0]['content'][0]);
 				$path = eyeFiles('cleanPath',array(utf8_substr(utf8_trim($xml['eyeLink'][0]['content'][0],'/\\'),0,- utf8_strlen($file))));
@@ -286,7 +291,7 @@ function eyeFiles_on_OpenPath($params = '') {
 	$GLOBALS['eyeFiles_Window']->setTitle($title . ' - ' . i18n('translate',array('Files Manager')));
 	$GLOBALS['eyeFiles_Textbox_Path']->setText($type . '://' . $show);
 	$GLOBALS['eyeFiles_Hidden_Path']->setText($type . '://' . $show);
-	$eyeFiles_menus = 1;
+	$eyeFiles_noactions = 1;
 	if ($type == 'trash') {
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->hide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->unhide();
@@ -294,7 +299,7 @@ function eyeFiles_on_OpenPath($params = '') {
 		$hide = 'e.childNodes[i].id == "Upload_Container" || e.childNodes[i].id == "NewFolder_Container" || e.childNodes[i].id == "NewFile_Container"';
 		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "EmptyTrash_Container"';
 	} elseif ($type == 'groups' && $show == '/' || $type == 'users' && substr_count($show,'/') < 2) {
-		$eyeFiles_menus = 0;
+		$eyeFiles_noactions = 0;
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->hide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->hide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_real_Container']->hide();
@@ -354,10 +359,9 @@ function eyeFiles_on_OpenPath($params = '') {
 }
 
 function eyeFiles_on_OpenTree($params = '') {
-	$path = $GLOBALS['eyeFiles_Box_Tree_Tree']->selected;
-	$type = utf8_substr($path,0,utf8_strpos($path,'/'));
-	$path = utf8_substr($path,utf8_strlen($type));
-	eyeFiles_on_OpenPath(array($path,$type));
+	$type = eyeFiles('cleanPath',array($GLOBALS['eyeFiles_Hidden_Path']->text));
+	$path = utf8_substr($GLOBALS['eyeFiles_Box_Tree_Tree']->selected,utf8_strlen(i18n('translate',array(ucfirst($type[1])))));
+	eyeFiles_on_OpenPath(array($path,$type[1]));
 }
 
 function eyeFiles_on_ChangeBox($params = array()) {

@@ -35,7 +35,7 @@ function restoreTrash_on_Do($params = '') {
 	if ($xml['eyeTrash'][0]['type'][0] == 'dir') {
 		if ($to) {
 			if ($to[1] == 'real') {
-				eyex('messageBox',array('content' => 'You cannot restore "%s" to a real folder!','tokens' => array($xml['eyeTrash'][0]['lastname'][0]))); // TODO
+				eyex('messageBox',array('content' => 'You cannot restore "%s" to a real folder!','tokens' => array($xml['eyeTrash'][0]['lastname'][0])));
 			} elseif (vfs('real_move',array($path . $file,$to[0] . '/' . utf8_basename($xml['eyeTrash'][0]['restorePoint'][0])))) {
 				vfs('real_delete',array($path . $file . '.' . EYEOS_TRASH_EXT));
 				$path = $to[1] . '://' . $to[2];
@@ -54,7 +54,7 @@ function restoreTrash_on_Do($params = '') {
 		}
 	} elseif ($to) {
 		if ($to[1] == 'real') {
-			eyex('messageBox',array('content' => 'You cannot restore "%s" to a real folder!','tokens' => array($xml['eyeTrash'][0]['lastname'][0]))); // TODO
+			eyex('messageBox',array('content' => 'You cannot restore "%s" to a real folder!','tokens' => array($xml['eyeTrash'][0]['lastname'][0])));
 		} elseif (vfs('real_move',array($path . $file . '.' . EYEOS_INFO_EXT,$to[0] . '/' . utf8_basename($xml['eyeTrash'][0]['restorePoint'][0]) . '.' . EYEOS_INFO_EXT))) {
 			vfs('real_move',array($path . $file . '.' . EYEOS_FILE_EXT,$to[0] . '/' . utf8_basename($xml['eyeTrash'][0]['restorePoint'][0]) . '.' . EYEOS_FILE_EXT));
 			vfs('real_delete',array($path . $file . '.' . EYEOS_TRASH_EXT));

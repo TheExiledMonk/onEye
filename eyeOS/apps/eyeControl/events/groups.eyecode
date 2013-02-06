@@ -238,11 +238,13 @@ function eyeControl_on_groups_delete_yes($params = '') {
 		
 		if (vfs('real_rmdir',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/'))) {
 			if ($oldUser != ROOTUSER) {
+				$array = array();
 				foreach ($myUserXml['eyeUser'][0]['group'] as $value) {
 					if ($value != $group) {
 						$array[] = $value;
 					}
 				}
+				$maintain = array();
 				foreach ($myUserXml['eyeUser'][0]['maintain'] as $value) {
 					if ($value != $group) {
 						$maintain[] = $value;

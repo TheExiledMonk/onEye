@@ -1,3 +1,7 @@
+.eyeBoxTable {
+	border-bottom: 0;
+}
+
 .eyeClock {
 	background-image: url();
 	bottom: -1px;
@@ -21,6 +25,10 @@
 	background-image: url();
 	bottom: 30px;
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/desktop/calendar.png', sizingMethod='scale');
+}
+
+.eyeDesk_iconsOver {
+	border: 0;
 }
 
 .eyeDock_center {
@@ -104,6 +112,14 @@
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/apps/eyeDock/top_right.png', sizingMethod='scale');
 	top: -13px;
+}
+
+.eyeFiles_icons {
+	border: 0;
+}
+
+.eyeIcon {
+	border: 0;
 }
 
 .eyeMenu_top {

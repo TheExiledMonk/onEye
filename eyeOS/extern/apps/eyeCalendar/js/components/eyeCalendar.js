@@ -223,11 +223,12 @@ function weekPlanner_calendars(weekPlanner){
 		image.src = 'index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/apps/eyeCalendar/widget/selected.png';
 		image.setAttribute('id',this.father.pid + '_selectedImg_img');
 		imageContainer.appendChild(image);
-		fixPNG(this.father.pid + '_selectedImg_img');
+// 		fixPNG(image);
 		return imageContainer;
 	}
 	this.drawCalendar = function drawCalendar(name,num,show){
 		var fatherContainer = this.father.calendarsFather;
+		
 		//Removing addcalendar if it exists
 		//this.removeAddCalendar();
 		//Adding info in the calendar array at the moment only save the show property
@@ -527,7 +528,9 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			weekDay.style.width = this.father.rowWidth+'px';
 			weekDay.style.height = '100%';
 			weekDay.pid = this.father.pid;
-			
+			weekDay.onselectstart = function(){
+				return false;
+			}
 			//If don't is the first row
 			if(d!=this.father.dayFrom){
 				weekDay.style.borderLeft = '1px #C1C1C1 solid';
@@ -588,7 +591,11 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			hour.style.borderTop = '1px #E6E6E6 solid';
 			hour.style.textAlign = 'center';
 			hour.style.color = '#585858';
-			
+			if(IEversion){
+				hour.onselectstart = function(){
+					return false;
+				}
+			}
 			//text
 			//TODO: 12hours format
 			var text = document.createTextNode(h+':00');
@@ -677,6 +684,11 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.hoursBase.setAttribute('id',this.father.pid+'_hoursBase');
 			this.hoursBase.style.position = 'absolute';
 			this.hoursBase.style.left = '0px';
+			if(IEversion){
+				this.hoursBase.onselectstart = function(){
+					return false;
+				}
+			}
 			if (IEversion && IEversion < 7) {
 				this.hoursBase.style.top = '43px';
 			} else {
@@ -693,7 +705,11 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.daysBase.style.top = '0px';
 			this.daysBase.style.width = this.father.dayRowWidth+'px';
 			this.daysBase.style.height = this.father.contentHeight+'px';
-		
+			if(IEversion){
+				this.daysBase.onselectstart = function(){
+					return false;
+				}
+			}
 		//Container for day names
 		this.dayNames = document.createElement('div');
 			this.dayNames.setAttribute('id',this.father.pid+'_dayNames');
@@ -702,7 +718,11 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.dayNames.style.styleFloat = 'left';
 			this.dayNames.style.width = '100%';
 			this.dayNames.style.height = '20px';
-		
+			if(IEversion){
+				this.dayNames.onselectstart = function(){
+					return false;
+				}
+			}
 		//Container for each todo (unused now)
 		this.dayTodo = document.createElement('div');
 			this.dayTodo.setAttribute('id',this.father.pid+'_dayTodo');
@@ -712,7 +732,11 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.dayTodo.style.width = '100%';
 			this.dayTodo.style.height = '15px';
 			this.dayTodo.style.border = '1px #999 solid';
-			
+			if(IEversion){
+				this.dayTodo.onselectstart = function(){
+					return false;
+				}
+			}
 		//Container for each week day with his hours
 		this.daysContainer = document.createElement('div');
 			this.daysContainer.setAttribute('id',this.father.pid+'_daysContent');
@@ -726,7 +750,11 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.daysContainer.style.borderRight = '1px #999 solid';
 			this.daysContainer.style.borderTop = '1px #999 solid';
 			this.daysContainer.style.borderBottom = '1px #999 solid';
-			
+			if(IEversion){
+				this.daysContainer.onselectstart = function(){
+					return false;
+				}
+			}
 			//Setting default event type
 			this.father.evenType = 'default';
 			//Adding events with cross-browser of course
@@ -1208,11 +1236,15 @@ function weekPlanner_notes(weekPlanner){
 		note.minEven = minEven;
 	}
 	this.draw_movedNote = function draw_movedNote(hour,part){
-			var note = this.father.tmpNote;
-			var top = part*(this.father.pixelPart);
-			top = Math.floor(top);
-			note.style.top = top+'px';
-			hour.appendChild(note);
+		var note = this.father.tmpNote;
+		var hTop = this.father.pixelPart;
+		if(IEversion == 6){
+			hTop += 0.50;
+		}
+		var top = part*hTop;
+		top = Math.floor(top);
+		note.style.top = top+'px';
+		hour.appendChild(note);
 	}	
 	this.draw_newNote = function draw_newNote(part,partsNum,calendar,cid,resizable,movible){
 		if(!calendar){
@@ -1220,7 +1252,17 @@ function weekPlanner_notes(weekPlanner){
 		}
 		var height = this.father.pixelPart;
 		height = height*partsNum;
-		var top = part*(this.father.pixelPart);
+		var hTop = this.father.pixelPart;
+		if(IEversion == 6){
+			hTop += 0.50;
+			if(partsNum > 2){
+				var fix = (partsNum+3);
+			}else{
+				var fix = partsNum+2;
+			}
+			height += fix;
+		}
+		var top = part*hTop;
 		var bodyHeight = height -this.father.pixelPart-2;//TODO: define bottom height
 		var note  = document.createElement('div');
 		var bodyColor = this.father.noteBodyColors[calendar];
@@ -1262,6 +1304,11 @@ function weekPlanner_notes(weekPlanner){
 			noteHeader.style.textIndent = '4px';
 			noteHeader.style.fontWeight = 'bold';
 			noteHeader.style.lineHeight = '1.4em';
+			if(IEversion){
+				noteHeader.onselectstart = function(){
+					return false;
+				}
+			}
 		note.noteHeader = noteHeader;
 		note.appendChild(noteHeader);
 			var noteRemove  = document.createElement('div');
@@ -1324,7 +1371,11 @@ function weekPlanner_notes(weekPlanner){
 		return note;
 	}
 	this.draw_resizeNote = function resizeNote(note){
-		var height = note.parts*this.father.pixelPart;
+		var hTop = this.father.pixelPart;
+		if(IEversion == 6){
+			hTop += 0.50;
+		}
+		var height = note.parts*hTop;
   		note.style.height = height+'px';
 		note.noteBody.style.height = height-this.father.pixelPart+'px';
 	}

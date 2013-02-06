@@ -28,10 +28,11 @@ function ButOnClick(e,pid,checknum) {
 	if (!eyeSystem_handled) {
 		eyeSystemClickHandler(pid);
 	}
+	var eyeBut = xGetElementById(pid + '_eyeBut');
 	if (eyeBarMenuState) {
 		eyeBarMenuState = 0;
-		xGetElementById(pid + '_eyeBut').src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
-		fixPNG(pid + '_eyeBut');
+		eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
+		fixPNG(eyeBut);
 		if (IEversion) {
 			hideIEmenu(pid);
 		} else {
@@ -39,8 +40,7 @@ function ButOnClick(e,pid,checknum) {
 		}
 	} else {
 		eyeBarMenuState = 1;
-		xGetElementById(pid + '_eyeBut').src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/pressed.png';
-		fixPNG(pid + '_eyeBut');
+		fixPNG(eyeBut);
 		if (IEversion) {
 			showIEmenu(pid);
 		} else {
@@ -53,21 +53,23 @@ function ButOnClick(e,pid,checknum) {
 
 function ButOnMouseOut(e,pid,checknum) {
 	if (!eyeBarMenuState) {
-		xGetElementById(pid + '_eyeBut').src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
-		fixPNG(pid + '_eyeBut');
+		var eyeBut = xGetElementById(pid + '_eyeBut');
+		eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
+		fixPNG(eyeBut);
 	}
 }
 
 function ButOnMouseOver(e,pid,checknum) {
 	if (!eyeBarMenuState) {
-		xGetElementById(pid + '_eyeBut').src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/hover.png';
-		fixPNG(pid + '_eyeBut');
+		var eyeBut = xGetElementById(pid + '_eyeBut');
+		eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/hover.png';
+		fixPNG(eyeBut);
 	}
 }
 
 function eyeSystemClickHandler(pid) {
 	eyeSystem_handled = 1;
-	addClickHandler(pid + '_eyeMenu_content','if (eyeBarMenuState) { xGetElementById("' + pid + '_eyeBut").src = "index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png"; if (IEversion) { hideIEmenu(' +  pid + '); fixPNG("' + pid + '_eyeBut"); } else { updateOpacity("' + pid + '_eyeMenu",100,0,150,"eyeSystem_hideMenu(' + pid + ');"); } eyeBarMenuState = 0; }');
+	addClickHandler(pid + '_eyeMenu_content','if (eyeBarMenuState) { eyeBut = xGetElementById("' + pid + '_eyeBut"); eyeBut.src = "index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png"; if (IEversion) { hideIEmenu(' +  pid + '); fixPNG(eyeBut); } else { updateOpacity("' + pid + '_eyeMenu",100,0,150,"eyeSystem_hideMenu(' + pid + ');"); } eyeBarMenuState = 0; }');
 	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeBut');
 	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_top');
 	addFriendClick(pid + '_eyeMenu_content',pid + '_eyeMenu_bot');
@@ -96,11 +98,11 @@ function showIEmenu(pid) {
 function updateMenuStateOff(menu) {
 	var imgmenu = xGetElementById(menu + '_miniIcon');
 	imgmenu.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/icons/' + imgmenu.alt + '.png';
-	fixPNG(menu + '_miniIcon');
+	fixPNG(imgmenu);
 }
 
 function updateMenuStateOn(menu) {
 	var imgmenu = xGetElementById(menu + '_miniIcon');
 	imgmenu.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/icons/' + imgmenu.alt + '_on.png';
-	fixPNG(menu + '_miniIcon');
+	fixPNG(imgmenu);
 }

@@ -501,20 +501,6 @@ function service_eyex_createWidget($params) {
 	$y = $params['y'];
 	$widgetname = $params['widgetname'];
 	$widgetparams = $params['params'];
-	if(strlen($widgetparams) > 2000){
-		$str = $widgetparams;
-		$widgetparams = array();
-		while(strlen($str) > 2000) {
-			$splitStr = utf8_substr($str,0,2000);
-			$str = utf8_substr($str,2000);
-			$widgetparams[] = $splitStr;
-		}
-		if(!empty($str)){
-			$widgetparams[] = $str;
-		}
-	}else{
- 		$widgetparams = array($widgetparams);
-	}
 	$horiz = $params['horiz'];
 	$vert = $params['vert'];
 	$isLayer = service('eyex','isLayer',array('name'=>$father));
@@ -540,7 +526,7 @@ function service_eyex_createWidget($params) {
 		'name' => array($procInfo['pid'].'_'.$name),
 		'father' => array($father),
 		'widgetname' => array($widgetname),
-		'params' => $widgetparams,
+		'params' => array($widgetparams),
 		'cent' => array($cent)
 	);
 	
