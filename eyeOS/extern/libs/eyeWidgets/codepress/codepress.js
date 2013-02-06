@@ -24,7 +24,7 @@ CodePress = function(myId) {
 	self.style.position = 'absolute';
 	self.options = self.textarea.className;
 	self.setAttribute('id',obj.id+'_iframe');
-	
+
 	self.initialize = function() {
 		self.editor = self.contentWindow.CodePress;
 		self.editor.body = self.contentWindow.document.getElementsByTagName('body')[0];
@@ -36,7 +36,7 @@ CodePress = function(myId) {
 		self.style.visibility = 'visible';
 		self.style.display = 'inline';
 	}
-	
+
 	// obj can by a textarea id or a string (code)
 	self.edit = function(obj,language) {
 		if(obj) self.textarea.value = document.getElementById(obj) ? document.getElementById(obj).value : obj;
@@ -52,13 +52,13 @@ CodePress = function(myId) {
 			if(self.options.match('\\b'+language+'\\b')) 
 				return CodePress.languages[language] ? language : 'generic';
 	}
-	
+
 	self.setOptions = function() {
 		if(self.options.match('autocomplete-off')) self.toggleAutoComplete();
 		if(self.options.match('readonly-on')) self.toggleReadOnly();
 		if(self.options.match('linenumbers-off')) self.toggleLineNumbers();
 	}
-	
+
 	self.getCode = function() {
 		return self.textarea.disabled ? self.editor.getCode() : self.textarea.value;
 	}
@@ -70,18 +70,18 @@ CodePress = function(myId) {
 	self.toggleAutoComplete = function() {
 		self.editor.autocomplete = (self.editor.autocomplete) ? false : true;
 	}
-	
+
 	self.toggleReadOnly = function() {
 		self.textarea.readOnly = (self.textarea.readOnly) ? false : true;
 		if(self.style.display != 'none') // prevent exception on FF + iframe with display:none
 			self.editor.readOnly(self.textarea.readOnly ? true : false);
 	}
-	
+
 	self.toggleLineNumbers = function() {
 		var cn = self.editor.body.className;
 		self.editor.body.className = (cn==''||cn=='show-line-numbers') ? 'hide-line-numbers' : 'show-line-numbers';
 	}
-	
+
 	self.toggleEditor = function() {
 		if(self.textarea.disabled) {
 			self.textarea.value = self.getCode();
@@ -102,7 +102,7 @@ CodePress = function(myId) {
 	return self;
 }
 
-CodePress.languages = {	
+CodePress.languages = {
 	csharp : 'C#', 
 	css : 'CSS', 
 	generic : 'Generic',
@@ -110,7 +110,7 @@ CodePress.languages = {
 	java : 'Java', 
 	javascript : 'JavaScript', 
 	perl : 'Perl', 
-	ruby : 'Ruby',	
+	ruby : 'Ruby',
 	php : 'PHP', 
 	text : 'Text', 
 	sql : 'SQL',

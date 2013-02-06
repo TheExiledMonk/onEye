@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -31,6 +31,7 @@ function restoreTrash_run($params = '') {
 			'hiddens' => array(array('restoreTrash_Hidden_Path',$file),array('restoreTrash_Hidden_Callback',$params[1]),array('restoreTrash_Hidden_To',$params[2])),
 			'img' => '?',
 			'savePosition' => 1,
+			'sound' => 'question',
 			'title' => i18n('translate',array('Restore %s',array($xml['eyeTrash'][0]['lastname'][0]))),
 			'tokens' => array($xml['eyeTrash'][0]['lastname'][0]),
 			'type' => 3,

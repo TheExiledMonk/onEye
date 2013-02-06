@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.7
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -86,7 +86,7 @@ if(!isset($_GET['action'])) {
 	require_once(IPHONE_PATH.'top.eyecode');
 	if(isset($_SESSION['auth']) && $_SESSION['auth'] == 1) {
 		require_once(IPHONE_PATH.'apps/eyeMenu/app.eyecode');
-		eyeMenu_execute();		
+		eyeMenu_execute();
 	} else {
 		require_once(IPHONE_PATH.'apps/login/app.eyecode');
 		login_execute();

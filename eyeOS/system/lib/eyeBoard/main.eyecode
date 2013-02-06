@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -79,7 +79,7 @@ function lib_eyeBoard_newMessage($params=null) {
 	}
 	global $currentUser;
 	$content = $params[0];
-		
+
 	if(utf8_strlen($content) > 300) {
 		$content = utf8_substr($content,0,300);
 	}
@@ -92,21 +92,21 @@ function lib_eyeBoard_newMessage($params=null) {
 	} else {
 		$msg['messages'][0] = array('message'=>array($myMessage));
 	}
-	
-	$xml = reqLib('eyeXML','array2xml',array($msg));
+
+	$xml = eyeXML('array2xml',array($msg));
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
-	$fp = service('vfs','real_open',array(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/eyeBoard/conf.xml','w'));
+	$fp = vfs('real_open',array(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/eyeBoard/conf.xml','w'));
 	$currentUser = $oldUser;
 	fwrite($fp,$xml);
 	fclose($fp);
-	return true;	
+	return true;
 }
 
 function lib_eyeBoard_clear($params=null) {
 	global $currentUser;
 	if($currentUser == ROOTUSER) {
-		$fp = service('vfs','real_open',array(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/eyeBoard/conf.xml','w'));
+		$fp = vfs('real_open',array(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/eyeBoard/conf.xml','w'));
 		fwrite($fp,"<messages></messages>");
 		fclose($fp);
 		return true;

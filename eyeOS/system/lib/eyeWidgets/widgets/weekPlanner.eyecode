@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -27,7 +27,7 @@
 
 class weekPlanner {
 	//pid controller
-	
+
 	var $creatorPid;
 	//global widgets options without default
 	var $name;
@@ -39,7 +39,7 @@ class weekPlanner {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	var $showed = 0;
 	var $dayFrom;
 	var $dayEven;
@@ -48,7 +48,7 @@ class weekPlanner {
 	var $dateString;
 	//custom widget options
 	var $title;
-	var $width;	
+	var $width;
 	var $pid;
 	var $rowHeight;
 	var $parts;
@@ -59,7 +59,7 @@ class weekPlanner {
 	var $defaultEvenText;
 	var $calendarsText;
 	var $notes = array();
-	function weekPlanner($params) {	
+	function weekPlanner($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
@@ -76,7 +76,7 @@ class weekPlanner {
 		isset($params['dayEven']) ? $this->dayEven = intval($params['dayEven'])+1 : $this->dayEven = 7;
 		isset($params['hourFrom']) ? $this->hourFrom = intval($params['hourFrom']) : $this->hourFrom = 0;
 		isset($params['hourEven']) ? $this->hourEven = intval($params['hourEven']) : $this->hourEven = 23;
-		
+
 		//especific window options
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = null;
 		isset($params['pid']) ? $this->pid = $params['pid'] : $this->pid = $myPid;
@@ -88,23 +88,23 @@ class weekPlanner {
 		isset($params['date']) ? $this->date = $params['date'] : $this->date = time();
 		isset($params['selectedCalendar']) ? $this->selectedCalendar = $params['selectedCalendar'] : $this->selectedCalendar = 'noCalendar';
 		isset($params['defaultEvenText']) ? $this->defaultEvenText = $params['defaultEvenText'] : $this->defaultEvenText = 'Add your event!';
-		isset($params['calendarsText']) ? $this->calendarsText = $params['calendarsText'] : $this->calendarsText = 'Calendars';			
-		/*if($this->dayEven == $this->dayFrom+1 && $this->startMonday == 1 && $this->dayFrom != 0){			
+		isset($params['calendarsText']) ? $this->calendarsText = $params['calendarsText'] : $this->calendarsText = 'Calendars';
+		/*if($this->dayEven == $this->dayFrom+1 && $this->startMonday == 1 && $this->dayFrom != 0){
 			$this->dayFrom = $this->dayFrom -1;
-			$this->dayEven = $this->dayEven -1;			
+			$this->dayEven = $this->dayEven -1;
 		}*/
-		
+
 		//Getting week day names
 		$this->getNames();
 	}
-	
+
 	function show() {
 		foreach($this->weekDays as $day){
 			$weekDays[] = $day;
 		}
 		$defaultEvenText = i18n('translate',array($this->defaultEvenText));
 		$calendarsText = i18n('translate',array($this->calendarsText));
-		$weekDaysJs = service("mmap","array2jsArg",array($weekDays,1));
+		$weekDaysJs = mmap('array2jsArg',array($weekDays,1));
 		$widgetsparams = array(
 			'pid' => $this->pid,
 			'hourWidth' => $this->hourWidth,
@@ -122,9 +122,9 @@ class weekPlanner {
 			'defaultEvenText'=>$defaultEvenText,
 			'calendarsText'=>$calendarsText,
 			'selectedCalendar'=>$this->selectedCalendar
-		);		
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		);
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$week = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -136,38 +136,38 @@ class weekPlanner {
 			'params' => $widgetsparams,
 			'center' => $this->cent
 		);
-		$this->showed=1;				
-		service('eyex','createWidget',$week);
-		reqLib('eyeWidgets','serialize',array($this));
-	}			
-	
+		$this->showed=1;
+		eyex('createWidget',$week);
+		eyeWidgets('serialize',array($this));
+	}
+
 	function delNote($id)
 	{
 		global $myPid;
-		service('eyex','rawjs',array('js' => "weekPlanner1.delCalendarNote($id);"));		
+		eyex('rawjs',array('js' => "weekPlanner1.delCalendarNote($id);"));
 	}
-	
+
 	function changeNoteId($oldId,$id)
 	{
-		service('eyex','rawjs',array('js' => "weekPlanner1.changeCalendarNoteId($oldId,$id);"));	
+		eyex('rawjs',array('js' => "weekPlanner1.changeCalendarNoteId($oldId,$id);"));
 	}
-	
+
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_daysBase").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'onResizeEyeCalendar('.$myPid.');'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_daysBase").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'onResizeEyeCalendar('.$myPid.');'));
 	}
-	
+
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 	}
-		
+
 	function addNotes($notes){
-		global $myPid;		
+		global $myPid;
 		if(!empty($notes)){
 			foreach($notes as $note){
 				$note = $note['note'][0];
@@ -217,7 +217,7 @@ class weekPlanner {
 				$event = base64_decode($note['title'][0]);
 				if(utf8_strlen($event) < 1){
 					$event = ' ';
-				}			
+				}
 				$index = count($this->notes);
 				$this->notes[$index] = $note['dateInt'][0];
 
@@ -231,21 +231,21 @@ class weekPlanner {
 					}
 				}
 				$tokens = array($event,$calendar);
-				service('eyex','runjs',array('js' => 'onAddNoteCalendar('.$myPid.','.$day.','.$hourFrom.','.$hourEven.','.$minFrom.','.$minEven.','.$index.', %s , %s ,'.$resizable.','.$movible.' ,'.$title.');','tokens'=>$tokens));
+				eyex('runjs',array('js' => 'onAddNoteCalendar('.$myPid.','.$day.','.$hourFrom.','.$hourEven.','.$minFrom.','.$minEven.','.$index.', %s , %s ,'.$resizable.','.$movible.' ,'.$title.');','tokens'=>$tokens));
 			}
 		}
-	}	
+	}
 	function addCalendars($myCalendars){
-		global $myPid;		
+		global $myPid;
 		if(!is_array($myCalendars)){
 			return false;
 		}
 		foreach($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo){
 			$name = $calendarInfo['name'][0];
-			$num = $calendarInfo['num'][0];	
-			$show = $calendarInfo['show'][0];	
+			$num = $calendarInfo['num'][0];
+			$show = $calendarInfo['show'][0];
 			$tokens[0] = $name;
-			service('eyex','runjs',array('js' => 'onAddCalendar('.$myPid.', %s ,'.$num.','.$show.');','tokens'=>$tokens));
+			eyex('runjs',array('js' => 'onAddCalendar('.$myPid.', %s ,'.$num.','.$show.');','tokens'=>$tokens));
 		}
 	}
 	function getNames(){
@@ -259,81 +259,81 @@ class weekPlanner {
 			i18n('translate',array('Fri')),
 			i18n('translate',array('Sat'))
 		);
-		
-		$diff = $this->dayEven - $this->dayFrom;		
+
+		$diff = $this->dayEven - $this->dayFrom;
 		//if($this->startMonday == 1 && $this->dayFrom == 0 && $diff > 1){
 		if($this->startMonday == 1 && $diff > 1){
 			$sun = $this->weekDays[0];
-			array_shift($this->weekDays);	
+			array_shift($this->weekDays);
 			$this->weekDays[] = $sun;
 		}
-		
-		$numDays = $this->dayEven - $this->dayFrom;		
+
+		$numDays = $this->dayEven - $this->dayFrom;
 		for($h=$this->dayFrom;$h<$this->dayEven;$h++){
 			if($daysData['month'][$h] < 10){
-				$daysData['month'][$h] = '0'.$daysData['month'][$h];	
+				$daysData['month'][$h] = '0'.$daysData['month'][$h];
 			}
 			if($daysData['nums'][$h] < 10){
-				$daysData['nums'][$h] = '0'.$daysData['nums'][$h];	
+				$daysData['nums'][$h] = '0'.$daysData['nums'][$h];
 			}
-			$this->weekDays[$h] .= ' '.$daysData['month'][$h].'/'.$daysData['nums'][$h];			
+			$this->weekDays[$h] .= ' '.$daysData['month'][$h].'/'.$daysData['nums'][$h];
 		}
-		
+
 		unset($daysData);
-	}	
+	}
 	function updateDate($date){
 		global $myPid;
 		$this->date = $date;
 		$this->getNames();
-		
-		$weekDaysJs = service("mmap","array2jsArg",array($this->weekDays));
-		service('eyex','rawjs',array('js' => 'var weekDaysJs = getArrayArg(\''.$weekDaysJs.'\');onChangeDateCalendar('.$myPid.',weekDaysJs,'.$this->dayFrom.','.$this->dayEven.');'));
+
+		$weekDaysJs = mmap('array2jsArg',array($this->weekDays));
+		eyex('rawjs',array('js' => 'var weekDaysJs = getArrayArg(\''.$weekDaysJs.'\');onChangeDateCalendar('.$myPid.',weekDaysJs,'.$this->dayFrom.','.$this->dayEven.');'));
 	}
 	function cleanNotes(){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onCleanNotesCalendar('.$myPid.');'));
+		eyex('rawjs',array('js' => 'onCleanNotesCalendar('.$myPid.');'));
 	}
 	function cleanCalendars(){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onCleanCalendars('.$myPid.');'));
+		eyex('rawjs',array('js' => 'onCleanCalendars('.$myPid.');'));
 	}
-	function hiddenNotes($num){	
+	function hiddenNotes($num){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onHiddenNotesCalendar('.$myPid.','.$num.');'));
+		eyex('rawjs',array('js' => 'onHiddenNotesCalendar('.$myPid.','.$num.');'));
 	}
 	function showNotes($num){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onShowNotesCalendar('.$myPid.','.$num.');'));
+		eyex('rawjs',array('js' => 'onShowNotesCalendar('.$myPid.','.$num.');'));
 	}
 	function deleteNote($id){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onDeleteNote('.$myPid.','.$id.');'));
+		eyex('rawjs',array('js' => 'onDeleteNote('.$myPid.','.$id.');'));
 	}
 	function deleteCalendarNotes($num){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onDeleteCalendarNotes('.$myPid.','.$num.');'));
+		eyex('rawjs',array('js' => 'onDeleteCalendarNotes('.$myPid.','.$num.');'));
 	}
 	function selectCalendar($num){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onSelectCalendar('.$myPid.','.$num.');'));
+		eyex('rawjs',array('js' => 'onSelectCalendar('.$myPid.','.$num.');'));
 	}
 	function getDays(){
-		$date = getdate($this->date);				
+		$date = getdate($this->date);
 		//Each month with the days
 		$monthMaxDay = array(1=>31,2=>28,3=>31,4=>30,5=>31,6=>30,7=>31,8=>31,9=>30,10=>31,11=>30,12=>31);
 		//If is a "----" year
 		if(is_int($date['year']/4) === true || is_int($date['year']/400)){
-			$monthMaxDay[2] = 29;				
+			$monthMaxDay[2] = 29;
 		}
-		
+
 		//Adding the month and day number
 		$weekDay = $date['wday'];
 		$monthDay = $date['mday'];
 		$month = $date['mon'];
-		$year = $date['year'];		
+		$year = $date['year'];
 		$monthDay = $monthDay-$weekDay;
 		$monthDay = $monthDay + $this->dayFrom;
-		
+
 		if($monthDay > $monthMaxDay[$month]){
 			$monthDay = $monthDay - $monthMaxDay[$month];
 			if($month+1 > 12){
@@ -351,14 +351,14 @@ class weekPlanner {
 			}
 			$monthDay = $monthDay + $monthMaxDay[$month];
 		}
-		
+
 		$diff = $this->dayEven - $this->dayFrom;
 		//if($this->startMonday == 1 && $this->dayFrom == 0 && $diff > 1){
 		if($this->startMonday == 1 && $diff > 1){
-			$monthDay++;			
+			$monthDay++;
 		}
-		
-		$daysData = array();		
+
+		$daysData = array();
 		for($h=$this->dayFrom;$h<$this->dayEven;$h++){
 			if($monthDay > $monthMaxDay[$month]){
 				$monthDay = 1;
@@ -366,7 +366,7 @@ class weekPlanner {
 					$month = 1;
 					$year++;
 				}else{
-					$month++;	
+					$month++;
 				}
 			}
 			if($monthDay < 1){
@@ -374,7 +374,7 @@ class weekPlanner {
 					$month = 12;
 					$year--;
 				}else{
-					$month--;	
+					$month--;
 				}
 				$monthDay = $monthMaxDay[$month];
 			}
@@ -405,19 +405,19 @@ class weekPlanner {
 	}
 	function goToFirstNote(){
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'onGoToFirstNote('.$myPid.');'));
+		eyex('rawjs',array('js' => 'onGoToFirstNote('.$myPid.');'));
 	}
 	function killme() {
-		global $myPid;		
-		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_hoursBase");
+		global $myPid;
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_hoursBase");
 											removeMe.parentNode.removeChild(removeMe);'));
-		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_daysBase");
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_daysBase");
 											removeMe.parentNode.removeChild(removeMe);'));
-		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_calendarsEntryContainer");
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_calendarsEntryContainer");
 											removeMe.parentNode.removeChild(removeMe);'));
-		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherDays");
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherDays");
 											removeMe.parentNode.removeChild(removeMe);'));
-		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherNames");
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherNames");
 											removeMe.parentNode.removeChild(removeMe);'));
 		unset($_SESSION[WTABLE][$myPid][$this->name]);
 	}

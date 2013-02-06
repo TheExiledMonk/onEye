@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -43,7 +43,7 @@ function lib_simpleZip_createZip($params) {
 	} else {
 		$suffix = '';
 	}
-	
+
 	$file = $params[0]; //full path to directory
 	if(is_dir($file)) {
 		$zipfile = new zipfile;
@@ -78,7 +78,7 @@ function recursiveZip($file,$zipfile,$orig,$suffix,$inner) {
 		}
 		$zipfile->create_dir($dirPath);
 	}
-	$content = vfs($suffix . 'getDirContent',array($file));	
+	$content = vfs($suffix . 'getDirContent',array($file));
 	if($content) {
 		if(is_array($content)) {
 			foreach($content as $current) {

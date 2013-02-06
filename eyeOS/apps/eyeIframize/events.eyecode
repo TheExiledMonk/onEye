@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -49,10 +49,11 @@ function eyeIframize_on_Do($params = '') {
 			$url = 'http://' . $url;
 		}
 	}
+	
 	$myWindow = new Window(array(
 		'cent' => 1,
 		'father' => 'eyeApps',
-		'height' => 550,
+		'height' => 600,
 		'name' => 'eyeIframize_Window',
 		'savePosition' => 1,
 		'sendResizeMsg' => 1,
@@ -62,14 +63,15 @@ function eyeIframize_on_Do($params = '') {
 		'width' => 750
 	));
 	$myWindow->show();
+	
 	$myIframe = new Iframe(array(
 		'father' => 'eyeIframize_Window_Content',
 		'name' => 'eyeIframize_Iframe',
-		'height' => $myWindow->height - 24,
+		'height' => $myWindow->height - 35,
 		'url' => $url,
-		'width' => $myWindow->width - 2,
-		'x' => 0,
-		'y' => 0
+		'width' => $myWindow->width - 14,
+		'x' => 6,
+		'y' => 5
 	));
 	$myIframe->show();
 }
@@ -101,7 +103,10 @@ function eyeIframize_on_Message($params = '') {
 }
 
 function eyeIframize_on_Resize($params = '') {
-	$GLOBALS['eyeIframize_Iframe']->setWidth(intval($params['arg'][0]) - 2);
-	$GLOBALS['eyeIframize_Iframe']->setHeight(intval($params['arg'][1]) - 24);
+	$GLOBALS['eyeIframize_Window']->width = intval($params['arg'][0]);
+	$GLOBALS['eyeIframize_Window']->height = intval($params['arg'][1]);
+	$GLOBALS['eyeIframize_Iframe']->setHeight($GLOBALS['eyeIframize_Window']->height - 35);
+	$GLOBALS['eyeIframize_Iframe']->setWidth($GLOBALS['eyeIframize_Window']->width - 14);
 }
+
 ?>

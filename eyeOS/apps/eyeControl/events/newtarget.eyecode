@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -47,7 +47,7 @@ function eyeControl_on_params_add($params = ""){
 }
 
 function eyeControl_on_typeTarget_add($params = ""){
-	
+
 	if($GLOBALS['eyeControl_acl_target_type_select']->selected == 2){
 		$type = 'user';
 	} elseif ($GLOBALS['eyeControl_acl_target_type_select']->selected == 3){
@@ -57,9 +57,9 @@ function eyeControl_on_typeTarget_add($params = ""){
 	} else {
 		$type = 0;
 	}
-	
+
 	$targetName = $GLOBALS['eyeControl_acl_target_targetname_txtbox']->text;
-	
+
 	if (empty($targetName) || empty($type)){
 		eyeX('messageBox',array('content'=>'Please fill in and select the proper fields to add params'));
 	} else{
@@ -73,7 +73,7 @@ function eyeControl_on_typeTarget_add($params = ""){
 		$id1 = uniqid();
 		$row = array($id0,$id1,$type,$targetName);
 		$GLOBALS['eyeControl_acl_params_sortabletable']->addRow($row);
-		
+
 		$target = array(
 			'id' => array($id1),
 			'type' => array($type),
@@ -103,7 +103,7 @@ function eyeControl_on_typeTarget_add($params = ""){
 }
 
 function eyeControl_on_newparam_add($params = ""){
-	
+
 	$id0 = $GLOBALS['uniqid']->text;
 	$id1 = $GLOBALS['eyeControl_acl_params_sortabletable']->selected;
 
@@ -111,7 +111,7 @@ function eyeControl_on_newparam_add($params = ""){
 
 	$targetName = $GLOBALS['eyeControl_acl_target_targetname_txtbox']->text;
 	$param = $GLOBALS['eyeControl_newparam_textbox']->text;
-	
+
 	if(empty($param)){
 		eyeX('messageBox',array('content'=>'Please write params to filter'));
 	} else {
@@ -122,7 +122,7 @@ function eyeControl_on_newparam_add($params = ""){
 		$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
 		$config = eyeXML('getXMLfile', array($file));
 		//$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
-		
+
 		$params = array(
 			'param' => array($param)
 		);
@@ -208,9 +208,9 @@ function eyeControl_on_yDelete(){
 	$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
 	$config = eyeXML('getXMLfile', array($file));
 	//$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
-	
+
 	$targetN = array('target' => array(''));
-	
+
 	$i=0;
 	$x=0;
 	if($config){
@@ -242,7 +242,7 @@ function eyeControl_on_yDelete(){
 
 function eyeControl_on_nDelete(){
 	$GLOBALS['delete_warning']->close();
-	return true;	
+	return true;
 }
 
 function eyeControl_on_newparam_cancel($params = "") {
@@ -321,6 +321,6 @@ function eyeControl_on_yDelete1($params=""){
 
 function eyeControl_on_nDelete1($params=""){
 	$GLOBALS['delete_warning1']->close();
-	return true;	
+	return true;
 }
 ?>

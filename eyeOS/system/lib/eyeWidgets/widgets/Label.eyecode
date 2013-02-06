@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -27,9 +27,9 @@
 
 class Label {
 	//pid controller
-	
+
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
@@ -40,22 +40,22 @@ class Label {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	var $showed = 0;
-	
+
 	//custom widget options
 	var $visible;
 	var $text;
 	var $tokens;
-	
+
 	//friends abstraction
 	var $friends="''";
-	
+
 	//event handling
 	var $disableMsg = 0;
 	var $signal;
 	var $allowHTML;
-	
+
 	//function Label($name,$content,$father,$cent=0,$x=40,$y=40,$horiz=0,$vert=0,$visible=1,$color="") {
 	function Label($params) {
 		global $myPid;
@@ -70,7 +70,7 @@ class Label {
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 10;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 10;
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
-		
+
 		//especific label options
 		isset($params['text']) ? $this->text = $params['text'] : $this->text = $this->name;
 		isset($params['tokens']) ? $this->tokens = $params['tokens'] : $this->tokens = 0;
@@ -81,7 +81,7 @@ class Label {
 			$this->disableMsg = $params['disableMsg'];
 		}
 	}
-	
+
 
 	function show($noserialize=1) {
 		if(empty($this->text)) {
@@ -89,7 +89,7 @@ class Label {
 		} else {
 			$this->text = i18n('translate',array($this->text,$this->tokens));
 		}
-		
+
 		$widgetsparams = array(
 			'visible' => $this->visible,
 			'text' => htmlspecialchars($this->text,ENT_QUOTES,'UTF-8'),
@@ -97,8 +97,8 @@ class Label {
 			'disablemsg' => $this->disableMsg,
 			'signal' => $this->signal
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myLabel = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -110,13 +110,13 @@ class Label {
 			'params' => $widgetsparams,
 			'center' => $this->cent
 		);
-		service('eyex','createWidget',$myLabel);
+		eyex('createWidget',$myLabel);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -124,71 +124,71 @@ class Label {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
-		
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	//friends handler 
 	function addFriend($friend) {
 		if(method_exists($friend,'getSyncString')) {
 			if($this->friends == "''") {
-				$this->friends = $friend->getSyncString();				
+				$this->friends = $friend->getSyncString();
 			} else {
 				$this->friends .= '+'.$friend->getSyncString();
 			}
 		}
 	}
-	
+
 	//set property functions
-	
+
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
-	
+
 	function setText($newText,$newTokens = null) {
 		global $myPid;
 		$this->text = i18n('translate',array($newText,$newTokens));
-		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").innerHTML=""'));
+		eyex('runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").innerHTML=""'));
 		$tokens[] = $this->text;
-		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(document.createTextNode( %s ));','tokens'=>$tokens));
+		eyex('runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(document.createTextNode( %s ));','tokens'=>$tokens));
 	}
-		
+
 	function setValue($newValue) {
 		$this->text = $newValue;
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
-	
+
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }

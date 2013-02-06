@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -84,7 +84,7 @@ function eyeCalendar_realsave() {
 	$params['month'][0] = $aInfo['mon'];
 	$params['year'][0] = $aInfo['year'];
 	$params['calendar'][0] = eyeCalendar('getCurrentCalendar');
-	reqLib('eyeCalendar','saveNote',$params);
+	eyeCalendar('saveNote',$params);
 	msgIphone(array(
 		'title' => 'Completed',
 		'content' => 'The note has been created. Click the button to continue.',
@@ -179,15 +179,15 @@ function eyeCalendar_newnote() {
 			<input id="lgbt" name="saveNote" value="Save" type="submit">
 			</form>
 	</div>';
-	
+
 }
 
 function eyeCalendar_delnotes() {
 	if (!isset($_POST['time']) || !isset($_POST['calendar'])) {
 		return false;
 	}
-	
-	reqLib('eyeCalendar','deleteNote',array('dateInt'=>$_POST['time'],'calendar'=>$_POST['calendar']));
+
+	eyeCalendar('deleteNote',array('dateInt'=>$_POST['time'],'calendar'=>$_POST['calendar']));
 	$_POST['date'] = $_POST['time']*1000;
 	eyeCalendar_viewNotes();
 }

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -28,15 +28,15 @@
 define('SIMPLE_MENU','widgetDrop_simpleMenu');
 class widgetDrop {
 	//pid controller
-	
+
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
-	
+
 	var $showed = 0;
-	
+
 	//custom widget options
 	var $callBack;
 	var $cOrder;
@@ -44,19 +44,19 @@ class widgetDrop {
 	var $behaviour;
 	var $sender;
 	var $mySelf;
-	
+
 	function widgetDrop($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
-				
+
 		//generic widget options without default
-		$this->name = $params['name'];				
+		$this->name = $params['name'];
 		if(is_object($params['father'])){
 			$this->father = $params['father']->name;
 		}else{
 			$this->father = $params['father'];
 		}
-				
+
 		//Optional arguments with default value
 		isset($params['callback']) ? $this->callback = $params['callback'] : $this->callback = '';
 		isset($params['cOrder']) ? $this->cOrder = $params['cOrder'] : $this->cOrder = 0;
@@ -65,17 +65,17 @@ class widgetDrop {
 		isset($params['sender']) ? $this->sender = $params['sender'] : $this->sender = '';
 		isset($params['mySelf']) ? $this->mySelf = $params['mySelf'] : $this->mySelf = false;
 	}
-	
-	function show($noserialize=1) {	
-		$widgetsparams = array(			
+
+	function show($noserialize=1) {
+		$widgetsparams = array(
 			'callback'=>$this->callback,
-			'cOrder'=>$this->cOrder,			
+			'cOrder'=>$this->cOrder,
 			'signal'=>$this->signal,
 			'behaviour'=>$this->behaviour,
 			'sender'=>$this->sender,
 			'mySelf'=>$this->mySelf
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
 		$mywidgetDrop = array(
 			'name' => $this->name,
 			'widgetname' => 'WidgetDrop',
@@ -86,37 +86,37 @@ class widgetDrop {
 			'horiz' => 0,
 			'vert' => 0
 		);
-		
-		service('eyex','createWidget',$mywidgetDrop);
+
+		eyex('createWidget',$mywidgetDrop);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
 	function addBehaviour($params){
 		global $myPid;
 		//TODO: check xLayers
 		$name = $myPid.'_'.$this->name;
-		//Type of behaviour		
+		//Type of behaviour
 		$type = $params['type'];
 		//behaviour special params
 		if(empty($params['params'])){
 			$dropParams = '';
 		}else{
-			$dropParams = $params['params'];	
-		}		
+			$dropParams = $params['params'];
+		}
 		//if type is a short form, replacing it with the long form.
 		if(defined($type)){
 			$type = constant($type);
 		}
-		$dropParams = service("mmap","array2js",array($dropParams));				
+		$dropParams = mmap('array2js',array($dropParams));
 		$js = "addDropBehaviour(".$dropParams.",'".$name."','".$type."');";
 		eyeX('rawjs',array('js'=>$js));
 	}
 	function remove() {
 	/*	global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));*/
 	}
 }

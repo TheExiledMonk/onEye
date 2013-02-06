@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -28,7 +28,7 @@ if(isset($_REQUEST['dirname'])) {
 		$dirname = str_replace('\\','',$dirname);
 	}
 	$myUserDir = $dir.'/'.$dirname;
-	service('vfs','mkDir',array($myUserDir));
+	vfs('mkDir',array($myUserDir));
 } elseif (isset($_REQUEST['download'])) {
 	if(empty($_REQUEST['download'])) {
 		die();
@@ -76,7 +76,7 @@ if(isset($_REQUEST['dirname'])) {
 			}
 			$nfile = um('getCurrentUserDir').'tmp/mobile_file.'.$extension;
 			$myHTML = um('getCurrentUserDir').'tmp/mobile_new.tmp';
-			
+
 			copy($real,$nfile);
 			$to = 'HTML (StarWriter)';
 			$tfp = vfs('real_open',array($nfile,'r'));
@@ -96,7 +96,7 @@ if(isset($_REQUEST['dirname'])) {
 				$content = file_get_contents($nfile);
 			}
 			fclose($tfp);
-			
+
 			if ($extension == 'xls' || $extension == 'ods') {
 				$to = 'HTML (StarCalc)';
 			} else {
@@ -121,7 +121,7 @@ if(isset($_REQUEST['dirname'])) {
 		vfs('real_delete', array($nfile));
 		exit;
 	}
-} elseif ($_GET['action'] == 'upload') {	
+} elseif ($_GET['action'] == 'upload') {
 	if(is_uploaded_file($_FILES['file']['tmp_name'])) {
 		$filename = utf8_basename($_FILES['file']['name']);
 		$finalPath = $dir.'/'.$filename;
@@ -129,10 +129,10 @@ if(isset($_REQUEST['dirname'])) {
 			exit;
 		}
 		if(!vfs('checkPermissions',array($finalPath))) {
-			exit;	
+			exit;
 		}
-		move_uploaded_file($_FILES['file']['tmp_name'],$finalPath);			
-		vfs('realToVirtual',array($finalPath));	
+		move_uploaded_file($_FILES['file']['tmp_name'],$finalPath);
+		vfs('realToVirtual',array($finalPath));
 	} 
 }
 

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -37,7 +37,7 @@ function miniMessages_on_Refresh($params=null) {
 
 function miniMessages_on_Launch($params=null) {
 	$messagesPid = proc('findPidByName', array('eyeMessages'));
-	
+
 	if($messagesPid == false) {
 		proc('launch', array('eyeMessages'));
 	}

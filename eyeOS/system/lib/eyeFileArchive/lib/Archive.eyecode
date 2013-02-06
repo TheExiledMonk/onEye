@@ -70,7 +70,8 @@ class File_Archive
             'cache' => null,
             'appendRemoveDuplicates' => false,
             'blockSize' => 65536,
-            'cacheCondition' => false
+            'cacheCondition' => false,
+            'eqTypes' => null // eyeOS
         );
         return $container[$name];
     }
@@ -618,19 +619,15 @@ class File_Archive
      *         tbz, bz2, bzip2, ar, deb
      */
     function isKnownExtension($extension)
-    {
-        return $extension == 'tar'   ||
-               $extension == 'zip'   ||
-               $extension == 'jar'   ||
-               $extension == 'gz'    ||
-               $extension == 'tgz'   ||
-               $extension == 'tbz'   ||
-               $extension == 'bz2'   ||
-               $extension == 'bzip2' ||
-               $extension == 'ar'    ||
-               $extension == 'deb'   /* ||
-               $extension == 'cab'   ||
-               $extension == 'rar' */;
+    { // eyeOS
+		if (in_array($extension, array('tar', 'zip', 'jar', 'gz', 'tgz', 'tbz', 'tbz2', 'bz2', 'bzip2', 'ar', 'deb'))) {
+			return $extension;
+		}
+		$eqTypes = File_Archive::getOption('eqTypes');
+		$lowerExt = strtolower($extension);
+		if ($eqTypes[$lowerExt]) {
+			return $eqTypes[$lowerExt];               
+		}
     }
 
     /**
@@ -650,6 +647,11 @@ class File_Archive
      */
     function readArchive($extension, &$toConvert, $sourceOpened = false)
     {
+		// eyeOS
+		$eqTypes = File_Archive::getOption('eqTypes');
+		if ($eqTypes[$extension]) {
+			$extension = $eqTypes[$extension];         	
+		}
         $source =& File_Archive::_convertToReader($toConvert);
         if (PEAR::isError($source)) {
             return $source;
@@ -661,6 +663,7 @@ class File_Archive
                     File_Archive::readArchive('gz', $source, $sourceOpened)
                     );
         case 'tbz':
+        case 'tbz2':
             return File_Archive::readArchive('tar',
                     File_Archive::readArchive('bz2', $source, $sourceOpened)
                     );
@@ -1113,7 +1116,7 @@ class File_Archive
         if (PEAR::isError($innerWriter)) {
             return $innerWriter;
         }
-        $shortcuts = array("tgz"   , "tbz"    );
+        $shortcuts = array('tgz', 'tbz', 'tbz2'); // eyeOS
         $reals     = array("tar.gz", "tar.bz2");
 
         if ($type === null) {
@@ -1121,7 +1124,24 @@ class File_Archive
         } else {
             $extensions = strtolower($type);
         }
-        $extensions = explode('.', str_replace($shortcuts, $reals, $extensions));
+        
+
+		// eyeOS
+		$eqTypes = File_Archive::getOption('eqTypes');
+		$extension = substr(strrchr($extensions, '.'), 1);
+		$eqTypes = File_Archive::getOption('eqTypes');
+		if (isset($eqTypes[$extension])) {
+			$extensions = substr($extensions, 0, strrpos($extensions, '.') + 1);
+			$extensions .= $eqTypes[$extension]; 
+		}
+		unset($eqTypes);
+		$extInfo = pathinfo($extensions);
+		$extensions = array();
+		$extensions[0] = $extInfo['dirname'] . '/' . $extInfo['filename'];
+		$extInfo['extension'] = str_replace($shortcuts, $reals, $extInfo['extension']);
+		$tmpExt = explode('.', $extInfo['extension'], 2);
+		$extensions = array_merge($extensions, $tmpExt);
+
         if ($innerWriter !== null) {
             $writer =& $innerWriter;
         } else {

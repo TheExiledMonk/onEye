@@ -33,9 +33,9 @@
 
 .miniCalendarInnerLeft {
 	height: 145px;
-	left: 5px;
+	left: 4px;
 	position: absolute;
-	top: 19px;
+	top: 18px;
 	width: 160px;
 }
 
@@ -44,17 +44,7 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 	position: absolute;
-	right: 4px;
+	right: 6px;
 	top: 19px;
 	width: 301px;
-}
-
-.miniCalendarOuter {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/miniCalendar/miniCalendar.png);
-	height: 170px;
-	position: absolute;
-	right: 10px;
-	top: 80px;
-	width: 470px;
-	z-index: 100;
 }

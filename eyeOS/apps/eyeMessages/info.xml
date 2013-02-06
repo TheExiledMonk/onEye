@@ -1,7 +1,7 @@
 <package>
 	<name>eyeMessages</name>
-	<category>Network</category>
-	<version>1.8</version>
+	<category>Networking</category>
+	<version>1.9</version>
 	<description>Application to send internal messages</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

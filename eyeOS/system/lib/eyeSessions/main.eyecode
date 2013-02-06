@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -35,28 +35,28 @@ define('FLASH_UPLOAD_FIX','flash_fix');
 * @date 2008/03/11
 */
 function lib_eyeSessions_startSession($params=null){
-	global $sessionId;	
-	
+	global $sessionId;
+
 	//Register the save session function to call it at the final of this script
-	register_shutdown_function('reqLib','eyeSessions','saveSession');	
+	register_shutdown_function('reqLib','eyeSessions','saveSession');
 	//If already has a id (and posible session)
-	
+
 	$sessionId = eyeSessions('getSessionId');
 	if($sessionId != false){
 		//If session exists
-		if(reqLib('eyeIPC','isSet',array($sessionId,IPC_TYPE))){						
-			$_SESSION = reqLib('eyeIPC','getVar',array($sessionId,IPC_TYPE));			
+		if(eyeIPC('isSet',array($sessionId,IPC_TYPE))){
+			$_SESSION = eyeIPC('getVar',array($sessionId,IPC_TYPE));
 			if(!is_array($_SESSION)){
 				$_SESSION = array();
-			}	
+			}
 			return true;
-		}		
+		}
 	}
-	
+
 	//Creating the new session
 	$sessionId = md5(uniqid(rand()));
 	setcookie(COOKIE_ID,$sessionId,COOKIE_EXPIRE);
-	$_SESSION = array();	
+	$_SESSION = array();
 	return true;
 }
 
@@ -70,7 +70,7 @@ function lib_eyeSessions_checkAndSstartSession(){
 	//Getting the possible session ID
 	$sessionId = eyeSessions('getSessionId');
 	//Checking the there are an ID and if it exists as session
-	if($sessionId != false && reqLib('eyeIPC','isSet',array($sessionId,IPC_TYPE))){
+	if($sessionId != false && eyeIPC('isSet',array($sessionId,IPC_TYPE))){
 		eyeSessions('startSession');
 	}
 }
@@ -136,7 +136,7 @@ function lib_eyeSessions_getVar($params){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$varName = $params[0];	
+	$varName = $params[0];
 	return $_SESSION[$varName];
 }
 
@@ -194,7 +194,7 @@ function lib_eyeSessions_makeArrayVar($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$varName = $params[0];	
+	$varName = $params[0];
 	$_SESSION[$varName] = array();
 }
 
@@ -323,16 +323,16 @@ function lib_eyeSessions_saveSession(){
 	//If the petition is a extern request, the session is not saved (read only mode).
 	if(!empty($externRequest) && $externRequest == true){
 		return true;
-	}	
+	}
 	//If sessionId is not pressent, don't save any session.
 	if($sessionId == ''){
-		return true;		
+		return true;
 	}
 	//Use __FILE__ is better than use some "custom environment vars you get when eyeOS is used under some httpd
 	$dir = dirname(__FILE__) . '/../../../';
 	chdir($dir);
-	//save the session	
-	reqLib('eyeIPC','setVar',array($sessionId,$_SESSION,IPC_TYPE));
+	//save the session
+	eyeIPC('setVar',array($sessionId,$_SESSION,IPC_TYPE));
 	return true;
 }
 
@@ -344,12 +344,12 @@ function lib_eyeSessions_saveSession(){
 * @date 2008/03/11
 */
 function lib_eyeSessions_endSession(){
-	global $sessionId;	
-	reqLib('eyeIPC','rmVar',array($sessionId,IPC_TYPE));
+	global $sessionId;
+	eyeIPC('rmVar',array($sessionId,IPC_TYPE));
 	//Deleting $_SESSION content
 	$_SESSION = array(); 
 	//Deleting session ID
-	$sessionId = '';		
+	$sessionId = '';
 	return true;
 }
 

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -40,7 +40,7 @@ function utf8_strrpos($str=null,$search=null,$offset=null){
 
 function utf8_substr($str=null,$offset=null,$length=null){    
 	if($length == null){
-		return substr($str,$offset);	
+		return substr($str,$offset);
 	}else{
 		return substr($str,$offset,$length);
 	}
@@ -116,14 +116,14 @@ function utf8_ord($chr=null){
     return ord($chr);
 }
 
-function utf8_wordwrap($str=null,$width=null,$break=null,$cut=null){	
+function utf8_wordwrap($str=null,$width=null,$break=null,$cut=null){
 	return wordwrap($str,$width,$break,$cut);
 }
 
-function utf8_pathinfo($string=null){		
+function utf8_pathinfo($string=null){
 	return pathinfo($string);
 }
-function utf8_basename($string=null,$suffix=''){	
+function utf8_basename($string=null,$suffix=''){
 	return basename($string,$suffix);
 }
 function utf8_getFileName($string){

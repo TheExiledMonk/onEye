@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -124,17 +124,17 @@ function eyeProperties_run($params = '') {
 		proc('end');
 		return;
 	}
-	
+
 	if (!isset($path)) {
 		$rmusrdir = um('getCurrentUserDir') . '/' . FILES_USER_DIR;
 		$rmusrdir = utf8_substr($rmusrdir,utf8_strlen(EYE_ROOT . '/'));
 		$rmusrdir = str_replace('//','/',$rmusrdir);
 		$rmusrdir = str_replace('//','/',$rmusrdir);
-		
+
 		$rmgroupdir = GROUPS_DIR;
 		$rmgroupdir = str_replace('//','/',$rmgroupdir);
 		$rmgroupdir = str_replace('//','/',$rmgroupdir);
-		
+
 		$path = $file;
 		if (utf8_substr($path,0,utf8_strlen(EYE_ROOT . '/')) == EYE_ROOT . '/') {
 			$path = utf8_substr($path,utf8_strlen(EYE_ROOT . '/'));
@@ -142,7 +142,7 @@ function eyeProperties_run($params = '') {
 		$path = str_replace('//','/',$path);
 		$path = str_replace('//','/',$path);
 		$path = utf8_substr($path,0,utf8_strrpos($path,$title));
-		
+
 		if (utf8_strrpos($path,$rmusrdir) === 0) {
 			$path = 'home' . utf8_substr($path,utf8_strlen($rmusrdir));
 		} elseif (utf8_strrpos($path,$rmgroupdir) === 0) {
@@ -151,7 +151,7 @@ function eyeProperties_run($params = '') {
 			$path = 0;
 		}
 	}
-	
+
 	if ($size >= 1024 * 1024 * 1024) {
 		$size = round($size / 1024 / 1024 / 1024,2) . ' G';
 	} elseif ($size >= 1024 * 1024) {

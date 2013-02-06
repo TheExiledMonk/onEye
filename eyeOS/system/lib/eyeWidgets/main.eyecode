@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -57,8 +57,8 @@ function lib_eyeWidgets_loadWidgets(){
 * @date 2008/03/11
 */
 function lib_eyeWidgets_checkTable($params=null){
-	if(!reqLib('eyeSessions','checkVar',array(WTABLE))) {
-		reqLib('eyeSessions','makeArrayVar',array(WTABLE));
+	if(!eyeSessions('checkVar',array(WTABLE))) {
+		eyeSessions('makeArrayVar',array(WTABLE));
 	}
 }
  
@@ -81,12 +81,12 @@ function lib_eyeWidgets_updateContent($params=null) {
 		globalize();
 		return false;
 	}
-	
-	global $myPid;		
+
+	global $myPid;
 	foreach ($params as $name => $content) {
 		if(isset($_SESSION[WTABLE][$myPid][$name])) {
-			$object = $_SESSION[WTABLE][$myPid][$name];			
-			if(is_object($object)) {				
+			$object = $_SESSION[WTABLE][$myPid][$name];
+			if(is_object($object)) {
 				if(method_exists($object,'setValue')) {
 					$object->setValue($content[0]);
 					$_SESSION[WTABLE][$myPid][$name] = $object;
@@ -107,7 +107,7 @@ function lib_eyeWidgets_updateContent($params=null) {
 * @return None.
 * @date 2008/03/11
 */
-function lib_eyeWidgets_serialize($params) {	
+function lib_eyeWidgets_serialize($params) {
 	if(!isset($params[0])){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -150,7 +150,7 @@ function lib_eyeWidgets_unserialize() {
 * @return None.
 * @date 2008/03/11
 */
-function lib_eyeWidgets_singleUnserialize($params) {	
+function lib_eyeWidgets_singleUnserialize($params) {
 	if(!isset($params[0])){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -204,7 +204,7 @@ function lib_eyeWidgets_getWidgetList() {
 	   			}
 	   		}
 		}
-		return $name;	
+		return $name;
 	} else {
 		return false;
 	}

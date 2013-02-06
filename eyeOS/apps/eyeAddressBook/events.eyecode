@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,20 +23,21 @@
 require_once(EYE_ROOT.'/'.APP_DIR.'/eyeAddressBook/app'.EYE_CODE_EXTENSION);
 
 function eyeAddressBook_on_Message($params=null) {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeAddressBook_on_resize($params=null) {
-	$width = $params['arg'][0];
-	$height = $params['arg'][1];
-	$GLOBALS['eyeAddressBook_boxInfo']->setWidth($width-329);
-	$GLOBALS['eyeAddressBook_boxInfo']->setHeight($height-102);
-	$GLOBALS['eyeAddressBook_boxTitleInfo']->setWidth($width-330);
-	$GLOBALS['eyeAddressBook_boxContacts']->setHeight($height-102);
+	$width = intval($params['arg'][0]);
+	$height = intval($params['arg'][1]);
+	$GLOBALS['eyeAddressBook_WND']->width = $width;
+	$GLOBALS['eyeAddressBook_WND']->height = $height;
+	$GLOBALS['eyeAddressBook_boxInfo']->setWidth($width-320);
+	$GLOBALS['eyeAddressBook_boxInfo']->setHeight($height-93);
+	$GLOBALS['eyeAddressBook_boxContacts']->setHeight($height-93);
 	$GLOBALS['eyeAddressBook_listBox']->setHeight($height-197);
 	if (is_object($GLOBALS['eyeAddressBook_boxNewContact'])) {
 		$GLOBALS['eyeAddressBook_boxNewContact']->setWidth($width-329);
-		$GLOBALS['eyeAddressBook_boxNewContact']->setHeight($height-125);
+		$GLOBALS['eyeAddressBook_boxNewContact']->setHeight($height-115);
 		$GLOBALS['eyeAddressBook_textSimplebox']->setHeight($height-125);
         $GLOBALS['eyeAddressBook_textSimplebox']->setX(($width-330)/2 - 26);
         $GLOBALS['eyeAddressBook_textSimplebox']->setWidth($width-329 - $GLOBALS['eyeAddressBook_textSimplebox']->x);
@@ -419,7 +420,7 @@ function eyeAddressBook_on_newContact() {
         'x' => 96,
         'y' => 96,
         'disableMsg' => 0,
-        'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/list-add.png',
+        'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/list-add.png',
         'signal' => 'loadImageDialog'
     ));
     $addPhoto->show(0);
@@ -431,8 +432,8 @@ function eyeAddressBook_on_newContact() {
         'name' => 'eyeAddressBook_textSimplebox',
         'father' => 'eyeAddressBook_boxNewContact',
         'x' => 158,
-        'y' => 0,
-        'height' => $GLOBALS['eyeAddressBook_boxInfo']->height - 22,
+        'y' => 3,
+        'height' => $GLOBALS['eyeAddressBook_boxInfo']->height - 19,
         'width' => $GLOBALS['eyeAddressBook_boxInfo']->width - 158,
         'border' => 0
     ));
@@ -730,7 +731,7 @@ function eyeAddressBook_on_newContact() {
         'x' => 128,
         'y' => 124,
         'disableMsg' => 0,
-        'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/list-add.png',
+        'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/list-add.png',
         'signal' => 'createGroup'
     ));
     $addGroup->show();
@@ -909,7 +910,7 @@ function eyeAddressBook_on_import() {
             'All files' => '*'
         )
     );
-    service('proc','launch',array('eyeDialog',$options));
+    proc('launch',array('eyeDialog',$options));
 }
 
 function eyeAddressBook_on_export() {
@@ -951,7 +952,7 @@ function eyeAddressBook_on_exportWindow($params=null) {
             'All files' => '*'
         )
     );
-    service('proc','launch',array('eyeDialog',$options));
+    proc('launch',array('eyeDialog',$options));
 }
 
 function eyeAddressBook_on_sendMessage() {
@@ -1029,7 +1030,7 @@ function eyeAddressBook_on_loadImageDialog() {
             'All files' => '*'
         )
     );
-    service('proc','launch',array('eyeDialog',$options));
+    proc('launch',array('eyeDialog',$options));
 }
 
 function eyeAddressBook_on_loadImage($params=null) {
@@ -1044,7 +1045,7 @@ function eyeAddressBook_on_loadImage($params=null) {
 		$id = $GLOBALS['eyeAddressBook_hiddenPhoto']->text;
 		eyeAddressBook('deleteImage',array($id));
 		if (is_object($GLOBALS['eyeAddressBook_delPhoto'])) {
-			$GLOBALS['eyeAddressBook_delPhoto']->setUrl('index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/delete.png');
+			$GLOBALS['eyeAddressBook_delPhoto']->setUrl('index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/deleteRound.png');
 		} else {
 			$delPhoto = new Imagebox(array(
 				'name' => 'eyeAddressBook_delPhoto',
@@ -1052,7 +1053,7 @@ function eyeAddressBook_on_loadImage($params=null) {
 				'x' => 19,
 				'y' => 96,
 				'disableMsg' => 0,
-				'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/delete.png',
+				'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/deleteRound.png',
 				'signal' => 'deleteImage'
 			));
 			$delPhoto->show(0);
@@ -1061,7 +1062,7 @@ function eyeAddressBook_on_loadImage($params=null) {
 			));
 		}
 		if (is_object($GLOBALS['eyeAddressBook_addPhoto'])) {
-			$GLOBALS['eyeAddressBook_addPhoto']->setUrl('index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/edit.png');
+			$GLOBALS['eyeAddressBook_addPhoto']->setUrl('index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/edit.png');
 		} else {
 			$addPhoto = new Imagebox(array(
 				'name' => 'eyeAddressBook_addPhoto',
@@ -1069,7 +1070,7 @@ function eyeAddressBook_on_loadImage($params=null) {
 				'x' => 96,
 				'y' => 96,
 				'disableMsg' => 0,
-				'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/edit.png',
+				'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/edit.png',
 				'signal' => 'loadImageDialog'
 			));
 			$addPhoto->show(0);
@@ -1721,7 +1722,7 @@ function eyeAddressBook_on_editContact($params=null) {
 			'x' => 19,
 			'y' => 96,
 			'disableMsg' => 0,
-			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/delete.png',
+			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/delete.png',
 			'signal' => 'deleteImage'
 		));
 		$delPhoto->show(0);
@@ -1735,7 +1736,7 @@ function eyeAddressBook_on_editContact($params=null) {
 			'x' => 96,
 			'y' => 96,
 			'disableMsg' => 0,
-			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/edit.png',
+			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/edit.png',
 			'signal' => 'loadImageDialog'
 		));
 		$addPhoto->show(0);
@@ -1758,7 +1759,7 @@ function eyeAddressBook_on_editContact($params=null) {
 			'x' => 96,
 			'y' => 96,
 			'disableMsg' => 0,
-			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/list-add.png',
+			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/list-add.png',
 			'signal' => 'loadImageDialog'
 		));
 		$addPhoto->show(0);
@@ -2212,7 +2213,7 @@ function eyeAddressBook_on_editContact($params=null) {
         'x' => 128,
         'y' => 124,
         'disableMsg' => 0,
-        'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/list-add.png',
+        'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/list-add.png',
         'signal' => 'createGroup'
     ));
     $addGroup->show();

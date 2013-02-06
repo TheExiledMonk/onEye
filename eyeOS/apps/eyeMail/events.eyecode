@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,20 +24,31 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/preferences'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/mail'.EYE_CODE_EXTENSION);
 
 function eyeMail_on_Message($params=null) {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
+}
+
+function eyeMail_on_fullScreen() {
+	$GLOBALS['eyeMail_WND_1']->setFullScreen();
 }
 
 function eyeMail_on_Resize($params=null) {
-	$width = $params['arg'][0];
-	$height = $params['arg'][1];
-	$GLOBALS['verticalPanel']->setHeight($height - 184);
-	$GLOBALS['eyeMail_menuContainer']->setHeight($height - 184);
-	$GLOBALS['mailTable']->setWidth($width - 144);
-	$GLOBALS['eyeMail_mailHeader']->setWidth($width - 144);
-	$GLOBALS['splitter']->setWidth($width - 144);
-	$GLOBALS['splitter']->setHeight($height - 84);
-	$GLOBALS['eyeMail_mailBody']->setHeight($GLOBALS['splitter']->height-$GLOBALS['splitter']->position-98);
-	$GLOBALS['eyeMail_mailBody']->setWidth($GLOBALS['splitter']->width);
+	$width = intval($params['arg'][0]);
+	$height = intval($params['arg'][1]);
+	$GLOBALS['eyeMail_WND_1']->width = $width;
+	$GLOBALS['eyeMail_WND_1']->height = $height;
+	$GLOBALS['eyeMail_line']->setHeight($height - 58);
+	$GLOBALS['eyeMail_menuContainer_box']->setHeight($height - 170);
+	$GLOBALS['eyeMail_menuContainer']->setHeight($height - 173);
+	
+//	$GLOBALS['verticalPanel']->setHeight($height - 184);
+
+	$GLOBALS['splitter']->setWidth($width - 150);
+	$GLOBALS['splitter']->setHeight($height - 87);
+		$GLOBALS['mailTable']->setWidth($GLOBALS['splitter']->width);
+//		$GLOBALS['eyeMail_menuContainer']->setHeight($height - 184);
+		$GLOBALS['eyeMail_mailHeader']->setWidth($GLOBALS['splitter']->width);
+		$GLOBALS['eyeMail_mailBody']->setHeight($GLOBALS['splitter']->height-$GLOBALS['splitter']->position-87);
+		$GLOBALS['eyeMail_mailBody']->setWidth($GLOBALS['splitter']->width);
 }
 
 function eyeMail_on_resizeCompose($params=null) {
@@ -107,13 +118,13 @@ function eyeMail_on_new($params=null) {
 		'father'=>'eyeApps',
 		'text'=>array()
 	));
-	reqLib('eyeWidgets','serialize',array($myHidden));
+	eyeWidgets('serialize',array($myHidden));
 	$myHidden2 = new Hidden(array(
 		'name'=>'focused',
 		'father'=>'eyeApps',
 		'text'=>'body'
 	));
-	reqLib('eyeWidgets','serialize',array($myHidden2));
+	eyeWidgets('serialize',array($myHidden2));
 	eyeMail_compose();
 }
 
@@ -135,7 +146,7 @@ function eyeMail_on_resizeSplit($params=null) {
 			'father'=>'eyeApps',
 			'text'=>intval($first)
 		));
-		reqLib('eyeWidgets','serialize',array($myHidden));
+		eyeWidgets('serialize',array($myHidden));
 	}
 
 	$first = intval($first);
@@ -182,7 +193,7 @@ function eyeMail_on_attachMail($params=null) {
 			'All files' => '*.*'
 		)
 	);
-	service('proc','launch',array('eyeDialog',$options));
+	proc('launch',array('eyeDialog',$options));
 }
 
 function eyeMail_on_SelectFileOpen($params=null) {
@@ -205,7 +216,7 @@ function eyeMail_on_changeFocus($params=null) {
 		'father'=>'eyeApps',
 		'text'=>$params['field'][0]
 	));
-	reqLib('eyeWidgets','serialize',array($myHidden));
+	eyeWidgets('serialize',array($myHidden));
 }
 function eyeMail_on_contactsMail($params=null) {
 	/**
@@ -316,7 +327,7 @@ function eyeMail_on_openMailBig($params) {
 	} else {
 		$body = $result[0]['body'];
 	}
-	$attachments = list_attachments($connection,$uid);	
+	$attachments = list_attachments($connection,$uid);
 	eyeMail_compose($result[0]['sender'],$result[0]['subject'],$body,1,$attachments);
 }
 
@@ -330,11 +341,11 @@ function eyeMail_on_openMailBox($params) {
 				'father'=>'eyeApps',
 				'text'=>$value
 			));
-			reqLib('eyeWidgets','serialize',array($myHidden));
+			eyeWidgets('serialize',array($myHidden));
 		}
 	}
 	$myHidden4 = new Hidden(array('name'=>'location','father'=>'eyeApps','text'=>'inbox'));
-	reqLib('eyeWidgets','serialize',array($myHidden4));
+	eyeWidgets('serialize',array($myHidden4));
 	eyeMail_on_printMails();
 }
 
@@ -348,11 +359,11 @@ function eyeMail_on_openMailSent($params) {
 				'father'=>'eyeApps',
 				'text'=>$value
 			));
-			reqLib('eyeWidgets','serialize',array($myHidden));
+			eyeWidgets('serialize',array($myHidden));
 		}
 	}
 	$myHidden4 = new Hidden(array('name'=>'location','father'=>'eyeApps','text'=>'sent'));
-	reqLib('eyeWidgets','serialize',array($myHidden4));
+	eyeWidgets('serialize',array($myHidden4));
 	eyeMail_on_printSent();
 }
 
@@ -371,7 +382,7 @@ function eyeMail_on_delete($params) {
 		'type' => 3,
 		'win_name' => 'deleteMail_Window',
 		'win_style' => TITLE
-	));	
+	));
 }
 
 function eyeMail_on_noDelete($params) {
@@ -400,7 +411,7 @@ function eyeMail_on_doDelete($params) {
 		//$sqlGetView = 'SELECT * FROM mails';
 		$query = sqlite_query($dbHandle, $sqlGetView);
 		$result = sqlite_fetch_all($query, SQLITE_ASSOC);
-		
+
 		$connection = imap_open('{'.$server.':'.$port.$usessl.'/novalidate-cert}INBOX',$user,$password);
 		imap_delete($connection, $uid);
 		imap_expunge($connection);
@@ -408,7 +419,7 @@ function eyeMail_on_doDelete($params) {
 		$sqlGetView = 'DELETE FROM sent WHERE id = '.intval($uid);
 		//$sqlGetView = 'SELECT * FROM mails';
 		$query = sqlite_query($dbHandle, $sqlGetView);
-		$result = sqlite_fetch_all($query, SQLITE_ASSOC);		
+		$result = sqlite_fetch_all($query, SQLITE_ASSOC);
 	}
 	$GLOBALS['mailTable']->delRow($uid);
 	$GLOBALS['deleteMail_Window']->close();
@@ -447,14 +458,14 @@ function eyeMail_on_SelectFileSave($params) {
 	$connection = imap_open('{'.$server.':'.$port.$usessl.'/novalidate-cert}INBOX',$user,$password);
 
 	$body = getdecodevalue(imap_fetchbody($connection,$GLOBALS['mailTable']->selected,$id),$type);
-	$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
-	if(!service('vfs','create',array($file,'eyeMail'))) {
-		service('eyex','messageBox',array('content'=>'Unable to create file'));
+	$file = um('getCurrentUserDir').FILES_USER_DIR.'/'.$file;
+	if(!vfs('create',array($file,'eyeMail'))) {
+		eyex('messageBox',array('content'=>'Unable to create file'));
 		return;
 	}
-	$fp = service('vfs','open',array($file,'w'));
+	$fp = vfs('open',array($file,'w'));
 	if(!$fp) {
-		service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+		eyex('messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
 		return;
 	}
 	fwrite($fp,$body);
@@ -498,13 +509,13 @@ function eyeMail_on_reply($params) {
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
 	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
-	
+
 	$sqlGetView = 'SELECT * FROM mails WHERE uid = '.intval($uid);
 
 	//$sqlGetView = 'SELECT * FROM mails';
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
-	
+
 	if(utf8_substr($result[0]['subject'],0,3) != 'Re:') {
 		$result[0]['subject'] = 'Re: '.$result[0]['subject'];
 	}
@@ -533,13 +544,13 @@ function eyeMail_on_forward($params) {
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
 	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
-	
+
 	$sqlGetView = 'SELECT * FROM mails WHERE uid = '.intval($uid);
 
 	//$sqlGetView = 'SELECT * FROM mails';
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
-	
+
 	if(utf8_substr($result[0]['subject'],0,4) != 'Fwd:') {
 		$result[0]['subject'] = 'Fwd: '.$result[0]['subject'];
 	}
@@ -605,7 +616,7 @@ function list_attachments($connection,$msg) {
 		}
 		$i++;
  	}
- 	
+ 
  	return $return;
 }
 

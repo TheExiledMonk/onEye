@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,7 +22,7 @@
 */
 function eyeMail_preferencesWindow($params=null) {
 	$prefConfig = eyeXML('getXMLfile', array (um('getCurrentUserDir').CONF_USER_DIR.'/eyeMail/settings.xml'));
-	
+
 	if(is_object($GLOBALS['eyeMail_preferencesWND'])) {
 		$GLOBALS['eyeMail_preferencesWND']->close();
 	}
@@ -41,8 +41,8 @@ function eyeMail_preferencesWindow($params=null) {
 	$prefWindow->show();
 	$prefToolbar = new Toolbar(array('name'=>'preferencesToolbar','father'=>'eyeMail_preferencesWND_Content'));
 	$prefToolbar->show();
-	$prefToolbar->addItem('prefGeneral','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/general.png','General');
-	$prefToolbar->addItem('prefAccounts','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/accounts.png','Accounts');
+	$prefToolbar->addItem('prefGeneral','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/eyeNav.png','General');
+	$prefToolbar->addItem('prefAccounts','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/groups.png','Accounts');
 	//$prefToolbar->addItem('prefSecurity','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/security.png','Security');
 
 
@@ -180,7 +180,8 @@ function eyeMail_preferencesWindow($params=null) {
 	));
 	$addButton->show();
 	$addButton->setCSS(array(
-		'font-size' => '17px'
+		'font-size' => '14px',
+		'font-weight' => 'bolder'
 	));
 
 	$delButton = new Button(array(
@@ -195,7 +196,9 @@ function eyeMail_preferencesWindow($params=null) {
 	));
 	$delButton->show();
 	$delButton->setCSS(array(
-		'font-size' => '17px'
+		'font-size' => '14px',
+		'font-weight' => 'bolder',
+		'padding'=> '1px 4px '
 	));
 
 			// subList Accounts Preferences
@@ -361,7 +364,7 @@ function eyeMail_refreshListAcc($params=null) {
 	));
 	$labelListAcc->show();
 	$accConfig = eyeXML('getXMLfile', array (um('getCurrentUserDir').CONF_USER_DIR.'/eyeMail/accounts.xml'));
-	$accConfig = $accConfig[eyeMail][0][accounts][0][account];
+	$accConfig = $accConfig['eyeMail'][0]['accounts'][0]['account'];
 	$accPosIndex=22;
 	global $checknum;
 	if(!is_array($accConfig)) {
@@ -394,7 +397,7 @@ function eyeMail_refreshListAcc($params=null) {
 			'x'=>10,
 			'y'=>4,
 			'alt' => $accConfig[$key]['name'][0],
-			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/mail-flag.png'
+			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/sendmessage.png'
 		));
 		$imageAccUser->show(0);
 		$imageAccUser->setCSS(array(
@@ -457,7 +460,6 @@ function eyeMail_on_accountFocus($params=null) {
 	// $tabMailbox = $tabAcc->addTab('Mailbox',1);
 	$tabAdvanced = $tabAcc->addTab('Advanced',1);
 	$tabAcc->selectByName('Information');
-	$GLOBALS['eyeMail_accountsContainer']->hide();
 	$tabInfoBox = new Simplebox (array(
 		'name' => 'eyeMail_tabInfoBox',
 		'father' => $tabInfo,
@@ -867,7 +869,7 @@ function eyeMail_on_saveButton($params=null) {
 
 function eyeMail_on_unlightAll($params=null) {
 	$accConfig = eyeXML('getXMLfile', array (um('getCurrentUserDir').CONF_USER_DIR.'/eyeMail/accounts.xml'));
-	$accConfig = $accConfig[eyeMail][0][accounts][0][account];
+	$accConfig = $accConfig['eyeMail'][0]['accounts'][0]['account'];
 	foreach ($accConfig as $key=>$value) {
 		$GLOBALS['eyeMail_accUserBox'.$key]->setCSS(array(
 			'background-color' => 'transparent',
@@ -1186,7 +1188,7 @@ function eyeMail_finalize1($params=null) {
 		'father'=>'eyeApps',
 		'text'=>$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]
 	));
-	reqLib('eyeWidgets','serialize',array($myHidden));
+	eyeWidgets('serialize',array($myHidden));
 	eyeMail_createXMLmail();
 }
 
@@ -1215,17 +1217,18 @@ function eyeMail_finalize2($params=null) {
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['smtpssl'][0] = $GLOBALS['eyeMail_smtpsslcheck']->checked;
 	eyeXML('setXMLconfig',array('eyeMail','accounts.xml', $accountsFile));
 	eyex('messageBox', array('content' => 'Email account has been created.'));
-	$GLOBALS['eyeMail_listAccContainer']->remove();
 	eyeMail_refreshListAcc();
 	eyeMail_on_cancelAccButton();
-	$GLOBALS['eyeMail_menuContainer']->remove();
+	if (is_object($GLOBALS['eyeMail_menuContainer'])) {
+		$GLOBALS['eyeMail_menuContainer']->remove();
+	}
 	eyeMail_drawBoxes();
 	$myHidden = new Hidden(array(
 		'name'=>'defaultMail',
 		'father'=>'eyeApps',
 		'text'=>$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]
 	));
-	reqLib('eyeWidgets','serialize',array($myHidden));
+	eyeWidgets('serialize',array($myHidden));
 	eyeMail_createXMLmail();
 }
 

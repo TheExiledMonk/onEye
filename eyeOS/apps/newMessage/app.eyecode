@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -31,11 +31,11 @@ function newMessage_run($params=null) {
 	if(!empty($params['to'])) {
 		$to = $params['to'];
 	}
-		
+
 	if(!empty($params['subject'])) {
 		$subject = $params['subject'];
 	}
-	
+
 	$myWindow = new Window(array(
 		'name' => 'newMessageWND',
 		'father' => 'eyeApps',
@@ -47,7 +47,7 @@ function newMessage_run($params=null) {
 		'cent' => 1
 	));
 	$myWindow->show();
-	
+
 	//Allow to send a callback once the application is finished. Store an array with the checknum and name of signal
 	if(is_array($params['callback'])) {
 		$myHidden = new Hidden(array(
@@ -57,7 +57,7 @@ function newMessage_run($params=null) {
 		));
 		eyeWidgets('serialize', array($myHidden));
 	}
-	
+
 	$lblToUsers = new Label(array(
 		'name' => 'lblToUsers',
 		'father' => 'newMessageWND_Content',
@@ -77,7 +77,7 @@ function newMessage_run($params=null) {
 	));
 	$tboxToUsers->show();
 	$tboxToUsers->focus();
-	
+
 	if(SEND_TO_GROUPS == 1) {
 		$lblToGroups = new Label(array(
 			'name' => 'lblToGroups',
@@ -97,14 +97,14 @@ function newMessage_run($params=null) {
 			'text' => ''
 		));
 		$tboxToGroups->show();
-		
+
 		$myWindow->setHeight($myWindow->height+20);
-		
+
 		$myY = 61;
 	} else {
 		$myY = 41;
 	}
-	
+
 	$lblSubject = new Label(array(
 		'name' => 'lblSubject',
 		'father' => 'newMessageWND_Content',
@@ -123,9 +123,9 @@ function newMessage_run($params=null) {
 		'text' => $subject
 	));
 	$tboxSubject->show();
-	
+
 	$myY+= 20;
-	
+
 	$lblAttach = new Label(array(
 		'name' => 'lblAttach',
 		'father' => 'newMessageWND_Content',
@@ -153,9 +153,9 @@ function newMessage_run($params=null) {
 		'width' => 144
 	));
 	$bttnAddAttach->show();
-	
+
 	$myY+= 20;
-	
+
 	$contentTarea = new Textarea(array(
 		'name' => 'contentTarea',
 		'father' => 'newMessageWND_Content',
@@ -165,7 +165,7 @@ function newMessage_run($params=null) {
 		'y' => $myY
 	));
 	$contentTarea->show();
-	
+
 	$bttnSend = new Button(array(
 		'name' => 'send',
 		'father' => 'newMessageWND_Content',
@@ -182,7 +182,7 @@ function newMessage_run($params=null) {
 	$bttnSend->addFriend($tboxAttach);
 	$bttnSend->addFriend($contentTarea);
 	$bttnSend->show();
-	
+
 	$bttnClose = new Button(array(
 		'name' => 'Close',
 		'father' => 'newMessageWND_Content',
@@ -196,7 +196,7 @@ function newMessage_run($params=null) {
 }
 
 function newMessage_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	eyeWidgets('unserialize');
 }
 
 ?>

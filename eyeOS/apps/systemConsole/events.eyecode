@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,9 +24,9 @@
 function systemConsole_on_Clean($params=null) {
 	global $myPid;
 	$js .= 'document.getElementById("'.$myPid.'_consoleContent").innerHTML = "";';
-	eyeX('rawjs',array('js'=>$js));	
+	eyeX('rawjs',array('js'=>$js));
 	$js = 'document.getElementById("1_tty").innerHTML = "";';
-	eyeX('rawjs',array('js'=>$js));	
+	eyeX('rawjs',array('js'=>$js));
 }
 
 function systemConsole_on_Resize($params=null) {
@@ -37,7 +37,7 @@ function systemConsole_on_Resize($params=null) {
 }
 
 function systemConsole_on_Close($params=null) {
-	proc('end');	
+	proc('end');
 }
 
 ?>

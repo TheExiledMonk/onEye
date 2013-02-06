@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -117,15 +117,15 @@ function eyeLogin_2_Launch(pid,checknum) {
 		xGetElementById(pid + '_eyeLogin_Textbox_2_User').focus();
 		eyeLogin_Light_On(pid + '_eyeLogin_Textbox_2_User');
 	}
-	
+
 	var obj = xGetElementById(pid + '_eyeLogin_Imagebox_2_Create_Container');
 	if (obj) {
 		obj.onclick = function () { sendMsg(checknum,'Create',eyeParam('eyeLogin_Textbox_2_User',xGetElementById(pid + '_eyeLogin_Textbox_2_User').value) + eyeParam('eyeLogin_Textbox_2_Password_1',Base64.encode(xGetElementById(pid+'_eyeLogin_Textbox_2_Password_1').value)) + eyeParam('eyeLogin_Textbox_2_Password_2',Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_2_Password_2').value)) + eyeParam('eyeLogin_Select_2_Language',xGetElementById(pid + '_eyeLogin_Select_2_Language').value)); };
-		
+
 		obj = xGetElementById(pid + '_eyeLogin_Label_2_Create');
 		obj.onclick = function () { sendMsg(checknum,'Create',eyeParam('eyeLogin_Textbox_2_User',xGetElementById(pid + '_eyeLogin_Textbox_2_User').value) + eyeParam('eyeLogin_Textbox_2_Password_1',Base64.encode(xGetElementById(pid+'_eyeLogin_Textbox_2_Password_1').value)) + eyeParam('eyeLogin_Textbox_2_Password_2',Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_2_Password_2').value)) + eyeParam('eyeLogin_Select_2_Language',xGetElementById(pid + '_eyeLogin_Select_2_Language').value)); };
 	}
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Textbox_2_User');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
@@ -133,7 +133,7 @@ function eyeLogin_2_Launch(pid,checknum) {
 	};
 	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_2_User'); };
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_2_User'); };
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Textbox_2_Password_1');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
@@ -141,7 +141,7 @@ function eyeLogin_2_Launch(pid,checknum) {
 	};
 	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_2_Password_1'); };
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_2_Password_1'); };
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Textbox_2_Password_2');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
@@ -154,25 +154,25 @@ function eyeLogin_2_Launch(pid,checknum) {
 function eyeLogin_Start(pid,checknum) {
 	xGetElementById(pid + '_eyeLogin_1_Container').style.left = '50%';
 	xGetElementById(pid + '_eyeLogin_1_Container').style.top = '50%';
-	
+
 	var obj = xGetElementById(pid + '_eyeLogin_Label_1_Enter');
 	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
 	obj.style.zIndex = '10000';
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_Enter_Container');
 	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
 	obj.style.zIndex = '10000';
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_New_Container');
 	if (obj) {
 		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
 		obj.style.zIndex = '10000';
-		
+
 		obj = xGetElementById(pid + '_eyeLogin_Label_1_New_Container');
 		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
 		obj.style.zIndex = '10000';
 	}
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Textbox_1_Password');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
@@ -180,7 +180,7 @@ function eyeLogin_Start(pid,checknum) {
 	};
 	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_1_Password'); };
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_1_Password'); };
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Textbox_1_User');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);
@@ -188,7 +188,7 @@ function eyeLogin_Start(pid,checknum) {
 	};
 	obj.onfocus = function() { eyeLogin_Light_On(pid + '_eyeLogin_Textbox_1_User'); };
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Textbox_1_User'); };
-	
+
 	obj = xGetElementById(pid + '_eyeLogin_Select_1_Language');
 	obj.onkeypress = function(e) {
 		var event = new xEvent(e);

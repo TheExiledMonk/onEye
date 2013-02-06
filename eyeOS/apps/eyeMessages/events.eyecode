@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -50,9 +50,9 @@ function eyeMessages_on_open($params) {
 	if(empty($folder)) {
 		eyeMessages_on_gotosection();
 	}
-	
-	$msg = reqLib('eyeMessages', 'openMessage', array($hash, $folder));
-	
+
+	$msg = eyeMessages('openMessage', array($hash, $folder));
+
 	if(!is_array($msg)) {
 		eyeX('messageBox', array('content' => 'Error opening message'));
 		return;
@@ -69,13 +69,13 @@ function eyeMessages_on_open($params) {
 		'cent' => 1
 	));
 	$myWindow3->show();
-	
+
 	if($folder == "sent") {
 		$text = "To";
 	} else {
 		$text = "From";
 	}
-	
+
 	$lblFrom = new Label(array(
 		'name' => 'lblFrom',
 		'father' => 'openMessage_WND_Content',
@@ -85,7 +85,7 @@ function eyeMessages_on_open($params) {
 		'width' => 60
 	));
 	$lblFrom->show();
-	
+
 	$tboxFrom = new Textbox(array(
 		'name' => 'tboxFrom', 
 		'father' => 'openMessage_WND_Content',
@@ -95,13 +95,13 @@ function eyeMessages_on_open($params) {
 		'enabled' => 0
 	));
 	$tboxFrom->show();
-	
+
 	if($folder == "sent") {
 		$tboxFrom->setText($msg['header'][0]['to'][0]);
 	} else {
 		$tboxFrom->setText($msg['header'][0]['from'][0]);
 	}
-	
+
 	$lblSubject = new Label(array(
 		'name' => 'lblSubject',
 		'father' => 'openMessage_WND_Content',
@@ -111,7 +111,7 @@ function eyeMessages_on_open($params) {
 		'width' => 60
 	));
 	$lblSubject->show();
-	
+
 	$tboxSubject = new Textbox(array(
 		'name' => 'tboxSubject', 
 		'father' => 'openMessage_WND_Content',
@@ -122,13 +122,13 @@ function eyeMessages_on_open($params) {
 	));
 	$tboxSubject->show();
 	$tboxSubject->setText($msg['header'][0]['subject'][0]);
-	
+
 	$y = 60;
-	
+
 	if(is_array($msg['header'][0]['attach'])) {
-		$info = reqLib('eyeMessages', 'getAttach', array($msg['header'][0]['attach'][0]));
-		
-		
+		$info = eyeMessages('getAttach', array($msg['header'][0]['attach'][0]));
+
+
 		if(is_array($info)) {
 			$myHidden = new Hidden(array(
 				'name' => 'filehash',
@@ -136,14 +136,14 @@ function eyeMessages_on_open($params) {
 				'text' => $msg['header'][0]['attach'][0]
 			));
 			eyeWidgets('serialize', array($myHidden));
-			
+
 			$myHidden2 = new Hidden(array(
 				'name' => 'filename',
 				'father' => 'openMessage_WND',
 				'text' => $info['swapFile'][0]['header'][0]['name'][0]
 			));
 			eyeWidgets('serialize', array($myHidden2));
-			
+
 			$lblAttachment = new Label(array(
 				'name' => 'lblAttachment',
 				'father' => 'openMessage_WND_Content',
@@ -153,7 +153,7 @@ function eyeMessages_on_open($params) {
 				'width' => 60
 			));
 			$lblAttachment->show();
-			
+
 			$tboxAttachment = new Textbox(array(
 				'name' => 'tboxAttachment', 
 				'father' => 'openMessage_WND_Content',
@@ -164,7 +164,7 @@ function eyeMessages_on_open($params) {
 			));
 			$tboxAttachment->show();
 			$tboxAttachment->setText($info['swapFile'][0]['header'][0]['name'][0]);
-			
+
 			$bttnAttach = new Button(array(
 				'name' => 'downloadAttach',
 				'father' => 'openMessage_WND_Content',
@@ -173,11 +173,11 @@ function eyeMessages_on_open($params) {
 				'caption' => 'Download'
 			));
 			$bttnAttach->show();
-			
+
 			$y += 20;
 		}
 	}
-	
+
 	$contentTarea = new Textarea(array(
 		'name' => 'contentTarea',
 		'father' => 'openMessage_WND_Content',
@@ -189,7 +189,7 @@ function eyeMessages_on_open($params) {
 	));
 	$contentTarea->show();
 	$contentTarea->setText($msg['body'][0]['content'][0]);
-	
+
 	if($folder != "sent" && $folder != "trash") {
 		$bttnReply = new Button(array(
 			'name' => 'reply',
@@ -207,9 +207,9 @@ function eyeMessages_on_reply($params=null) {
 	if(is_object($GLOBALS['openMessage_WND'])) {
 		$to = $GLOBALS['tboxFrom']->text;
 		$subject = 'Re: '.$GLOBALS['tboxSubject']->text;
-	
+
 		$GLOBALS['openMessage_WND']->close();
-		
+
 		proc('launch', array('newMessage', array('to' => $to, 'subject' => $subject)));
 	}
 }
@@ -233,7 +233,7 @@ function eyeMessages_on_SelectFileSave($params=null) {
 	if($file && $hash) {
 		$file = um('getCurrentUserDir').FILES_USER_DIR.'/'.$file;
 
-		if(reqLib('eyeSwap', 'getFile', array($hash.'.fileSwap', $file, 'eyeMessages'))) {
+		if(eyeSwap('getFile', array($hash.'.fileSwap', $file, 'eyeMessages'))) {
 			eyeFiles('update',array(dirname($file)));
 			eyex('messageBox',array('content'=>'File saved successfully.'));
 		}
@@ -261,7 +261,7 @@ function eyeMessages_on_empty($params=null) {
 }
 
 function eyeMessages_on_emptyYes($params=null) {
-	reqLib('eyeMessages', 'empty', array($GLOBALS['section']->text));
+	eyeMessages('empty', array($GLOBALS['section']->text));
 	eyeX('messageBox', array('content' => 'Emptied'));
 	$GLOBALS['emptyWND']->close();
 	eyeMessages_on_gotosection();
@@ -277,7 +277,7 @@ function eyeMessages_on_restore($params=null) {
 	if(utf8_strpos($hash, ',')) {
 		$hash = utf8_substr($hash, 0, utf8_strpos($hash, ','));
 	}
-	reqLib('eyeMessages', 'restoreMessage', array($hash));	
+	eyeMessages('restoreMessage', array($hash));
 	eyeX('messageBox', array('content' => 'Message restored in its original folder'));
 	eyeMessages_on_gotosection();
 }
@@ -289,13 +289,13 @@ function eyeMessages_on_delete($params=null) {
 		$folder = utf8_substr($hash, utf8_strpos($hash, ',')+1);
 		$hash = utf8_substr($hash, 0, utf8_strpos($hash, ','));
 	}
-	
+
 	if($hash == "undefined" || !$hash) {
 		eyeX('messageBox', array('content' => "You must choose a message to delete"));
 		return;
 	}
 
-	reqLib('eyeMessages', 'deleteMessage', array($hash, $folder));
+	eyeMessages('deleteMessage', array($hash, $folder));
 	eyeMessages_on_gotosection();
 }
 
@@ -307,7 +307,7 @@ function eyeMessages_on_gotosection($params=null) {
 		$GLOBALS['section']->text = $section;
 	}
 	global $myPid;
-	
+
 	$GLOBALS['table_1']->delAllRows();
 	eyeX('rawjs', array('js' => "if(document.getElementById('".$myPid."_read_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_read_container').className = '';document.getElementById('".$myPid."_read_container').style.backgroundColor='#FFFFFF';}if(document.getElementById('".$myPid."_inbox_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_inbox_container').className = '';document.getElementById('".$myPid."_inbox_container').style.backgroundColor='#FFFFFF';}if(document.getElementById('".$myPid."_trash_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_trash_container').className = '';document.getElementById('".$myPid."_trash_container').style.backgroundColor='#FFFFFF';}if(document.getElementById('".$myPid."_sent_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_sent_container').className = '';document.getElementById('".$myPid."_sent_container').style.backgroundColor='#FFFFFF';}if(document.getElementById('".$myPid."_unread_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_unread_container').className = '';document.getElementById('".$myPid."_unread_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs', array('js' => "document.getElementById('".$myPid."_".$section."_container').className = 'eyeHighlighted';document.getElementById('".$myPid."_".$section."_container').style.backgroundColor = '#579AFF';"));
@@ -323,9 +323,9 @@ function eyeMessages_on_gotosection($params=null) {
 		$js .= 'document.getElementById("'.$myPid.'_table_1").rows[0].firstChild.innerHTML = "' . htmlspecialchars(i18n('translate',array('From')),ENT_QUOTES,'UTF-8') . '";';
 	}
 	eyeX('rawjs', array('js' => $js));
-	
+
 	if($section == 'read') {
-		$list = reqLib('eyeMessages', 'getRead');
+		$list = eyeMessages('getRead');
 		if(is_array($list)) {
 			foreach($list as $value) {
 				$myDate = date('m-d-Y G:i',$value['date']);
@@ -333,7 +333,7 @@ function eyeMessages_on_gotosection($params=null) {
 			}
 		}
 	} elseif($section == 'unread') {
-		$list = reqLib('eyeMessages', 'getUnread');
+		$list = eyeMessages('getUnread');
 		if(is_array($list)) {
 			foreach($list as $value) {
 				$myDate = date('m-d-Y G:i',$value['date']);
@@ -341,7 +341,7 @@ function eyeMessages_on_gotosection($params=null) {
 			}
 		}
 	} elseif($section == 'inbox') {
-		$list = reqLib('eyeMessages', 'getInbox');
+		$list = eyeMessages('getInbox');
 
 		if(is_array($list)) {
 			foreach($list as $value) {
@@ -350,7 +350,7 @@ function eyeMessages_on_gotosection($params=null) {
 			}
 		}
 	} elseif($section == 'sent') {
-		$list = reqLib('eyeMessages', 'getSent');
+		$list = eyeMessages('getSent');
 		if(is_array($list)) {
 			foreach($list as $value) {
 				$myDate = date('m-d-Y G:i', $value['date']);
@@ -358,7 +358,7 @@ function eyeMessages_on_gotosection($params=null) {
 			}
 		}
 	} elseif($section == 'trash') {
-		$list = reqLib('eyeMessages', 'getTrash');
+		$list = eyeMessages('getTrash');
 		if(is_array($list)) {
 			foreach($list as $value) {
 				$myDate = date('m-d-Y G:i',$value['date']);

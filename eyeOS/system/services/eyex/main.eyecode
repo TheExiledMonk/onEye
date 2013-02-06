@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -57,22 +57,22 @@ function service_eyex_setDiv($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$myDiv = $params['name'];
 	$myContent = $params['content'];
-	
+
 	$atribs = array(
 		'task' => array('setDiv'),
 		'name' => array($procInfo['pid'].'_'.$myDiv),
 		'content' => array($myContent)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -89,7 +89,7 @@ function service_eyex_setDiv($params) {
 * @exception INCORRECT_PARAMS No name is specified.
 * @date 2008/03/11
 */
-function service_eyex_loadScript($params=null) {	
+function service_eyex_loadScript($params=null) {
 	if(!isset($params['url'])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -99,13 +99,13 @@ function service_eyex_loadScript($params=null) {
 		'task' => array('loadScript'),
 		'url' => array($myScript),
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -131,22 +131,22 @@ function service_eyex_loadCSS($params) {
 		return false;
 	}
 	$myScript = $params['url'];
-	$myID = $params['id'];	
-	
+	$myID = $params['id'];
+
 	$atribs = array(
 		'task' => array('loadCSS'),
 		'url' => array($myScript),
 		'id' => array($myID)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
-	mmap('addToBuffer',array($myAction));	
+	mmap('addToBuffer',array($myAction));
 	return true;
 }
 
@@ -165,19 +165,19 @@ function service_eyex_removeCSS($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$myID = $params['id'];	
-	
+	$myID = $params['id'];
+
 	$atribs = array(
 		'task' => array('removeCSS'),
 		'id' => array($myID),
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -205,20 +205,20 @@ function service_eyex_setWallpaper($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$wallp = $params['path'];
 	$repeat = $params['repeat'];
 	$center = $params['center'];
 	$color = $params['color'];
-	
+
 	if(!isset($repeat)) {
 		$repeat=0;
 	}
-	
+
 	if(!isset($center)) {
 		$center=1;
 	}
-	
+
 	$atribs = array(
 		'task' => array('setWallpaper'),
 		'url' => array($wallp),
@@ -226,15 +226,15 @@ function service_eyex_setWallpaper($params) {
 		'center' => array($center),
 		'color' => array($color)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
-	mmap('addToBuffer',array($myAction));	
+	mmap('addToBuffer',array($myAction));
 	return true;
 }
 
@@ -364,19 +364,19 @@ function service_eyex_getRealFromExtern($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$return = EYE_ROOT . '/' . EXTERN_DIR . '/';
-	
+
 	if (utf8_strpos($path,'theme=1')) {
 		$return .= THEMES_DIR . '/default/'; // We use the default theme to get no problem with getThemeImage!
 	}
-	
+
 	$path = utf8_stristr($path,'extern=');
 	$path = utf8_substr($path,utf8_strlen('extern='));
 	if (utf8_strpos($path,'&')) {
 		$path = utf8_substr($path,0,- utf8_strlen(utf8_stristr($path,'&')));
 	}
-	
+
 	return $return . $path;
 }
 
@@ -398,42 +398,42 @@ function service_eyex_getRealFromExtern($params) {
 * @exception INCORRECT_PARAMS No name is specified.
 * @date 2008/03/11
 */
-function service_eyex_createDiv($params) {	
+function service_eyex_createDiv($params) {
 	if(!isset($params['name']) || !isset($params['father'])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
+	}
 	$name = $params['name'];
 	$father = $params['father'];
-	
+
 	if(!isset($params['class'])) {
 		$class = ' '; 
 	}else{
 		$class = $params['class'];
-	}	
-		
+	}
+
 	global $procInfo;
-	$isLayer = service('eyex','isLayer',array('name'=>$father));
+	$isLayer = eyex('isLayer',array('name'=>$father));
 	if(!$isLayer && !isset($params['removepid'])) {
 		$father = $procInfo['pid'].'_'.$father;
 	}
 	if(!isset($params['nopid'])) {
 		$name = $procInfo['pid'].'_'.$name;
 	}
-	
+
 	$atribs = array(
 		'task' => array('createDiv'),
 		'name' => array($name),
 		'class' => array($class),
 		'father' => array($father)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -489,16 +489,16 @@ function service_eyex_createWidget($params) {
 	if(!is_array($params)) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
-	
+	}
+
 	if(!$params['name'] || !$params['father']) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	global $checknum;
 	global $procInfo;
-	
-	
+
+
 	$name = $params['name'];
 	$father = $params['father'];
 	$x = $params['x'];
@@ -507,7 +507,7 @@ function service_eyex_createWidget($params) {
 	$widgetparams = $params['params'];
 	$horiz = $params['horiz'];
 	$vert = $params['vert'];
-	$isLayer = service('eyex','isLayer',array('name'=>$father));
+	$isLayer = eyex('isLayer',array('name'=>$father));
 	if(!$isLayer && !isset($params['removepid'])) {
 		$father = $procInfo['pid'].'_'.$father;
 	}
@@ -533,13 +533,13 @@ function service_eyex_createWidget($params) {
 		'params' => array($widgetparams),
 		'cent' => array($cent)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -555,24 +555,24 @@ function service_eyex_createWidget($params) {
 * @exception INCORRECT_PARAMS No element name is specified.
 * @date 2008/03/11
 */
-function service_eyex_removeWidget($params) {	
-	if(!$params['name']) {	
+function service_eyex_removeWidget($params) {
+	if(!$params['name']) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	} 
 	global $procInfo;
-	$name = $procInfo['pid'].'_'.$params['name'];	
+	$name = $procInfo['pid'].'_'.$params['name'];
 	$atribs = array(
 		'task' => array('removeWidget'),
 		'name' => array($name),
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -648,6 +648,24 @@ function service_eyex_messageBox($params = '') {
 			errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 			return false;
 		}
+
+		if (!isset($params['sound'])) {
+			if ($params['img'] == 'i') {
+				$params['sound'] = 'info';
+			} elseif($params['img'] == 'x') {
+				$params['sound'] = 'error';
+			} elseif($params['img'] == '!') {
+				$params['sound'] = 'warning';
+			} elseif($params['img'] == '?') {
+				$params['sound'] = 'question';
+			} else {
+				$params['sound'] = 'message';
+			}
+		}
+		if (!empty($params['sound'])) {
+			eyex('systemSound', array($params['sound']));
+		}
+
 		if (!isset($params['father'])) {
 			$params['father'] = 'eyeApps';
 		}
@@ -674,7 +692,7 @@ function service_eyex_messageBox($params = '') {
 			'width' => $width
 		));
 		$myWindow->show();
-		
+
 		if (isset($params['img'])) {
 			if ($params['img'] == 'i') {
 				$params['img'] = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/i.png';
@@ -694,7 +712,7 @@ function service_eyex_messageBox($params = '') {
 			));
 			$myImagebox->show();
 		}
-		
+
 		$myLabel = new Label(array(
 			'father' => $params['win_name'] . '_Content',
 			'horiz' => 1,
@@ -709,7 +727,7 @@ function service_eyex_messageBox($params = '') {
 			'text-align' => 'justify',
 			'width' => '275px'
 		));
-		
+
 		if ($params['textbox_name']) {
 			$myWidget = new Textbox(array(
 				'father' => $params['win_name'] . '_Content',
@@ -741,7 +759,7 @@ function service_eyex_messageBox($params = '') {
 				$myWidget->addEnterEventMsg($params['select_event']);
 			}
 		}
-		
+
 		// Support for deprecated parameters
 		if (!is_array($params['buttons'])) {
 			if (isset($params['btn1_name']) && isset($params['btn1_capt'])) {
@@ -782,7 +800,7 @@ function service_eyex_messageBox($params = '') {
 				right += 20 + xWidth(e);
 			}'));
 		}
-		
+
 		// Support for deprecated parameters
 		if (!is_array($params['hiddens'])) {
 			if (isset($params['hidden_name']) && isset($params['hidden_text'])) {
@@ -813,6 +831,12 @@ function service_eyex_messageBox($params = '') {
 		return $myWidget;
 	} else {
 		if ($params['type'] != 2) {
+			if (!isset($params['sound'])) {
+				$params['sound'] = 'message';
+			}
+			if (!empty($params['sound'])) {
+				eyex('systemSound', array($params['sound']));
+			}
 			$params['type'] = 1;
 		}
 		$action['action'][0]['task'][0] = 'messageBox';
@@ -839,27 +863,27 @@ function service_eyex_setValue($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$content = $params['value'];
-	
+
 	if($params['name'])	{
 		$widget = $params['name'];
 	} else {
 		$type = 1;
 	}
-	
+
 	$atribs = array(
 		'task' => array('setValue'),
 		'content' => array($content),
 		'widget' => array($widget)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -881,27 +905,27 @@ function service_eyex_setValueB64($params) {
 	if(isset($params['value'])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
-	$content = $params['value'];	
-		
+	}
+	$content = $params['value'];
+
 	if($params['name'])	{
 		$widget = $params['name'];
 	} else {
 		$type = 1;
 	}
-	
+
 	$atribs = array(
 		'task' => array('setValueB64'),
 		'content' => array($content),
-		'widget' => array($widget)	
+		'widget' => array($widget)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -925,26 +949,26 @@ function service_eyex_concatValueB64($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$content = $params['value'];
 	if($params['name'])	{
 		$widget = $params['name'];
 	} else {
 		$type = 1;
 	}
-	
+
 	$atribs = array(
 		'task' => array('concatValueB64'),
 		'content' => array($content),
-		'widget' => array($widget)	
+		'widget' => array($widget)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -967,27 +991,27 @@ function service_eyex_concatValue($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$content = $params['value'];
-	
+
 	if($params['name'])	{
 		$widget = $params['name'];
 	} else {
 		$type = 1;
 	}
-	
+
 	$atribs = array(
 		'task' => array('concatValue'),
 		'content' => array($content),
-		'widget' => array($widget)	
+		'widget' => array($widget)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1010,27 +1034,27 @@ function service_eyex_concatDiv($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$content = $params['value'];
-	
+
 	if($params['name'])	{
 		$widget = $params['name'];
 	} else {
 		$type = 1;
 	}
-	
+
 	$atribs = array(
 		'task' => array('concatDiv'),
 		'content' => array($content),
-		'widget' => array($widget)	
+		'widget' => array($widget)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1060,13 +1084,13 @@ function service_eyex_rawjs($params) { //useful for widgets
 		'task' => array('rawjs'),
 		'js' => array($js)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1083,7 +1107,7 @@ function service_eyex_rawjs($params) { //useful for widgets
 * @exception INCORRECT_PARAMS No code is specified.
 * @date 2008/03/11
 */
-function service_eyex_runjs($params) { //util for widgets	
+function service_eyex_runjs($params) { //util for widgets
 	if(!isset($params['js'])){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -1092,11 +1116,11 @@ function service_eyex_runjs($params) { //util for widgets
 		$tokens = $params['tokens'];
 	}else{
 		$tokens = null;
-	}	
+	}
 	$js = $params['js'];
 	$js = str_replace("\n","",$js);
 	$js = str_replace("\r","",$js);
-	
+
 	if(isset($tokens) && is_array($tokens)) {
 		$pieces = explode("%s",$js);
 		$js = '';
@@ -1106,24 +1130,24 @@ function service_eyex_runjs($params) { //util for widgets
 			if(isset($tokens[$i])) {
 				$tokens[$i] = str_replace('\\','\\\\',$tokens[$i]);
 				$tokens[$i] = str_replace("'","\'",$tokens[$i]);
-				$tokens[$i] = str_replace('"','\"',$tokens[$i]);				
+				$tokens[$i] = str_replace('"','\"',$tokens[$i]);
 				$js .= '"'.$tokens[$i].'"';
 			}
 			$i++;
 		}
 	}
-		
+
 	$atribs = array(
 		'task' => array('rawjs'),
 		'js' => array($js)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1142,30 +1166,30 @@ function service_eyex_runjs($params) { //util for widgets
 * @exception INCORRECT_PARAMS Some parameter is not specified.
 * @date 2008/03/11
 */
-function service_eyex_moveWidget($params) {	
+function service_eyex_moveWidget($params) {
 	//TODO: check if it already work with old code
 	if(!$params['name'] || !$params['x'] || !$params['y']) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$name = $params['name'];
 	$x = $params['x'];
 	$y = $params['y'];
-	
+
 	$atribs = array(
 		'task' => array('moveWidget'),
 		'name' => array($name),
 		'x' => array($x),
 		'y' => array($y)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1190,26 +1214,26 @@ function service_eyex_resizeWidget($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$name = $params['name'];
 	$x = $params['width'];
 	$y = $params['height'];
-	
+
 	$atribs = array(
 		'task' => array('resizeWidget'),
 		'name' => array($name),
 		'width' => array($x),
 		'height' => array($y)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
-	mmap('addToBuffer',array($myAction));		
+	mmap('addToBuffer',array($myAction));
 	return true;
 }
 
@@ -1238,13 +1262,13 @@ function service_eyex_makeDrag($params) {
 		'father' => array($params['father']),
 		'noIndex'=>array($noIndex)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1268,28 +1292,28 @@ function service_eyex_updateCss($params)
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$name = $params['name'];
 	$value = $params['value'];
-	
+
 	$prop = $params['property'];
 	while(strstr($prop,'-')) {
 		$prop = camelCase($prop);
 	}
-			
+
 	$atribs = array(
 		'task' => array('updateCss'),
 		'name' => array($name),
 		'property' => array($prop),
 		'value' => array($value)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1315,7 +1339,7 @@ function service_eyex_addEvent($params)
 	}
 	$name = $params['name'];
 	$func = $params['action'];
-	$event = $params['event'];	
+	$event = $params['event'];
 
 	if(!$params['args']) {
 		$args = 0;
@@ -1330,16 +1354,16 @@ function service_eyex_addEvent($params)
 		'func' => array($func),
 		'args' => array($args)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
-	return true;	
+	return true;
 }
 
 /**
@@ -1353,38 +1377,38 @@ function service_eyex_addEvent($params)
 * @exception INCORRECT_PARAMS No message is specified.
 * @date 2008/03/11
 */
-function service_eyex_sendMessage($params) {	
+function service_eyex_sendMessage($params) {
 	if(!$params['msg']) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	if(!empty($params['checknum'])){
 		$checknum = $params['checknum']; 
 	}else{
-		global $checknum;	
+		global $checknum;
 	}
-	$msg = $params['msg'];	
-	
+	$msg = $params['msg'];
+
 	if(isset($params['params'])) {
 		$par = $params['params'];
 	} else {
 		$par = " ";
 	}
-	
+
 	$atribs = array(
 		'task' => array('rawSendMessage'),
 		'msg' => array($msg),
 		'par' => array($par),
 		'checknum' => array($checknum)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	
+
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1404,35 +1428,35 @@ function service_eyex_sendMessage($params) {
 */
 function service_eyex_createLayer($params=''){
  	if(!is_array($params) || !$params['name']){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
  	if(!$_SESSION[LTABLE]){
- 		reqLib('eyeSessions','makeArrayVar',array(LTABLE));
- 	} 	
+ 		eyeSessions('makeArrayVar',array(LTABLE));
+ 	} 
  
- 	$name = $params['name']; 	
+ 	$name = $params['name']; 
  	if($params['class']){
- 		$class = $params['class'];	
+ 		$class = $params['class'];
  	}else{
  		$class = 'newLayer';
  	}
  	$father = 'eyeScreen';
- 	
+ 
  	$atribs = array(
 		'task' => array('createLayer'),
 		'name' => array($name),
 		'class' => array($class),
 		'father' => array($father)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
 		)
 	);
-	reqLib('eyeSessions','addArrayValueByKey',array(LTABLE,'  ',$name));
-	//Adding this layer in layer table with empty content.	
+	eyeSessions('addArrayValueByKey',array(LTABLE,'  ',$name));
+	//Adding this layer in layer table with empty content.
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
 	return true;
@@ -1451,16 +1475,16 @@ function service_eyex_createLayer($params=''){
 */
 function service_eyex_removeLayer($params){
 	if(!is_array($params) || !isset($params['name'])){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
  	$name = $params['name'];
- 	
+ 
  	$atribs = array(
 		'task' => array('removeLayer'),
 		'name' => array($name),
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
@@ -1485,7 +1509,7 @@ function service_eyex_removeLayer($params){
 */
 function service_eyex_showLayer($params){
  	if(!is_array($params) || !isset($params['name'])){
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
  	$name = $params['name'];
@@ -1493,7 +1517,7 @@ function service_eyex_showLayer($params){
 		'task' => array('showLayer'),
 		'name' => array($name),
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
@@ -1517,7 +1541,7 @@ function service_eyex_showLayer($params){
 */
 function service_eyex_hideLayer($params){
  	if(!is_array($params) || !isset($params['name'])){
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
  	$name = $params['name'];
@@ -1525,7 +1549,7 @@ function service_eyex_hideLayer($params){
 		'task' => array('hideLayer'),
 		'name' => array($name),
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
@@ -1556,7 +1580,7 @@ function service_eyex_hideLayer($params){
 */
 function service_eyex_fadeOutLayer($params){
  	if(!is_array($params) || !isset($params['name'])){
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
  	$name = $params['name'];
@@ -1570,7 +1594,7 @@ function service_eyex_fadeOutLayer($params){
 		'startAlpha'=>array($startAlpha),
 		'endAlpha'=>array($endAlpha)
 	);
-	
+
 	$task = array(
 		'action' => array(
 			$atribs
@@ -1602,7 +1626,7 @@ function service_eyex_fadeOutLayer($params){
 */
 function service_eyex_fadeInLayer($params){
  	if(!is_array($params) || !isset($params['name'])){
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
 	isset($params['time']) ? $time = $params['time'] : $time = 1000;//TODO: deshardcode this
@@ -1639,11 +1663,11 @@ function service_eyex_fadeInLayer($params){
 */
 function service_eyex_isLayer($params=''){
  	if(!is_array($params) || !isset($params['name'])){
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
  	$name = $params['name'];
- 	$LTABLE = reqLib('eyeSessions','getVar',array(LTABLE));
+ 	$LTABLE = eyeSessions('getVar',array(LTABLE));
  	foreach ($LTABLE as $layer=>$content){
  		if($layer == $name){
  			return true;
@@ -1661,7 +1685,7 @@ function service_eyex_isLayer($params=''){
 */
 function service_eyex_resizedBrowser($params=''){
  	if(!is_array($params) || !isset($params['height']) || !isset($params['width'])){
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
 	$_SESSION['SCREEN']['width'] = $params['width'];
@@ -1673,10 +1697,10 @@ function service_eyex_resizedBrowser($params=''){
 
 function service_eyex_print($params='') {
  	if(!is_array($params) || !isset($params[0])) {
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
- 	
+ 
 	if(INDEX_TYPE == 'browser') {
 		global $procInfo;
 		$text = $params[0];
@@ -1687,6 +1711,52 @@ function service_eyex_print($params='') {
 		$js = 'printToTty("'.$tty.'",%s);';
 		eyeX('runjs',array('js'=>$js,'tokens'=>array($text)));
 	}
+}
+
+function service_eyex_systemSound($params = '') {
+	$list = array(
+		'error' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/error.mp3',
+		'info' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/info.mp3',
+		'login' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/login.mp3',
+		'logout' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/logout.mp3',
+		'message' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/message.mp3',
+		'question' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/question.mp3',
+		'warning' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/warning.mp3',
+	);
+	if (!is_array($params) || !isset($params[0]) || !isset($list[$params[0]])) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	}
+
+	$xml = eyeXML('getXMLconfig', array('eyeDesk', 'conf.xml'));
+	if (isset($xml['eyeDesk'][0]['systemSounds'][0]) && !$xml['eyeDesk'][0]['systemSounds'][0]) {
+		return false;
+	} else {
+		return eyeSound('simplePlay', array('systemSound_' . $params[0], $list[$params[0]]));
+	}
+}
+
+function service_eyex_jscolor($params = '') {
+	if (!is_array($params) || !isset($params[0])) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	}
+	$prop = 'adjust: false, caps: false, hash: true, required: false';
+	echo $url = eyex('getThemeImage', array(THEME_CONF_DIR . '/jscolor.xml', 2));
+	global $currentUser;
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	$xml = eyeXML('getXMLfile', array($url));
+	$currentUser = $oldUser;
+	foreach ($xml['jscolor'][0] as $key => $value) {
+		$prop .= ', ' . $key . ': ' . $value[0];
+	}
+	if (isset($params[1]) && is_array($params[0])) {
+		foreach ($params[1] as $key => $value) {
+			$prop .= ', ' . $key . ': ' . $value;
+		}
+	}
+	eyex('runjs', array('js' => 'new jscolor.color(document.getElementById(%s), {' . $prop . '});', 'tokens' => array($params[0])));
 }
  
 /**

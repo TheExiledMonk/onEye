@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -20,9 +20,12 @@
 
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+function eyeSoft_on_Help($params = '') {
+	proc('launch',array('eyeHelp','eyeSoft'));
+}
 
 function eyeSoft_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
  
 function eyeSoft_on_Update($params=""){
@@ -219,7 +222,7 @@ function eyeSoft_on_Install($params=null){
 		$myButton2->show();
  
 		$myHidden = new Hidden(array('name'=>'myApp','father'=>'eyeApps','text'=>$myApp));
-		reqLib('eyeWidgets','serialize',array($myHidden));
+		eyeWidgets('serialize',array($myHidden));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose an applictaion to be installed.'));
 	}
@@ -241,11 +244,8 @@ function eyeSoft_on_stepInstall($params=null) {
 	$host = $info['address'][0];
 	$path = $info['path'][0].'/'.$info['filename'][0];
 	$url = "http://".$host.$path;
-	$content = reqLib('eyeURL','getRawFile',array('url'=>$url));
 	$fpath = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/swap/'.utf8_basename($info['filename'][0]);
-	$fp = fopen($fpath,'w');
-	fwrite($fp,$content);
-	fclose($fp);
+	vfs('real_putFileContent', array($fpath, eyeURL('getRawFile', array('url' => $url))));
 	if(md5_file($fpath) != $info['key'][0]) {
 		$GLOBALS['Installing']->clear();
 		$myLabel1 = new Label(array('name'=>'Label1','father'=>'Installing_Content',

@@ -76,7 +76,7 @@ var saveMethod = "save('js')";
 var closeMethod = "";
 var isWriteable = true;
 var tab = String.fromCharCode(9);
-var printstyle = "index.php?version=" + EXTERN_CACHE_VERSION + "&extern=apps/eyeSheets/print.css";
+var printstyle = "index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=css/apps/eyeSheets/print.css";
 
 function trans(key) {
   if (strings[key]) return strings[key]; else return "["+key+"]";
@@ -134,7 +134,7 @@ function keypress(event) {
 	  isShiftDown=0;
 	  isMouseDown=0;
 	}
-	
+
 	if (!alt && !ctrl && keyCode!=0) {
 	  if (keyCode==33) { // page up
 		if (currRow-10 <= row0 && currRow > 10) {
@@ -283,15 +283,19 @@ function display() {
   var out = "";
   if (isWriteable) {
   	out += '<div class="blockbar">';
-	out += '<div class="blockbarItem" onclick="load(init_data); resetPath();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/filenew.png" /><div class="blockbarText">'+trans('New')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="loadCode();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/fileopen.png" /><div class="blockbarText">'+trans('Open')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="saveCode();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/filesave.png" /><div class="blockbarText">'+trans('Save')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="saveAs();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/filesaveas.png" /><div class="blockbarText">'+trans('Save As')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="insertRow();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/newrow.png" /><div class="blockbarText">'+trans('Ins. Row')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="insertColumn();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/newcolumn.png" /><div class="blockbarText">'+trans('Ins. Column')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="deleteRow();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/deleterow.png" /><div class="blockbarText">'+trans('Del. Row')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="deleteColumn();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/deletecolumn.png" /><div class="blockbarText">'+trans('Del. Column')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="print();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/agt_print.png" /><div class="blockbarText">'+trans('Print')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="load(init_data); resetPath();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/filenew.png" /><div class="blockbarText">'+trans('New')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="loadCode();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/fileopen.png" /><div class="blockbarText">'+trans('Open')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="saveCode();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/filesave.png" /><div class="blockbarText">'+trans('Save')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="saveAs();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/filesaveas.png" /><div class="blockbarText">'+trans('Save As')+'</div></div>';
+	out += '<span class="blockbarline" /></span>';
+	out += '<div class="blockbarItem" onclick="insertRow();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/newrow.png" /><div class="blockbarText">'+trans('Ins. Row')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="insertColumn();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/newcolumn.png" /><div class="blockbarText">'+trans('Ins. Column')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="deleteRow();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/deleterow.png" /><div class="blockbarText">'+trans('Del. Row')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="deleteColumn();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/deletecolumn.png" /><div class="blockbarText">'+trans('Del. Column')+'</div></div>';
+	out += '<span class="blockbarline" /></span>';
+	out += '<div class="blockbarItem" onclick="print();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/agt_print.png" /><div class="blockbarText">'+trans('Print')+'</div></div>';
+	out += '<div class="blockbarItem_right" onclick="help();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/help.png" /><div class="blockbarText">'+trans('Help')+'</div></div>';
+	out += '<div class="blockbarItem_right" onclick="fullScreen();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/fullScreen.png" /><div class="blockbarText">' + trans('Full Screen') + '</div></div>';
 	out += '</div>';
   }
   out += "<textarea id='focus' onfocus='this.blur();'></textarea><div id='header' class='header'><table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td nowrap>";
@@ -784,6 +788,15 @@ function saveAs() { // eyeOS
 function loadCode() { // eyeOS
 	window.parent.sendMsg($checknum,'openFile','');
 }
+
+function help() { // eyeOS
+	window.parent.sendMsg($checknum,'help','');
+}
+
+function fullScreen() { // eyeOS
+	window.parent.sendMsg($checknum,'fullScreen','');
+}
+
 function print() {
   var out = document.getElementById("content").innerHTML;
   out = out.replace(/(<\/tr>|<\/table>)/g,"$1\n");
@@ -1155,7 +1168,7 @@ function highlightCellHeader(row,col) {
   if (row<-1) sRow = -2;
   obj = resolveCell(sRow,col);
   if (obj) obj.className = "border_highlight";
-  if (row>=-1) {	
+  if (row>=-1) {
     obj = resolveCell(row,-1);
     if (obj) obj.className = "border_highlight";
   }

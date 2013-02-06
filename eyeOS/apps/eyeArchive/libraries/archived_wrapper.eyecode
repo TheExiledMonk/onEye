@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -26,14 +26,14 @@ function getFiles($file){
 	//getting the real name
 		$file = vfs('getRealName',array($file));
 		$content = array();
-		
+
 		//File names
-		$content['names'] = reqLib('eyeFileArchive','list',array($file));
-		
+		$content['names'] = eyeFileArchive('list',array($file));
+
 		//FilePath
 		foreach($content['names'] as $fileName){
 			$content['path'][] = $file.$fileName;
-		}		
+		}
 		return $content;
 }
 

@@ -375,6 +375,6 @@ function crypt_xxtea_decrypt($params) { // eyeOS
 	$myClass = new Crypt_XXTEA();
 	$myClass->setKey($key);
 	$ret = $myClass->decrypt($str);
-	return $ret;	
+	return $ret;
 }
 ?>

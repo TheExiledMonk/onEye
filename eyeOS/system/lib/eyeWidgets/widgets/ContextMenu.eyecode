@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,7 @@
 
 class ContextMenu {
 	//pid controller
-	
+
 	var $creatorPid;
 	//global widgets options without default
 	var $name;
@@ -31,24 +31,24 @@ class ContextMenu {
 	var $showed = 0;
 	var $sFather;
 	var $mFather;
-	
-	function ContextMenu($params) {	
+
+	function ContextMenu($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
 		$this->name = $params['name'];
 		$this->father = $params['father'];
 
-		isset($params['searchFather']) ? $this->sFather = $params['searchFather'] : $this->sFather = 0;								
+		isset($params['searchFather']) ? $this->sFather = $params['searchFather'] : $this->sFather = 0;
 		//Checking if other fathers are set, if it are a layer.
-		
-		if($params['mfather']){			
-			$isLayer = service('eyex','isLayer',array('name'=>$params['mfather']));
+
+		if($params['mfather']){
+			$isLayer = eyex('isLayer',array('name'=>$params['mfather']));
 			if($isLayer){
-				$this->mFather = $params['mfather'];	
+				$this->mFather = $params['mfather'];
 			}else{
-				$this->mFather = $myPid.'_'.$params['mfather'];	
-			}		
+				$this->mFather = $myPid.'_'.$params['mfather'];
+			}
 		}
 		//generic widget options with default
 		$this->horiz = 0;
@@ -57,7 +57,7 @@ class ContextMenu {
 		$this->x = 20;
 		$this->y = 20;
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -65,7 +65,7 @@ class ContextMenu {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 
 	function show($noserialize=1) {
@@ -74,8 +74,8 @@ class ContextMenu {
 			'sFather' => $this->sFather,
 			'mFather' => $this->mFather
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myContextMenu = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -89,11 +89,11 @@ class ContextMenu {
 		);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
-		service('eyex','createWidget',$myContextMenu);
+		eyex('createWidget',$myContextMenu);
 	}
-	
+
 	function addEntry($text,$Ename,$signal,$params="",$imgId = '') {
 		global $checknum;
 		global $myPid;

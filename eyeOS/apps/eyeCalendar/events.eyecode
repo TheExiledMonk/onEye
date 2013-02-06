@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -21,14 +21,19 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 include_once EYE_ROOT.'/'.APP_DIR.'/eyeCalendar/configDialogs/configEvents.eyecode';
+
+function eyeCalendar_on_Help($params = '') {
+	proc('launch',array('eyeHelp','eyeCalendar'));
+}
+
 function eyeCalendar_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeCalendar_on_Launch($params="") {
 	global $myPid;
 	global $checknum;
-	$defaultView = reqLib('eyeCalendar','getDefaultView');
+	$defaultView = eyeCalendar('getDefaultView');
 	_changeView($defaultView);
 	_paintDaysOfMonth();
 	if(IE > 5){
@@ -185,7 +190,7 @@ function _changeView($type){
 		$width = $windowWidth-142-75-17;
 		$date = null;
 	}
-	$num = reqLib('eyeCalendar','getCurrentCalendar');
+	$num = eyeCalendar('getCurrentCalendar');
 	if($type == 'week'){
 		$myWeekPlanner = _WeekView($date,$num);
 	}elseif($type == 'day'){
@@ -199,15 +204,15 @@ function _changeView($type){
 	$GLOBALS['calendarView']->setText($type);
 	$myWeekPlanner->width = $width;
 	$myWeekPlanner->show();
-			
+
 	//Getting notes for the week.
-	$calendars = reqLib('eyeCalendar','getCalendarsInfo');
+	$calendars = eyeCalendar('getCalendarsInfo');
 	$myWeekPlanner->addCalendars($calendars);
 	$myDays = $myWeekPlanner->getDays();
-	$notes = reqLib('eyeCalendar','getWeekNotes',array($myDays));
+	$notes = eyeCalendar('getWeekNotes',array($myDays));
 	$myWeekPlanner->addNotes($notes);
 	$myWeekPlanner->goToFirstNote();
-	reqLib('eyeCalendar','setDefaultView',array($type));
+	eyeCalendar('setDefaultView',array($type));
 }
 
 function eyeCalendar_on_GoToday(){
@@ -217,7 +222,7 @@ function eyeCalendar_on_GoToday(){
 	$dateInfo = getDate($date);
 	$dayFrom = $dateInfo['wday'];
 	$dayEven = $dateInfo['wday'];
-	$num = reqLib('eyeCalendar','getCurrentCalendar');
+	$num = eyeCalendar('getCurrentCalendar');
 	$info = eyeCalendar('getConfig');
 	$info = $info['eyeCalendar'][0];
 	$myWeekPlanner = new WeekPlanner(array(
@@ -234,10 +239,10 @@ function eyeCalendar_on_GoToday(){
 		'selectedCalendar'=>$num
 	));
 	$myWeekPlanner->show();
-	$calendars = reqLib('eyeCalendar','getCalendarsInfo');
+	$calendars = eyeCalendar('getCalendarsInfo');
 	$myWeekPlanner->addCalendars($calendars);
 	$myDays = $myWeekPlanner->getDays();
-	$notes = reqLib('eyeCalendar','getWeekNotes',array($myDays));
+	$notes = eyeCalendar('getWeekNotes',array($myDays));
 	$myWeekPlanner->addNotes($notes);
 	$myWeekPlanner->goToFirstNote();
 }
@@ -257,7 +262,7 @@ function _backOrFordward($back=false){
 	//Killing
 	$GLOBALS['weekPlanner']->killme();
 	$GLOBALS['calendarWidget']->remove();
-			
+
 	//If is a day view
 	if($dayEven - $dayFrom == 1){
 		if($dayFrom > 0 && $back==true){
@@ -294,8 +299,8 @@ function _backOrFordward($back=false){
 			$year = $dateInfo['year'];
 			$time = mktime(0,0,0,$month,$day,$year);
 		}
-		
-		$num = reqLib('eyeCalendar','getCurrentCalendar');
+
+		$num = eyeCalendar('getCurrentCalendar');
 		$info = eyeCalendar('getConfig');
 		$info = $info['eyeCalendar'][0];
 		$myWeekPlanner = new WeekPlanner(array(
@@ -312,12 +317,12 @@ function _backOrFordward($back=false){
 			'selectedCalendar'=>$num
 		));
 		$myWeekPlanner->show();
-		$calendars = reqLib('eyeCalendar','getCalendarsInfo');
+		$calendars = eyeCalendar('getCalendarsInfo');
 		$myWeekPlanner->addCalendars($calendars);
 		$myWeekPlanner->goToFirstNote();
 
 		$myDays = $myWeekPlanner->getDays();
-		$notes = reqLib('eyeCalendar','getWeekNotes',array($myDays));
+		$notes = eyeCalendar('getWeekNotes',array($myDays));
 		$myWeekPlanner->addNotes($notes);
 		//Calendar widget.
 		$calendarWidgetDate = $time*1000;
@@ -352,7 +357,7 @@ function _backOrFordward($back=false){
 	$day = $dateInfo['mday'];
 	$wday = $dateInfo['wday'];
 	$year = $dateInfo['year'];
-	
+
 	if($back == true){
 		$day = $day-$daysBack;
 	}else{
@@ -361,7 +366,7 @@ function _backOrFordward($back=false){
 	//To be compatible with the new way to create week calendars 2008/05/21/
 	$dayEven = $dayEven -1;
 	$time = mktime(0,0,0,$month,$day,$year);
-	$num = reqLib('eyeCalendar','getCurrentCalendar');
+	$num = eyeCalendar('getCurrentCalendar');
 	$info = eyeCalendar('getConfig');
 	$info = $info['eyeCalendar'][0];
 	$myWeekPlanner = new WeekPlanner(array(
@@ -378,10 +383,10 @@ function _backOrFordward($back=false){
 		'selectedCalendar'=>$num
 	));
 	$myWeekPlanner->show();
-	$calendars = reqLib('eyeCalendar','getCalendarsInfo');
+	$calendars = eyeCalendar('getCalendarsInfo');
 	$myWeekPlanner->addCalendars($calendars);
 	$myDays = $myWeekPlanner->getDays();
-	$notes = reqLib('eyeCalendar','getWeekNotes',array($myDays));
+	$notes = eyeCalendar('getWeekNotes',array($myDays));
 	$myWeekPlanner->addNotes($notes);
 	$myWeekPlanner->goToFirstNote();
 	//Calendar widget.
@@ -426,12 +431,6 @@ function eyeCalendar_on_mainResize($params){
 	$GLOBALS['calendarContainer']->setWidth($width);
 	$GLOBALS['calendarContainer']->setHeight($height);
 
-// 	//Reusing  the var because we don't need it anymore
-// 	$width = $GLOBALS['calendarNamesContainer']->width - $widthDiff;
-// 	$height = $GLOBALS['calendarNamesContainer']->height - $heightDiff;
-// 	$GLOBALS['calendarNamesContainer']->setWidth($width);
-// 	$GLOBALS['calendarNamesContainer']->setHeight($height);
-
 	$width = $GLOBALS['horizBottom']->width - $widthDiff;
 	$GLOBALS['horizBottom']->setWidth($width);
 
@@ -455,16 +454,16 @@ function eyeCalendar_on_addNote($params="") {
 	$weekDay = $params['day'][0];
 	$monDay = $dayInfo['nums'][$weekDay];
 	$params['wday'][0] = $dayInfo['wday'][$weekDay];
-	
+
 	$params['day'][0] = $monDay;
 	$params['month'][0] =$dayInfo['month'][$weekDay];
 	$params['year'][0] =$dayInfo['year'][$weekDay];
 	$noteTime = mktime($params['hourFrom'][0],$params['minFrom'][0],$date['seconds'],$params['month'][0],$params['day'][0],$params['year'][0]);
 	$params['time'][0] = $noteTime;
 	$GLOBALS['weekPlanner']->notes[$id] = $noteTime;
-	reqLib('eyeCalendar','saveNote',$params);
+	eyeCalendar('saveNote',$params);
 	$info = getDate(time());//TODO: We've to decide if we follow the server or the client data...
-	
+
 	$prefix = '';
 	if($params['month'][0] == $info['mon']){
 		$prefix = 'current';
@@ -485,14 +484,14 @@ function eyeCalendar_on_delNote($params="") {
 	}
 	$calendar = $params['calendar'][0];
 	$idNote = $GLOBALS['weekPlanner']->notes[$id];
-	
-	reqLib('eyeCalendar','deleteNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
+
+	eyeCalendar('deleteNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
 	$GLOBALS['weekPlanner']->deleteNote($id);
 
 	//Checking if the day have notes
 	$nInfo = getDate($idNote);
 	$notes = eyeCalendar('getDayNotes',array('year'=>$nInfo['year'],'month'=>$nInfo['mon'],'mday'=>$nInfo['mday']));
-	
+
 	//If there are no more notes in this day
 	if($notes === false){
 		$info = getDate(time());//TODO: We've to decide if we follow the server or the client data...
@@ -514,16 +513,16 @@ function eyeCalendar_on_resizeNote($params=""){
 	if(!is_numeric($id)){
 		return false;
 	}
-	
+
 	$hourEven = $params['hourEven'][0];
 	$minEven = $params['minEven'][0];
 	$calendar = $params['calendar'][0];
 	$idNote = $GLOBALS['weekPlanner']->notes[$id];
-	$oldNoteInfo = reqLib('eyeCalendar','retriveNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
+	$oldNoteInfo = eyeCalendar('retriveNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
 	$oldNoteInfo['note'][0]['minEven'][0] = $minEven;
 	$oldNoteInfo['note'][0]['hourEven'][0] = $hourEven;
 	$oldNoteInfo['note'][0]['title'][0] = base64_encode($oldNoteInfo['note'][0]['title'][0]);
-	reqLib('eyeCalendar','updateNote',array('calendar'=>$calendar,'info'=>$oldNoteInfo,'oldId'=>$idNote));
+	eyeCalendar('updateNote',array('calendar'=>$calendar,'info'=>$oldNoteInfo,'oldId'=>$idNote));
 }
 function eyeCalendar_on_moveNote($params=""){
 	$id = $params['id'][0];
@@ -533,15 +532,15 @@ function eyeCalendar_on_moveNote($params=""){
 	$calendar = $params['calendar'][0];
 	$idNote = $GLOBALS['weekPlanner']->notes[$id];
 	$infoDays = $GLOBALS['weekPlanner']->getDays();
-	
+
 	$day = $params['day'][0];
 	$weekDay = $infoDays['wday'][$day];
 	$monDay = $infoDays['nums'][$day];
 	$year = $infoDays['year'][$day];
 	$month = $infoDays['month'][$day];
-	
-	$oldNoteInfo = reqLib('eyeCalendar','retriveNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
-	
+
+	$oldNoteInfo = eyeCalendar('retriveNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
+
 	$oldNoteInfo['note'][0]['hourFrom'][0] = $params['hourFrom'][0];
 	$oldNoteInfo['note'][0]['minFrom'][0] = $params['minFrom'][0];
 	$oldNoteInfo['note'][0]['hourEven'][0] = $params['hourEven'][0];
@@ -553,7 +552,7 @@ function eyeCalendar_on_moveNote($params=""){
 	$oldNoteInfo['note'][0]['title'][0] = base64_encode($oldNoteInfo['note'][0]['title'][0]);
 	$oldNoteInfo['note'][0]['dateInt'][0] = mktime($params['hourFrom'][0],$params['minFrom'][0],0,$month,$monDay,$year);
 	$GLOBALS['weekPlanner']->notes[$id] = $oldNoteInfo['note'][0]['dateInt'][0];
-	reqLib('eyeCalendar','updateNote',array('info'=>$oldNoteInfo,'calendar'=>$calendar,'oldId'=>$idNote));
+	eyeCalendar('updateNote',array('info'=>$oldNoteInfo,'calendar'=>$calendar,'oldId'=>$idNote));
 	//Checking if the day has changed
 	$nInfo = getDate($idNote);
 	$info = getDate(time());
@@ -592,9 +591,9 @@ function eyeCalendar_on_updateTitle($params=""){
 	$title = $params['title'][0];
 	$calendar = $params['calendar'][0];
 	$idNote = $GLOBALS['weekPlanner']->notes[$id];
-	$oldNoteInfo = reqLib('eyeCalendar','retriveNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
+	$oldNoteInfo = eyeCalendar('retriveNote',array('dateInt'=>$idNote,'calendar'=>$calendar));
 	$oldNoteInfo['note'][0]['title'][0] = base64_encode($title);
-	reqLib('eyeCalendar','updateNote',array('calendar'=>$calendar,'info'=>$oldNoteInfo,'oldId'=>$idNote));
+	eyeCalendar('updateNote',array('calendar'=>$calendar,'info'=>$oldNoteInfo,'oldId'=>$idNote));
 }
 function eyeCalendar_on_reshow($params=""){
 	if(IE > 5){
@@ -607,18 +606,18 @@ function eyeCalendar_on_reshow($params=""){
 function eyeCalendar_on_changeDate($params=""){
 	$date = $params['date'][0];
 	$date = $date / 1000;//MiliSecons to seconds
-		
+
 	$dayFrom = $GLOBALS['weekPlanner']->dayFrom;
 	$dayEven = $GLOBALS['weekPlanner']->dayEven;
 //If is a day view
 	if($dayEven - $dayFrom == 1){
 		$width = $GLOBALS['weekPlanner']->width;
 		$GLOBALS['weekPlanner']->killme();
-	
+
 		$dateInfo = getdate($date);
 		$dayFrom = $dateInfo['wday'];
 		$dayEven = $dateInfo['wday'];
-		$num = reqLib('eyeCalendar','getCurrentCalendar');
+		$num = eyeCalendar('getCurrentCalendar');
 		$info = eyeCalendar('getConfig');
 		$info = $info['eyeCalendar'][0];
 		$myWeekPlanner = new WeekPlanner(array(
@@ -635,10 +634,10 @@ function eyeCalendar_on_changeDate($params=""){
 			'selectedCalendar'=>$num
 		));
 		$myWeekPlanner->show();
-		$calendars = reqLib('eyeCalendar','getCalendarsInfo');
+		$calendars = eyeCalendar('getCalendarsInfo');
 		$myWeekPlanner->addCalendars($calendars);
 		$myDays = $myWeekPlanner->getDays();
-		$notes = reqLib('eyeCalendar','getWeekNotes',array($myDays));
+		$notes = eyeCalendar('getWeekNotes',array($myDays));
 		$myWeekPlanner->addNotes($notes);
 		$myWeekPlanner->goToFirstNote();
 		return true;
@@ -647,7 +646,7 @@ function eyeCalendar_on_changeDate($params=""){
 	$GLOBALS['weekPlanner']->cleanNotes();
 	$GLOBALS['weekPlanner']->updateDate($date);
 	$days = $GLOBALS['weekPlanner']->getDays();
-	$notes = reqLib('eyeCalendar','getWeekNotes',array($days));
+	$notes = eyeCalendar('getWeekNotes',array($days));
 	if(is_array($notes)){
 		$GLOBALS['weekPlanner']->addNotes($notes);
 	}
@@ -656,14 +655,14 @@ function eyeCalendar_on_changeDate($params=""){
 function eyeCalendar_on_calendarShow($params=""){
 	$status = $params['showed'][0];
 	$num = $params['calendar'][0];
-	
-	if(!reqLib('eyeCalendar','setCalendarsInfo',array($num,$status))){
+
+	if(!eyeCalendar('setCalendarsInfo',array($num,$status))){
 		return false;
 	}
 	return true;
 }
 function eyeCalendar_on_addCalendar(){
-	$myCalendars = reqLib('eyeCalendar','getCalendarsInfo');
+	$myCalendars = eyeCalendar('getCalendarsInfo');
 	eyex('messageBox',array(
 		'content' => 'Please specify the calendar name:',
 		'type' => 3,
@@ -683,13 +682,13 @@ function eyeCalendar_on_addCalendar(){
 }
 
 function eyeCalendar_on_createCalendar($params=""){
-	$myCalendars = reqLib('eyeCalendar','getCalendarsInfo');
+	$myCalendars = eyeCalendar('getCalendarsInfo');
 	if(!$params['calendarName'][0]){
 		eyeX('messageBox',array('content'=>"Please type a name for the calendar"));
 		return false;
 	}
 	$name = $params['calendarName'][0];
-	$info = reqLib('eyeCalendar','createCalendar',array($name));
+	$info = eyeCalendar('createCalendar',array($name));
 	if(!$info){
 		eyeX('messageBox',array('content'=>"A calendar with the same name already exists!"));
 		return false;
@@ -709,7 +708,7 @@ function eyeCalendar_on_selectCalendar($params){
 	if(!$params['calendar']){
 		return false;
 	}
-	reqLib('eyeCalendar','setCurrentCalendar',array($params['calendar'][0]));
+	eyeCalendar('setCurrentCalendar',array($params['calendar'][0]));
 }
 
 function eyeCalendar_on_hideLeftPanel(){
@@ -717,7 +716,7 @@ function eyeCalendar_on_hideLeftPanel(){
 	$hidden = true;
 	if(!$GLOBALS['hiddenPanel']){
 		$myHidden = new Hidden(array('name'=>'hiddenPanel','father'=>'eyeApps','text'=>true));
-		reqLib('eyeWidgets','serialize',array($myHidden));
+		eyeWidgets('serialize',array($myHidden));
 	}else{
 		if($GLOBALS['hiddenPanel']->text == true){
 			$GLOBALS['hiddenPanel']->setText(false);
@@ -727,16 +726,16 @@ function eyeCalendar_on_hideLeftPanel(){
 			$hidden = true;
 		}
 	}
-		
+
 	//Hide panel
 	if($hidden == true){
 		if(!$GLOBALS['verticalX']){
 			$myHidden = new Hidden(array('name'=>'verticalX','father'=>'eyeApps','text'=>$GLOBALS['verticalPanel']->x));
-			reqLib('eyeWidgets','serialize',array($myHidden));
+			eyeWidgets('serialize',array($myHidden));
 		}else{
 			$GLOBALS['verticalX']->setText($GLOBALS['verticalPanel']->x);
 		}
-		
+
 		$GLOBALS['calendarsContainer']->hide();
 		$GLOBALS['calendarWidget']->hide();
 		$GLOBALS['horizPanel']->hide();
@@ -745,9 +744,9 @@ function eyeCalendar_on_hideLeftPanel(){
 		$verticalX = $GLOBALS['verticalPanel']->x;
 		$GLOBALS['verticalPanel']->setX(0);
 		//Expanding calendar
-		
+
 		$width = $GLOBALS['calendarContainer']->width + $GLOBALS['verticalPanel']->width + $verticalX;
-		
+
 		$GLOBALS['calendarContainer']->width = $width;
 		$GLOBALS['calendarContainer']->setWidth($width);
 		$GLOBALS['calendarContainer']->setX($GLOBALS['verticalPanel']->width);
@@ -762,17 +761,17 @@ function eyeCalendar_on_hideLeftPanel(){
 		$GLOBALS['verticalPanel']->setX($verticalX);
 		//Reusing  the var because we don't need it anymore
 		$width = $GLOBALS['calendarContainer']->width - $verticalX -$GLOBALS['verticalPanel']->width;
-		
+
 		$calendarContainerX = $verticalX + $GLOBALS['verticalPanel']->width;
 		$GLOBALS['calendarContainer']->width = $width;
 		$GLOBALS['calendarContainer']->setWidth($width);
 		$GLOBALS['calendarContainer']->setX($calendarContainerX+5);
-		
+
 		$width -= 48;
 		$width -= 17;
 		$GLOBALS['weekPlanner']->width  = $width;
 		$GLOBALS['weekPlanner']->setWidth($width);
-				
+
 		$GLOBALS['calendarsContainer']->unhide();
 		$GLOBALS['calendarWidget']->unhide();
 		$GLOBALS['horizPanel']->unhide();

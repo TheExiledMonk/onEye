@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -27,9 +27,9 @@
 
 class Imagebox {
 	//pid controller
-	
+
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
@@ -40,9 +40,9 @@ class Imagebox {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	var $showed = 0;
-	
+
 	//custom widget options
 	var $url;
 	var $visible;
@@ -50,16 +50,16 @@ class Imagebox {
 	var $width;
 	var $height;
 	var $myClass;
-	
+
 	//friends abstraction
 	var $friends="''";
-	
+
 	//event handling
 	var $disableMsg = 0;
 	var $signal;
-	
+
 	//constructor
-	function Imagebox($params) {	
+	function Imagebox($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
@@ -91,7 +91,7 @@ class Imagebox {
 			}
 		}
 	}
-	
+
 	//widget show method, send a createWidget message
 	function show($noserialize=1) {
 		$widgetsparams = array(
@@ -105,8 +105,8 @@ class Imagebox {
 			'disableMsg' => $this->disableMsg,
 			'sync' => $this->friends
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myButton = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -118,95 +118,95 @@ class Imagebox {
 			'params' => $widgetsparams,
 			'center' => $this->cent
 		);
-		service('eyex','createWidget',$myButton);
+		eyex('createWidget',$myButton);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
-	
-		
+
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args='') {
 		global $myPid;
 		$myname = $myPid.'_'.$this->name.'_Container';
 		if($this->showed == 0) {
 			$this->show();
-		}		
-		service('eyex','addEvent',array('name' => $myname, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		}
+		eyex('addEvent',array('name' => $myname, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
-	
+
 	//friends handler 
 	function addFriend($friend) {
 		if(method_exists($friend,'getSyncString')) {
 			if($this->friends == "''") {
-				$this->friends = $friend->getSyncString();				
+				$this->friends = $friend->getSyncString();
 			} else {
 				$this->friends .= '+'.$friend->getSyncString();
 			}
 		}
 	}
-	
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	//set properties functions.
-	
+
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
-	
+
 	function setUrl($newUrl) {
 		global $myPid;
 		$this->url = $newUrl;
 		$tokens[] = $this->url;
-		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src= %s ','tokens'=>$tokens));
+		eyex('runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src= %s ','tokens'=>$tokens));
 	}
-	
+
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 	}
-	
+
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
-	
+
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }

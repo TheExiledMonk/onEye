@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -93,7 +93,7 @@ class Textarea {
 				$langCode = utf8_substr($language, 0, 2);
 			}
 		}
-		
+
 		$widgetsparams = array(
 			'enabled' => $this->enabled,
 			'visible' => $this->visible,
@@ -107,7 +107,7 @@ class Textarea {
 			'cssClass' => $this->cssClass,
 			'language' => $langCode
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
+		$widgetsparams = mmap('array2js',array($widgetsparams));
 
 		$myTextarea = array(
 			'name' => $this->name,
@@ -120,10 +120,10 @@ class Textarea {
 			'widgetname' => 'Textarea',
 			'params' => $widgetsparams
 		);
-		service('eyex','createWidget',$myTextarea);
+		eyex('createWidget',$myTextarea);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 		if(!empty($this->text)) {
 			$this->setText($this->text);
@@ -137,14 +137,14 @@ class Textarea {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
@@ -154,9 +154,9 @@ class Textarea {
 		global $myPid;
 		$this->enabled=0;
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").disabled=true'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").disabled=true'));
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=true'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=true'));
 		}
 	}
 
@@ -164,9 +164,9 @@ class Textarea {
 		global $myPid;
 		$this->enabled=1;
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").disabled=false'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").disabled=false'));
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
 		}
 	}
 
@@ -174,9 +174,9 @@ class Textarea {
 		global $myPid;
 		$this->visible = 0;
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.display="none"'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.display="none"'));
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 		}
 	}
 
@@ -184,9 +184,9 @@ class Textarea {
 		global $myPid;
 		$this->visible = 1;
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.display="block"'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.display="block"'));
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 		}
 	}
 
@@ -196,14 +196,14 @@ class Textarea {
 		$content = base64_encode($content);
 		$totalContent = $content;
 		if($this->code == 0) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").value=""'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").value=""'));
 			while(utf8_strlen($totalContent) > 2000) {
 				$subContent = utf8_substr($totalContent,0,2000);
 				$totalContent = utf8_substr($totalContent,2000);
-				service('eyex','concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name));
+				eyex('concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name));
 			}
 			if($totalContent) {
-				service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name));
+				eyex('concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name));
 			}
 			$name = $myPid.'_'.$this->name;
 			if($this->rich != 0) {
@@ -211,23 +211,23 @@ class Textarea {
 			}
 		} else {
 			$name = $myPid.'_'.$this->name;
-			service('eyex','rawjs',array('js' => 'cp_'.$name.'.setCode("")'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp").value=""'));
+			eyex('rawjs',array('js' => 'cp_'.$name.'.setCode("")'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp").value=""'));
 			while(utf8_strlen($totalContent) > 2000) {
 				$subContent = utf8_substr($totalContent,0,2000);
 				$totalContent = utf8_substr($totalContent,2000);
-				service('eyex','concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name.'_cp'));
+				eyex('concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name.'_cp'));
 			}
 			if($totalContent) {
-				service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name.'_cp'));
+				eyex('concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name.'_cp'));
 			}
-			service('eyex','rawjs',array('js' => 'cp_'.$name.'.setCode(document.getElementById("'.$myPid.'_'.$this->name.'_cp").value)'));
+			eyex('rawjs',array('js' => 'cp_'.$name.'.setCode(document.getElementById("'.$myPid.'_'.$this->name.'_cp").value)'));
 		}
 	}
 
 	function setRichStatusText($text) {
 		global $myPid;
-		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_path_row").innerHTML = %s;','tokens'=>array($text)));
+		eyex('runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_path_row").innerHTML = %s;','tokens'=>array($text)));
 	}
 
 	function setValue($content) {
@@ -236,7 +236,7 @@ class Textarea {
 
 	function focus() {
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
 	}
 
 //friend functions
@@ -256,21 +256,22 @@ class Textarea {
 		global $myPid;
 		$this->width = intval($width);
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.width="'.$this->width.'px";'));
 		} elseif($this->rich != 0) {
 			$this->width += 17;
 			if($this->rich == 2 && $noshadow == 0) {
-				service('eyex','rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));			
+				eyex('rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));
 			}
-			service('eyex','rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_tbl").style.width="'.$this->width.'px";'));
-			service('eyex','rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));
+			eyex('rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_tbl").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));
 			if($this->rich == 2 && $noshadow == 0) {
-				service('eyex','rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));		
+				eyex('rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));
 			}
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 		}
 	}
 
@@ -278,20 +279,21 @@ class Textarea {
 		global $myPid;
 		$this->height = intval($height);
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.height="'.$this->height.'px";'));
 		} elseif($this->rich != 0) {
 			$this->height += 110;
 			if($this->rich == 2 && $noshadow == 0) {
-				service('eyex','rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));			
+				eyex('rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));
 			}
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_tbl").style.height="'.$this->height.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_ifr").style.height="'.($this->height - 127).'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_tbl").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_ifr").style.height="'.($this->height - 127).'px";'));
 			if($this->rich == 2 && $noshadow == 0) {
-				service('eyex','rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));		
+				eyex('rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));
 			}
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 		}
 	}
 
@@ -299,9 +301,9 @@ class Textarea {
 		global $myPid;
 		$this->x = intval($x);
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.left="'.$this->x.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.left="'.$this->x.'px";'));
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 		}
 	}
 
@@ -309,10 +311,10 @@ class Textarea {
 		global $myPid;
 		$this->y = intval($y);
 		if($this->code == 1) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.top="'.$this->y.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.top="'.$this->y.'px";'));
 
 		} else {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 		}
 	}
 
@@ -328,7 +330,7 @@ class Textarea {
 		} else {
 			$name = $this->name.'_Container';
 		}
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -58,7 +58,7 @@ $myLabel = new Label(array(
 	'father' => $systemTab,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Systemname'
+	'text' => 'System Name'
 ));
 $myLabel->show();
 $myTextbox_hostname = new Textbox(array(
@@ -76,7 +76,7 @@ $myLabel = new Label(array(
 	'father' => $systemTab,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Default language'
+	'text' => 'Default Language'
 ));
 $myLabel->show();
 $mySelect_language = new Select(array(
@@ -114,7 +114,7 @@ $myLabel = new Label(array(
 	'father' => $systemTab,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'User quota'
+	'text' => 'User Quota'
 ));
 $myLabel->show();
 $quota = DEFAULT_QUOTA;
@@ -178,7 +178,7 @@ $myLabel = new Label(array(
 	'father' => $systemTab,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Create thumbnails'
+	'text' => 'Create Thumbnails'
 ));
 $myLabel->show();
 $myCheckbox_thumbnails = new Checkbox(array(
@@ -197,7 +197,7 @@ $myButton = new Button(array(
 	'father' => $systemTab,
 	'x' => 40,
 	'y' => $ContentY,
-	'caption' => 'Save changes',
+	'caption' => 'Save Changes',
 	'signal' => 'system_system'
 ));
 $myButton->addFriend($myTextbox_hostname);
@@ -275,7 +275,7 @@ $myButton = new Button(array(
 	'father' => $permissionsTab,
 	'x' => 40,
 	'y' => $ContentY,
-	'caption' => 'Save changes',
+	'caption' => 'Save Changes',
 	'signal' => 'system_permissions'
 ));
 $myButton->addFriend($myCheckbox_registration);
@@ -408,10 +408,10 @@ $myButton->show();
 $ContentY = 20;
 if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) {
 	$title = 'Configure the office support on a Windows server';
-	$text = i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtowindows\',\'\');" style="cursor: pointer; font-style: italic;">wiki.eyeos.org</span>')));
+	$text = i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtowindows\',\'\');" style="cursor: pointer; font-style: italic;">Help Console</span>')));
 } else {
 	$title = 'Configure the office support on a Linux server';
-	$text = i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtolinux\',\'\');" style="cursor: pointer; font-style: italic;">wiki.eyeos.org</span>')));
+	$text = i18n('translate',array('Please follow the instructions at %s.',array('<span onclick="sendMsg(' . $checknum . ',\'system_office_howtolinux\',\'\');" style="cursor: pointer; font-style: italic;">Help Console</span>')));
 }
 // Configure the office support
 $myLabel = new Label(array(
@@ -460,7 +460,7 @@ if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) {
 		'father' => $officeTab,
 		'x' => 40,
 		'y' => $ContentY,
-		'caption' => 'Save changes',
+		'caption' => 'Save Changes',
 		'signal' => 'system_office'
 	));
 	$myButton->addFriend($myTextbox);
@@ -477,7 +477,7 @@ if ($currentUser == REAL_ROOTUSER) {
 		'father' => $uninstallTab,
 		'x' => 20,
 		'y' => $ContentY + 3,
-		'text' => 'Used version'
+		'text' => 'Used Version'
 	));
 	$myLabel->show();
 	$myLabel = new Label(array(
@@ -495,7 +495,7 @@ if ($currentUser == REAL_ROOTUSER) {
 		'father' => $uninstallTab,
 		'x' => 20,
 		'y' => $ContentY + 3,
-		'text' => 'Root password'
+		'text' => 'Root Password'
 	));
 	$myLabel->show();
 	$myTextbox_password = new Textbox(array(

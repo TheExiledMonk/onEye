@@ -5,7 +5,7 @@ html, body {
 
 .eyeDockText_center {
 	background: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=2EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/center_ie6.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/center_ie6.png', sizingMethod='scale');
 	height: 31px;
 	left: 0px;
 	position: absolute;

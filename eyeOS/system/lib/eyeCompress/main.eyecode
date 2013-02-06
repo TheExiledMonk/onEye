@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,18 +22,18 @@
 */
 
 function lib_eyeCompress_extractFile($params=null){
-	
+
 	if($params == null || count($params) < 3){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$file = $params[0];
 	$dirToExtract = $params[1];
 	$mode = $params[2];	//The mode parser will be do in pclTar function
-	
-	if(!service('vfs','checkPermissions',array($dirToExtract))) {
-		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+
+	if(!vfs('checkPermissions',array($dirToExtract))) {
+		errorCodes('setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
 		return false;
 	}
     return PclTarExtract($file,$dirToExtract,'',$mode);

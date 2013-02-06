@@ -30,7 +30,7 @@ Language.snippets = [
 	{ input : 'input', output : '<input name="$0" id="" type="" value="" />' },
 	{ input : 'label', output : '<label for="$0"></label>' },
 	{ input : 'legend', output : '<legend>\n\t$0\n</legend>' },
-	{ input : 'link', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },		
+	{ input : 'link', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },
 	{ input : 'base', output : '<base href="$0" />' }, 
 	{ input : 'body', output : '<body>\n\t$0\n</body>' }, 
 	{ input : 'css', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },
@@ -47,13 +47,13 @@ Language.snippets = [
 	{ input : 'table', output : '<table border="$0" cellspacing="" cellpadding="">\n\t<tr><th></th></tr>\n\t<tr><td></td></tr>\n</table>' },
 	{ input : 'style', output : '<style type="text/css" media="screen">\n\t$0\n</style>' }
 ]
-	
+
 Language.complete = [
 	{ input : '\'',output : '\'$0\'' },
 	{ input : '"', output : '"$0"' },
 	{ input : '(', output : '\($0\)' },
 	{ input : '[', output : '\[$0\]' },
-	{ input : '{', output : '{\n\t$0\n}' }		
+	{ input : '{', output : '{\n\t$0\n}' }
 ]
 
 Language.shortcuts = []

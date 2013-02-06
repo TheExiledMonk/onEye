@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -2051,7 +2051,7 @@ function lib_eyeURL_getRawFile($params) {
 	if(!$url) {
 		return false;
 	}
-	
+
 	preg_match ('/^\\s*(?:\\w+:\\/{2})?(.*?)(:\\d+)?(\\/.*)$/',$url, $matches);
 	$host = $matches[1];
 	$port = $matches[2];
@@ -2060,7 +2060,7 @@ function lib_eyeURL_getRawFile($params) {
 	if(!$port) {
 		$port = 80;
 	}
-	
+
 	if(!$path) {
 		$path = '/';
 	}
@@ -2107,10 +2107,10 @@ function lib_eyeURL_doRequest($params) {
 	if(!isset($params['host']) || !isset($params['path'])) {
 		return false; //TODO: ERROR HANDLER
 	}
-	
+
 	$host = $params['host'];
 	$path = $params['path'];
-	
+
 	$data = "";
 	if(isset($params['data']) && is_array($params['data'])) {
 		foreach($params['data'] as $key=>$value) {
@@ -2118,59 +2118,59 @@ function lib_eyeURL_doRequest($params) {
 		}
 		$data = utf8_substr($data,0,utf8_strlen($data)-1);
 	}
-	
+
 	if(!isset($params['port'])) {
 		$port = 80;
 	} else {
 		$port = $params['port'];
 	}
-	
+
 	if(!isset($params['maxsize'])) {
 		$max_size = MAX_READ_SIZE;
 	} else {
 		$max_size = intval($params['maxsize']);
 	}
-	
+
 	if($max_size < 0) {
 		$max_size = MAX_READ_SIZE;
 	}
-	
+
 	if(!isset($params['method'])) {
 		$method = 'GET';
 	} else {
 		$method = utf8_strtoupper($params['method']);
 	}
-	
+
 	if ($method == "GET") {
 		if(!empty($data)) {
 		$path.= '?'.$data;
 		}
 	}   
-	
+
 	$filePointer = fsockopen($host, 80, $errorNumber, $errorString);
-	
+
 	if (!$filePointer){
 		return false; //TODO: ERROR HANDLER
 	}
-	
+
 	$requestHeader = $method." ".$path."  HTTP/1.1\r\n";
 	$requestHeader.= "Host: ".$host."\r\n";
 	$requestHeader.= "User-Agent: ".EYEOS_USER_AGENT."\r\n";
 	$requestHeader.= "Accept-Encoding: \r\n";
-	
+
 	if ($method == "POST") {
 		$requestHeader.= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$requestHeader.= "Content-Length: ".utf8_strlen($data)."\r\n";
 	}
-	
+
 	$requestHeader.= "Connection: close\r\n\r\n";
-	
+
 	if ($method == "POST") {
 		$requestHeader.= $data;
 	}           
-	
+
 	fwrite($filePointer, $requestHeader);
-	
+
 	$responseHeader = '';
 	$responseContent = '';
 	$counter = 0;
@@ -2181,12 +2181,12 @@ function lib_eyeURL_doRequest($params) {
 		}
 		$counter++;
 	} while (!preg_match('/\\r\\n\\r\\n$/', $responseHeader));
-	
+
 	$errorCodes = explode(" ",$responseHeader);
 	if($errorCodes[1] != "200") {
 		return false;
 	}
-	
+
 	while (!feof($filePointer)) {
 		if($counter > $max_size) {
 			return $responseContent;
@@ -2194,7 +2194,7 @@ function lib_eyeURL_doRequest($params) {
 		$responseContent.= fgets($filePointer, 128);
 		$counter += 128;
 	}
-	
+
 	return chop($responseContent);
 }
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -43,7 +43,7 @@ function eyeDocs_on_Open($params=null) {
 function eyeDocs_on_SelectFileOpen($params=null) {
 	$file = $params['arg'][0];
 	if($file) {
-		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
+		$file = um('getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		$content = eyeDocs_openFile($file);
 		$GLOBALS['fileContent']->setText($content);
 		eyeDocs_updateServerContent();
@@ -84,7 +84,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 		if(empty($params['fileType'][0])){
 			$params['fileType'][0] = "*.eyedoc";
 		}
-		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
+		$file = um('getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		//check if the extension is present
 		if(utf8_strtolower(utf8_substr($file,utf8_strlen($file)-utf8_strlen($params['fileType'][0])+1)) != utf8_strtolower(utf8_substr($params['fileType'][0],1))) {
 			$file .= utf8_substr($params['fileType'][0],1);
@@ -128,11 +128,11 @@ function eyeDocs_on_Resize($params=null) {
 	//save the new size into the window object
 	$GLOBALS['eyeDocsWND']->width = $width;
 	$GLOBALS['eyeDocsWND']->height = $height;
-	
+
 	//calculate the new size for the textarea
 	$width = $width - 19;
 	$height = $height - 134;
-	
+
 	//resize the textarea
 	//the second argument is to disable the shadow when resizing
 	$GLOBALS['fileContent']->setHeight($height,1); 
@@ -208,13 +208,13 @@ function eyeDocs_on_yDelete(){
 
 function eyeDocs_on_updateContent($params=null) {
 	$content = $GLOBALS['fileContent']->text;
-	
+
 	$myHiddenMD5 = new Hidden(array(
 		'name'=>'fileMD5',
 		'father'=>'eyeApps',
 		'text'=>md5($content)
 	));
-	reqLib('eyeWidgets','serialize',array($myHiddenMD5));
+	eyeWidgets('serialize',array($myHiddenMD5));
 }
 
 function eyeDocs_on_SelectFileSaveClose($params=null) {
@@ -223,7 +223,7 @@ function eyeDocs_on_SelectFileSaveClose($params=null) {
 		if(empty($params['fileType'][0])){
 			$params['fileType'][0] = "*.eyedoc";
 		}
-		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
+		$file = um('getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		//check if the extension is present
 		if(utf8_strtolower(utf8_substr($file,utf8_strlen($file)-utf8_strlen($params['fileType'][0])+1)) != utf8_strtolower(utf8_substr($params['fileType'][0],1))) {
 			$file .= utf8_substr($params['fileType'][0],1);

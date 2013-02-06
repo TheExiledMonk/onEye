@@ -22,7 +22,7 @@ Language.syntax = [ // XSL
 	},{
 	input : /(&lt;script.*?&gt;)(.*?)(&lt;\/script&gt;)/g,
 	output : '<strong>$1</strong><tt>$2</tt><strong>$3</strong>' // script tags
-	},{	
+	},{
 	input : /(&lt;xsl.*?&gt;|&lt;\/xsl.*?&gt;)/g,
 	output : '<xsl>$1</xsl>' // xsl
 	},{
@@ -54,7 +54,7 @@ Language.snippets = [
 	{input : 'input', output : '<input name="$0" id="" type="" value="" />' },
 	{input : 'label', output : '<label for="$0"></label>' },
 	{input : 'legend', output : '<legend>\n\t$0\n</legend>' },
-	{input : 'link', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },		
+	{input : 'link', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },
 	{input : 'base', output : '<base href="$0" />' }, 
 	{input : 'body', output : '<body>\n\t$0\n</body>' }, 
 	{input : 'css', output : '<link rel="stylesheet" href="$0" type="text/css" media="screen" charset="utf-8" />' },
@@ -91,13 +91,13 @@ Language.snippets = [
 	{input : 'xsl:call-template', output : '<xsl:call-template name="$0">' }
 
 ];
-	
+
 Language.complete = [ // Auto complete only for 1 character
 	{input : '\'',output : '\'$0\'' },
 	{input : '"', output : '"$0"' },
 	{input : '(', output : '\($0\)' },
 	{input : '[', output : '\[$0\]' },
-	{input : '{', output : '{\n\t$0\n}' }		
+	{input : '{', output : '{\n\t$0\n}' }
 ];
 
 Language.shortcuts = [];

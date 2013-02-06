@@ -176,9 +176,6 @@
 
 				case "backcolor":
 					return this._createBackColorMenu();
-
-				case "zoomselect": // eyeOS
-					return this._createZoomSelect();
 			}
 
 			if ((cd = this.controls[n]))
@@ -306,23 +303,6 @@
 				each(t.editor.getParam('theme_advanced_blockformats', t.settings.theme_advanced_blockformats, 'hash'), function(v, k) {
 					c.add(t.editor.translate(k != v ? k : fmts[v]), v, {'class' : 'mce_formatPreview mce_' + v});
 				});
-			}
-
-			return c;
-		},
-
-		_createZoomSelect : function() { // eyeOS
-			var c, t = this, ed = t.editor;
-
-			c = ed.controlManager.createListBox('zoomselect', {title : 'zoom', cmd : 'SelectZoom'});
-			if (c) {
-				c.add('50%', '50', {style : 'font-size:8px;'});
-				c.add('75%', '75', {style : 'font-size:9px;'});
-				c.add('100%', '100', {style : 'font-size:10px;'});
-				c.add('125%', '125', {style : 'font-size:11px;'});
-				c.add('150%', '150', {style : 'font-size:12px;'});
-				c.add('175%', '175', {style : 'font-size:13px;'});
-				c.add('200%', '200', {style : 'font-size:14px;'});
 			}
 
 			return c;
@@ -1135,10 +1115,8 @@
 			var ed = this.editor;
 
 			ed.windowManager.confirm('advanced.newdocument', function(s) {
-				if (s) {
-					sendMsg(ed.checknum,'New',''); // eyeOS
+				if (s)
 					ed.execCommand('mceSetContent', false, '');
-				}
 			});
 		},
 

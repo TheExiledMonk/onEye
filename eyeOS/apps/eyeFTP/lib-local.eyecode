@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -52,7 +52,7 @@ function eyeFTP_emptyLocalFilesTable() {
 		'dblsignal' => 'eyeFTP_localFilesDblClick'
 	));
 	$localFilesTable->show();
-	service('eyex','addEvent',array(
+	eyex('addEvent',array(
 		'name' => $myPid.'_eyeFTP_localFiles_TAB_Container',
 		'action' => 'sendMsg('.$checknum.',"eyeFTP_localFilesClick","")',
 		'event' => 'onclick',
@@ -87,17 +87,17 @@ function eyeFTP_browseLocal($path = '/') {
 	foreach($filesData as $id => $fileInfo) {
 		switch($fileInfo['type']) {
 			case 'd':
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typefolder.png';
+				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/folder.png';
 				$size = ' ';
 				break;
 
 			case 'l':
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typelink.png';
+				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/link.png';
 				$size  = ' ';
 				break;
 
 			default:
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typedefault.png';
+				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/file.png';
 				$size  = $fileInfo['size'];
 		}
 		$GLOBALS['eyeFTP_localFiles_TAB']->addRow(array(
@@ -128,7 +128,7 @@ function eyeFTP_listDir($dir,$addParent=true) {
 
 	$i = 1;
 	$filesData = array();
-	
+
 	if ($addParent) {
 		//add parent entry (..) only if we are not in the root directory
 		if (eyeFTP_resolvePathInUserDir($dir) != '/') {

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,9 +23,8 @@
 
 function eyeDocs_com_fullResized($params = '') {
 	eyeWidgets('updateContent',$params);
-	if($GLOBALS['eyeDocsWND']->fullScreen != 1){
-		return false;
+	if ($GLOBALS['eyeDocsWND']->fullScreen) {
+		$GLOBALS['eyeDocsWND']->listenerResizeFullScreen($params);
 	}
-	$GLOBALS['eyeDocsWND']->listenerResizeFullScreen($params);
 }
 ?>

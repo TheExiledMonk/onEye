@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -35,7 +35,14 @@ function eyeControl_on_eyedesk_new($params = '') {
 		'win_removepid' => 0,
 		'win_style' => TITLE + CLOSE
 	));
-	foreach (vfs('real_getDirContent', array(EYE_ROOT . '/' . APP_DIR . '/')) as $application) {
+
+	global $currentUser;
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	$applicationsList = vfs('real_getDirContent', array(EYE_ROOT . '/' . APP_DIR . '/'));
+	$currentUser = $oldUser;
+
+	foreach ($applicationsList as $application) {
 		if (is_dir($application)) {
 			$application = utf8_basename($application);
 			if ($application != 'share') {

@@ -1,5 +1,78 @@
 .activeWindow, .eyeWindowTitle, .inactiveWindow {
 	background: url();
+	background-color: #8cb4de;
+	border-bottom: 1px solid #80b5ff;
+	border-left: 0px;
+	border-right: 0px;
+	border-top: 1px solid #80b5ff;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png', sizingMethod='scale');
+	height: 23px;
+	left: 5px;
+	right: 5px;
+	top: 0;
+	width: expression(this.parentNode.offsetWidth - 0 - 0 - 0);
+}
+
+.activeWindow_center, .inactiveWindow_center, .eyeWindowTitle_center {
+	height: 4px;
+	top: 0;
+	width: 100%;
+	z-index: 1;
+}
+
+.activeWindow_border_left, .activeWindow_border_right, .inactiveWindow_border_left, .inactiveWindow_border_right, .eyeWindowTitle_border_left, .eyeWindowTitle_border_right {
+	height: 22px;
+	top: 0;
+	width: 5px;
+	z-index: 2;
+}
+
+.activeWindow_border_left{
+	background: url();
+	background-repeat: no-repeat;
+	border-bottom: 1px solid #80b5ff;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_a.png', sizingMethod='scale');
+	height: 23px;
+	left: -5px;
+	top: -1px;
+}
+
+.activeWindow_border_right{
+	background: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_a.png', sizingMethod='scale');
+	background-repeat: no-repeat;
+	border-bottom: 1px solid #80b5ff;
+	height: 23px;
+	right: -5px;
+	top: -1px;
+}
+
+.blockbarItem,.blockbarItem_right, .blockbarItemPress, .blockbarItemPress_right {
+	border: 1px solid #eeeeee;
+	cursor: pointer;
+	margin-top: 5px;
+	padding: 2px 4px 3px;
+	text-align: center;
+	width: auto;
+}
+
+.blockbarItem:hover, .blockbarItem_right:hover, .blockbarItemPress, .blockbarItemPress_right {
+	border-style: solid;
+	border-width: 1px;
+}
+
+.blockbarItem:hover, .blockbarItem_right:hover {
+	background-color: #f1f1f1;
+	border-color:#80b5ff;
+}
+
+.blockbarItemPress, .blockbarItemPress_right {
+	background-color: #f1f1f1;
+	border-color: #dddddd;
+}
+/*
+.activeWindow, .eyeWindowTitle, .inactiveWindow {
+	background: url();
 	border: 1px solid #214e79;
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png', sizingMethod='scale');
 	height: 23px;
@@ -12,6 +85,10 @@
 
 .activeWindow_border_left {} 
 .activeWindow_border_right {}
+*/
+.eyeCheckbox, .eyeCheckbox:hover, .eyeRadio input , .eyeRadio:hover input {
+	border: 0px;
+}
 
 .eyeBarItemsText {
 	width: 155px;
@@ -41,191 +118,35 @@
 
 .eyeButtonClass {
 	background-image: url(); 
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=2EXTERN_CACHE_VERSION&theme=newdefault&extern=images/widgets/buttonbg.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=newdefault&extern=images/widgets/buttonbg.png', sizingMethod='scale');
 }
 
-.eyeClock, .minimizedApps, .minimizedAppsRight {
-	bottom: -2px;
-}
+
 
 .eyeDesk_iconsOver, .eyeFiles_icons {
 	border: 0;
 }
+/*
+*
+*/
+/* all */
 
-.eyeDesk_miniCalendar {
-	bottom: 29px;
-}
-
-.eyeDock_center {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/center.png', sizingMethod='scale');
-	width: expression(this.parentNode.offsetWidth - 18 - 18);
-}
-
-.eyeDock_left {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/left.png', sizingMethod='scale');
-}
-
-.eyeDock_right {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/right.png', sizingMethod='scale');
-	right: -1px;
-}
-
-.eyeDockMenuBottomCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-	bottom: -13px;
-}
-
-.eyeDockMenuBottonLeft {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/bottom_left.png', sizingMethod='scale');
-	bottom: -13px;
-}
-
-.eyeDockMenuBottonRight {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/bottom_right.png', sizingMethod='scale');
-	bottom: -13px;
-}
-
-.eyeDockMenuContent {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-}
-
-.eyeDockMenuIcon:hover {
-	background-color: url();
-	cursor: pointer;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/dockbgover.png', sizingMethod='scale');
-	left: 2px;
-	position: absolute;
-	width: 100%;
-}
-
-.eyeDockMenuLeftCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-}
-
-.eyeDockMenuLine {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/IE/apps/eyeDock/line.png);
-}
-
-.eyeDockMenuRightCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-}
-
-.eyeDockMenuTopCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-	top: -13px;
-}
-
-.eyeDockMenuTopLeft {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/top_left.png', sizingMethod='scale');
-	top: -12px;
-}
-
-.eyeDockMenuTopRight {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/top_right.png', sizingMethod='scale');
-	top: -12px;
-}
-
-.eyeDockText_center, .minimizedAppsLeft {
-	background: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=2EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/center_ie6.png', sizingMethod='scale');
-	height: 31px;
-	left: 0px;
-	position: absolute;
-	top: 0;
-}
-
-.eyeDockTextIcon {
-	border-right:1px solid #353B40;
+.eyeDock_bottom, .eyeDock_left, .eyeDock_right, .eyeDock_top {
 	color: #ffffff;
-	cursor: pointer;
-	font-size: 12px;
-	line-height: 20px;
-	margin-left: 5px;
-	margin-right: 5px;
-	margin-top: 1px;
-	padding-right: 10px;
-}
-
-.eyeDockTextIcon_active {
-	margin-left: -5px;
-	margin-right: 4px;
-	margin-top: -7px;
-	padding-left: 6px;
-	padding-right: 11px;
-	padding-top: 7px;
-}
-
-.eyeDockTextIcon:hover {
-	background: #cccccc;
-	border-right:1px solid transparent;
-	border-left: 1px groove transparent;
-	color: #000000;
-	height: 25px;
-}
-
-.eyeDockTextIcon_active {
-	background: #dddddd;
-	border-right:1px solid #ffffff;
-	border-left: 1px groove #ffffff;
-	cursor: pointer;
-	font-size: 12px;
-	height: 35px !important;
-	line-height: 20px;
-}
-
-.eyeDockTextMenu {
-	display: none;
+	font-weight: bold;
 	position: absolute;
-	top: 36px;
-	z-index: 10000;
+	text-shadow: 0px 0px 0px;
+	white-space: nowrap;
+	left:0px;right:0px;
+	width:1000px;
+	height:32px !important;
+	float:none;
+	width: expression(this.parentNode.offsetWidth - 0 - 0 - 0);
 }
 
-.eyeDockTextMenuContent {
-	height: 110%;
-	left: -13px;
-}
-
-.eyeDockTextMenuIcon {
-	height: 29px;
-	left: 10px;
-	padding-left: 3px;
-	padding-right: 5px;
-	padding-top:3px;
-	position: absolute;
-	right: 10px;
-	width: 93%
-}
-
-.eyeListbox_txt, .eyeWindowOnBar_Container, .eyeWindowOnBar_Off, .eyeWindowOnBar_On, .eyeWindowOnBar_text {
-	display: inline;
-}
-
-.eyeMenu {
-	bottom: 30px;
-}
-
-.eyeMenuButton {
-	bottom: 18px;
-}
-
-.eyeMenu_bot {
-	background: #dddddd;
-	border-left: 2px groove #ffffff;
-	filter:alpha(opacity=90);
-	height: 15px;
-}
+/*
+*
+*/
 
 .eyeMessageBoxText {
 	width: 280px !important;
@@ -243,7 +164,12 @@
 
 .eyeWindowCloseButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/close.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/close_x.png', sizingMethod='crop');
+}
+
+.eyeWindowContent, .eyeWindowMainDrag {
+	background: #ffffff repeat-x scroll bottom;
+	border-color: #80b5ff; border-style: solid; border-width: 0px 1px 1px;
 }
 
 .eyeWindowContent {
@@ -256,22 +182,22 @@
 	width: expression(this.parentNode.offsetWidth) - 2;
 }
 
+.eyeWindowMainDrag {
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/eyefilesbg.png', sizingMethod='crop');
+}
+
 .eyeWindowMaxButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/max.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/max_x.png', sizingMethod='crop');
 	padding-right: 31px;
 	right: 100px;
 }
 
 .eyeWindowMinimizeButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min_x.png', sizingMethod='crop');
 	padding-right: 37px;
-}
-
-.eyeWindowOnBar_Off, .eyeWindowOnBar_On {
-	height: 28px;
-	width: 157px;
 }
 
 .eyeWindowResizeButton {
@@ -282,14 +208,15 @@
 .eyeWindowTitle {/*look at .activeWindow*/}
 
 .eyeWindowTitle_text {
-	color: #ffffff;
-	cursor: default;
+	background: transparent url('') no-repeat right;
+	cursor: move;
 	font-weight: 600;
-	margin-left: 10px;
-	margin-top: 4px;
+	height: 18px;
+	overflow: hidden;
+	padding: 3px 0px 0 7px;
 	white-space: nowrap;
-	width: 100%;
-	height: 100%;
+	width: auto ;
+	height: 24px !important;
 }
 
 .inactiveWindow{
@@ -298,27 +225,20 @@
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png', sizingMethod='scale');
 }
 
-.minIconLeft {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/left.png', sizingMethod='scale');
+.inactiveWindow_border_left{
+	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_i.png');
+	background-repeat: no-repeat;
+	border-bottom: 1px solid #acacac;
+	left: -5px;
+	top: -1px;
 }
 
-.minIconRight {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/right.png', sizingMethod='scale');
-}
-
-.minimizedApps {
-	width: expression(this.parentNode.offsetWidth - 156);
-}
-
-.minimizedAppsLeft {
-	width: expression(this.parentNode.offsetWidth);
-}
-
-.minimizedAppsRight {
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_bg.png', sizingMethod='scale');
-	width: expression(this.parentNode.offsetWidth);
+.inactiveWindow_border_right{
+	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_i.png');
+	background-repeat: no-repeat;
+	border-bottom: 1px solid #acacac;
+	right: -5px;
+	top: -1px;
 }
 
 .shadowLayer {

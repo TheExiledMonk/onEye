@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,19 +22,19 @@
 */
 
 class Document {
-	
+
 	var $docType;
 	var $name;
-	
+
 	function Document($params) {
 		$this->name=$params['name'];
-		isset($params['docType']) ? $this->docType = $params['docType'] : $this->docType='';	
+		isset($params['docType']) ? $this->docType = $params['docType'] : $this->docType='';
 	}
-	
+
 	function setDocType($docType) {
 		$this->docType = $docType;
 	}
-	
+
 }
 
 ?>

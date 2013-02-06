@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -48,13 +48,13 @@ $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Refresh interval (seconds)'
+	'text' => 'Refresh Interval (seconds)'
 ));
 $myLabel->show();
 $mySelect = new Select(array(
 	'name' => 'eyeControl_eyeboard_select_refresh',
 	'father' => $eyeContainer,
-	'x' => 200,
+	'x' => 320,
 	'y' => $ContentY + 3
 ));
 $mySelect->show();
@@ -85,7 +85,7 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'x' => 50,
 	'y' => $ContentY,
-	'caption' => 'Save changes',
+	'caption' => 'Save Changes',
 	'signal' => 'eyeboard_save'
 ));
 $myButton->addFriend($myCheckbox);

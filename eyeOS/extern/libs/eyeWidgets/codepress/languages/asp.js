@@ -6,9 +6,9 @@
 Language.syntax = [
 // all tags
 	{ input : /(&lt;[^!%|!%@]*?&gt;)/g, output : '<b>$1</b>' }, 
-// style tags	
+// style tags
 	{ input : /(&lt;style.*?&gt;)(.*?)(&lt;\/style&gt;)/g, output : '<em>$1</em><em>$2</em><em>$3</em>' }, 
-// script tags	
+// script tags
 	{ input : /(&lt;script.*?&gt;)(.*?)(&lt;\/script&gt;)/g, output : '<ins>$1</ins><ins>$2</ins><ins>$3</ins>' }, 
 // strings "" and attributes
 	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' }, 
@@ -16,17 +16,17 @@ Language.syntax = [
 	{ input : /\'(.*?)(\'|<br>|<\/P>)/g, output : '<dfn>\'$1$2</dfn>'}, 
 // <%.*
 	{ input : /(&lt;%)/g, output : '<strong>$1' }, 
-// .*%>	
+// .*%>
 	{ input : /(%&gt;)/g, output : '$1</strong>' }, 
-// <%@...%>	
+// <%@...%>
 	{ input : /(&lt;%@)(.+?)(%&gt;)/gi, output : '$1<span>$2</span>$3' }, 
-//Numbers	
+//Numbers
 	{ input : /\b([\d]+)\b/g, output : '<var>$1</var>' }, 
 // Reserved Words 1 (Blue)
 	{ input : /\b(And|As|ByRef|ByVal|Call|Case|Class|Const|Dim|Do|Each|Else|ElseIf|Empty|End|Eqv|Exit|False|For|Function)\b/gi, output : '<a>$1</a>' }, 
 	{ input : /\b(Get|GoTo|If|Imp|In|Is|Let|Loop|Me|Mod|Enum|New|Next|Not|Nothing|Null|On|Option|Or|Private|Public|ReDim|Rem)\b/gi, output : '<a>$1</a>' }, 
 	{ input : /\b(Resume|Select|Set|Stop|Sub|Then|To|True|Until|Wend|While|With|Xor|Execute|Randomize|Erase|ExecuteGlobal|Explicit|step)\b/gi, output : '<a>$1</a>' }, 
-// Reserved Words 2 (Purple)	
+// Reserved Words 2 (Purple)
 	{ input : /\b(Abandon|Abs|AbsolutePage|AbsolutePosition|ActiveCommand|ActiveConnection|ActualSize|AddHeader|AddNew|AppendChunk)\b/gi, output : '<u>$1</u>' }, 
 	{ input : /\b(AppendToLog|Application|Array|Asc|Atn|Attributes|BeginTrans|BinaryRead|BinaryWrite|BOF|Bookmark|Boolean|Buffer|Byte)\b/gi, output : '<u>$1</u>' }, 
 	{ input : /\b(CacheControl|CacheSize|Cancel|CancelBatch|CancelUpdate|CBool|CByte|CCur|CDate|CDbl|Charset|Chr|CInt|Clear)\b/gi, output : '<u>$1</u>' }, 
@@ -106,7 +106,7 @@ Language.complete = [
 	{ input : '"', output : '"$0"' },
 	{ input : '(', output : '\($0\)' },
 	{ input : '[', output : '\[$0\]' },
-	{ input : '{', output : '{\n\t$0\n}' }		
+	{ input : '{', output : '{\n\t$0\n}' }
 ]
 
 Language.shortcuts = [

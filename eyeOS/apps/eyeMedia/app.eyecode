@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,7 +24,7 @@
 function eyeMedia_run($params=null) {
 	global $checknum;
 	global $myPid;
-	
+
 	$wndMediaVault = new Window(array(
 		'name'=>'eyeMedia_WND',
 		'title'=>'Media Player',
@@ -51,35 +51,35 @@ function eyeMedia_run($params=null) {
 		'y'=>65
 	));
 	$conContainer->show();
-	
+
 	$hdnStatus = new Hidden(array(
 		'name'=>'eyeMedia_hdnStatus',
 		'father'=>'eyeMedia_conContainer',
 		'text'=>'null'
 	));
 	$hdnStatus->show();
-	
+
 	$hdnShuffle = new Hidden(array(
 		'name'=>'eyeMedia_hdnShuffle',
 		'father'=>'eyeMedia_conContainer',
 		'text'=>'0'
 	));
 	$hdnShuffle->show();
-	
+
 	$hdnRepeat = new Hidden(array(
 		'name'=>'eyeMedia_hdnRepeat',
 		'father'=>'eyeMedia_conContainer',
 		'text'=>'0'
 	));
 	$hdnRepeat->show();
-	
+
 	$hdnPid = new Hidden(array(
 		'name'=>'eyeMedia_hdnPid',
 		'father'=>'eyeMedia_conContainer',
 		'text'=>$myPid
 	));
 	$hdnPid->show();
-	
+
 	//This is used to store the random number that will be used as a
 	//short URL to fetch the current file.
 	$hdnCurFile = new Hidden(array(
@@ -88,7 +88,7 @@ function eyeMedia_run($params=null) {
 		'text'=>'null'
 	));
 	$hdnCurFile->show();
-	
+
 	/*
 	$btnVolDown = new Button(array(
 		'name'=>'eyeMedia_btnVolDown',
@@ -101,7 +101,7 @@ function eyeMedia_run($params=null) {
 	));
 	$btnVolDown->show();
 	*/
-	
+
 	$txtStatus = new Textbox(array(
 		'name'=>'eyeMedia_txtStatus',
 		'father'=>'eyeMedia_conContainer',
@@ -112,7 +112,7 @@ function eyeMedia_run($params=null) {
 	));
 	$txtStatus->setText('Nothing Playing.');
 	$txtStatus->show();
-	
+
 	$sortypes = array("String");
 	$myHeader = array('Filename');
 	$tblPlaylist = new Sortabletable(array(
@@ -133,28 +133,28 @@ function eyeMedia_run($params=null) {
 	// Fixed in 1.8! :D
 	//$GLOBALS['eyeMedia_tblPlaylist']->setWidth($tblPlaylist->width);
 	//$GLOBALS['eyeMedia_tblPlaylist']->setHeight($tblPlaylist->height);
-	
+
 	$tlbToolbar = new Toolbar(array(
 		'name'=>'eyeMedia_tlbToolbar',
 		'father'=>'eyeMedia_WND_Content'
 	));
 	$tlbToolbar->show();
-	$tlbToolbar->addItem('tlbToolbar_Open_Folder','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/newfolder.png','Add Folder');
-	$tlbToolbar->addItem('tlbToolbar_Add_File','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit_add.png','Add File');
-	$tlbToolbar->addItem('tlbToolbar_Remove_File','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit_remove.png','Remove File', $tblPlaylist);
-	$tlbToolbar->addItem('tlbToolbar_Clear','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/editclear.png','Clear List');
+	$tlbToolbar->addItem('tlbToolbar_Open_Folder','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/newfolder.png','Add Folder');
+	$tlbToolbar->addItem('tlbToolbar_Add_File','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/edit_add.png','Add File');
+	$tlbToolbar->addItem('tlbToolbar_Remove_File','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/edit_remove.png','Remove File', $tblPlaylist);
+	$tlbToolbar->addItem('tlbToolbar_Clear','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/editclear.png','Clear List');
 	$tlbToolbar->addLine();
-	$tlbToolbar->addItem('tlbToolbar_Play','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/1rightarrow.png','Play', $txtStatus);
-	$tlbToolbar->addItem('tlbToolbar_Stop','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/button_cancel.png','Stop', $txtStatus);
-	$tlbToolbar->addItem('tlbToolbar_Previous','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/previous.png','Previous', $tblPlaylist);
-	$tlbToolbar->addItem('tlbToolbar_Next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/next.png','Next', $tblPlaylist);
+	$tlbToolbar->addItem('tlbToolbar_Play','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/1rightarrow.png','Play', $txtStatus);
+	$tlbToolbar->addItem('tlbToolbar_Stop','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/button_cancel.png','Stop', $txtStatus);
+	$tlbToolbar->addItem('tlbToolbar_Previous','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/previous.png','Previous', $tblPlaylist);
+	$tlbToolbar->addItem('tlbToolbar_Next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/next.png','Next', $tblPlaylist);
 	$tlbToolbar->addLine();
-	$tlbToolbar->addItem('tlbToolbar_Repeat','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/refresh.png','Repeat');
-	$tlbToolbar->addItem('tlbToolbar_Shuffle','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit-undo.png','Shuffle');
-	$tlbToolbar->addItem('tlbToolbar_Fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
-	
+	$tlbToolbar->addItem('tlbToolbar_Repeat','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/refresh.png','Repeat');
+	$tlbToolbar->addItem('tlbToolbar_Shuffle','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/edit-undo.png','Shuffle');
+	$tlbToolbar->addItem('tlbToolbar_Fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+
 	eyex('loadScript', array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeMedia/js/eyeMedia' . EYE_CODE_EXTENSION . '&type=dynamic'));
-	
+
 	if ($params[0]) {
 		include(EYE_ROOT.'/'.APP_DIR.'/eyeMedia/events'.EYE_CODE_EXTENSION);
 		$Open_File = str_replace(um('getCurrentUserDir').'files/', '/', $params[0]);
@@ -164,7 +164,7 @@ function eyeMedia_run($params=null) {
 		$GLOBALS['eyeMedia_tblPlaylist']->addRow(array($Open_File));
 		eyeX('rawjs',array('js'=>'setTimeout("eyeMedia_SelectFirst(' . $myPid . ', 1, ' . $checknum . ')",500);'));
 	}
-	
+
 }
 
 function eyeMedia_end($params=null) {

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -58,7 +58,7 @@ function eyeFTP_on_eyeFTP_initComplete($params=null) {
 
 	eyeFTP_setActiveView('local');
 	eyeFTP_browseLocal('/');
-	
+
 	//if the 'host' textbox is not empty, this means a connection string has been provided at launch
 	if ($conf['host'] != '') {
 		$connectParams = array(
@@ -210,7 +210,7 @@ function eyeFTP_on_eyeFTP_upload_ITM($params=null) {
 }
 
 function eyeFTP_on_eyeFTP_help_ITM($params=null) {
-	service('proc','launch',array('eyeNav','http://wiki.eyeos.org/EyeFTP#Help'));
+	proc('launch',array('eyeHelp','eyeFTP'));
 }
 
 
@@ -234,7 +234,7 @@ function eyeFTP_on_eyeFTP_transferToRight_IMG($params=null) {
 					eyeFTP_logConsole('Unable to upload directory, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 				}
 			break;
-			
+
 			default:
 				$success = eyeFTP_ftpPutFromEyeOS_file($localFilePath, $dirPath);
 				if (! $success) {
@@ -300,7 +300,7 @@ function eyeFTP_on_eyeFTP_transferToLeft_IMG($params=null) {
 					eyeFTP_logConsole('Unable to download directory, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 				}
 			break;
-			
+
 			default:
 				$success = eyeFTP_ftpGetToeyeOS_file($remoteFilePath, $dirPath);
 				if (! $success) {
@@ -317,7 +317,7 @@ function eyeFTP_on_eyeFTP_transferToLeft_IMG($params=null) {
 		return;
 	}
 	// === END OF BOUNCED REQUEST PROCESSING ===
-	
+
 	if (! $conf['isConnectionActive']) {
 		eyeX('messageBox',array('content'=> 'You must connect first'));
 		return;
@@ -335,13 +335,13 @@ function eyeFTP_on_eyeFTP_transferToLeft_IMG($params=null) {
 	eyeFTP_bounceRequest(array(
 		'__signal' => 'eyeFTP_transferToLeft_IMG',
 		'remoteFilePath_b64' => base64_encode($conf['currentRemoteDir'].'/'.$conf['selectedRemoteFile']['name']),
-		'dirPath' => service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$conf['currentLocalDir'],
+		'dirPath' => um('getCurrentUserDir').FILES_USER_DIR.'/'.$conf['currentLocalDir'],
 		'type' => $conf['selectedRemoteFile']['type']
 	));
 }
 
 function eyeFTP_on_eyeFTP_transferToLeft_resume() {
-	
+
 }
 
 /*********************************************************************************************/
@@ -360,21 +360,21 @@ function eyeFTP_on_windowResize($params=null) {
 	//log console
 	$GLOBALS['eyeFTP_log_CTNR']->setWidth(786 + $dWidth);
 	$GLOBALS['eyeFTP_connectionData_CTNR']->setWidth(780 + $dWidth);
-	
+
 	//local/remote views splitter
 	$GLOBALS['eyeFTP_leftRight_SPLT']->setWidth($newWidth - 10);
 	$GLOBALS['eyeFTP_leftRight_SPLT']->setHeight($newHeight - 194);
-	
+
 	$splitterPositionRatio = $GLOBALS['eyeFTP_leftRight_SPLT']->position / $GLOBALS['eyeFTP_WND']->width;
 	$newPosition = round($newWidth * $splitterPositionRatio);
 	$GLOBALS['eyeFTP_leftRight_SPLT']->setPosition($newPosition);
 	$GLOBALS['eyeFTP_leftRight_SPLT']->position = $newPosition;
 	eyeWidgets('serialize',array($GLOBALS['eyeFTP_leftRight_SPLT']));
-	
+
 	//update window properties
 	$GLOBALS['eyeFTP_WND']->setWidth($newWidth);
 	$GLOBALS['eyeFTP_WND']->setHeight($newHeight);
-	
+
 	eyeFTP_doResize();
 }
 function eyeFTP_on_leftRightSplitResize($params=null) {
@@ -382,7 +382,7 @@ function eyeFTP_on_leftRightSplitResize($params=null) {
 
 	$GLOBALS['eyeFTP_leftRight_SPLT']->position = $newLeftWidth;
 	eyeWidgets('serialize',array($GLOBALS['eyeFTP_leftRight_SPLT']));
-	
+
 	eyeFTP_doResize();
 }
 
@@ -391,12 +391,12 @@ function eyeFTP_doResize() {
 	$GLOBALS['eyeFTP_localPath_TXTBOX']->setWidth($GLOBALS['eyeFTP_leftRight_SPLT']->position - 47);
 	$GLOBALS['eyeFTP_localFiles_TAB']->setWidth($GLOBALS['eyeFTP_leftRight_SPLT']->position - 15);
 	$GLOBALS['eyeFTP_localFiles_TAB']->setHeight($GLOBALS['eyeFTP_leftRight_SPLT']->height - 30);
-	
+
 	//right browser (remote files)
 	$GLOBALS['eyeFTP_remotePath_TXTBOX']->setWidth($GLOBALS['eyeFTP_leftRight_SPLT']->width - $GLOBALS['eyeFTP_leftRight_SPLT']->position - 57);
 	$GLOBALS['eyeFTP_remoteFiles_TAB']->setWidth($GLOBALS['eyeFTP_leftRight_SPLT']->width - $GLOBALS['eyeFTP_leftRight_SPLT']->position - 25);
 	$GLOBALS['eyeFTP_remoteFiles_TAB']->setHeight($GLOBALS['eyeFTP_leftRight_SPLT']->height - 30);
-	
+
 	//transfer arrows
 	$GLOBALS['eyeFTP_transferToRight_IMG']->setX($GLOBALS['eyeFTP_leftRight_SPLT']->position);
 	$GLOBALS['eyeFTP_transferToRight_IMG']->setY(150 + ($GLOBALS['eyeFTP_leftRight_SPLT']->height / 2));
@@ -410,7 +410,7 @@ function eyeFTP_on_fullScreen(){
 }
 
 function eyeFTP_on_Message($params=null) {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeFTP_on_Close(){

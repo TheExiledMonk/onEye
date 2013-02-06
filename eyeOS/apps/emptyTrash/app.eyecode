@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -41,6 +41,7 @@ function emptyTrash_run($params = '') {
 		'hiddens' => array(array('emptyTrash_Hidden_File',$file),array('emptyTrash_Hidden_Callback',$params[1])),
 		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
 		'savePosition' => 1,
+		'sound' => 'question',
 		'title' => $title,
 		'tokens' => $tokens,
 		'type' => 3,

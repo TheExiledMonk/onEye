@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -105,7 +105,7 @@ foreach ($files as $file) {
 	$myIcon->show();
 	$myIcon->setCss(array());
 	eyex('rawjs',array('js' => 'xGetElementById("' . $myPid . '_' . $myIcon->name . '_globalContainer").style.width = "120px"; xGetElementById("' . $myPid . '_' . $myIcon->name . '_text").style.display = "inline"; xGetElementById("' . $myPid . '_' . $myIcon->name . '_text").style.paddingLeft = "3px";'));
-	
+
 	if ($eyeFiles_noactions) {
 		$myWidgetDrag = new widgetDrag(array(
 			'content' => array($file[1],$show2 . '/' . $file[0]),
@@ -116,7 +116,7 @@ foreach ($files as $file) {
 		));
 		$myWidgetDrag->show();
 	}
-	
+
 	if ($file[1] == 'folder') {
 		$myWidgetDrop = new widgetDrop(array(
 			'father' => $myIcon->name . '_Container',
@@ -131,7 +131,7 @@ foreach ($files as $file) {
 				'signal' => 'Icon_Dropped'
 		)));
 	}
-	
+
 	if ($eyeFiles_noactions) {
 		$myContextMenu = new ContextMenu(array(
 			'father' => $myIcon->name . '_globalContainer',

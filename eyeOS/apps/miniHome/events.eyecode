@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -29,7 +29,7 @@ function miniHome_on_Refresh($params=null) {
 	if(is_object($GLOBALS['quotaBar'])) { 
 		$dir = um('getCurrentUserDir');
 		$size = vfs('getDirSize',array($dir));
-		
+
 		$GLOBALS['quotaBar']->setProgress($size);
 	}
 }

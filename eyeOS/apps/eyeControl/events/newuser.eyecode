@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,7 +24,7 @@
 function eyeControl_on_newuser_save($params = '') {
 	global $currentUser;
 	global $myPid;
-	
+
 	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		eyex('messageBox',array('content' => 'You are not allowed to manage users!'));
 		eyeControl_lib_loadContent();
@@ -32,21 +32,22 @@ function eyeControl_on_newuser_save($params = '') {
 	} elseif (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		$myUserXml = um('retrieveUser',array(eyeControl_lib_getConfigUser()));
 	}
-	
+
 	$username = $GLOBALS['eyeControl_newuser_textbox_username']->text;
 	$password = base64_decode($GLOBALS['eyeControl_newuser_textbox_password']->text);
 	$pwd_again = base64_decode($GLOBALS['eyeControl_newuser_textbox_pwd_again']->text);
 	$fullname = $GLOBALS['eyeControl_newuser_textbox_fullname']->text;
 	$email = $GLOBALS['eyeControl_newuser_textbox_email']->text;
+	$resetPassword = $GLOBALS['eyeControl_newuser_checkbox_setnewpassword']->checked;
 	$expirationDate = $GLOBALS['eyeControl_newuser_textbox_expire']->text;
-	
+
 	if (utf8_strtolower($expirationDate) == 'never' || utf8_strtolower($expirationDate) == utf8_strtolower(i18n('translate',array('Never')))) {
 		$expirationDate = 0;
 	} else {
 		$date = explode("/",$expirationDate);
 		$expirationDate = mktime(0,0,0,$date[1],$date[0],$date[2]);
 	}
-	
+
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
 	$permissions = $GLOBALS['eyeControl_newuser_select_permissions']->selected;
@@ -82,6 +83,7 @@ function eyeControl_on_newuser_save($params = '') {
 			'maintain' => $maintain,
 			'admin' => $admin,
 			'maintainer' => $maintainer,
+			'resetPassword' => $resetPassword,
 			'expirationDate' => $expirationDate
 		));
 		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {

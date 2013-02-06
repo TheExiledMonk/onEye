@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -77,7 +77,7 @@ function weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent){
 	//The xWidth must be replaced for something, or at least a alternative to evade it
 	this.plannerWidth = xWidth(this.father);	//planner always have the same width thahis father
 	//Calculating numDays once, save cpu in front of memory
-	this.numDays = (this.dayEven-this.dayFrom);	
+	this.numDays = (this.dayEven-this.dayFrom);
 
 	//Check if the total height is enough to fill all the days father height, if not, increate it
 	var fatherHeight = xHeight(this.father);
@@ -100,22 +100,22 @@ function weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent){
 
 	//Same as Father xWidth, xWidth is not a performance friendly function...
 	this.calendarsFatherWidth = xWidth(this.calendarsFather);
-	
+
 	//Some IE and other browsers tricks...
 	if(IEversion == 6){
 		this.rowHeight += 2;
 	}else if(IEversion == 7){
 		this.rowHeight -= 2;
 	}
-	
+
 //Until we've a choose color, the colors are defined by marc@eyeos.org (designer)
 	//The noteHeader colors are used for the title, where the hour is showed
 	this.noteHeaderColors = new Array('#AB3F19','#136DBB','#2E8200','#504A76','#AB3F19','#7F405C');
 	//NoteBodyColors used to paint the body of the notes
-	this.noteBodyColors = new Array('#E46F46','#37A3FF','#6FBA32','#8074C9','#F19A2A','#E26299');	
+	this.noteBodyColors = new Array('#E46F46','#37A3FF','#6FBA32','#8074C9','#F19A2A','#E26299');
 	//calednarSelectColor defines the color to paint the calendar selector
 	this.calendarSelectColors = new Array('#E46F46','#37A3FF','#6FBA32','#8074C9','#F19A2A','#E26299');
-		
+
 	/*
 	*This calculate the content height, to do it I do:
 	*	Get the number of hours (this include the plus one) ::: (this.hourEven-this.hourFrom)+1
@@ -127,7 +127,7 @@ function weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent){
 	var rest = this.numDays-1+0.2;//0.2 is because of borders, no problem here
 	//Calculatin  the width to evade calculate it again
 	this.rowWidth = (this.dayRowWidth-rest)/this.numDays;
-		
+
 	//The calendar class is the top left calendar chooser
 	this.calendars = new weekPlanner_calendars(this);
 	//Instancing the handling event layer
@@ -141,7 +141,7 @@ function weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent){
 	this.calendars.draw();
 	//Drw the base, days hours etc
 	this.base.draw();
-	
+
 	//php function 
 	//TODO: Check if this is deprecated :(
 	this.resizeDays = resizeDays;
@@ -150,7 +150,7 @@ function weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent){
 function weekPlanner_calendars(weekPlanner){
 	this.father = weekPlanner;
 	this.calendarInfo = new Array();
-	
+
 	//WTF is this?
 	this.cleanCalendars = function cleanCalendars(){
 		var container = document.getElementById(this.father.pid+'_calendarsEntryContainer');
@@ -164,7 +164,7 @@ function weekPlanner_calendars(weekPlanner){
 		}
 		var checkBox = e.target;
 		var num = checkBox.num;
-		
+
 		//If calendar is showed
 		if(checkBox.checked == true){
 			this.calendarInfo[num]['show'] = 1;
@@ -180,7 +180,7 @@ function weekPlanner_calendars(weekPlanner){
 			//Show it
 			this.father.notes.jsEvent_hiddenCalendarNotes(num);
 		}
-		
+
 		sendMsgParam = eyeParam('showed',checkBox.checked);
 		sendMsgParam = sendMsgParam + eyeParam('calendar',num);
 		sendMsg(this.father.checknum,'calendarShow',sendMsgParam);
@@ -192,7 +192,7 @@ function weekPlanner_calendars(weekPlanner){
 			var oldCalendar = xGetElementById(this.father.pid+'_selectedImg');
 			oldCalendar.parentNode.removeChild(oldCalendar);
 		}
-		
+
 		var target = e.target;
 		if(target.id == 'textContainer'){
 			target = target.parentNode;
@@ -216,7 +216,7 @@ function weekPlanner_calendars(weekPlanner){
 		if(this.father.selectedCalendar != 'noCalendar'){
 			this.calendarInfo[this.father.selectedCalendar]['selected'] = 0;
 		}
-		
+
 		this.calendarInfo[num]['selected'] = 1;
 		//If calendar is selected but isn't showed, force it
 		if(this.calendarInfo[num]['show'] == 0){
@@ -227,7 +227,7 @@ function weekPlanner_calendars(weekPlanner){
 			this.calendarInfo[num]['show'] = 1;
 			//showing the notes
 			this.father.notes.jsEvent_showCalendarNotes(num);
-			
+
 			sendMsgParam = eyeParam('showed',checkBox.checked);
 			sendMsgParam = sendMsgParam + eyeParam('calendar',num);
 			sendMsg(this.father.checknum,'calendarShow',sendMsgParam);
@@ -240,7 +240,7 @@ function weekPlanner_calendars(weekPlanner){
 		//TODO: remove duplicate code
 		var imageContainer = this.drawSelectRow();
 		 content.appendChild(imageContainer);
-		
+
 		if(local==true){
 			sendMsgParam = eyeParam('calendar',num);
 			sendMsg(this.father.checknum,'selectCalendar',sendMsgParam);
@@ -261,7 +261,7 @@ function weekPlanner_calendars(weekPlanner){
 	}
 	this.drawCalendar = function drawCalendar(name,num,show){
 		var fatherContainer = this.father.calendarsFather;
-		
+
 		//Removing addcalendar if it exists
 		//this.removeAddCalendar();
 		//Adding info in the calendar array at the moment only save the show property
@@ -299,7 +299,7 @@ function weekPlanner_calendars(weekPlanner){
 				checkBox.defaultChecked = true;
 			}
 			xAddEventListener(checkBox,'click',mouseClick);
-			
+
 			var contentName = document.createElement('div');
 			contentName.setAttribute('id',this.father.pid+'_contentName_'+num);
 			contentName.style.position = 'relative';
@@ -319,7 +319,7 @@ function weekPlanner_calendars(weekPlanner){
 			contentName.evenType = 'selectCalendar';
 			contentName.pid = this.father.pid;
 			contentName.num = num;
-			
+
 			var pixel = document.createElement('div');
 			pixel.style.position = 'absolute';
 			pixel.style.width = '1px';
@@ -328,22 +328,22 @@ function weekPlanner_calendars(weekPlanner){
 			pixel.style.top = '0px';
 			pixel.style.left = '0px';
 			contentName.appendChild(pixel);
-			
+
 			pixel = pixel.cloneNode(true);
 			pixel.style.top = '';
 			pixel.style.bottom = '0px';
 			contentName.appendChild(pixel);
-			
+
 			pixel = pixel.cloneNode(true);
 			pixel.style.left = '';
 			pixel.style.right = '0px';
 			contentName.appendChild(pixel);
-			
+
 			pixel = pixel.cloneNode(true);
 			pixel.style.bottom = '';
 			pixel.style.top = '0px';
 			contentName.appendChild(pixel);
-			
+
 			if(num > 5){
 				calendarNum = num%5;
 			}else{
@@ -380,7 +380,7 @@ function weekPlanner_calendars(weekPlanner){
 		var container = document.createElement('div');
 		container.setAttribute('id',this.father.pid+'_calendarsEntryContainer');
 		container.style.position = 'absolute';
-		container.style.top = '3px';
+		container.style.top = '0px';
 		container.style.left = '0px';
 		container.style.height = '100%';
 		container.style.width = '100%';
@@ -395,7 +395,7 @@ function weekPlanner_calendars(weekPlanner){
 				var text = document.createTextNode(this.father.calendarsText);
 			textContainer.appendChild(text);
 		container.appendChild(textContainer);
-			
+
 			this.infoContainer = document.createElement('div');
 			this.infoContainer.style.position = 'absolute';
 			this.infoContainer.style.left = '3px'
@@ -433,7 +433,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			}else{
 				dayName.style.width = this.father.rowWidth+'px';
 			}
-			
+
 			dayName.style.height = '100%';
 			dayName.style.textAlign = 'center';
 			dayName.style.color = '#145689';
@@ -464,7 +464,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			dayTodo.style.height = '100%';
 			dayTodo.style.textAlign = 'center';
 			dayTodo.style.color = '#145689';
-			
+
 			//don't print the left border on the first row
 			if(h!=this.father.dayFrom){
 					dayTodo.style.borderLeft = '1px #C1C1C1 solid';
@@ -631,7 +631,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			hour.className = 'eyeCalendar_hour';
 			hour.style.height = this.father.rowHeight+'px';
 			hour.pid = this.father.pid;
-			
+
 			var l = paintHour*4;
 			var endNum = l+4;
 			for(;l<endNum;l++){
@@ -655,7 +655,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			//The top border is painted by the container
 			if(h != this.father.hourFrom){
 				hour.style.borderTop = '1px #C1C1C1 solid';
-			}	
+			}
 				//half hour div
 				var halfHour = document.createElement('div');
 				halfHour.setAttribute('id','halfHour');
@@ -665,7 +665,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			//Filling the week day
 			weekDay.appendChild(hour);
 			paintHour++;
-		}		
+		}
 		this.daysContainer.appendChild(weekDay);
 		for(d=this.father.dayFrom+1;d<=this.father.dayEven-1;d++)
 		{
@@ -728,7 +728,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			if(d!=this.father.dayFrom){
 				weekDay.style.borderLeft = '1px #C1C1C1 solid';
 			}
-			
+
 			//Creating the hours fields.
 			var paintHour = 0;
 			for(h=this.father.hourFrom;h<=this.father.hourEven;h++)
@@ -762,9 +762,9 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			}
 			this.totalParts = l;
 			this.daysContainer.appendChild(weekDay);
-		}	
+		}
 	}
-	
+
 	this.draw_dayHours = function draw_dayHours()
 	{
 		//Painting hours
@@ -888,7 +888,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			}
 			this.hoursBase.style.width = this.father.hourRowWidth+'px';
 			this.hoursBase.style.height = '100%';
-		
+
 		//container for names/todos
 		this.fatherNames = document.createElement('dif');
 			this.fatherNames.setAttribute('id',this.father.pid+'_fatherNames');
@@ -909,7 +909,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.fatherDays.style.height = xHeight(this.father.father)+'px';
 			this.fatherDays.style.overflowX = 'hidden';
 			this.fatherDays.style.overflowY = 'auto';
-		
+
 		//Container for all objects related with week days
 		this.daysBase = document.createElement('div');
 			this.daysBase.setAttribute('id',this.father.pid+'_daysBase');
@@ -995,7 +995,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 function weekPlanner_notes(weekPlanner){
 	this.father = weekPlanner;
 	this.notes = new Array();
-	
+
 //Start event functions
 	this.jsEvent_newNote = function jsEvent_newNote(e){
 		if(isNaN(e.target.num)){
@@ -1013,17 +1013,17 @@ function weekPlanner_notes(weekPlanner){
 		}else{
 			part = target.num;
 		}
-		
+
 		var num = target.num;
 		//Now I can draw the note in his parent (hour).
 		var cid = this.notes.length;
 		var note = this.draw_newNote(num,2,calendar,cid,1,1);//Creating the note object
-		
+
 		this.father.base.daysContainer.style.cursor = 's-resize';
-		
+
 		var newFather = document.getElementById(this.father.pid+'_day_'+target.day); 
 		newFather.appendChild(note);
-		
+
 		//Adding event properties
 		note.parts = 2;
 		note.fromParts = target.num;
@@ -1033,7 +1033,7 @@ function weekPlanner_notes(weekPlanner){
 		//Drawing title
 		this.draw_title(note);
 		this.draw_event(note,this.father.defaultEvenText);
-		
+
 		//Resize hack
 		if(IEversion && IEversion < 8){
 			note.style.zIndex = 0;
@@ -1084,7 +1084,7 @@ function weekPlanner_notes(weekPlanner){
 		//Changing pointer in all object
 		this.father.base.daysContainer.style.cursor = 's-resize';
 		xAddEventListener(this.father.base.daysContainer,'mouseover',mouseOver);
-	}		
+	}
 	this.jsEvent_moveNote = function jsEvent_moveNote(e){
 		this.father.tmpNote = e.target.parentNode;
 		if(e.target.id == 'noteTitle'){
@@ -1092,7 +1092,7 @@ function weekPlanner_notes(weekPlanner){
 		}else{
 			this.father.evenType = 'moveNoteBody';
 		}
-		
+
 		if(IEversion && IEversion < 8){
 			this.father.tmpNote.style.zIndex = 0;
 			this.father.tmpNote.noteBody.style.zIndex = 0;
@@ -1135,7 +1135,7 @@ function weekPlanner_notes(weekPlanner){
 		//console.log('Final '+finalWidth);
 		//console.log(note);
 		note.style.width = 90/finalWidth+'%';
-		
+
 // 		note.style.left = 100/finalWidth+'%';
 	}
 	this.jsEvent_noteCreated = function jsEvent_noteCreated(e){
@@ -1155,12 +1155,12 @@ function weekPlanner_notes(weekPlanner){
 		sendMsgParam = sendMsgParam + eyeParam('id',note.cid);
 		sendMsgParam = sendMsgParam + eyeParam('calendar',note.calendar);
 		sendMsg(this.father.checknum,'addNote',sendMsgParam);
-		
+
 		//Removing the events
 		xRemoveEventListener(this.father.base.daysContainer,'mouseover',mouseOver);
 		//xRemoveEventListener(this.father.base.daysContainer,'mousedown',mouseDown);
 		xRemoveEventListener(this.father.base.daysContainer,'mouseup',mouseUp);
-		
+
 		var popupDiv = this.draw_editPopup(note.cid);
 		this.father.father.parentNode.appendChild(popupDiv);
 		popupDiv.inputText.focus();
@@ -1191,9 +1191,9 @@ function weekPlanner_notes(weekPlanner){
 		if(!inputText){
 			return false;
 		}
-		
+
 		var textContainer = this.draw_editBox(inputText.value);
-		
+
 		xAddEventListener(textContainer,'click',mouseClick);
 		if(this.father.tmpNote.noteBody.firstChild){
 			var first = this.father.tmpNote.noteBody.firstChild;
@@ -1204,17 +1204,17 @@ function weekPlanner_notes(weekPlanner){
 				delete first;
 			}
 		}
-		
+
 		this.father.tmpNote.noteBody.appendChild(textContainer);
 		var parent = e.target.parentNode;
 		parent.parentNode.removeChild(parent);
-		
+
 		var note = this.father.tmpNote;
 		 sendMsgParam = eyeParam('title',inputText.value);
 		 sendMsgParam = sendMsgParam + eyeParam('id',note.cid);
 		 sendMsgParam = sendMsgParam + eyeParam('calendar',note.calendar);
 		sendMsg(this.father.checknum,'updateTitle',sendMsgParam);
-		
+
 		//Removing the events
 		this.father.evenType = 'default';
 		xAddEventListener(this.father.base.daysContainer,'mousedown',mouseDown);
@@ -1252,12 +1252,12 @@ function weekPlanner_notes(weekPlanner){
 		var popup = document.getElementById(this.father.tmpNote.cid+'_popupDiv');
 		var parent = popup.parentNode;
 		parent.removeChild(popup);
-		
+
 		this.father.evenType = 'default';
 		xAddEventListener(this.father.base.daysContainer,'mousedown',mouseDown);
 		xAddEventListener(this.father.base.daysContainer,'mouseup',mouseUp);
 	}
-	
+
 	this.jsEvent_hiddenCalendarNotes = function jsEvent_hiddenCalendarNotes(num){
 		for(var h=0;h<this.notes.length;h++){
 			var note = this.notes[h];
@@ -1281,7 +1281,7 @@ function weekPlanner_notes(weekPlanner){
 		if(!e.target.num){
 			return false;
 		}
-		
+
 		var partTarget = e.target;
 		var note = this.father.tmpNote;
 		if (note.parts != (partTarget.num+1) && partTarget.num >= note.startPart ) {
@@ -1289,13 +1289,13 @@ function weekPlanner_notes(weekPlanner){
 			note.fromParts = partTarget.num;
 			this.draw_resizeNote(note);
 			this.draw_title(note);
-		}	
+		}
 	}
 	this.reCall_movingNote = function reCall_movingNote(e){
 		if(isNaN(e.target.num)){
 			return false;
 		}
-		
+
 		var target = e.target;
 		var day = target.day;
 		this.father.tmpNote.day = day;
@@ -1312,7 +1312,7 @@ function weekPlanner_notes(weekPlanner){
 		if(isTotal < this.father.base.totalParts){
 			this.father.tmpNote.startPart = target.num;
 			this.father.tmpNote.fromParts = target.num+this.father.tmpNote.parts;
-		
+
 			this.draw_movedNote(partParent,this.father.tmpNote.startPart);
 			this.draw_title(this.father.tmpNote);
 		}else{
@@ -1329,7 +1329,7 @@ function weekPlanner_notes(weekPlanner){
 		}
 		var diff = e.target.num-this.father.tmpNote.lastPart.num;
 		var day = e.target.day;
-		
+
 		this.father.tmpNote.lastPart = e.target;
 		this.father.tmpNote.startPart += diff; 
 		var target = document.getElementById(day+'_part_'+this.father.tmpNote.startPart);
@@ -1350,7 +1350,7 @@ function weekPlanner_notes(weekPlanner){
 		this.father.tmpNote.fromParts = target.num+this.father.tmpNote.parts;
 		this.draw_movedNote(partParent,this.father.tmpNote.startPart);
 		this.draw_title(this.father.tmpNote);
-	}	
+	}
 //php event functions
 	this.phpEvent_newNote = function phpEvent_newNote(day,hourFrom,hourEven,minFrom,minEven,cid,event,calendar,resizable,movible,title){
 		hourFrom = parseInt(hourFrom);
@@ -1359,15 +1359,15 @@ function weekPlanner_notes(weekPlanner){
 		var numHours = hourEven - hourFrom;
 		var numMins = minEven - minFrom;
 		var totalMins = (numHours*60)+numMins;
-		
+
 		//Part data
 		var minPartStart = Math.floor(minFrom/15);
 		var totalPartStart =(hourFrom-this.father.hourFrom)*4;
 		totalPartStart += minPartStart;
-		
+
 		var parts = Math.floor(totalMins / 15);
 		var note = this.draw_newNote(totalPartStart,parts,calendar,cid,resizable,movible);
-		
+
 		//Adding propierties
 		var fromPart = totalPartStart+parts;
 		note.parts = parts;
@@ -1380,7 +1380,7 @@ function weekPlanner_notes(weekPlanner){
 		if(title == 1){
 			this.draw_title(note);
 		}
-		
+
 		if(event == ' '){
 			event = this.father.defaultEvenText;
 		}
@@ -1394,7 +1394,7 @@ function weekPlanner_notes(weekPlanner){
 // 		note.style.width = "90%";
 		newFather.addNote(note);
 // 		newFather.orderNotes();
-	}	
+	}
 	this.phpEvent_cleanNotes = function phpEvent_cleanNotes(){
 		//Cleaning all notes
 		for(var h=0;h<this.notes.length;h++){
@@ -1413,7 +1413,7 @@ function weekPlanner_notes(weekPlanner){
 			}
 		}
 	}
-	
+
 	this.phpEvent_deleteCalendarNotes = function phpEvent_deleteCalendarNotes(num){
 		for(var h=0;h<this.notes.length;h++){
 			var note = this.notes[h];
@@ -1423,7 +1423,7 @@ function weekPlanner_notes(weekPlanner){
 			}
 		}
 	}
-//Draw functions	
+//Draw functions
 	this.draw_title = function draw_title(note){
 		var noteTitle = note.firstChild;
 		var parts = note.parts;
@@ -1437,14 +1437,14 @@ function weekPlanner_notes(weekPlanner){
 		}
 		var minFromFloat = hourFromFloat - hourFrom;
 		var minFrom = minFromFloat*60;
-		
+
 		var hourEvenFloat = parts/4;
 			hourEvenFloat +=hourFromFloat;
 		var hourEven = parseInt(hourEvenFloat);
-		
+
 		var minEvenFloat = hourEvenFloat - hourEven;
 
-		var minEven = minEvenFloat*60;	
+		var minEven = minEvenFloat*60;
 
 		if(IEversion && IEversion < 8){
 			hourEvenFloat = null;
@@ -1457,7 +1457,7 @@ function weekPlanner_notes(weekPlanner){
 			delete minFromFloat;
 			delete hourFromFloat;
 		}
-		
+
 		if(hourFrom < 10){
 			hourFrom = '0'+hourFrom;
 		}
@@ -1470,7 +1470,7 @@ function weekPlanner_notes(weekPlanner){
 		if(minEven < 10){
 			minEven = '0'+minEven;
 		}
-		
+
 		if(noteTitle.firstChild){
 			var titleText = noteTitle.firstChild;
 			titleText.data  = hourFrom+':'+minFrom+'-'+hourEven+':'+minEven;
@@ -1494,7 +1494,7 @@ function weekPlanner_notes(weekPlanner){
 		top = Math.floor(top);
 		note.style.top = top+'px';
 		hour.appendChild(note);
-	}	
+	}
 	this.draw_newNote = function draw_newNote(part,partsNum,calendar,cid,resizable,movible){
 		if(!calendar){
 			var calendar = 1;
@@ -1664,7 +1664,7 @@ function weekPlanner_notes(weekPlanner){
 			inputText1.style.marginLeft = '15px';
 			inputText1.style.marginTop = '10px';
 			inputText1.innerHTML = "$lang:Text for this event:";
-			
+
 		var inputEvent = document.createElement('input');
 			inputEvent.setAttribute('id',id+'_inputEvent');
 			inputEvent.type = 'text';
@@ -1694,7 +1694,7 @@ function weekPlanner_notes(weekPlanner){
 			buttonEvent.evenType = 'changeEvent';
 			xAddEventListener(buttonEvent,'click',mouseClick);
 		popupDiv.appendChild(buttonEvent);
-		
+
 		var buttonEvent = document.createElement('button');
 			buttonEvent.setAttribute('id','buttonEvent');
 			buttonEvent.className = 'eyeButtonClass';
@@ -1710,7 +1710,7 @@ function weekPlanner_notes(weekPlanner){
 		this.father.evenType = 'editingEvent';
 		return popupDiv;
 	}
-}	
+}
 
 function weekPlanner_events(weekPlanner){
 	this.father = weekPlanner;
@@ -1739,7 +1739,7 @@ function weekPlanner_events(weekPlanner){
 				return true;
 			}
 		}
-		
+
 		if(e && e.target && e.target.id && e.target.id != ''){
 			if(e.target.id == 'noteTitle'){
 				this.father.notes.jsEvent_moveNote(e);
@@ -1750,12 +1750,12 @@ function weekPlanner_events(weekPlanner){
 				return true;
 			}
 		}
-		
+
 		if(evenType == 'moveNote'){
 			this.father.notes.jsEvent_moveNote(e);
 			return true;
 		}
-		
+
 		if(evenType == 'default'){
 			this.father.notes.jsEvent_newNote(e);
 			return true;
@@ -1769,7 +1769,7 @@ function weekPlanner_events(weekPlanner){
 		this.father.tmpNote.noteBody.style.zIndex = 3;
 		if(IEversion && IEversion < 8){
 			this.father.tmpNote.style.zIndex = 2;
-		}		
+		}
 		if(this.father.tmpNote.lastPart){
 			if(IEversion && IEversion < 8){
 				this.father.tmpNote.lastPart = null;
@@ -1779,7 +1779,7 @@ function weekPlanner_events(weekPlanner){
 		}
 		xRemoveEventListener(this.father.base.daysContainer,'mouseover',mouseOver);
 		xAddEventListener(this.father.base.daysContainer,'mousedown',mouseDown);
-		
+
 		//Calling to popup functions
 		if(this.father.evenType == 'resizeNote2'){
 			this.father.evenType = 'default';
@@ -1821,7 +1821,7 @@ function weekPlanner_events(weekPlanner){
 	this.mouseClick = function mouseClick(e){
 		//Getting type
 		var evenType = '';
-		
+
 		if(this.father && this.father.evenType && this.father.evenType == 'default' || this.father.evenType == 'editingEvent'){
 			if(e.target.evenType != 'default' && e.target.evenType != ''){
 				evenType = e.target.evenType;
@@ -1831,7 +1831,7 @@ function weekPlanner_events(weekPlanner){
 		}else{
 			evenType = this.father.evenType;
 		}
-		
+
 		if(evenType == 'changeEvent'){
 			this.father.notes.jsEvent_setEvent(e);
 		}else if(evenType == 'editEvent'){
@@ -1861,7 +1861,7 @@ function weekPlanner_events(weekPlanner){
 			evenType = this.father.evenType;
 		}
 		if(evenType == 'changeEvent' && e.keyCode == 13){
-			this.father.notes.jsEvent_setEvent(e);	
+			this.father.notes.jsEvent_setEvent(e);
 		}
 	}
 }
@@ -1871,7 +1871,7 @@ function mouseDown(event){
 	if(!e.target.noPrevent){
 		xPreventDefault(event);
 	}
-	
+
 	if(!e || !e.target || !e.target.id){
 		return false;
 	}
@@ -1903,7 +1903,7 @@ function mouseOver(event){
 	}else{
 		pid = e.target.pid;
 	}
-	
+
 	var obj = weekPlanner_instances[pid];
 	obj.events.mouseOver(e);
 }
@@ -1926,21 +1926,21 @@ function mouseUp(event){
 		var obj = weekPlanner_instances[pid];
 		obj.events.mouseUp(e);
 	}else{
-		
+
 	}
 }
 function mouseClick(event){
 	var e = new xEvent(event);
-	
+
 	if(!e || !e.target || !e.target.id){
 		return false;
 	}
-	
+
 	if(!e.target.noPrevent){
 		xPreventDefault(event);
 	}
 	var pid;
-	
+
 	if(!e.target.pid){
 		var pid = calendar_GetPid(e.target);
 		if(!pid){
@@ -1949,13 +1949,13 @@ function mouseClick(event){
 	}else{
 		pid = e.target.pid;
 	}
-	
+
 	var obj = weekPlanner_instances[pid];
 	obj.events.mouseClick(e);
 }
 function keyPress(event){
 	var e = new xEvent(event);
-	
+
 	var pid;
 	if(!e.target.pid){
 		var pid = calendar_GetPid(e.target);
@@ -1965,7 +1965,7 @@ function keyPress(event){
 	}else{
 		pid = e.target.pid;
 	}
-	
+
 	var obj = weekPlanner_instances[pid];
 	obj.events.keyPress(e);
 }

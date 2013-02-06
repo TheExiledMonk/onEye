@@ -25,7 +25,7 @@ var landscapeVal = "landscape";
 
 window.iui =
 {
-	animOn: false,	// Experimental slide animation with CSS transition disabled by default
+	animOn: true,	// Slide animation with CSS transition is now enabled by default where supported
 
 	showPage: function(page, backwards)
 	{
@@ -74,7 +74,7 @@ window.iui =
 			if (cb)
 				cb(false);
 		};
-		
+
 		req.onreadystatechange = function()
 		{
 			if (req.readyState == 4)
@@ -105,7 +105,7 @@ window.iui =
 			req.send(null);
 		}
 	},
-	
+
 	insertPages: function(nodes)
 	{
 		var targetPage;
@@ -125,7 +125,7 @@ window.iui =
 
 				if (child.getAttribute("selected") == "true" || !targetPage)
 					targetPage = child;
-				
+
 				--i;
 			}
 		}
@@ -167,13 +167,13 @@ addEventListener("load", function(event)
 {
 	var page = iui.getSelectedPage();
 	var locPage = getPageFromLoc();
-		
+
 	if (page)
 			iui.showPage(page);
-	
+
 	if (locPage && (locPage != page))
 		iui.showPage(locPage);
-	
+
 	setTimeout(preloadImages, 0);
 	if (typeof window.onorientationchange == "object")
 	{
@@ -189,14 +189,14 @@ addEventListener("unload", function(event)
 {
 	return;
 }, false);
-	
+
 addEventListener("click", function(event)
 {
 	var link = findParent(event.target, "a");
 	if (link)
 	{
 		function unselect() { link.removeAttribute("selected"); }
-		
+
 		if (link.href && link.hash && link.hash != "#" && !link.target)
 		{
 			link.setAttribute("selected", "true");
@@ -206,7 +206,15 @@ addEventListener("click", function(event)
 		else if (link == $("backButton"))
 			history.back();
 		else if (link.getAttribute("type") == "submit")
-			submitForm(findParent(link, "form"));
+		{
+			var form = findParent(link, "form");
+			if (form.target == "_self")
+			{
+			    form.submit();
+			    return;  // return so we don't preventDefault
+			}
+			submitForm(form);
+		}
 		else if (link.getAttribute("type") == "cancel")
 			cancelDialog(findParent(link, "form"));
 		else if (link.target == "_replace")
@@ -229,7 +237,7 @@ addEventListener("click", function(event)
 		}
 		else
 			return;
-		
+
 		event.preventDefault();		   
 	}
 }, true);
@@ -262,8 +270,8 @@ function orientChangeHandler()
 	{
 	case 0:
 		setOrientation(portraitVal);
-		break;	
-		
+		break;
+
 	case 90:
 	case -90: 
 		setOrientation(landscapeVal);
@@ -301,7 +309,7 @@ function showDialog(page)
 {
 	currentDialog = page;
 	page.setAttribute("selected", "true");
-	
+
 	if (hasClass(page, "dialog") && !page.target)
 		showForm(page);
 }
@@ -313,7 +321,7 @@ function showForm(form)
 		event.preventDefault();
 		submitForm(form);
 	};
-	
+
 	form.onclick = function(event)
 	{
 		if (event.target == form && hasClass(form, "dialog"))
@@ -340,7 +348,7 @@ function updatePage(page, fromPage)
 
 	if (page.localName.toLowerCase() == "form" && !page.target)
 		showForm(page);
-		
+
 	var backButton = $("backButton");
 	if (backButton)
 	{
@@ -360,7 +368,7 @@ function slidePages(fromPage, toPage, backwards)
 	var axis = (backwards ? fromPage : toPage).getAttribute("axis");
 
 	clearInterval(checkTimer);
-	
+
 	if (canDoSlideAnim() && axis != 'y')
 	{
 	  slide2(fromPage, toPage, backwards, slideDone);
@@ -407,7 +415,7 @@ function slide1(fromPage, toPage, backwards, axis, cb)
 			clearInterval(timer);
 			cb();
 		}
-	
+
 		if (axis == "y")
 		{
 			backwards
@@ -469,7 +477,7 @@ function encodeForm(form)
 	encode(form.getElementsByTagName("input"));
 	encode(form.getElementsByTagName("textarea"));
 	encode(form.getElementsByTagName("select"));
-	return args;	
+	return args;
 }
 
 function findParent(node, localName)

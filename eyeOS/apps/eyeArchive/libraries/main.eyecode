@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,14 +22,14 @@
 */
 
 function _updateTable($content){
-	$GLOBALS['mainTable']->remove();	
-	
+	$GLOBALS['mainTable']->remove();
+
 	$sortypes = array("String");
 	$myHeader = array('Filename');
 	$myTable = new Sortabletable(array('name'=>'mainTable','father'=>'mainWindow_Content',
 		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>5,'y'=>110,'width'=>535,'height'=>388));
-		
-	$myTable->show();	
+
+	$myTable->show();
 	foreach($content['names'] as $value) {
 		$myTable->addRow(array($value));
 	}

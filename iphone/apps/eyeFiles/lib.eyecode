@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -38,7 +38,7 @@ function eyeFiles_openLocation($file) {
 		foreach($content as $value) {
 			$info = utf8_pathinfo($value);
 			$info = utf8_strtolower($info['extension']);
-		
+
 			if(is_dir($value)) {
 				$icon = 'folder.png';
 				echo '<li><a href="index.php?action=eyeFiles&do=open&file='.$value.'"><img style="padding-right:7px;" src="'.$path.$icon.'">'.utf8_basename($value).'</a></li>';
@@ -47,7 +47,7 @@ function eyeFiles_openLocation($file) {
 				echo '<li><a href="index.php?action=eyeFiles&noPropagate=1&do=open&file='.$value.'"><img style="padding-right:7px;" src="'.$path.$icon.'">'.utf8_basename($value).'</a></li>';
 			} elseif($info == 'odt' || $info == 'doc' || $info == 'xls' || $info == 'ods') {
 				$icon = 'document.png';
-				echo '<li><a href="index.php?action=eyeFiles&noPropagate=1&do=open&file='.$value.'"><img style="padding-right:7px;" src="'.$path.$icon.'">'.utf8_basename($value).'</a></li>';					
+				echo '<li><a href="index.php?action=eyeFiles&noPropagate=1&do=open&file='.$value.'"><img style="padding-right:7px;" src="'.$path.$icon.'">'.utf8_basename($value).'</a></li>';
 			} elseif($info == 'mp3' || $info == 'ogg' || $info == 'wav') {
 				$icon = 'music.png';
 				echo '<li><a href="index.php?action=eyeFiles&do=open&file='.$value.'"><img style="padding-right:7px;" src="'.$path.$icon.'">'.utf8_basename($value).'</a></li>';
@@ -63,7 +63,7 @@ function eyeFiles_openLocation($file) {
 	} else {
 		$info = utf8_pathinfo($file);
 		$info = utf8_strtolower($info['extension']);
-		
+
 		if($info == 'txt') {
 			$fp = vfs('open',array($file,'r'));
 			$content = stream_get_contents($fp);
@@ -72,16 +72,16 @@ function eyeFiles_openLocation($file) {
 			echo '<pre>'.$content.'</pre>';
 			echo '</div>';
 		} elseif($info == 'png' || $info == 'jpg' || $info == 'jpeg' || $info == 'bmp' || $info == 'gif') {
-			$rfile = service('vfs','getRealName',array($file));
+			$rfile = vfs('getRealName',array($file));
 			$mime = getimagesize($rfile);
 			if(!$mime) {
 				exit;
 			}
-			$fp = service('vfs','open',array($file,'r'),1);
+			$fp = vfs('open',array($file,'r'),1);
 			if(!$fp) {
 				return;
 			}
-			$len = service('vfs','filesize',array($file));
+			$len = vfs('filesize',array($file));
 			header('Content-Type: '.$mime['mime']);
 			header("Content-Length: $len");
 			header("Accept-Ranges: bytes");

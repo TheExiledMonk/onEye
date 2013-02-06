@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -41,7 +41,8 @@ define('FILES_USER_DIR','files');
 define('TMP_USER_DIR','tmp');
 define('SHARE_USER_DIR','share');
 define('PUBLIC_USER_DIR','public');
-define('THEMES_DIR',APP_DIR.'/'.'eyeX'.'/'.'themes'); //DEPRECATED
+define('THEMES_DIR',APP_DIR . '/eyeX/themes');
+define('THEME_CONF_DIR','conf');
 define('SYSTEM_CONF_DIR','conf');
 define('APP_CONF_SHARE','share');
 define('EXTERN_DIR','extern');
@@ -69,7 +70,7 @@ define('REAL_ROOTUSER','root');
 //Extras
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('EYEOS_VERSION','1.8.7.1');
+define('EYEOS_VERSION','1.9.0.0');
 define('XML_COMPAT',1);
 define('XML_PARSER','expat');
 define('ACL_SUPPORT',1);

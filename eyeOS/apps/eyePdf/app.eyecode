@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -21,28 +21,21 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyePdf_run($params=null) {
+function eyePdf_run($params = '') {
 	global $checknum;
-	global $myPid;
-	if (is_array($params) && $params[0]) {
-		$url = $params[0];
+	if ($params[0]) {
+		include_once(EYE_ROOT . '/' . APP_DIR . '/eyePdf/events' . EYE_CODE_EXTENSION);
+		eyePdf_on_Init($params);
 	} else {
-		proc('end');
-		return;
+		proc('launch',array('eyeDialog',array(EYEDIALOG_TYPE_OPENFILE,'Init',$checknum,'',array(
+			'PDF files' => '*.pdf',
+			'All files' => '*.*'
+		),'','','Close')));
 	}
-	eyex('runjs',array(
-		'js' => '
-			if (IEversion || navigator.mimeTypes["application/pdf"] && navigator.mimeTypes["application/pdf"].enabledPlugin != null) {
-				sendMsg(' . $checknum . ',"showPdf",eyeParam("url",%s));
-			} else {
-				sendMsg(' . $checknum . ',"downloadPdf",eyeParam("url",%s));
-			}',
-		'tokens' => array($url,$url)
-	));
 }
 
-function eyePdf_end($params=null) {
-	eyeWidgets('unserialize');
+function eyePdf_end($params = '') {
+	removeListenerServiceCall('eyex', 'resizedbrowser');
+	eyeWidgets('unserialize', $params);
 }
-
 ?>

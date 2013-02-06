@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -51,7 +51,7 @@ function eyeCalc_run($params = '') {
 		$xml['eyeCalc'][0]['advanced'][0] = 0;
 	}
 	eyeXML('setXMLconfig', array('eyeCalc', 'conf.xml', $xml));
-	
+
 	$myWindow = new Window(array(
 		'cent' => 1,
 		'father' => 'eyeApps',
@@ -63,7 +63,7 @@ function eyeCalc_run($params = '') {
 		'width' => $width
 	));
 	$myWindow->show();
-	
+
 	$myTextbox = new Textbox(array(
 		'father' => 'eyeCalc_Window_Content',
 		'name' => 'eyeCalc_Textbox',
@@ -79,7 +79,7 @@ function eyeCalc_run($params = '') {
 		'height' => '25px',
 		'text-align' => 'right'
 	));
-	
+
 	$myButton = new Button(array(
 		'caption' => $caption,
 		'father' => 'eyeCalc_Window_Content',
@@ -92,7 +92,7 @@ function eyeCalc_run($params = '') {
 	));
 	$myButton->show();
 	$myButton->setCss(array('color' => 'red'));
-	
+
 	$y = 40;
 	foreach ($rows as $buttons) {
 		$x = 5;
@@ -127,7 +127,7 @@ function eyeCalc_run($params = '') {
 		}
 		$y += 35;
 	}
-	
+
 	eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeCalc/eyeCalc' . EYE_CODE_EXTENSION . '&type=dynamic&params[]=' . $myPid));
 }
 

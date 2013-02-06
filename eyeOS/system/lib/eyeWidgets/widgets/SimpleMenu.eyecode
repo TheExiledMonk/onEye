@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,7 @@
 
 class SimpleMenu {
 	//pid controller
-	
+
 	var $creatorPid;
 	//global widgets options without default
 	var $name;
@@ -32,8 +32,8 @@ class SimpleMenu {
 	var $sFather;
 	var $mFather;
 	var $rFather;
-	
-	function SimpleMenu($params) {	
+
+	function SimpleMenu($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
@@ -50,7 +50,7 @@ class SimpleMenu {
 		$this->x = 20;
 		$this->y = 20;
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -58,7 +58,7 @@ class SimpleMenu {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 
 	function show($noserialize=1) {
@@ -68,8 +68,8 @@ class SimpleMenu {
 			'mFather' => $this->mFather,
 			'rFather' => $this->rFather
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$mySimpleMenu = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -83,11 +83,11 @@ class SimpleMenu {
 		);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
-		service('eyex','createWidget',$mySimpleMenu);
+		eyex('createWidget',$mySimpleMenu);
 	}
-	
+
 	function addEntry($text,$Ename,$signal,$params="",$imgId = '') {
 		global $checknum;
 		global $myPid;

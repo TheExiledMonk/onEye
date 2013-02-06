@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,6 +24,7 @@
 function eyeSheets_run($params=null) {
 	global $myPid;
 	global $checknum;
+
 	$myWindow = new Window(array(
 		'name'=>'eyeSheetsWND',
 		'father'=>'eyeApps',
@@ -36,6 +37,7 @@ function eyeSheets_run($params=null) {
 		'savePosition' => 1
 	));
 	$myWindow->show();
+	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 
 	if($params[0]) {
 		$file = $params[0];
@@ -47,7 +49,7 @@ function eyeSheets_run($params=null) {
 			$useCode=0;
 		}
 		if(!vfs('fileExists',array($file))){
-			service('eyex','messageBox',array('content'=>'File not found!'));
+			eyex('messageBox',array('content'=>'File not found!'));
 			proc('end');
 			return false;
 		}
@@ -90,6 +92,7 @@ function eyeSheets_end($params=null) {
 	    }
 	    closedir($handle);
 	}
+	removeListenerServiceCall('eyex','resizedbrowser');
 	eyeWidgets('unserialize');
 }
 

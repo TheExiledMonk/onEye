@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,17 +30,17 @@ function lib_eyeZip_extractZip($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
-	$file = service('vfs','getRealName',array($params[0]));
+
+	$file = vfs('getRealName',array($params[0]));
 	$dir = $params[1];
-	if(!service('vfs','checkPermissions',array($file))) {
+	if(!vfs('checkPermissions',array($file))) {
 		return false;
 	}
-	if(!service('vfs','checkPermissions',array($dir))) {
+	if(!vfs('checkPermissions',array($dir))) {
 		return false;
 	}
 	$zip = new PclZip($file);
-	
+
 	if ($zip->extract(PCLZIP_OPT_PATH, $dir) == 0) {
 		return false;
 	}
@@ -52,12 +52,12 @@ function lib_eyeZip_readZipContent($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
-	$file = service('vfs','getRealName',array($params[0]));
-	if(!service('vfs','checkPermissions',array($file))) {
+
+	$file = vfs('getRealName',array($params[0]));
+	if(!vfs('checkPermissions',array($file))) {
 		return false;
 	}
-	
+
 	$zip = new PclZip($file);
 	if (($list = $zip->listContent()) == 0) {
 		return false;
@@ -70,13 +70,13 @@ function lib_eyeZip_createZip($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
-	$file = service('vfs','getRealName',array($params[0]));
-	if(!service('vfs','checkPermissions',array($file))) {
+
+	$file = vfs('getRealName',array($params[0]));
+	if(!vfs('checkPermissions',array($file))) {
 		return false;
 	}
 	$dest = $params[1];
-	if(!service('vfs','checkPermissions',array($dest))) {
+	if(!vfs('checkPermissions',array($dest))) {
 		return false;
 	}
 
@@ -305,7 +305,7 @@ function lib_eyeZip_createZip($params) {
     if (!function_exists('gzopen'))
     {
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 1, "zlib extension seems to be missing");
-      return false; // eyeOS	
+      return false; // eyeOS
     }
 
     // ----- Set the attributes
@@ -4404,7 +4404,7 @@ function lib_eyeZip_createZip($params) {
 	if ($p_entry['status'] == "aborted") {
       $p_entry['status'] = "skipped";
 	}
-	
+
     // ----- Look for post-extract callback
     elseif (isset($p_options[PCLZIP_CB_POST_EXTRACT])) {
       //--(MAGIC-PclTrace)--//PclTraceFctMessage(__FILE__, __LINE__, 2, "A post-callback '".$p_options[PCLZIP_CB_POST_EXTRACT]."()') is defined for the extraction");

@@ -104,7 +104,7 @@
 		</content>
 		<content>
 			<description>Add a new filetype to your eyeOS system</description>
-			<display>New filetypes</display>
+			<display>New Filetypes</display>
 			<name>newfiletype</name>
 			<permissions>root</permissions>
 			<show>no</show>
@@ -112,7 +112,7 @@
 		</content>
 		<content>
 			<description>Edit the chosen filetype</description>
-			<display>Edit filetype</display>
+			<display>Edit Filetype</display>
 			<name>editfiletype</name>
 			<permissions>root</permissions>
 			<show>no</show>
@@ -120,7 +120,7 @@
 		</content>
 		<content>
 			<description>Manage your system's users</description>
-			<display>Manage users</display>
+			<display>Manage Users</display>
 			<img>index.php?theme=1&amp;extern=icons/48x48/manageusers.png</img>
 			<name>users</name>
 			<permissions>maintainer</permissions>
@@ -128,7 +128,7 @@
 		</content>
 		<content>
 			<description>Manage your system's groups</description>
-			<display>Manage groups</display>
+			<display>Manage Groups</display>
 			<img>index.php?theme=1&amp;extern=icons/48x48/managegroups.png</img>
 			<name>groups</name>
 			<permissions>maintainer</permissions>
@@ -136,7 +136,7 @@
 		</content>
 		<content>
 			<description>Add a new user to your eyeOS system</description>
-			<display>New user</display>
+			<display>New User</display>
 			<name>newuser</name>
 			<permissions>maintainer</permissions>
 			<show>no</show>
@@ -144,7 +144,7 @@
 		</content>
 		<content>
 			<description>Edit the chosen user</description>
-			<display>Edit user</display>
+			<display>Edit User</display>
 			<name>edituser</name>
 			<permissions>maintainer</permissions>
 			<show>no</show>
@@ -153,7 +153,7 @@
 		<content>
 			<description>Manage the packages repositories</description>
 			<display>Repositories</display>
-			<img>index.php?theme=1&amp;extern=icons/48x48/repositories.png</img>
+			<img>index.php?theme=1&amp;extern=icons/48x48/software.png</img>
 			<name>eyesoft</name>
 			<permissions>root</permissions>
 			<title>yes</title>
@@ -169,7 +169,7 @@
 		<content>
 			<description>Update your system's settings</description>
 			<display>System</display>
-			<img>index.php?theme=1&amp;extern=icons/48x48/admingeneral.png</img>
+			<img>index.php?theme=1&amp;extern=icons/48x48/logo.png</img>
 			<name>system</name>
 			<permissions>root</permissions>
 			<title>yes</title>
@@ -198,7 +198,7 @@
 		<content>
 			<description>Manage your security settings</description>
 			<display>Security</display>
-			<img>index.php?theme=1&amp;extern=icons/48x48/public.png</img>
+			<img>index.php?theme=1&amp;extern=icons/48x48/password.png</img>
 			<name>security</name>
 			<permissions>all</permissions>
 			<title>yes</title>

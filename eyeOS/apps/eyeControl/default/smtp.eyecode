@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -45,7 +45,7 @@ $ContentY += 30;
 $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'name' => 'eyeControl_smtp_Label_Username',
-	'text' => 'Username',
+	'text' => 'User Name',
 	'x' => 20,
 	'y' => $ContentY + 3
 ));
@@ -82,7 +82,7 @@ $ContentY += 30;
 $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'name' => 'eyeControl_smtp_Label_Hostname',
-	'text' => 'Hostname',
+	'text' => 'Host Name',
 	'x' => 20,
 	'y' => $ContentY + 3
 ));

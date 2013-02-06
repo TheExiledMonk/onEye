@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -58,7 +58,7 @@ function fixPNG(myImage,type){
 }
 
 function cookieEnabled() {
-	if (typeof navigator.cookieEnabled == 'boolean') {
+	if (typeof navigator.cookieEnabled == 'boolean' && navigator.cookieEnabled) {
 		return navigator.cookieEnabled;
 	}
 	var cookieNumber = 0;
@@ -149,7 +149,7 @@ function updateOpacity(id, init, end, time, callback) {
 	time = Math.round(time / 100);
 	var count = 0;
 	var i;
-	
+
 	if(init > end) {
 		for(i = init; i >= end; i--) {
 			setTimeout("updateOpacityOnce(" + i + ",'" + id + "')",(count * time));
@@ -377,7 +377,7 @@ function eyeMessageBoxHid(i) {
 var EventHandler = {
 	List : {},
 	LastEvent : 0,
-	
+
 	HandleEvent : function (e) {
 		e = new xEvent(e);
 		EventHandler.LastEvent = e;
@@ -412,7 +412,7 @@ var EventHandler = {
 			}
 		}
 	},
-	
+
 	Add : function (handler, element, code, option, func) {
 		if (typeof EventHandler.List[handler] != 'object') {
 			EventHandler.List[handler] = {};
@@ -430,17 +430,20 @@ var EventHandler = {
 			EventHandler.List[handler][element]['function'] = func;
 		}
 	},
-	
+
 	AddFriend : function (handler,element,friend) {
-		if (EventHandler.List[handler][element]) {
+		if (EventHandler.List[handler] && EventHandler.List[handler][element]) {
 			EventHandler.List[handler][element].friends.push(friend);
 		}
 	},
-	
+
 	Remove : function (handler,element) {
-		EventHandler.List[handler][element] = 0;
+		if (EventHandler.List[handler] && EventHandler.List[handler][element]) {
+			xRemoveEventListener(document,handler,EventHandler.HandleEvent,false);
+			EventHandler.List[handler][element] = 0;
+		}
 	},
-	
+
 	RemoveFriend : function (handler,element,friend) {
 		for (var f = 0; f < EventHandler.List[handler][element].friends.length; f++) {
 			if (EventHandler.List[handler][element].friends[f] == friend) {
@@ -521,7 +524,7 @@ function setWidgetPos(widget, father, horiz, vert, x, y, cent) {
 			widget.style.left = String(parseInt(x, 10)) + 'px';
 		}
 	}
-	
+
 	if (cent == 1 || cent == 3) {
 		y = parseInt(y, 10) + (xHeight(father) - xHeight(widget)) / 2;
 	} else if (cent == 4 || cent == 6) {
@@ -554,7 +557,7 @@ function createWidget(widgetid, fatherid, content, horiz, vert, x, y, width, hei
 	if (!unit) {
 		unit = 'px';
 	}
-	
+
 	var widget = document.createElement('div');
 	widget.setAttribute('id', widgetid);
 	father.appendChild(widget);
@@ -593,12 +596,12 @@ function makeDrag(widgetid, father, afterfunction, checknum, content, noIndex) {
 	}
 	var firstX = 0;
 	var firstY = 0;
-	
+
 	function savePositions(e, x, y) {
 		firstX = x;
 		firstY = y;
 	}
-	
+
 	function callafterfunction(e, x, y) {
 		if (afterfunction) {
 			var contentid = '';
@@ -609,7 +612,7 @@ function makeDrag(widgetid, father, afterfunction, checknum, content, noIndex) {
 			run();
 		}
 	}
-	
+
 	xEnableDrag2(widgetid, savePositions, null, callafterfunction, father);
 	xShow(widget);
 }
@@ -891,8 +894,887 @@ tinyMCE.entityDecode = function entityDecode(s) {
 	return !e.firstChild ? s : e.firstChild.nodeValue;
 };
 
-/* Compiled from X 4.18 by XC 1.07 on 30Aug09 */
-function xEvent(evt){var e=evt||window.event;if(!e)return;this.type=e.type;this.target=e.target||e.srcElement;this.relatedTarget=e.relatedTarget;/*@cc_on if(e.type=='mouseover')this.relatedTarget=e.fromElement;else if(e.type=='mouseout')this.relatedTarget=e.toElement;@*/if(xDef(e.pageX)){this.pageX=e.pageX;this.pageY=e.pageY;}else if(xDef(e.clientX)){this.pageX=e.clientX+xScrollLeft();this.pageY=e.clientY+xScrollTop();}if(xDef(e.offsetX)){this.offsetX=e.offsetX;this.offsetY=e.offsetY;}else if(xDef(e.layerX)){this.offsetX=e.layerX;this.offsetY=e.layerY;}else{this.offsetX=this.pageX-xPageX(this.target);this.offsetY=this.pageY-xPageY(this.target);}this.keyCode=e.keyCode||e.which||0;this.shiftKey=e.shiftKey;this.ctrlKey=e.ctrlKey;this.altKey=e.altKey;if(typeof e.type=='string'){if(e.type.indexOf('click')!=-1){this.button=0;}else if(e.type.indexOf('mouse')!=-1){this.button=e.button;/*@cc_on if(e.button&1)this.button=0;else if(e.button&4)this.button=1;else if(e.button&2)this.button=2;@*/}}}xLibrary={version:'4.18',license:'GNU LGPL',url:'http://cross-browser.com/'};function xAddClass(e,c){if((e=xGetElementById(e))!=null){var s='';if(e.className.length&&e.className.charAt(e.className.length-1)!=' '){s=' ';}if(!xHasClass(e,c)){e.className+=s+c;return true;}}return false;}function xAddEventListener(e,eT,eL,cap){if(!(e=xGetElementById(e)))return;eT=eT.toLowerCase();if(e.addEventListener)e.addEventListener(eT,eL,cap||false);else if(e.attachEvent)e.attachEvent('on'+eT,eL);else{var o=e['on'+eT];e['on'+eT]=typeof o=='function'?function(v){o(v);eL(v);}:eL;}}function xBackground(e,c,i){if(!(e=xGetElementById(e)))return'';var bg='';if(e.style){if(xStr(c)){e.style.backgroundColor=c;}if(xStr(i)){e.style.backgroundImage=(i!='')?'url('+i+')':null;}bg=e.style.backgroundColor;}return bg;}function xCamelize(cssPropStr){var i,c,a,s;a=cssPropStr.split('-');s=a[0];for(i=1;i<a.length;++i){c=a[i].charAt(0);s+=a[i].replace(c,c.toUpperCase());}return s;}function xColor(e,s){if(!(e=xGetElementById(e)))return'';var c='';if(e.style&&xDef(e.style.color)){if(xStr(s))e.style.color=s;c=e.style.color;}return c;}function xDef(){for(var i=0;i<arguments.length;++i){if(typeof(arguments[i])=='undefined')return false;}return true;}function xDisableDrag(id){xGetElementById(id).xDragEnabled=false;}function xDisableDrop(id){xGetElementById(id).xDropEnabled=false;}function xDisplay(e,s){if((e=xGetElementById(e))&&e.style&&xDef(e.style.display)){if(xStr(s)){try{e.style.display=s;}catch(ex){e.style.display='';}}return e.style.display;}return null;}function xDocSize(){var b=document.body,e=document.documentElement;var esw=0,eow=0,bsw=0,bow=0,esh=0,eoh=0,bsh=0,boh=0;if(e){esw=e.scrollWidth;eow=e.offsetWidth;esh=e.scrollHeight;eoh=e.offsetHeight;}if(b){bsw=b.scrollWidth;bow=b.offsetWidth;bsh=b.scrollHeight;boh=b.offsetHeight;}return{w:Math.max(esw,eow,bsw,bow),h:Math.max(esh,eoh,bsh,boh)};}function xFindAfterByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToLast(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xFindBeforeByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToFirst(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xGetCSSRules(ss){return ss.rules?ss.rules:ss.cssRules;}function xGetComputedStyle(e,p,i){if(!(e=xGetElementById(e)))return null;var s,v='undefined',dv=document.defaultView;if(dv&&dv.getComputedStyle){s=dv.getComputedStyle(e,'');if(s)v=s.getPropertyValue(p);}else if(e.currentStyle){v=e.currentStyle[xCamelize(p)];}else return null;return i?(parseInt(v)||0):v;}function xGetElementById(e){if(typeof(e)=='string'){if(document.getElementById)e=document.getElementById(e);else if(document.all)e=document.all[e];else e=null;}return e;}function xGetElementsByClassName(c,p,t,f){var r=[],re,e,i;re=new RegExp("(^|\\s)"+c+"(\\s|$)");e=xGetElementsByTagName(t,p);for(i=0;i<e.length;++i){if(re.test(e[i].className)){r[r.length]=e[i];if(f)f(e[i]);}}return r;}function xGetElementsByTagName(t,p){var list=null;t=t||'*';p=xGetElementById(p)||document;if(typeof p.getElementsByTagName!='undefined'){list=p.getElementsByTagName(t);if(t=='*'&&(!list||!list.length))list=p.all;}else{if(t=='*')list=p.all;else if(p.all&&p.all.tags)list=p.all.tags(t);}return list||[];}function xGetStyleSheetFromLink(cl){return cl.styleSheet?cl.styleSheet:cl.sheet;}function xHasClass(e,c){e=xGetElementById(e);if(!e||e.className=='')return false;var re=new RegExp("(^|\\s)"+c+"(\\s|$)");return re.test(e.className);}function xHasPoint(e,x,y,t,r,b,l){if(!xNum(t)){t=r=b=l=0;}else if(!xNum(r)){r=b=l=t;}else if(!xNum(b)){l=r;b=t;}var eX=xPageX(e),eY=xPageY(e);return(x>=eX+l&&x<=eX+xWidth(e)-r&&y>=eY+t&&y<=eY+xHeight(e)-b);}function xHasStyleSelector(ss){if(!xHasStyleSheets())return undefined;function testSelector(cr){return cr.selectorText.indexOf(ss)>=0;}return xTraverseDocumentStyleSheets(testSelector);}function xHasStyleSheets(){return document.styleSheets?true:false;}function xHeight(e,h){var css,pt=0,pb=0,bt=0,bb=0,gcs;if(!(e=xGetElementById(e)))return 0;if(xNum(h)){if(h<0)h=0;else h=Math.round(h);}else h=-1;css=xDef(e.style);if(e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){h=xClientHeight();}else if(css&&xDef(e.offsetHeight)&&xStr(e.style.height)){if(h>=0){if(document.compatMode=='CSS1Compat'){gcs=xGetComputedStyle;pt=gcs(e,'padding-top',1);if(pt!==null){pb=gcs(e,'padding-bottom',1);bt=gcs(e,'border-top-width',1);bb=gcs(e,'border-bottom-width',1);}else if(xDef(e.offsetHeight,e.style.height)){e.style.height=h+'px';pt=e.offsetHeight-h;}}h-=(pt+pb+bt+bb);if(isNaN(h)||h<0)return;else e.style.height=h+'px';}h=e.offsetHeight;}else if(css&&xDef(e.style.pixelHeight)){if(h>=0)e.style.pixelHeight=h;h=e.style.pixelHeight;}return h;}function xHex(n,digits,prefix){var p='',n=Math.ceil(n);if(prefix)p=prefix;n=n.toString(16);for(var i=0;i<digits-n.length;++i){p+='0';}return p+n;}function xHide(e){return xVisibility(e,0);}function xInsertRule(ss,sel,rule,idx){if(!(ss=xGetElementById(ss)))return false;if(ss.insertRule){ss.insertRule(sel+"{"+rule+"}",(idx>=0?idx:ss.cssRules.length));}else if(ss.addRule){ss.addRule(sel,rule,idx);}else return false;return true;}function xLeft(e,iX){if(!(e=xGetElementById(e)))return 0;var css=xDef(e.style);if(css&&xStr(e.style.left)){if(xNum(iX))e.style.left=iX+'px';else{iX=parseInt(e.style.left);if(isNaN(iX))iX=xGetComputedStyle(e,'left',1);if(isNaN(iX))iX=0;}}else if(css&&xDef(e.style.pixelLeft)){if(xNum(iX))e.style.pixelLeft=iX;else iX=e.style.pixelLeft;}return iX;}function xMoveTo(e,x,y){xLeft(e,x);xTop(e,y);}function xNum(){for(var i=0;i<arguments.length;++i){if(isNaN(arguments[i])||typeof(arguments[i])!='number')return false;}return true;}function xOpacity(e,o){var set=xDef(o);if(!(e=xGetElementById(e)))return 2;if(xStr(e.style.opacity)){if(set)e.style.opacity=o+'';else o=parseFloat(e.style.opacity);}else if(xStr(e.style.filter)){if(set)e.style.filter='alpha(opacity='+(100*o)+')';else if(e.filters&&e.filters.alpha){o=e.filters.alpha.opacity/100;}}else if(xStr(e.style.MozOpacity)){if(set)e.style.MozOpacity=o+'';else o=parseFloat(e.style.MozOpacity);}else if(xStr(e.style.KhtmlOpacity)){if(set)e.style.KhtmlOpacity=o+'';else o=parseFloat(e.style.KhtmlOpacity);}return isNaN(o)?1:o;}function xParent(e,bNode){if(!(e=xGetElementById(e)))return null;var p=null;if(!bNode&&xDef(e.offsetParent))p=e.offsetParent;else if(xDef(e.parentNode))p=e.parentNode;else if(xDef(e.parentElement))p=e.parentElement;return p;}function xParseColor(c){var o={};if(xStr(c)){if(c.indexOf('rgb')!=-1){var a=c.match(/(\d*)\s*,\s*(\d*)\s*,\s*(\d*)/);o.r=parseInt(a[1])||0;o.g=parseInt(a[2])||0;o.b=parseInt(a[3])||0;o.n=(o.r<<16)|(o.g<<8)|o.b;}else{pn(parseInt(c.substr(1),16));}}else{pn(c);}o.s=xHex(o.n,6,'#');return o;function pn(n){o.n=n||0;o.r=(o.n&0xFF0000)>>16;o.g=(o.n&0xFF00)>>8;o.b=o.n&0xFF;}}function xPreventDefault(e){if(e&&e.preventDefault)e.preventDefault();else if(window.event)window.event.returnValue=false;}function xRemoveClass(e,c){if(!(e=xGetElementById(e)))return false;e.className=e.className.replace(new RegExp("(^|\\s)"+c+"(\\s|$)",'g'),function(str,p1,p2){return(p1==' '&&p2==' ')?' ':'';});return true;}function xRemoveEventListener(e,eT,eL,cap){if(!(e=xGetElementById(e)))return;eT=eT.toLowerCase();if(e.removeEventListener)e.removeEventListener(eT,eL,cap||false);else if(e.detachEvent)e.detachEvent('on'+eT,eL);else e['on'+eT]=null;}function xResizeTo(e,w,h){return{w:xWidth(e,w),h:xHeight(e,h)};}function xScrollLeft(e,bWin){var w,offset=0;if(!xDef(e)||bWin||e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){w=window;if(bWin&&e)w=e;if(w.document.documentElement&&w.document.documentElement.scrollLeft)offset=w.document.documentElement.scrollLeft;else if(w.document.body&&xDef(w.document.body.scrollLeft))offset=w.document.body.scrollLeft;}else{e=xGetElementById(e);if(e&&xNum(e.scrollLeft))offset=e.scrollLeft;}return offset;}function xScrollTop(e,bWin){var w,offset=0;if(!xDef(e)||bWin||e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){w=window;if(bWin&&e)w=e;if(w.document.documentElement&&w.document.documentElement.scrollTop)offset=w.document.documentElement.scrollTop;else if(w.document.body&&xDef(w.document.body.scrollTop))offset=w.document.body.scrollTop;}else{e=xGetElementById(e);if(e&&xNum(e.scrollTop))offset=e.scrollTop;}return offset;}function xShow(e){return xVisibility(e,1);}function xSlideTo(e,x,y,uTime){if(!(e=xGetElementById(e)))return;if(!e.timeout)e.timeout=25;e.xTarget=x;e.yTarget=y;e.slideTime=uTime;e.stop=false;e.yA=e.yTarget-xTop(e);e.xA=e.xTarget-xLeft(e);if(e.slideLinear)e.B=1/e.slideTime;else e.B=Math.PI/(2*e.slideTime);e.yD=xTop(e);e.xD=xLeft(e);var d=new Date();e.C=d.getTime();if(!e.moving)_xSlideTo(e);}function _xSlideTo(e){if(!(e=xGetElementById(e)))return;var now,s,t,newY,newX;now=new Date();t=now.getTime()-e.C;if(e.stop){e.moving=false;}else if(t<e.slideTime){setTimeout("_xSlideTo('"+e.id+"')",e.timeout);s=e.B*t;if(!e.slideLinear)s=Math.sin(s);newX=Math.round(e.xA*s+e.xD);newY=Math.round(e.yA*s+e.yD);xMoveTo(e,newX,newY);e.moving=true;}else{xMoveTo(e,e.xTarget,e.yTarget);e.moving=false;if(e.onslideend)e.onslideend();}}function xStopPropagation(evt){if(evt&&evt.stopPropagation)evt.stopPropagation();else if(window.event)window.event.cancelBubble=true;}function xStr(s){for(var i=0;i<arguments.length;++i){if(typeof(arguments[i])!='string')return false;}return true;}function xStyle(sProp,sVal){var i,e;for(i=2;i<arguments.length;++i){e=xGetElementById(arguments[i]);if(e.style){try{e.style[sProp]=sVal;}catch(err){e.style[sProp]='';}}}}function xToggleClass(e,c){if(!(e=xGetElementById(e)))return null;if(!xRemoveClass(e,c)&&!xAddClass(e,c))return false;return true;}function xTop(e,iY){if(!(e=xGetElementById(e)))return 0;var css=xDef(e.style);if(css&&xStr(e.style.top)){if(xNum(iY))e.style.top=iY+'px';else{iY=parseInt(e.style.top);if(isNaN(iY))iY=xGetComputedStyle(e,'top',1);if(isNaN(iY))iY=0;}}else if(css&&xDef(e.style.pixelTop)){if(xNum(iY))e.style.pixelTop=iY;else iY=e.style.pixelTop;}return iY;}function xTraverseDocumentStyleSheets(cb){var ssList=document.styleSheets;if(!ssList)return undefined;for(i=0;i<ssList.length;i++){var ss=ssList[i];if(!ss)continue;if(xTraverseStyleSheet(ss,cb))return true;}return false;}function xTraverseStyleSheet(ss,cb){if(!ss)return false;var rls=xGetCSSRules(ss);if(!rls)return undefined;var result;for(var j=0;j<rls.length;j++){var cr=rls[j];if(cr.selectorText){result=cb(cr);if(result)return true;}if(cr.type&&cr.type==3&&cr.styleSheet)xTraverseStyleSheet(cr.styleSheet,cb);}if(ss.imports){for(var j=0;j<ss.imports.length;j++){if(xTraverseStyleSheet(ss.imports[j],cb))return true;}}return false;}function xVisibility(e,bShow){if(!(e=xGetElementById(e)))return null;if(e.style&&xDef(e.style.visibility)){if(xDef(bShow))e.style.visibility=bShow?'visible':'hidden';return e.style.visibility;}return null;}function xWalkToFirst(oNode,fnVisit,skip,data){var r=null;while(oNode){if(oNode.nodeType==1&&oNode!=skip){r=fnVisit(oNode,data);if(r)return r;}var n=oNode;while(n=n.previousSibling){if(n!=skip){r=xWalkTreeRev(n,fnVisit,skip,data);if(r)return r;}}oNode=oNode.parentNode;}return r;}function xWalkToLast(oNode,fnVisit,skip,data){var r=null;if(oNode){r=xWalkTree2(oNode,fnVisit,skip,data);if(r)return r;while(oNode){var n=oNode;while(n=n.nextSibling){if(n!=skip){r=xWalkTree2(n,fnVisit,skip,data);if(r)return r;}}oNode=oNode.parentNode;}}return r;}function xWalkTree2(oNode,fnVisit,skip,data){var r=null;if(oNode){if(oNode.nodeType==1&&oNode!=skip){r=fnVisit(oNode,data);if(r)return r;}for(var c=oNode.firstChild;c;c=c.nextSibling){if(c!=skip)r=xWalkTree2(c,fnVisit,skip,data);if(r)return r;}}return r;}function xWalkTreeRev(oNode,fnVisit,skip,data){var r=null;if(oNode){if(oNode.nodeType==1&&oNode!=skip){r=fnVisit(oNode,data);if(r)return r;}for(var c=oNode.lastChild;c;c=c.previousSibling){if(c!=skip)r=xWalkTreeRev(c,fnVisit,skip,data);if(r)return r;}}return r;}function xWidth(e,w){var css,pl=0,pr=0,bl=0,br=0,gcs;if(!(e=xGetElementById(e)))return 0;if(xNum(w)){if(w<0)w=0;else w=Math.round(w);}else w=-1;css=xDef(e.style);if(e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){w=xClientWidth();}else if(css&&xDef(e.offsetWidth)&&xStr(e.style.width)){if(w>=0){if(document.compatMode=='CSS1Compat'){gcs=xGetComputedStyle;pl=gcs(e,'padding-left',1);if(pl!==null){pr=gcs(e,'padding-right',1);bl=gcs(e,'border-left-width',1);br=gcs(e,'border-right-width',1);}else if(xDef(e.offsetWidth,e.style.width)){e.style.width=w+'px';pl=e.offsetWidth-w;}}w-=(pl+pr+bl+br);if(isNaN(w)||w<0)return;else e.style.width=w+'px';}w=e.offsetWidth;}else if(css&&xDef(e.style.pixelWidth)){if(w>=0)e.style.pixelWidth=w;w=e.style.pixelWidth;}return w;}function xZIndex(e,uZ){if(!(e=xGetElementById(e)))return 0;if(e.style&&xDef(e.style.zIndex)){if(xNum(uZ))e.style.zIndex=uZ;uZ=parseInt(e.style.zIndex);}return uZ;}
+/* Compiled from X 4.18 by XC 1.07 on 28Nov09 */
+// xEvent r11, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xEvent(evt) // object prototype
+{
+  var e = evt || window.event;
+  if (!e) return;
+  this.type = e.type;
+  this.target = e.target || e.srcElement;
+  this.relatedTarget = e.relatedTarget;
+  /*@cc_on if (e.type == 'mouseover') this.relatedTarget = e.fromElement;
+  else if (e.type == 'mouseout') this.relatedTarget = e.toElement; @*/
+  if (xDef(e.pageX)) { this.pageX = e.pageX; this.pageY = e.pageY; }
+  else if (xDef(e.clientX)) { this.pageX = e.clientX + xScrollLeft(); this.pageY = e.clientY + xScrollTop(); }
+  if (xDef(e.offsetX)) { this.offsetX = e.offsetX; this.offsetY = e.offsetY; }
+  else if (xDef(e.layerX)) { this.offsetX = e.layerX; this.offsetY = e.layerY; }
+  else { this.offsetX = this.pageX - xPageX(this.target); this.offsetY = this.pageY - xPageY(this.target); }
+  this.keyCode = e.keyCode || e.which || 0;
+  this.shiftKey = e.shiftKey; this.ctrlKey = e.ctrlKey; this.altKey = e.altKey;
+  if (typeof e.type == 'string') {
+    if (e.type.indexOf('click') != -1) {this.button = 0;}
+    else if (e.type.indexOf('mouse') != -1) {
+      this.button = e.button;
+      /*@cc_on if (e.button & 1) this.button = 0;
+      else if (e.button & 4) this.button = 1;
+      else if (e.button & 2) this.button = 2; @*/
+    }
+  }
+}
+xLibrary={version:'4.18',license:'GNU LGPL',url:'http://cross-browser.com/'};
+// xAddClass r3, Copyright 2005-2007 Daniel Frechette - modified by Mike Foster
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xAddClass(e, c)
+{
+  if ((e=xGetElementById(e))!=null) {
+    var s = '';
+    if (e.className.length && e.className.charAt(e.className.length - 1) != ' ') {
+      s = ' ';
+    }
+    if (!xHasClass(e, c)) {
+      e.className += s + c;
+      return true;
+    }
+  }
+  return false;
+}
+// xAddEventListener r8, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xAddEventListener(e,eT,eL,cap)
+{
+  if(!(e=xGetElementById(e)))return;
+  eT=eT.toLowerCase();
+  if(e.addEventListener)e.addEventListener(eT,eL,cap||false);
+  else if(e.attachEvent)e.attachEvent('on'+eT,eL);
+  else {
+    var o=e['on'+eT];
+    e['on'+eT]=typeof o=='function' ? function(v){o(v);eL(v);} : eL;
+  }
+}
+// xBackground r4, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xBackground(e,c,i)
+{
+  if(!(e=xGetElementById(e))) return '';
+  var bg='';
+  if(e.style) {
+    if(xStr(c)) {e.style.backgroundColor=c;}
+    if(xStr(i)) {e.style.backgroundImage=(i!='')? 'url('+i+')' : null;}
+    bg=e.style.backgroundColor;
+  }
+  return bg;
+}
+// xCamelize r1, Copyright 2007-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xCamelize(cssPropStr)
+{
+  var i, c, a, s;
+  a = cssPropStr.split('-');
+  s = a[0];
+  for (i=1; i<a.length; ++i) {
+    c = a[i].charAt(0);
+    s += a[i].replace(c, c.toUpperCase());
+  }
+  return s;
+}
+// xColor r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xColor(e,s)
+{
+  if(!(e=xGetElementById(e))) return '';
+  var c='';
+  if(e.style && xDef(e.style.color)) {
+    if(xStr(s)) e.style.color=s;
+    c=e.style.color;
+  }
+  return c;
+}
+// xDef r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xDef()
+{
+  for(var i=0; i<arguments.length; ++i){if(typeof(arguments[i])=='undefined') return false;}
+  return true;
+}
+// xDisableDrag r3, Copyright 2005-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xDisableDrag(id)
+{
+  xGetElementById(id).xDragEnabled = false;
+}
+// xDisableDrop r2, Copyright 2006-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xDisableDrop(id)
+{
+  xGetElementById(id).xDropEnabled = false;
+}
+// xDisplay r3, Copyright 2003-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+// This was alternative 1:
+
+function xDisplay(e,s)
+{
+  if ((e=xGetElementById(e)) && e.style && xDef(e.style.display)) {
+    if (xStr(s)) {
+      try { e.style.display = s; }
+      catch (ex) { e.style.display = ''; } // Will this make IE use a default value
+    }                                      // appropriate for the element?
+    return e.style.display;
+  }
+  return null;
+}
+// xDocSize r1, Copyright 2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xDocSize()
+{
+  var b=document.body, e=document.documentElement;
+  var esw=0, eow=0, bsw=0, bow=0, esh=0, eoh=0, bsh=0, boh=0;
+  if (e) {
+    esw = e.scrollWidth;
+    eow = e.offsetWidth;
+    esh = e.scrollHeight;
+    eoh = e.offsetHeight;
+  }
+  if (b) {
+    bsw = b.scrollWidth;
+    bow = b.offsetWidth;
+    bsh = b.scrollHeight;
+    boh = b.offsetHeight;
+  }
+//  alert('compatMode: ' + document.compatMode + '\n\ndocumentElement.scrollHeight: ' + esh + '\ndocumentElement.offsetHeight: ' + eoh + '\nbody.scrollHeight: ' + bsh + '\nbody.offsetHeight: ' + boh + '\n\ndocumentElement.scrollWidth: ' + esw + '\ndocumentElement.offsetWidth: ' + eow + '\nbody.scrollWidth: ' + bsw + '\nbody.offsetWidth: ' + bow);
+  return {w:Math.max(esw,eow,bsw,bow),h:Math.max(esh,eoh,bsh,boh)};
+}
+// xFindAfterByClassName r1, Copyright 2005-2007 Olivier Spinelli
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xFindAfterByClassName( ele, clsName )
+{
+  var re = new RegExp('\\b'+clsName+'\\b', 'i');
+  return xWalkToLast( ele, function(n){if(n.className.search(re) != -1)return n;} );
+}
+// xFindBeforeByClassName r1, Copyright 2005-2007 Olivier Spinelli
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xFindBeforeByClassName( ele, clsName )
+{
+  var re = new RegExp('\\b'+clsName+'\\b', 'i');
+  return xWalkToFirst( ele, function(n){if(n.className.search(re) != -1)return n;} );
+}
+// xGetCSSRules r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+//
+// xGetCSSRules - extracts CSS rules from the style sheet object (IE vs. DOM CSS level 2)
+//
+function xGetCSSRules(ss) { return ss.rules ? ss.rules : ss.cssRules; }
+// xGetComputedStyle r7, Copyright 2002-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xGetComputedStyle(e, p, i)
+{
+  if(!(e=xGetElementById(e))) return null;
+  var s, v = 'undefined', dv = document.defaultView;
+  if(dv && dv.getComputedStyle){
+    s = dv.getComputedStyle(e,'');
+    if (s) v = s.getPropertyValue(p);
+  }
+  else if(e.currentStyle) {
+    v = e.currentStyle[xCamelize(p)];
+  }
+  else return null;
+  return i ? (parseInt(v) || 0) : v;
+}
+
+// xGetElementById r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xGetElementById(e)
+{
+  if(typeof(e)=='string') {
+    if(document.getElementById) e=document.getElementById(e);
+    else if(document.all) e=document.all[e];
+    else e=null;
+  }
+  return e;
+}
+// xGetElementsByClassName r6, Copyright 2002-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xGetElementsByClassName(c,p,t,f)
+{
+  var r = [], re, e, i;
+  re = new RegExp("(^|\\s)"+c+"(\\s|$)");
+//  var e = p.getElementsByTagName(t);
+  e = xGetElementsByTagName(t,p); // See xml comments.
+  for (i = 0; i < e.length; ++i) {
+    if (re.test(e[i].className)) {
+      r[r.length] = e[i];
+      if (f) f(e[i]);
+    }
+  }
+  return r;
+}
+// xGetElementsByTagName r5, Copyright 2002-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xGetElementsByTagName(t,p)
+{
+  var list = null;
+  t = t || '*';
+  p = xGetElementById(p) || document;
+  if (typeof p.getElementsByTagName != 'undefined') { // DOM1
+    list = p.getElementsByTagName(t);
+    if (t=='*' && (!list || !list.length)) list = p.all; // IE5 '*' bug
+  }
+  else { // IE4 object model
+    if (t=='*') list = p.all;
+    else if (p.all && p.all.tags) list = p.all.tags(t);
+  }
+  return list || [];
+}
+// xGetStyleSheetFromLink r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+//
+// xGetStyleSheetFromLink - extracts style sheet object from the HTML LINK object (IE vs. DOM CSS level 2)
+//
+function xGetStyleSheetFromLink(cl) { return cl.styleSheet ? cl.styleSheet : cl.sheet; }
+
+// xHasClass r3, Copyright 2005-2007 Daniel Frechette - modified by Mike Foster
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xHasClass(e, c)
+{
+  e = xGetElementById(e);
+  if (!e || e.className=='') return false;
+  var re = new RegExp("(^|\\s)"+c+"(\\s|$)");
+  return re.test(e.className);
+}
+// xHasPoint r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xHasPoint(e,x,y,t,r,b,l)
+{
+  if (!xNum(t)){t=r=b=l=0;}
+  else if (!xNum(r)){r=b=l=t;}
+  else if (!xNum(b)){l=r; b=t;}
+  var eX = xPageX(e), eY = xPageY(e);
+  return (x >= eX + l && x <= eX + xWidth(e) - r &&
+          y >= eY + t && y <= eY + xHeight(e) - b );
+}
+// xHasStyleSelector r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+//
+// xHasStyleSelector(styleSelectorString)
+//   checks whether any of the stylesheets attached to the document contain the definition of the specified
+//   style selector (simple string matching at the moment)
+//
+// returns:
+//   undefined  - style sheet scripting not supported by the browser
+//   true/false - found/not found
+//
+function xHasStyleSelector(ss) {
+  if (! xHasStyleSheets()) return undefined ;
+
+  function testSelector(cr) {
+    return cr.selectorText.indexOf(ss) >= 0;
+  }
+  return xTraverseDocumentStyleSheets(testSelector);
+}
+// xHasStyleSheets r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+//
+// xHasStyleSheets - checks browser support for stylesheet related objects (IE or DOM compliant)
+//
+function xHasStyleSheets() {
+  return document.styleSheets ? true : false ;
+}
+// xHeight r7, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xHeight(e,h)
+{
+  var css, pt=0, pb=0, bt=0, bb=0, gcs;
+  if(!(e=xGetElementById(e))) return 0;
+  if (xNum(h)) {
+    if (h<0) h = 0;
+    else h=Math.round(h);
+  }
+  else h=-1;
+  css=xDef(e.style);
+  if (e == document || e.tagName.toLowerCase() == 'html' || e.tagName.toLowerCase() == 'body') {
+    h = xClientHeight();
+  }
+  else if(css && xDef(e.offsetHeight) && xStr(e.style.height)) {
+    if(h>=0) {
+      if (document.compatMode=='CSS1Compat') {
+        gcs = xGetComputedStyle;
+        pt=gcs(e,'padding-top',1);
+        if (pt !== null) {
+          pb=gcs(e,'padding-bottom',1);
+          bt=gcs(e,'border-top-width',1);
+          bb=gcs(e,'border-bottom-width',1);
+        }
+        // Should we try this as a last resort?
+        // At this point getComputedStyle and currentStyle do not exist.
+        else if(xDef(e.offsetHeight,e.style.height)){
+          e.style.height=h+'px';
+          pt=e.offsetHeight-h;
+        }
+      }
+      h-=(pt+pb+bt+bb);
+      if(isNaN(h)||h<0) return;
+      else e.style.height=h+'px';
+    }
+    h=e.offsetHeight;
+  }
+  else if(css && xDef(e.style.pixelHeight)) {
+    if(h>=0) e.style.pixelHeight=h;
+    h=e.style.pixelHeight;
+  }
+  return h;
+}
+// xHex r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xHex(n, digits, prefix)
+{
+  var p = '', n = Math.ceil(n);
+  if (prefix) p = prefix;
+  n = n.toString(16);
+  for (var i=0; i < digits - n.length; ++i) {
+    p += '0';
+  }
+  return p + n;
+}
+// xHide r3, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xHide(e){return xVisibility(e,0);}
+// xInsertRule r2, Copyright 2006-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xInsertRule(ss, sel, rule, idx)
+{
+  if (!(ss=xGetElementById(ss))) return false;
+  if (ss.insertRule) { ss.insertRule(sel + "{" + rule + "}", (idx>=0?idx:ss.cssRules.length)); } // DOM
+  else if (ss.addRule) { ss.addRule(sel, rule, idx); } // IE
+  else return false;
+  return true;
+}
+// xLeft r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xLeft(e, iX)
+{
+  if(!(e=xGetElementById(e))) return 0;
+  var css=xDef(e.style);
+  if (css && xStr(e.style.left)) {
+    if(xNum(iX)) e.style.left=iX+'px';
+    else {
+      iX=parseInt(e.style.left);
+      if(isNaN(iX)) iX=xGetComputedStyle(e,'left',1);
+      if(isNaN(iX)) iX=0;
+    }
+  }
+  else if(css && xDef(e.style.pixelLeft)) {
+    if(xNum(iX)) e.style.pixelLeft=iX;
+    else iX=e.style.pixelLeft;
+  }
+  return iX;
+}
+// xMoveTo r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xMoveTo(e,x,y)
+{
+  xLeft(e,x);
+  xTop(e,y);
+}
+// xNum r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xNum()
+{
+  for(var i=0; i<arguments.length; ++i){if(isNaN(arguments[i]) || typeof(arguments[i])!='number') return false;}
+  return true;
+}
+// xOpacity r1, Copyright 2006-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xOpacity(e, o)
+{
+  var set = xDef(o);
+  //  if (set && o == 1) o = .9999; // FF1.0.2 but not needed in 1.5
+  if(!(e=xGetElementById(e))) return 2; // error
+  if (xStr(e.style.opacity)) { // CSS3
+    if (set) e.style.opacity = o + '';
+    else o = parseFloat(e.style.opacity);
+  }
+  else if (xStr(e.style.filter)) { // IE5.5+
+    if (set) e.style.filter = 'alpha(opacity=' + (100 * o) + ')';
+    else if (e.filters && e.filters.alpha) { o = e.filters.alpha.opacity / 100; }
+  }
+  else if (xStr(e.style.MozOpacity)) { // Gecko before CSS3 support
+    if (set) e.style.MozOpacity = o + '';
+    else o = parseFloat(e.style.MozOpacity);
+  }
+  else if (xStr(e.style.KhtmlOpacity)) { // Konquerer and Safari
+    if (set) e.style.KhtmlOpacity = o + '';
+    else o = parseFloat(e.style.KhtmlOpacity);
+  }
+  return isNaN(o) ? 1 : o; // if NaN, should this return an error instead of 1?
+}
+// xParent r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xParent(e, bNode)
+{
+  if (!(e=xGetElementById(e))) return null;
+  var p=null;
+  if (!bNode && xDef(e.offsetParent)) p=e.offsetParent;
+  else if (xDef(e.parentNode)) p=e.parentNode;
+  else if (xDef(e.parentElement)) p=e.parentElement;
+  return p;
+}
+// xParseColor r1, Copyright 2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xParseColor(c)
+{
+  var o = {};
+  if (xStr(c)) {
+    if (c.indexOf('rgb')!=-1) {
+      var a = c.match(/(\d*)\s*,\s*(\d*)\s*,\s*(\d*)/);
+      o.r = parseInt(a[1]) || 0;
+      o.g = parseInt(a[2]) || 0;
+      o.b = parseInt(a[3]) || 0;
+      o.n = (o.r << 16) | (o.g << 8) | o.b;
+    }
+    else {
+      pn(parseInt(c.substr(1), 16));
+    }
+  }
+  else {
+    pn(c);
+  }
+  o.s = xHex(o.n, 6, '#');
+  return o;
+  function pn(n) { // parse num
+    o.n = n || 0;
+    o.r = (o.n & 0xFF0000) >> 16;
+    o.g = (o.n & 0xFF00) >> 8;
+    o.b = o.n & 0xFF;
+  }
+}
+// xPreventDefault r1, Copyright 2004-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xPreventDefault(e)
+{
+  if (e && e.preventDefault) e.preventDefault();
+  else if (window.event) window.event.returnValue = false;
+}
+// xRemoveClass r3, Copyright 2005-2007 Daniel Frechette - modified by Mike Foster
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xRemoveClass(e, c)
+{
+  if(!(e=xGetElementById(e))) return false;
+  e.className = e.className.replace(new RegExp("(^|\\s)"+c+"(\\s|$)",'g'),
+    function(str, p1, p2) { return (p1 == ' ' && p2 == ' ') ? ' ' : ''; }
+  );
+  return true;
+}
+// xRemoveEventListener r6, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xRemoveEventListener(e,eT,eL,cap)
+{
+  if(!(e=xGetElementById(e)))return;
+  eT=eT.toLowerCase();
+  if(e.removeEventListener)e.removeEventListener(eT,eL,cap||false);
+  else if(e.detachEvent)e.detachEvent('on'+eT,eL);
+  else e['on'+eT]=null;
+}
+// xResizeTo r2, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xResizeTo(e, w, h)
+{
+  return {
+    w: xWidth(e, w),
+    h: xHeight(e, h)
+  };
+}
+// xScrollLeft r4, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xScrollLeft(e, bWin)
+{
+  var w, offset=0;
+  if (!xDef(e) || bWin || e == document || e.tagName.toLowerCase() == 'html' || e.tagName.toLowerCase() == 'body') {
+    w = window;
+    if (bWin && e) w = e;
+    if(w.document.documentElement && w.document.documentElement.scrollLeft) offset=w.document.documentElement.scrollLeft;
+    else if(w.document.body && xDef(w.document.body.scrollLeft)) offset=w.document.body.scrollLeft;
+  }
+  else {
+    e = xGetElementById(e);
+    if (e && xNum(e.scrollLeft)) offset = e.scrollLeft;
+  }
+  return offset;
+}
+// xScrollTop r4, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xScrollTop(e, bWin)
+{
+  var w, offset=0;
+  if (!xDef(e) || bWin || e == document || e.tagName.toLowerCase() == 'html' || e.tagName.toLowerCase() == 'body') {
+    w = window;
+    if (bWin && e) w = e;
+    if(w.document.documentElement && w.document.documentElement.scrollTop) offset=w.document.documentElement.scrollTop;
+    else if(w.document.body && xDef(w.document.body.scrollTop)) offset=w.document.body.scrollTop;
+  }
+  else {
+    e = xGetElementById(e);
+    if (e && xNum(e.scrollTop)) offset = e.scrollTop;
+  }
+  return offset;
+}
+// xShow r3, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xShow(e) {return xVisibility(e,1);}
+// xSlideTo r3, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xSlideTo(e, x, y, uTime)
+{
+  if (!(e=xGetElementById(e))) return;
+  if (!e.timeout) e.timeout = 25;
+  e.xTarget = x; e.yTarget = y; e.slideTime = uTime; e.stop = false;
+  e.yA = e.yTarget - xTop(e); e.xA = e.xTarget - xLeft(e); // A = distance
+  if (e.slideLinear) e.B = 1/e.slideTime;
+  else e.B = Math.PI / (2 * e.slideTime); // B = period
+  e.yD = xTop(e); e.xD = xLeft(e); // D = initial position
+  var d = new Date(); e.C = d.getTime();
+  if (!e.moving) _xSlideTo(e);
+}
+function _xSlideTo(e)
+{
+  if (!(e=xGetElementById(e))) return;
+  var now, s, t, newY, newX;
+  now = new Date();
+  t = now.getTime() - e.C;
+  if (e.stop) { e.moving = false; }
+  else if (t < e.slideTime) {
+    setTimeout("_xSlideTo('"+e.id+"')", e.timeout);
+
+    s = e.B * t;
+    if (!e.slideLinear) s = Math.sin(s);
+//    if (e.slideLinear) s = e.B * t;
+//    else s = Math.sin(e.B * t);
+
+    newX = Math.round(e.xA * s + e.xD);
+    newY = Math.round(e.yA * s + e.yD);
+    xMoveTo(e, newX, newY);
+    e.moving = true;
+  }  
+  else {
+    xMoveTo(e, e.xTarget, e.yTarget);
+    e.moving = false;
+    if (e.onslideend) e.onslideend();
+  }  
+}
+
+// xStopPropagation r1, Copyright 2004-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xStopPropagation(evt)
+{
+  if (evt && evt.stopPropagation) evt.stopPropagation();
+  else if (window.event) window.event.cancelBubble = true;
+}
+// xStr r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xStr(s)
+{
+  for(var i=0; i<arguments.length; ++i){if(typeof(arguments[i])!='string') return false;}
+  return true;
+}
+// xStyle r1, Copyright 2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xStyle(sProp, sVal)
+{
+  var i, e;
+  for (i = 2; i < arguments.length; ++i) {
+    e = xGetElementById(arguments[i]);
+    if (e.style) {
+      try { e.style[sProp] = sVal; }
+      catch (err) { e.style[sProp] = ''; } // ???
+    }
+  }
+}
+// xToggleClass r2, Copyright 2005-2007 Daniel Frechette
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+/* Added by DF, 2005-10-11
+ * Toggles a class name on or off for an element
+ */
+function xToggleClass(e, c) {
+  if (!(e = xGetElementById(e)))
+    return null;
+  if (!xRemoveClass(e, c) && !xAddClass(e, c))
+    return false;
+  return true;
+}
+// xTop r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xTop(e, iY)
+{
+  if(!(e=xGetElementById(e))) return 0;
+  var css=xDef(e.style);
+  if(css && xStr(e.style.top)) {
+    if(xNum(iY)) e.style.top=iY+'px';
+    else {
+      iY=parseInt(e.style.top);
+      if(isNaN(iY)) iY=xGetComputedStyle(e,'top',1);
+      if(isNaN(iY)) iY=0;
+    }
+  }
+  else if(css && xDef(e.style.pixelTop)) {
+    if(xNum(iY)) e.style.pixelTop=iY;
+    else iY=e.style.pixelTop;
+  }
+  return iY;
+}
+// xTraverseDocumentStyleSheets r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+//
+// xTraverseDocumentStyleSheets(callback)
+//   traverses all stylesheets attached to a document (linked as well as internal)
+//
+function xTraverseDocumentStyleSheets(cb) {
+  var ssList = document.styleSheets; if (!ssList) return undefined;
+
+  for (i = 0; i < ssList.length; i++) {
+    var ss = ssList[i] ; if (! ss) continue;
+    if (xTraverseStyleSheet(ss,cb)) return true;
+  }
+  return false;
+}
+// xTraverseStyleSheet r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+//
+// xTraverseStyleSheet (stylesheet, callback)
+//   traverses all rules in the stylesheet, calling callback function on each rule.
+//   recursively handles stylesheets imported with @import CSS directive
+//   stops when the callback function returns true (it has found what it's been looking for)
+//
+// returns:
+//   undefined - problems with CSS-related objects
+//   true      - callback function returned true at least once
+//   false     - callback function always returned false
+//
+function xTraverseStyleSheet(ss,cb) {
+  if (!ss) return false;
+  var rls = xGetCSSRules(ss) ; if (!rls) return undefined ;
+  var result;
+
+  for (var j = 0; j < rls.length; j++) {
+    var cr = rls[j];
+    if (cr.selectorText) { result = cb(cr); if (result) return true; }
+    if (cr.type && cr.type == 3 && cr.styleSheet) xTraverseStyleSheet(cr.styleSheet,cb);
+  }
+  if (ss.imports) {
+    for (var j = 0 ; j < ss.imports.length; j++) {
+      if (xTraverseStyleSheet(ss.imports[j],cb)) return true;
+    }
+  }
+  return false;
+}
+// xVisibility r1, Copyright 2003-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xVisibility(e, bShow)
+{
+  if(!(e=xGetElementById(e))) return null;
+  if(e.style && xDef(e.style.visibility)) {
+    if (xDef(bShow)) e.style.visibility = bShow ? 'visible' : 'hidden';
+    return e.style.visibility;
+  }
+  return null;
+}
+
+//function xVisibility(e,s)
+//{
+//  if(!(e=xGetElementById(e))) return null;
+//  var v = 'visible', h = 'hidden';
+//  if(e.style && xDef(e.style.visibility)) {
+//    if (xDef(s)) {
+//      // try to maintain backwards compatibility (???)
+//      if (xStr(s)) e.style.visibility = s;
+//      else e.style.visibility = s ? v : h;
+//    }
+//    return e.style.visibility;
+//    // or...
+//    // if (e.style.visibility.length) return e.style.visibility;
+//    // else return xGetComputedStyle(e, 'visibility');
+//  }
+//  else if (xDef(e.visibility)) { // NN4
+//    if (xDef(s)) {
+//      // try to maintain backwards compatibility
+//      if (xStr(s)) e.visibility = (s == v) ? 'show' : 'hide';
+//      else e.visibility = s ? v : h;
+//    }
+//    return (e.visibility == 'show') ? v : h;
+//  }
+//  return null;
+//}
+// xWalkToFirst r1, Copyright 2005-2007 Olivier Spinelli
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xWalkToFirst( oNode, fnVisit, skip, data )
+{
+  var r = null;
+  while(oNode)
+  {
+    if(oNode.nodeType==1&&oNode!=skip){r=fnVisit(oNode,data);if(r)return r;}
+    var n=oNode;
+    while(n=n.previousSibling){if(n!=skip){r=xWalkTreeRev(n,fnVisit,skip,data);if(r)return r;}}
+    oNode=oNode.parentNode;
+  }
+  return r;
+}
+// xWalkToLast r1, Copyright 2005-2007 Olivier Spinelli
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xWalkToLast( oNode, fnVisit, skip, data )
+{
+  var r = null;
+  if( oNode )
+  {
+    r=xWalkTree2(oNode,fnVisit,skip,data);if(r)return r;
+    while(oNode)
+    {
+      var n=oNode;
+      while(n=n.nextSibling){if(n!=skip){r=xWalkTree2(n,fnVisit,skip,data);if(r)return r;}}
+      oNode=oNode.parentNode;
+    }
+  }
+  return r;
+}
+// xWalkTree2 r1, Copyright 2005-2007 Olivier Spinelli
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+// My humble contribution to the great cross-browser xLibrary file x_dom.js
+//
+// This function is compatible with Mike's but adds:
+// - 'fnVisit' can return a non null object to stop the walk. This result will be returned to caller.
+// See function xFindAfterByClassName below: it uses it.
+// - 'fnVisit' accept one optional 'data' parameter
+// - 'skip' is an optional element that will be ignored during traversal. It is often useful to skip
+// the starting node: when skip == oNode, 'fnVisit' is not called but, of course, child are processed.
+//
+function xWalkTree2( oNode, fnVisit, skip, data )
+{
+  var r=null;
+  if(oNode){if(oNode.nodeType==1&&oNode!=skip){r=fnVisit(oNode,data);if(r)return r;}
+  for(var c=oNode.firstChild;c;c=c.nextSibling){if(c!=skip)r  =xWalkTree2(c,fnVisit,skip,data);if(r)return r;}}
+  return r;
+}
+// xWalkTreeRev r2, Copyright 2005-2007 Olivier Spinelli
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+//
+// Same as xWalkTree2 except that traversal is reversed (last to first child).
+//
+function xWalkTreeRev( oNode, fnVisit, skip, data )
+{
+  var r=null;
+  if(oNode){if(oNode.nodeType==1&&oNode!=skip){r=fnVisit(oNode,data);if(r)return r;}
+  for(var c=oNode.lastChild;c;c=c.previousSibling){if(c!=skip)r=xWalkTreeRev(c,fnVisit,skip,data);if(r)return r;}}
+  return r;
+}
+// xWidth r7, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xWidth(e,w)
+{
+  var css, pl=0, pr=0, bl=0, br=0, gcs;
+  if(!(e=xGetElementById(e))) return 0;
+  if (xNum(w)) {
+    if (w<0) w = 0;
+    else w=Math.round(w);
+  }
+  else w=-1;
+  css=xDef(e.style);
+  if (e == document || e.tagName.toLowerCase() == 'html' || e.tagName.toLowerCase() == 'body') {
+    w = xClientWidth();
+  }
+  else if(css && xDef(e.offsetWidth) && xStr(e.style.width)) {
+    if(w>=0) {
+      if (document.compatMode=='CSS1Compat') {
+        gcs = xGetComputedStyle;
+        pl=gcs(e,'padding-left',1);
+        if (pl !== null) {
+          pr=gcs(e,'padding-right',1);
+          bl=gcs(e,'border-left-width',1);
+          br=gcs(e,'border-right-width',1);
+        }
+        // Should we try this as a last resort?
+        // At this point getComputedStyle and currentStyle do not exist.
+        else if(xDef(e.offsetWidth,e.style.width)){
+          e.style.width=w+'px';
+          pl=e.offsetWidth-w;
+        }
+      }
+      w-=(pl+pr+bl+br);
+      if(isNaN(w)||w<0) return;
+      else e.style.width=w+'px';
+    }
+    w=e.offsetWidth;
+  }
+  else if(css && xDef(e.style.pixelWidth)) {
+    if(w>=0) e.style.pixelWidth=w;
+    w=e.style.pixelWidth;
+  }
+  return w;
+}
+// xZIndex r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+function xZIndex(e,uZ)
+{
+  if(!(e=xGetElementById(e))) return 0;
+  if(e.style && xDef(e.style.zIndex)) {
+    if(xNum(uZ)) e.style.zIndex=uZ;
+    uZ=parseInt(e.style.zIndex);
+  }
+  return uZ;
+}
 
 // The following functions has been improved by the eyeOS team.
 

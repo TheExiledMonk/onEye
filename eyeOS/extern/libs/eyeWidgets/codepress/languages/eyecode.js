@@ -27,8 +27,8 @@ Language.snippets = [
 	{ input : 'elseif', output : '}\nelseif($0) {\n\t' },
 	{ input : 'do', output : 'do{\n\t$0\n}\nwhile();' },
 	{ input : 'inc', output : 'include_once("$0");' },
-	{ input : 'fun', output : 'function $0(){\n\t\n}' },	
-	{ input : 'func', output : 'function $0(){\n\t\n}' },	
+	{ input : 'fun', output : 'function $0(){\n\t\n}' },
+	{ input : 'func', output : 'function $0(){\n\t\n}' },
 	{ input : 'while', output : 'while($0){\n\t\n}' },
 	{ input : 'for', output : 'for($0,,){\n\t\n}' },
 	{ input : 'fore', output : 'foreach($0 as ){\n\t\n}' },
@@ -74,7 +74,7 @@ Language.snippets = [
 	{ input : 'cudir', output: "\t$myUserDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/';"},
 	{ input : 'msgbox', output: "\tservice('eyex','messageBox',array('content' => '$0'));"},
 	{ input : 'sudo', output: "\tglobal $currentUser;\n\t$oldUser = $currentUser;\n\t$currentUser = ROOTUSER;\n\t$0\n\t$currentUser = $oldUser;"},
-]	
+]
 		 
 
 Language.complete = [
@@ -82,7 +82,7 @@ Language.complete = [
 	{ input : '"', output : '"$0"' },
 	{ input : '(', output : '\($0\)' },
 	{ input : '[', output : '\[$0\]' },
-	{ input : '{', output : '{\n\t$0\n}' }		
+	{ input : '{', output : '{\n\t$0\n}' }
 ]
 
 Language.shortcuts = [

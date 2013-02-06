@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,7 +22,7 @@
 */
 
 function eyeSheets_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeSheets_on_Resize($params=null) {
@@ -34,6 +34,10 @@ function eyeSheets_on_Resize($params=null) {
 	$GLOBALS['eyeSheetsWND']->height = $height;
 	$GLOBALS['eyeSheetsFrame']->setWidth($width-4);
 	$GLOBALS['eyeSheetsFrame']->setHeight($height-30);
+}
+
+function eyeSheets_on_fullScreen() {
+	$GLOBALS['eyeSheetsWND']->setFullScreen();
 }
 
 function eyeSheets_on_getSheet($params=null) {
@@ -64,7 +68,7 @@ function eyeSheets_on_getFile($params=null) {
 	if(!$file) {
 			echo "
 cols = 10;
-rows = 30;	
+rows = 30;
 dbCells = [];";
 			exit;
 	}
@@ -120,6 +124,10 @@ function parseMyODS($content) {
 	return $ret;
 }
 
+function eyeSheets_on_help($params = '') {
+	proc('launch',array('eyeHelp','eyeSheets'));
+}
+
 function eyeSheets_on_openFile($params=null) {
 	global $checknum;
 	$options = array(
@@ -139,23 +147,23 @@ function eyeSheets_on_saveFile($params=null) {
 
 	$arg = $params['arg1'][0];
 	$arg = base64_decode($arg);
-	
+
 	$maxX = utf8_substr($arg, 0, utf8_strpos($arg, ','));
 	$arg = utf8_substr($arg, utf8_strpos($arg, "\n")+1);
 	$maxY = utf8_substr($arg, 0, utf8_strpos($arg, ','));
 
 	$myArgs = explode("\n",$arg);
 	$pattern = '/\[(\d+)\,(\d+)\,\"([^"]+)\"/';
-	
+
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeSheets/lib/ods'.EYE_CODE_EXTENSION);
 	$ods = newOds();
-	
+
 	for($i=0;$i<$maxX;$i++) {
 		for($j=0;$j<$maxY;$j++) {
 			$ods->addCell(0, $i, $j, "", 'string');
 		}
 	}
-	
+
 	$stack = array();
 	foreach($myArgs as $value) {
 		preg_match($pattern,$value,$matchs);
@@ -225,15 +233,15 @@ function eyeSheets_on_SaveAs($params=null) {
 
 function eyeSheets_on_SelectFileSave($params=null) {
 	global $myPid;
-	
+
 	$file = $params['arg'][0];
 	if($file) {
 		if(!utf8_strpos($file, '.')) {
 			$file .= '.ods';
 		}
-		
+
 		$file = um('getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
-		
+
 		if (utf8_substr($file,-4) == ".ods" || utf8_substr($file,-4) == ".xls") {
 			if(is_object($GLOBALS['sheetPath'])) {
 				$GLOBALS['sheetPath']->text = $file;

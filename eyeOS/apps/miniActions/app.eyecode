@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -21,60 +21,71 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
+/**
+*@TODO un-hardcode code this app ?
+*/
+
 function miniActions_run($params=null) {
 	global $myPid;
-	
-	$processTable = service('proc','getProcessTable');
-	$count = 0;
-	foreach($processTable as $process){
-		if($process['appName'] == 'miniActions'){
-			if($count > 0) {
-				proc('end');
-				return;
-			}
-			$count++;
+
+	foreach (proc('getProcessTable') as $process) {
+		if ($process['appName'] == 'miniActions' && $process['pid'] != $myPid) {
+			eyex('messageBox', array('content' => 'miniActions is already running!'));
+			return proc('end');
 		}
 	}
-	
+
+	//set some common ver
+	$buttonBg = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniActions/button.png';
+
+	// set css for each row
+	$myCss = array(
+		"font-size"=>"10px",
+		"color"=>"#000000",
+		"cursor"=>"pointer"
+	);
+
+
 	$width = $_SESSION['SCREEN']['width']-236;
 	// Window
 	$myWindow = new Window(array(
 		'name'=>'miniActionsWND',
-		'father'=>'eyeApps',
+		'father' => 'eyeWidgets',
+		'removeFatherPid' => 1,
 		'type'=>WIN_IMAGE_DRAGGABLE_NOTLISTED, 
 		'title'=>'Actions widget',
-		'background'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/bg.png',
-		'width'=>191,
-		'height'=>200,
+		'background'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniActions/bg.png',
+		'width'=>196,
+		'height'=>220,
 		'forceSavePosition'=>1,
 		'x'=>$width,
 		'y'=>165,
 	));
 	$myWindow->show();
-	
+
 	// Button 1
 	$myImage1 = new Imagebox(array(
 		'name' => 'miniActions_1',
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 28,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
+		'url' => $buttonBg,
 		'signal' => 'Launch1',
 		'disableMsg'=>0
 	));
 	$myImage1->show();
-	
+
 	$myImage2 = new Imagebox(array(
 		'name' => 'miniActions_1_img',
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 35,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/upload.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/upload.png',
 		'signal' => 'Launch1',
 		'disableMsg'=>0
 	));
 	$myImage2->show();
-	
+
 	$myLabel1 = new Label(array(
 		'name' => 'miniActions_1_lbl',
 		'father' => 'miniActionsWND',
@@ -85,37 +96,31 @@ function miniActions_run($params=null) {
 		'disablemsg'=>0
 	));
 	$myLabel1->show();
-	
-	$myCss1 = array(
-		"font-size"=>"10px",
-		"color"=>"#DADADA",
-		"cursor"=>"pointer"
-	);
-	$myLabel1->setCss($myCss1);
-	
+	$myLabel1->setCss($myCss);
+
 	// Button 2
 	$myImage3 = new Imagebox(array(
 		'name' => 'miniActions_2',
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 64,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
+		'url' => $buttonBg,
 		'signal' => 'Launch2',
 		'disableMsg'=>0
 	));
 	$myImage3->show();
-	
+
 	$myImage4 = new Imagebox(array(
 		'name' => 'miniActions_2_img',
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 71,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/message.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/message.png',
 		'signal' => 'Launch2',
 		'disableMsg'=>0
 	));
 	$myImage4->show();
-	
+
 	$myLabel2 = new Label(array(
 		'name' => 'miniActions_2_lbl',
 		'father' => 'miniActionsWND',
@@ -126,37 +131,31 @@ function miniActions_run($params=null) {
 		'disablemsg'=>0
 	));
 	$myLabel2->show();
-	
-	$myCss2 = array(
-		"font-size"=>"10px",
-		"color"=>"#DADADA",
-		"cursor"=>"pointer"
-	);
-	$myLabel2->setCss($myCss2);
-	
+	$myLabel2->setCss($myCss);
+
 	// Button 3
 	$myImage5 = new Imagebox(array(
 		'name' => 'miniActions_3',
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 100,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
+		'url' => $buttonBg,
 		'signal' => 'Launch3',
 		'disableMsg'=>0
 	));
 	$myImage5->show();
-	
+
 	$myImage6 = new Imagebox(array(
 		'name' => 'miniActions_3_img',
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 107,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/document.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/document.png',
 		'signal' => 'Launch3',
 		'disableMsg'=>0
 	));
 	$myImage6->show();
-	
+
 	$myLabel3 = new Label(array(
 		'name' => 'miniActions_3_lbl',
 		'father' => 'miniActionsWND',
@@ -167,37 +166,31 @@ function miniActions_run($params=null) {
 		'disablemsg'=>0
 	));
 	$myLabel3->show();
-	
-	$myCss3 = array(
-		"font-size"=>"10px",
-		"color"=>"#DADADA",
-		"cursor"=>"pointer"
-	);
-	$myLabel3->setCss($myCss3);
-	
-	// Button 3
+	$myLabel3->setCss($myCss);
+
+	// Button 4
 	$myImage7 = new Imagebox(array(
 		'name' => 'miniActions_4',
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 136,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
+		'url' => $buttonBg,
 		'signal' => 'Launch4',
 		'disableMsg'=>0
 	));
 	$myImage7->show();
-	
+
 	$myImage8 = new Imagebox(array(
 		'name' => 'miniActions_4_img',
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 143,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/spreadsheet.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/spreadsheet.png',
 		'signal' => 'Launch4',
 		'disableMsg'=>0
 	));
 	$myImage8->show();
-	
+
 	$myLabel4 = new Label(array(
 		'name' => 'miniActions_4_lbl',
 		'father' => 'miniActionsWND',
@@ -208,22 +201,16 @@ function miniActions_run($params=null) {
 		'disablemsg'=>0
 	));
 	$myLabel4->show();
-	
-	$myCss4 = array(
-		"font-size"=>"10px",
-		"color"=>"#DADADA",
-		"cursor"=>"pointer"
-	);
-	$myLabel4->setCss($myCss4);
-	
+	$myLabel4->setCss($myCss);
+
 	// Close button
 	$myImage9 = new Imagebox(array(
 		'name' => 'miniActions_close',
 		'father' => 'miniActionsWND',
 		'x' => 90,
-		'y' => 15,
+		'y' => 30,
 		'vert'=>1,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/close.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/12x12/close.png',
 		'signal' => 'closeApp',
 		'disableMsg'=>0
 	));

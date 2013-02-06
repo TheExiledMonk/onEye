@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -258,13 +258,13 @@ function eyeFiles_on_OpenPath($params = '') {
 	$show = $path[2];
 	$type = $path[1];
 	$path = $path[0];
-	
+
 	if (!$params['nohistory'] && $_SESSION['eyeFiles'][$myPid]['history']['list'][$_SESSION['eyeFiles'][$myPid]['history']['position']] != $type . '://' . $show) {
 		$_SESSION['eyeFiles'][$myPid]['history']['position']++;
 		$_SESSION['eyeFiles'][$myPid]['history']['list'] = array_slice($_SESSION['eyeFiles'][$myPid]['history']['list'],0,$_SESSION['eyeFiles'][$myPid]['history']['position']);
 		$_SESSION['eyeFiles'][$myPid]['history']['list'][] = $type . '://' . $show;
 	}
-	
+
 	if ($GLOBALS['eyeFiles_Hidden_Action']->text != '') {
 		$father = 'files';
 		if ($type == 'trash') {
@@ -275,7 +275,7 @@ function eyeFiles_on_OpenPath($params = '') {
 		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Box_Actions_menu_' . $father . '_Container_' . $GLOBALS['eyeFiles_Hidden_Action']->text . '_Container"); e.className = ""; e.style.backgroundColor = "";'));
 		$GLOBALS['eyeFiles_Hidden_Action']->setText('');
 	}
-	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Window_Content").style.backgroundImage = "url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/bg-' . $type . '.png)";'));
+	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Window_Content").style.backgroundImage = "url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/windows/bg-' . $type . '.png)";'));
 	if ($show == '/') {
 		$title = i18n('translate',array(utf8_ucfirst($type)));
 	} else {

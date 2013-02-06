@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,7 +22,7 @@
 */
 
 function eyePresentation_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyePresentation_on_Open($params=null) {
@@ -32,26 +32,26 @@ function eyePresentation_on_Open($params=null) {
 		'SelectFileOpen',
 		$checknum,
 	);
-	service('proc','launch',array('eyeDialog',$options));
+	proc('launch',array('eyeDialog',$options));
 }
 
 function eyePresentation_on_SelectFileOpen($params=null) {
 	$file = $params['arg'][0];
 	if($file) {
-		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
+		$file = um('getCurrentUserDir').FILES_USER_DIR.'/'.$file;
 		//TODO: SECURITY: MAYBE VFS HERE
 		if(is_dir($file)) {
-			service('eyex','messageBox',array('content'=>'You need to select a file to open!'));
+			eyex('messageBox',array('content'=>'You need to select a file to open!'));
 			return;
 		}
-		$fp = service('vfs','open',array($file,'r'));
+		$fp = vfs('open',array($file,'r'));
 		if(!$fp) {
-			service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+			eyex('messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
 			return;
 		}
 		fclose($fp);
 		$myHidden = new Hidden(array('name'=>'filepath','father'=>'presentationWND','text'=>$file));
-		reqLib('eyeWidgets','serialize',array($myHidden));
+		eyeWidgets('serialize',array($myHidden));
 		$GLOBALS['filepath'] = $myHidden;
 		gotoSlide(0);
 		global $checknum;
@@ -68,7 +68,7 @@ function eyePresentation_on_back($params=null) {
 	global $checknum;
 	$myNumber = intval($GLOBALS['currentSlide']->text);
 	if($myNumber == 0) {
-		eyeX('messagebox',array('content'=>'You are already on the first slide, you cannot go back anymore!'));	
+		eyeX('messagebox',array('content'=>'You are already on the first slide, you cannot go back anymore!'));
 	} else {
 		$myNumber--;
 		gotoSlide($myNumber);
@@ -81,7 +81,7 @@ function eyePresentation_on_next($params=null) {
 	$myNumber = intval($GLOBALS['currentSlide']->text);
 	$myNumber++;
 	gotoSlide($myNumber);
-	$GLOBALS['imgFrame']->setUrl("index.php?checknum=".$checknum."&msg=getSlide&anticache=".md5(uniqid(time())));	
+	$GLOBALS['imgFrame']->setUrl("index.php?checknum=".$checknum."&msg=getSlide&anticache=".md5(uniqid(time())));
 }
 
 function eyePresentation_on_getSlide($params=null) {
@@ -94,7 +94,7 @@ function eyePresentation_on_getSlide($params=null) {
 	}
 	$len = filesize($file);
 	$info = @getimagesize($file);
-	$fp = service('vfs','real_open',array($file,'r'),1);
+	$fp = vfs('real_open',array($file,'r'),1);
 	if(!$fp) {
 		return;
 	}
@@ -122,23 +122,23 @@ function gotoSlide($num) {
 	$myFile = $GLOBALS['filepath']->text;
 	$myName = utf8_basename($myFile);
 	$dir = realpath(um('getCurrentUserDir').'/tmp/').'/'.$myPid.'_'.$myName;
-	
+
 	if(!vfs('checkPermissions',array($myFile,'r'))) {
 		return false;
 	}
-	
+
 	$myFile = vfs('getRealName',array($myFile));
 	copy($myFile,$dir); //TODO: WARNING: SECURITY: THIS SHOULD BE PASSED TO VFS_REAL_COPY
 	$myFile = realpath(dirname($dir)).'/'.utf8_basename($dir);
-	
+
 	$myFile = escapeshellarg($myFile);
 	$myFile = utf8_substr($myFile,1);
 	$myFile = utf8_substr($myFile,0,utf8_strlen($myFile)-1);
-	
+
 	$dir = escapeshellarg($dir);
 	$dir = utf8_substr($dir,1);
 	$dir = utf8_substr($dir,0,utf8_strlen($dir)-1);
-	
+
 	//TODO: maybe vfs here?
 	if(is_dir($myFile) || !is_file($myFile) || !is_readable($myFile)) {
 		return false;
@@ -155,7 +155,7 @@ function gotoSlide($num) {
 		$cmd = OFFICE_COMMAND.' -headless -norestore '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.getSingleSlide('.$myFile.','.intval($num).','.$dir.')'.OFFICE_SEPARATOR_ARG;
 	}
 	$myHidden = new Hidden(array('name'=>'currentSlide','father'=>'presentationWND','text'=>$num));
-	reqLib('eyeWidgets','serialize',array($myHidden));
+	eyeWidgets('serialize',array($myHidden));
 	$GLOBALS['currentSlide'] = $myHidden;
 	shell_exec($cmd);
 }

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -28,17 +28,17 @@ function eyeMovies_on_Message($params="") {
 function eyeMovies_on_getMovie($params=""){
 	global $checknum,$myPid;
 	$viPath = $GLOBALS['vPath']->text;
-	if(!service('vfs','checkPermissions',array($viPath))) {
+	if(!vfs('checkPermissions',array($viPath))) {
 		exit;
 	}
-	$myName = service('vfs','getRealName',array($viPath));
-	$size = service('vfs','filesize',array($viPath),1);	
+	$myName = vfs('getRealName',array($viPath));
+	$size = vfs('filesize',array($viPath),1);
 	header('Content-Type: video/vnd.divx');
 	header("Content-Length: $size");
-	readfile($myName);						
+	readfile($myName);
 }
 
 
 function eyeMovies_on_Close($params=null) {
-	proc('end');	
+	proc('end');
 }

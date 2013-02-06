@@ -1,27 +1,38 @@
 <eyeNav>
 	<home>http://eyeos.org/navigator/</home>
 	<plugin>iframe</plugin>
+	<sidebar>1</sidebar>
 	<bookmarks>
 		<title>Bookmarks</title>
-		<category>
-			<name>eyeOS</name>
-			<link>
+		<bookmark>
+			<id>1</id>
+			<type>folder</type>
+			<name>eyeos</name>
+			<bookmark>
 				<name>Website</name>
+				<id>2</id>
 				<url>http://eyeos.org/</url>
-			</link>
-			<link>
-				<name>Applications</name>
-				<url>http://eyeos-apps.org/</url>
-			</link>
-			<link>
+				<type>url</type>
+			</bookmark>
+			<bookmark>
+				<name>Blog</name>
+				<id>3</id>
+				<url>http://blog.eyeos.org/</url>
+				<type>url</type>
+			</bookmark>
+			<bookmark>
 				<name>Forums</name>
+				<id>4</id>
 				<url>http://forums.eyeos.org/</url>
-			</link>
-			<link>
+				<type>url</type>
+			</bookmark>
+			<bookmark>
 				<name>Wiki</name>
+				<id>5</id>
 				<url>http://wiki.eyeos.org/</url>
-			</link>
-		</category>
+				<type>url</type>
+			</bookmark>
+		</bookmark>
 	</bookmarks>
 	<searches>
 		<title>Search</title>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -289,7 +289,7 @@ function eyeContacts_edit() {
 		<input type="hidden" name="themd5" value="'.$contact[2].'"/>
 		<input id="lgbt" name="saveContact" value="Save" type="submit">
 	</form>';
-						
+
 }
 
 function eyeContacts_new() {
@@ -359,7 +359,7 @@ function eyeContacts_new() {
 			</fieldset>
 		<input id="lgbt" name="saveContact" value="Save" type="submit">
 	</form>';
-						
+
 }
 
 function eyeContacts_save() {
@@ -404,7 +404,7 @@ function eyeContacts_save() {
 			'caption' => 'Continue',
 			'link' => 'index.php?action=eyeContacts&noPropagate=2'
 		));
-	}		
-	
+	}
+
 }
 ?>

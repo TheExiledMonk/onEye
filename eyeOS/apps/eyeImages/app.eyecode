@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -41,6 +41,7 @@ function eyeImages_run($params = '') {
 }
 
 function eyeImages_end($params = '') {
+	removeListenerServiceCall('eyex','resizedbrowser');
 	eyeWidgets('unserialize',$params);
 }
 ?>

@@ -8,7 +8,7 @@
 }
 
 .eyeCalendar_halfHour {
-	border-top:1px dotted #cccccc;
+	border-top:1px dotted #dddddd;
 	height: 1px;
 	position: absolute;
 }
@@ -24,4 +24,22 @@
 .eyeCalendar_part {
 	height: 25%;
 	z-index: 2;
+}
+
+.eyeCalendar {
+	padding-right: 2px;
+}
+
+#notebody, #noteTitle {
+	-moz-border-radius-bottomright: 0px;
+        -webkit-border-bottom-right-radius: 0px;
+	-moz-border-radius-bottomleft: 0px;
+        -webkit-border-bottom-left-radius: 0px;
+}
+
+#notebody {
+	-moz-border-radius-topright: 0px;
+        -webkit-border-top-right-radius: 0px;
+	-moz-border-radius-topleft: 0px;
+        -webkit-border-top-left-radius: 0px;
 }

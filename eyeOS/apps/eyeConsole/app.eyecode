@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,7 +24,7 @@
 function eyeConsole_run($params=null) {
 	global $currentUser;
 	global $myPid;
-	
+
 	$myWindow = new Window(array(
 		'name' => 'consoleWindow',
 		'title' => $currentUser.'@'.EYEOS_HOSTNAME,
@@ -36,9 +36,9 @@ function eyeConsole_run($params=null) {
 		'sigResize' => 'Resize'
 	));
 	$myWindow->show();
-	
+
 	eyeX('updateCss',array('name'=> $myPid.'_consoleWindow_Content','property'=>'backgroundColor','value'=>'black'));
-	
+
 	$myBox = new Container(array(
 		'name' => 'consoleOutput',
 		'father' => 'consoleWindow_Content',
@@ -50,16 +50,16 @@ function eyeConsole_run($params=null) {
 	));
 	$myBox->show(1);
 	$myBox->setCss(array('background-color'=>'black'));
-	
-	$tty = proc('newTty');	
-	
+
+	$tty = proc('newTty');
+
 	eyex('createDiv',array('class' => 'eyeConsole','father' => $myPid.'_consoleOutput','name' => $tty.'_tty','nopid' => 1,'removepid' => 1));
 	eyeX('updateCss',array('name'=> $tty.'_tty','property'=>'position','value'=>'absolute'));
 	eyeX('updateCss',array('name'=> $tty.'_tty','property'=>'bottom','value'=>'0px'));
 	eyeX('updateCss',array('name'=> $tty.'_tty','property'=>'left','value'=>'4px'));
 	eyeX('updateCss',array('name'=> $tty.'_tty','property'=>'color','value'=>'green'));
-	
-	
+
+
 	$myLabel = new Label(array(
 		'name' => 'prompt',
 		'father' => 'consoleWindow_Content',
@@ -69,9 +69,9 @@ function eyeConsole_run($params=null) {
 		'text' => 'eyeOS> '
 	));
 	$myLabel->show();
-	
+
 	$myLabel->setCss(array('color'=>'green'));
-	
+
 	$myTextBox = new Textbox(array(
 		'name' => 'cmd',
 		'father' => 'consoleWindow_Content',
@@ -87,7 +87,7 @@ function eyeConsole_run($params=null) {
 }
 
 function eyeConsole_end($params=null) {
-	
+
 }
 
 ?>

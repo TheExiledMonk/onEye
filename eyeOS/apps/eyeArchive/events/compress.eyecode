@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,33 +22,33 @@
 */
 
 function eyeArchive_on_Compress($params){
-		
+
 	if(isset($params['workingPath'][0]) && !empty($params['workingPath'][0])){
 		$dest = $params['workingPath'][0];
 	}else{
-		$dest = $GLOBALS['workingPath']->text;	
-	}	
-	
+		$dest = $GLOBALS['workingPath']->text;
+	}
+
 	$type = utf8_substr(strrchr($dest, "."), 1);
-	$types = reqLib('eyeFileArchive','supportedTypes');
+	$types = eyeFileArchive('supportedTypes');
 	if(array_search($type,$types) === false){
 		eyex('messageBox',array('content'=>'The compress type is not supported'));
 		return false;
 	}
 	$dest = um('getCurrentUserDir').'/'.FILES_USER_DIR.'/'.$dest;
-			
+
 	$myProject = _eyeArchive_getProject();
 	$path = $myProject->getFilesName();
-	array_unshift($path,$myProject->getSrc());	
-	$fpath[] = $path;	
+	array_unshift($path,$myProject->getSrc());
+	$fpath[] = $path;
 	$params[0] = array(
 					'archived'=>$fpath
-					);	
+					);
 	$params[1] = $dest;
-	
-	if(!reqLib('eyeFileArchive','compress',$params)){
+
+	if(!eyeFileArchive('compress',$params)){
 		eyex('messageBox',array('content'=>'Compression failed'));
-		return false;	
+		return false;
 	}
 	eyeFiles('update',array(dirname($dest)));
 	eyex('messageBox',array('content'=>'Compressed successfully'));

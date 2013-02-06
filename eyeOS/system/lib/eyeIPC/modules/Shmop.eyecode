@@ -147,7 +147,7 @@ class System_SharedMemory_Shmop extends System_SharedMemory_Common
     function isVar($name)
     {
         if ($this->get($name)) {
-        	return true;        	
+        	return true;        
         } else {
         	return false;
         }

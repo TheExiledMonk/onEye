@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,7 +22,7 @@
 */
 
 function lib_eyeSmtp_send($params) {
-	
+
 	if (!empty($params[0])) {					// DEPRECATED
 		$to = $params[0];						// DEPRECATED
 		$subject = $params[1];					// DEPRECATED
@@ -40,14 +40,14 @@ function lib_eyeSmtp_send($params) {
 	} else {
 		return false;
 	}
-	
+
 	$host = SMTP_HOST;
 	$port = SMTP_PORT;
 	$ssl = SMTP_SSL;
 	$username = SMTP_USERNAME;
 	$password = SMTP_PASSWORD;
 	$smtpFrom = SMTP_FROM;
-	
+
 	if (isset($params['host'])) {
 		$host = $params['host'];
 	} 
@@ -68,9 +68,9 @@ function lib_eyeSmtp_send($params) {
 	}
 	include_once(EYE_ROOT.'/system/'.LIB_DIR.'/eyeSmtp/sasl'.EYE_CODE_EXTENSION);
 	include_once(EYE_ROOT.'/system/'.LIB_DIR.'/eyeSmtp/smtp'.EYE_CODE_EXTENSION);
-	
+
 	$smtp=new smtp_class;
-	
+
     $smtp->host_name = $host;       /* Change this variable to the address of the SMTP server to relay, like "smtp.myisp.com" */
     $smtp->host_port = $port;                /* Change this variable to the port of the SMTP server to use, like 465 */
     $smtp->ssl = $ssl;                       /* Change this variable if the SMTP server requires an secure connection using SSL */

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -34,67 +34,67 @@ File_Archive::setOption('tmpDirectory',get_tmp_dir());
 
 function lib_eyeFileArchive_extract($params=null){
 	if($params == null || empty($params[0]) || empty($params[1])){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-				
+
 	if(!vfs('real_checkPermissions',array($params[1]))){
 		return false;
 	}
-	_getEqTypes($params);	
-	
-	//Setting option, if eqTypes, if eqTypes is null, nothing special happens	
+	_getEqTypes($params);
+
+	//Setting option, if eqTypes, if eqTypes is null, nothing special happens
 	if(isset($params['eqTypes'])){
-		File_Archive::setOption('eqTypes',$params['eqTypes']);	
-	}		
-				
-	$myReaders = _getReaders($params);	
+		File_Archive::setOption('eqTypes',$params['eqTypes']);
+	}
+
+	$myReaders = _getReaders($params);
 	$result = File_Archive::extract($myReaders,$params[1]);
 	if($result != null){
 		return false;
 	}
-	
+
 	//convert it to virtual file
 	global $readFiles;
-	
+
 	if(!$params['realOutput']){
-		foreach($readFiles as $file){		
+		foreach($readFiles as $file){
 			if(vfs('isdir',array($file))){
 				vfs('realToVirtualDir',array($file));
 			}else{
 				vfs('realToVirtual',array($file));
-			}		
+			}
 		}
-	}	
-		
+	}
+
 	return true;
 }
 
 function lib_eyeFileArchive_list($params){
 	if($params == null || empty($params[0])){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	//Checking if user have a permissions for do it
 	if(!vfs('real_checkPermissions',array($params[0]))){
-		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+		errorCodes('setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
 		return false;
-	}	
+	}
 	_getEqTypes($params);
-	
+
 	//Needed for filearchive pear lib
-	$params[0] .= '/';	
-		
-	//Setting option, if eqTypes, if eqTypes is null, nothing special happens	
+	$params[0] .= '/';
+
+	//Setting option, if eqTypes, if eqTypes is null, nothing special happens
 	if(isset($params['eqTypes'])){
-		File_Archive::setOption('eqTypes',$params['eqTypes']);	
-	}	
-	
-	$read = File_Archive::read($params[0]);	
-	//Getting all files		
+		File_Archive::setOption('eqTypes',$params['eqTypes']);
+	}
+
+	$read = File_Archive::read($params[0]);
+	//Getting all files
 	while($read->next() != false){
-		$fileArray[] = $read->getFilename();		
-	}		
+		$fileArray[] = $read->getFilename();
+	}
 	//Return the info files
 	return $fileArray;
 }
@@ -102,27 +102,27 @@ function lib_eyeFileArchive_list($params){
 
 function lib_eyeFileArchive_compress($params=null){
 	if($params == null || count($params) < 2){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	_getEqTypes($params);
 	if(!vfs('real_checkPermissions',array($params[1]))){
 		return false;
-	}	
-	//Setting option, if eqTypes, if eqTypes is null, nothing special happens	
+	}
+	//Setting option, if eqTypes, if eqTypes is null, nothing special happens
 	if(isset($params['eqTypes'])){
-		File_Archive::setOption('eqTypes',$params['eqTypes']);	
+		File_Archive::setOption('eqTypes',$params['eqTypes']);
 	}
 	$myReaders = _getReaders($params);
-	
+
 	$myAppender = File_Archive::appender($params[1]);
-	$result = File_Archive::extract($myReaders,$myAppender);	
+	$result = File_Archive::extract($myReaders,$myAppender);
 	if($result != ''){
 		return false;
 	}
 	if(!$params['realOutput']){
 		vfs('realToVirtual',array($params[1]));
-	}	
+	}
 	return true;
 }
 
@@ -142,14 +142,14 @@ function _getEqTypes(&$params){
 						$realExt = $longExtensions[$realExt];
 					}
 					$params['eqTypes'][$ext] = $realExt;
-				}				
+				}
 			}
 		}
 		if(is_array($params[0]['simple'])){
 			foreach($params[0]['simple'] as $arcSource){
 				if(!vfs('real_checkPermissions',array($arcSource)) || empty($argSource)){
 					return false;
-				}				
+				}
 				$ext = utf8_strtolower(vfs('getExtension',array($arcSource)));
 				if(!empty($ext) && !array_key_exists($ext,$params['eqTypes'])){
 					$realExt = vfs('real_getExtension',array($arcSource));
@@ -157,18 +157,18 @@ function _getEqTypes(&$params){
 						$realExt = $longExtensions[$realExt];
 					}
 					$params['eqTypes'][$ext] = $realExt;
-				}				
+				}
 			}
 		}
 	}else{
-		$ext = utf8_strtolower(vfs('getExtension',array($params[0])));	
-		if(!array_key_exists($ext,$params['eqTypes'])){
+		$ext = utf8_strtolower(vfs('getExtension',array($params[0])));
+		if(!is_array($params['eqTypes']) || !array_key_exists($ext,$params['eqTypes'])){
 			$realExt = vfs('real_getExtension',array($params[0]));
 			if(isset($longExtensions[$realExt])){
 				$realExt = $longExtensions[$realExt];
-			}			
+			}
 			$params['eqTypes'][$ext] = $realExt;
-		}	
+		}
 	}
 }
 
@@ -211,9 +211,9 @@ function _getReaders(&$params){
 						$file = vfs('getRealName',array($file));
 						$myReaders[] = File_Archive::read($file,$fileInArc);
 					}
-				}		
+				}
 			}
-		}	
+		}
 		if(is_array($params[0]['simple'])){
 			foreach($params[0]['simple'] as $file){
 				$sym = vfs('getVirtualName',array($file));
@@ -224,26 +224,26 @@ function _getReaders(&$params){
 
 				if($file{utf8_strlen($file)} != '/'){
 					$file .= '/';
-				}				
+				}
 				$readFiles[] = $params[1].'/'.$sym;
 				$myReaders[] = File_Archive::read($file,$sym);
 			}
-		}	
+		}
 	}
 	return $myReaders;
 }
 function lib_eyeFileArchive_supportedTypes(){
 	$files = array();
-	
+
 	$files[] = 'zip';//This is write in pure php
 	$files[] = 'tar';//Also write in pure php
 	if(function_exists('gzopen')){
 		$files[] = 'gz';//Generally all php builds have it
-		$files[] = 'tgz';//Generally all php builds have it	
+		$files[] = 'tgz';//Generally all php builds have it
 	}
 	if(function_exists('bzopen')){
 		$files[] = 'bz';//Generally it is a php module
-		$files[] = 'bz2';//Generally it is a php module	
+		$files[] = 'bz2';//Generally it is a php module
 	}
 	return $files;
 }

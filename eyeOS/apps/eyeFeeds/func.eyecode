@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -168,14 +168,13 @@ function eyeFeeds_clearFeedItems() {
 		'height' => $GLOBALS['itemsList_BOX']->height - 30,
 		'sortypes' => array('Html', 'String', 'String', 'String', 'Hidden'),
 		'master' => 4,
-		'theader' => array(' ', 'Title', 'Date', 'Author', 'id'),
+		'theader' => array(' ', 'Title', 'Date', 'Author'),
 		'signal' => 'feedItemClick',
 		'dblsignal' => 'feedItemDblClick'
 	));
 	$feedItemsTable->show();
-	$feedItemsTable->setCss(array('white-space' => 'nowrap'));
 	//remove border of the table
-	service('eyex', 'rawjs', array('js' => 'document.getElementById("'.$myPid.'_feedItems_TAB_Container").firstChild.style.border="none";'));
+	eyex('rawjs', array('js' => 'document.getElementById("'.$myPid.'_feedItems_TAB_Container").firstChild.style.border="none";'));
 }
 
 function eyeFeeds_clearItemContent() {
@@ -670,11 +669,11 @@ function eyeFeeds_fetchFeedItemsFromUrl($url, $forceRefresh=false) {
 function eyeFeeds_importFeeds($rootFeed, $parentFolderId, $inputFilePath) {
 	//the given rootnode is the specified container of the imported feeds
 	if ($rootFeed['id'][0] == $parentFolderId) {
-		$fp = service('vfs','open',array($inputFilePath, 'r'));
+		$fp = vfs('open',array($inputFilePath, 'r'));
 		if (!$fp) {
 			return false;
 		}
-		$size = service('vfs','filesize',array($inputFilePath));
+		$size = vfs('filesize',array($inputFilePath));
 		$fileContent = fread($fp, $size);
 
 		try {
@@ -723,7 +722,7 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 	$title = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $title));
 	$text = $xmlObject['text']->asXML();
 	$text = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $text));
-	
+
 	$name = '';
 	if ($title) {
 		$name = $title;
@@ -751,7 +750,7 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 		/** BIG HACK AGAIN */
 		$url = $xmlObject['xmlUrl']->asXML();
 		$url = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $url));
-		
+
 		//if no name/title is provided in the OPML file, use the hostname instead
 		if ($name == '') {
 			$urlParts = parse_url($url);
@@ -793,11 +792,11 @@ function eyeFeeds_exportFeeds($outputFilePath) {
 		eyeFeeds_attachFeedNodeToOpml($outputXml->body, $feed);
 	}
 
-	if (!service('vfs','create',array($outputFilePath))) {
+	if (!vfs('create',array($outputFilePath))) {
 		eyeX('messageBox',array('content'=> 'Unable to export list to the specified location'));
 		return;
 	}
-	if (! service('vfs','writeFile',array($outputFilePath, $outputXml->asXML()))) {
+	if (! vfs('writeFile',array($outputFilePath, $outputXml->asXML()))) {
 		eyeX('messageBox',array('content'=> 'Unable to export list to the specified location'));
 		return;
 	}

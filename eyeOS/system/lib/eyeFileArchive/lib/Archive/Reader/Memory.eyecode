@@ -202,7 +202,7 @@ class File_Archive_Reader_Memory extends File_Archive_Reader
      */
     function makeWriterRemoveBlocks($blocks, $seek = 0)
     {
-        require_once "File/Archive/Writer/Memory.php";
+        require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Writer/Memory' . EYE_CODE_EXTENSION; // eyeOS
         $data = substr($this->memory, 0, $this->offset + $seek);
         $this->memory = substr($this->memory, $this->offset + $seek);
 

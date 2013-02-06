@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -20,6 +20,69 @@
 
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
+/*
+ * [START] PHP.INI
+ * Copyright © 2009 Lars Knickrehm
+ */
+
+// Support register_globals
+if (ini_get('register_globals')) {
+	foreach (array_keys($_REQUEST) as $key) {
+		if ($_REQUEST[$key] === $$key) {
+			unset($$key);
+		}
+	}
+}
+
+// Support get_magic_quotes_gpc and magic_quotes_sybase
+if ((function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) || ini_get('magic_quotes_sybase')) {
+	$_COOKIE = array_map_recursive('stripslashes', $_COOKIE, true);
+	$_GET = array_map_recursive('stripslashes', $_GET, true);
+	$_POST = array_map_recursive('stripslashes', $_POST, true);
+	$_REQUEST = array_map_recursive('stripslashes', $_REQUEST, true);
+}
+
+// Support magic_quotes_runtime
+if (ini_get('magic_quotes_runtime') && function_exists('set_magic_quotes_runtime')) {
+	@set_magic_quotes_runtime(0);
+}
+
+/**
+ * Applies the callback to the elements of the given arrays recursive
+ *
+ * @author Lars Knickrehm <mail@lars-sh.de>
+ * @category Kernel
+ * @copyright Copyright © 2009 Lars Knickrehm
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package Compatibility
+ * @param callback $callback Callback function to run for each element in the array.
+ * @param array $array An array to run through the callback function.
+ * @param bool $mapkeys Defines if keys should be mapped, too. (default: false)
+ * @return array Array containing all the elements of array after applying the callback function to each one
+ * @since Version 0.5.0
+ * @version 0.5.0
+ */
+function array_map_recursive($callback, $array, $mapkeys = false) {
+	if ($callback !== null && is_callable($callback)) {
+		foreach ($array as $key => $value) {
+			if ($mapkeys) {
+				unset($array[$key]);
+				$key = call_user_func($callback, $key);
+			}
+			if (is_array($value)) {
+				$array[$key] = array_map_recursive($callback, $value);
+			} else {
+				$array[$key] = call_user_func($callback, $value);
+			}
+		}
+	}
+	return $array;
+}
+
+/*
+ * PHP.INI [END]
+ */
 
 /*
 *This define is so useful to check if the client has accesed
@@ -150,7 +213,7 @@ function clientMobile(){
 
 function mobileWithWebkit() {
 	$userAgent = utf8_strtolower($_SERVER['HTTP_USER_AGENT']);
-	if (strstr($userAgent, 'webkit')) {
+	if (strstr($userAgent, 'webkit') || strstr($userAgent, 'android')) {
 		return true;
 	} else {
 		return false;
@@ -173,15 +236,22 @@ function loadStringLibrary(){
 *the error_reporting, but may change more things in the future.
 */
 function setPhpInitDebug(){
-	//Hiding warnings and notices if Debug Mode is Off
+	ini_set('html_errors', false);
 	if(EYEOS_DEBUG_MODE == 0) {
 		error_reporting(0);
+		ini_set('display_errors', false);
 	} elseif(EYEOS_DEBUG_MODE == 2) {
 		error_reporting(E_ALL);
+		ini_set('display_errors', true);
 	} elseif(EYEOS_DEBUG_MODE == 3) {
-		error_reporting(E_ALL ^ E_NOTICE);
-	}else {
-		error_reporting(E_ERROR); //TODO: SUPPORT E_ALL
+		if (!defined('E_DEPRECATED')) {
+			define('E_DEPRECATED', 0);
+		}
+		error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
+		ini_set('display_errors', true);
+	} else {
+		error_reporting(E_ERROR);
+		ini_set('display_errors', true);
 	}
 }
 

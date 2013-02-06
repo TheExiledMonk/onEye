@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -34,7 +34,7 @@ function get_tmp_dir() {
 	$array[] = $_ENV['TMP'];
 	$array[] = $_ENV['TMPDIR'];
 	$array[] = $_ENV['TEMP'];
-	
+
 	foreach ($array as $path) {
 		if ($path) {
 			// Check non realpath first
@@ -47,7 +47,7 @@ function get_tmp_dir() {
 			}
 		}
 	}
-	
+
 	// Try to detect the temporary dir by creating a temporary file
 	$file = tempnam(md5(uniqid(rand(),1)),'');
 	if ($file) {
@@ -111,7 +111,7 @@ if (!function_exists('json_encode')) {
         		return $a;
       		}
     	}
-    	
+    
 		$isList = true;
 		for ($i = 0, reset($a); $i < count($a); $i++, next($a)) {
 			if (key($a) !== $i) {
@@ -119,7 +119,7 @@ if (!function_exists('json_encode')) {
 				break;
 			}
 		}
-		
+
     	$result = array();
     	if ($isList) {
     		foreach ($a as $v) $result[] = json_encode($v);

@@ -231,4 +231,8 @@
 		<type>eyeProject</type>
 		<extension>eyeproject</extension>
 	</mime>
+	<mime>
+		<type>presentation</type>
+		<extension>eyeshow</extension>
+	</mime>
 </mimeTypes>

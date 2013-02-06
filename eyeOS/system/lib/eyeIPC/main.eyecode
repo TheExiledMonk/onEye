@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -25,14 +25,14 @@ require_once  EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeIPC/eyeShareClass'.EYE_CO
 
 function lib_eyeIPC_setVar($params){
 	if($params == null || count($params) < 2){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$name = $params[0];
 	$content = $params[1];
 	if(isset($params[2])){
-		$myClass =& System_SharedMemory::factory($params[2]);			
+		$myClass =& System_SharedMemory::factory($params[2]);
 	}else{
 		$myClass =& System_SharedMemory::factory();
 	}
@@ -42,12 +42,12 @@ function lib_eyeIPC_setVar($params){
 
 function lib_eyeIPC_getVar($params){
 	if($params == null || count($params) < 1){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}		
+	}
 	$name = $params[0];
 	if(isset($params[1])){
-		$myClass =& System_SharedMemory::factory($params[1]);	
+		$myClass =& System_SharedMemory::factory($params[1]);
 	}else{
 		$myClass =& System_SharedMemory::factory();
 	}
@@ -56,12 +56,12 @@ function lib_eyeIPC_getVar($params){
 
 function lib_eyeIPC_rmVar($params){
 	if($params == null || count($params) < 1){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	$name = $params[0];
 	if(isset($params[1])){
-		$myClass =& System_SharedMemory::factory($params[1]);	
+		$myClass =& System_SharedMemory::factory($params[1]);
 	}else{
 		$myClass =& System_SharedMemory::factory();
 	}
@@ -71,14 +71,14 @@ function lib_eyeIPC_rmVar($params){
 
 function lib_eyeIPC_isSet($params){
 	if($params == null || count($params) < 1){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$name = $params[0];		
+	$name = $params[0];
 	if(isset($params[1])){
-		$myClass =& System_SharedMemory::factory($params[1]);	
+		$myClass =& System_SharedMemory::factory($params[1]);
 	}else{
 		$myClass =& System_SharedMemory::factory();
 	}
-	return $myClass->isVar($name);	
+	return $myClass->isVar($name);
 }

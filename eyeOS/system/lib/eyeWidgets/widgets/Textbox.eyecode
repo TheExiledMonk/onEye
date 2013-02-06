@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -26,10 +26,10 @@
 */
 
 class Textbox {
-	
+
 	//pid controller
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
@@ -40,10 +40,10 @@ class Textbox {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	//friends abstraction
 	var $friends="''";
-	
+
 	var $showed = 0;
 	//custom widget options
 	var $password;
@@ -66,8 +66,8 @@ class Textbox {
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 10;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 10;
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
-		
-		//especific button options		
+
+		//especific button options
 		isset($params['password']) ? $this->password = $params['password'] : $this->password = 0;
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 118; // Default width in Firefox 3!
 		isset($params['enabled']) ? $this->enabled = $params['enabled'] : $this->enabled = 1;
@@ -75,7 +75,7 @@ class Textbox {
 		isset($params['text']) ? $this->text = $params['text'] : $this->text = "";
 		isset($params['noborder']) ? $this->noborder = $params['noborder'] : $this->noborder = 0;
 	}
-	
+
 	function show($noserialize=0) {
 		$widgetsparams = array(
 			'text' => htmlspecialchars($this->text,ENT_QUOTES,'UTF-8'),
@@ -85,8 +85,8 @@ class Textbox {
 			'width' => $this->width,
 			'noborder' => $this->noborder
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myTextbox = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -98,22 +98,22 @@ class Textbox {
 			'params' => $widgetsparams,
 			'center' => $this->cent
 		);
-		service('eyex','createWidget',$myTextbox);
+		eyex('createWidget',$myTextbox);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
-	
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -121,20 +121,20 @@ class Textbox {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
-	
+
 	//friends handler 
 	function addFriend($friend) {
 		if(method_exists($friend,'getSyncString')) {
 			if($this->friends == "''") {
-				$this->friends = $friend->getSyncString();				
+				$this->friends = $friend->getSyncString();
 			} else {
 				$this->friends .= '+'.$friend->getSyncString();
 			}
 		}
 	}
-	
+
 	//comunication functions
 	function getSyncString() {
 		global $myPid;
@@ -144,63 +144,63 @@ class Textbox {
 			return 'eyeParam("' . $this->name . '",xGetElementById("' . $myPid . '_' . $this->name . '").value)';
 		}
 	}
-	
+
 	//set properties functions
 	function enable() {
 		global $myPid;
 		$this->enabled = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
 	}
-	
+
 	function disable() {
 		global $myPid;
 		$this->enabled = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=true'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=true'));
 	}
-	
+
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
-	
+
 	function setText($newText) {
 		global $myPid;
 		$this->text = $newText;
-		$tokens[] = $this->text;		
-		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").value= %s ','tokens'=>$tokens));	
+		$tokens[] = $this->text;
+		eyex('runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").value= %s ','tokens'=>$tokens));
 	}
-	
+
 	function setValue($newText) {
 		$this->text = $newText;
 	}
-	
+
 	function addEnterEvent($event) {
 		$this->addEvent('onkeypress','var event = new xEvent(e);if(event.keyCode == 13){'.$event.'}','e');
 	}
-	
+
 	function addEnterEventMsg($msg) {
 		global $checknum;
 		global $myPid;
 		$this->addEnterEvent("sendMsg('$checknum','$msg',".$this->getSyncString()."+".$this->friends.");");
 	}
-	
+
 	function focus() {
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
 	}
-	
+
 	function select() {
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").select();'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").select();'));
 	}
-	
+
 	function setAlign($align) {
 		$this->align=$align;
 		$this->setCss(array('text-align'=>$align));
@@ -209,26 +209,26 @@ class Textbox {
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
-	
+
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }

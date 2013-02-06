@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -41,7 +41,7 @@ function goPos(ele,go,speed) {
 function drawFloc() {
 	var flockType = Math.round(3*Math.random());
 	var size = xClientWidth();
-	
+
 	var myFloc = document.createElement('img');
 	myFloc.setAttribute('border',0);
 	myFloc.setAttribute('src',snowPrefix+flockType+'.png');

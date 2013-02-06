@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -31,14 +31,14 @@
 define('EYETETRAVEX_HIGHSCORES_RECORDS_LIMIT', 100);
 define('EYETETRAVEX_HIGHSCORES_STORAGE_METHOD_SERVER', 'server');
 define('EYETETRAVEX_HIGHSCORES_STORAGE_METHOD_PROFILE', 'profile');
-define('EYETETRAVEX_PROFILE_HIGHSCORES_FILE', service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex/profile_highscores.xml');
+define('EYETETRAVEX_PROFILE_HIGHSCORES_FILE', um('getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex/profile_highscores.xml');
 
 
 /**
  * Called by Flash to load the configuration from the user's profile directory.
  */
 function eyeTetravex_on_loadConfiguration($params=null) {
-	$file = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex/conf.xml';
+	$file = um('getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex/conf.xml';
 	$content = eyeTetravex_getXmlFileContent($file);
 
 	$configValues = array();
@@ -48,7 +48,7 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		$configValues = $content['eyeTetravex'][0]['configuration'][0];
 	}
 	$return['configuration'][0] = $configValues;
-	
+
 	/**
 	 * WARNING!
 	 * Here the tokens are NOT "%s" but "{}". Be careful to mark them well in the translated strings.
@@ -61,13 +61,13 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		'global_save' => array(i18n('translate',array('Save'))),
 		'global_cancel' => array(i18n('translate',array('Cancel'))),
 		'global_close' => array(i18n('translate',array('Close'))),
-		
+
 		//MAIN BUTTONS
 		'main_button_newgame' => array(i18n('translate',array('New game'))),
 		'main_button_configuration' => array(i18n('translate',array('Configuration'))),
 		'main_button_highscores' => array(i18n('translate',array('Highscores'))),
 		'main_button_fullscreen' => array(i18n('translate',array('Fullscreen'))),
-		
+
 		//CONFIGURATION DIALOG
 		'dialog_configuration_title' => array(i18n('translate',array('Configuration'))),
 		'dialog_configuration_level' => array(str_replace('%s','{}',i18n('translate',array('Level / board size (%s-%s):')))),
@@ -77,7 +77,7 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		'dialog_configuration_saveconfigtofile' => array(i18n('translate',array('Always remember my last configuration'))),
 		'dialog_configuration_usesharedhighscores' => array(i18n('translate',array('Use shared highscores on server (all users)'))),
 		'dialog_configuration_notice2' => array(i18n('translate',array('These features can only be used when running from an eyeOS server.'))),
-		
+
 		//HIGHSCORES DIALOG
 		'dialog_highscores_title' => array(i18n('translate',array('Highscores'))),
 		'dialog_highscores_boardsize' => array(i18n('translate',array('Board size :'))),
@@ -87,11 +87,11 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		'dialog_highscores_column_maximum' => array(i18n('translate',array('Maximum'))),
 		'dialog_highscores_column_time' => array(i18n('translate',array('Time'))),
 		'dialog_highscores_column_moves' => array(i18n('translate',array('Moves'))),
-		
+
 		//NEW GAME DIALOG
 		'dialog_newgame_title' => array(i18n('translate',array('New game'))),
 		'dialog_newgame_text' => array(i18n('translate',array('Do you want to start a new game?'))),
-		
+
 		//GAME OVER DIALOG
 		'dialog_gameover_yourrank' => array(i18n('translate',array('Your rank:'))),
 		'dialog_gameover_tipused' => array(i18n('translate',array('Tip used! Ranking disabled...'))),
@@ -99,7 +99,7 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		'dialog_gameover_finished' => array(i18n('translate',array('Finished!'))),
 		'dialog_gameover_yourtime' => array(i18n('translate',array('Your time:'))),
 		'dialog_gameover_nummoves' => array(i18n('translate',array('Number of moves:'))),
-		
+
 		//NETWORK PROBLEM DIALOG
 		'dialog_netprob_title' => array(i18n('translate',array('Network problem'))),
 		'dialog_netprob_text1' => array(i18n('translate',array('Unable to connect to the host server.'))),
@@ -108,7 +108,7 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 	$return['configuration'][0]['i18n'][0] = $i18nValues;
 
 	header('Content-type: text/xml; charset="UTF-8"');
-	echo reqLib('eyeXML','array2xml',array($return));
+	echo eyeXML('array2xml',array($return));
 	exit;
 }
 
@@ -120,7 +120,7 @@ function eyeTetravex_on_saveConfiguration($params=null) {
 	if (! isset($_POST['eyeTetravex_xmlData'])) {
 		exit;
 	}
-	$file = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex/conf.xml';
+	$file = um('getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex/conf.xml';
 	$content = eyeTetravex_getXmlFileContent($file);
 
 	//retrieve XML sent by Flash
@@ -130,12 +130,12 @@ function eyeTetravex_on_saveConfiguration($params=null) {
 	//		<parameter_j>value</parameter_j>
 	//			...
 	//	</configuration>)
-	$inputXml = reqLib('eyeXML','xml2array',array($_POST['eyeTetravex_xmlData']));
+	$inputXml = eyeXML('xml2array',array($_POST['eyeTetravex_xmlData']));
 
 	//set the file's configuration node to the new one
 	$content['eyeTetravex'][0]['configuration'][0] = $inputXml['configuration'][0];
 
-	$myXml = reqLib('eyeXML','array2xml',array($content));
+	$myXml = eyeXML('array2xml',array($content));
 	eyeTetravex_setXmlFileContent($file, $myXml);
 	exit;
 }
@@ -147,7 +147,7 @@ function eyeTetravex_on_loadHighscores($params=null) {
 	if (! isset($_POST['eyeTetravex_xmlData'])) {
 		exit;
 	}
-	$inputXml = reqLib('eyeXML','xml2array',array($_POST['eyeTetravex_xmlData']));
+	$inputXml = eyeXML('xml2array',array($_POST['eyeTetravex_xmlData']));
 
 	//global highscores
 	if ($inputXml['eyeTetravex'][0]['useSharedHighscores'][0] == 'true')
@@ -177,7 +177,7 @@ function eyeTetravex_on_saveHighscore($params=null) {
 	//		<time>XX:XX</time>
 	//		<moves>XX</moves>
 	//	</highscore>
-	$inputXml = reqLib('eyeXML','xml2array',array($_POST['eyeTetravex_xmlData']));
+	$inputXml = eyeXML('xml2array',array($_POST['eyeTetravex_xmlData']));
 
 	//global highscores
 	if ($inputXml['highscore'][0]['useSharedHighscores'][0] == 'true')
@@ -190,7 +190,7 @@ function eyeTetravex_on_saveHighscore($params=null) {
 
 	//print return XML with rank
 	$return['eyeTetravex'][0]['rank'][0] = $rank;
-	echo reqLib('eyeXML','array2xml',array($return));
+	echo eyeXML('array2xml',array($return));
 
 	exit;
 }
@@ -257,21 +257,21 @@ function eyeTetravex_saveHighscore($storageMethod, $inputXml) {
 		$content = setConfig('eyeTetravex', 'server_highscores.xml', $content);
 	}
 	elseif ($storageMethod == EYETETRAVEX_HIGHSCORES_STORAGE_METHOD_PROFILE) {
-		$myXml = reqLib('eyeXML','array2xml',array($content));
+		$myXml = eyeXML('array2xml',array($content));
 		eyeTetravex_setXmlFileContent(EYETETRAVEX_PROFILE_HIGHSCORES_FILE, $myXml);
 	}
-	
+
 
 	return $newHighscore_rank;
 }
 
 function eyeTetravex_getHighscores($storageMethod, $simpleText = false) {
 	$content = '';
-	
+
 	if ($storageMethod == EYETETRAVEX_HIGHSCORES_STORAGE_METHOD_SERVER) {
 		$content = getConfig('eyeTetravex', 'server_highscores.xml');
 		if ($simpleText)
-			$content = reqLib('eyeXML','array2xml',array($content));
+			$content = eyeXML('array2xml',array($content));
 	}
 	elseif ($storageMethod == EYETETRAVEX_HIGHSCORES_STORAGE_METHOD_PROFILE) {
 		$content = eyeTetravex_getXmlFileContent(EYETETRAVEX_PROFILE_HIGHSCORES_FILE, $simpleText);
@@ -367,7 +367,7 @@ function eyeTetravex_getXmlFileContent($file, $simpleText = false) {
 	if ($simpleText)
 		$return = vfs('real_getFileContent',array($file));
 	else
-		$return = reqLib('eyeXML','getXMLfile',array($file));
+		$return = eyeXML('getXMLfile',array($file));
 
 	return $return;
 }
@@ -377,7 +377,7 @@ function eyeTetravex_getXmlFileContent($file, $simpleText = false) {
  * @param array $xml
  */
 function eyeTetravex_setXmlFileContent($file, $xml) {
-	$fp = service('vfs','real_open',array($file,'w'));
+	$fp = vfs('real_open',array($file,'w'));
 	fwrite($fp,$xml);
 	fclose($fp);
 }
@@ -391,7 +391,7 @@ function eyeTetravex_setXmlFileContent($file, $xml) {
  }*/
 
 function eyeTetravex_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeTetravex_on_Close(){

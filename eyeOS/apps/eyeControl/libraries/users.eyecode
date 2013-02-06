@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -70,10 +70,20 @@ function eyeControl_lib_getConfigUserPath() {
 }
 
 function eyeControl_lib_getXMLconfig($params) {
-	return eyeXML('getXMLfile',array(eyeControl_lib_getConfigUserPath() . '/' . CONF_USER_DIR . '/' . $params[0] . '/' . $params[1]));
+	global $currentUser;
+	$oldUser = $currentUser;
+	$currentUser = eyeControl_lib_getConfigUser();
+	$return = eyeXML('getXMLconfig', $params);
+	$currentUser = $oldUser;
+	return $return;
 }
 
 function eyeControl_lib_setXMLconfig($params) {
-	return eyeXML('setXMLfile',array(eyeControl_lib_getConfigUserPath() . '/' . CONF_USER_DIR . '/' . $params[0] . '/' . $params[1],$params[2]));
+	global $currentUser;
+	$oldUser = $currentUser;
+	$currentUser = eyeControl_lib_getConfigUser();
+	$return = eyeXML('setXMLconfig', $params);
+	$currentUser = $oldUser;
+	return $return;
 }
 ?>

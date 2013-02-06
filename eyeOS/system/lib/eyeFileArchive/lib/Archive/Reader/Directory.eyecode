@@ -114,6 +114,7 @@ class File_Archive_Reader_Directory extends File_Archive_Reader_Relay
 
             $file = readdir($this->directoryHandle);
             if ($file == '.' || $file == '..') {
+                $this->source = null; // eyeOS
                 continue;
             }
             if ($file === false) {

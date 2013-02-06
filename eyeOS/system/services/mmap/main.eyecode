@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -37,11 +37,11 @@
 */
 function service_mmap_addToBuffer($params) {
 	if(!$params[0]) {
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	global $outputBuffer;
-	$content = $params[0];	
+	$content = $params[0];
 	$outputBuffer .= $content;
 	return true;
 }
@@ -58,7 +58,7 @@ function service_mmap_releaseBuffer() {
 
 	//get possible PHP errors
 	$content = ob_get_contents();
-	
+
 	if(!empty($content)) {
 	  $line = base64_encode($content);
 	  eyeX('rawjs',array('js'=>'console.log(Base64.decode("'.$line.'"));'));
@@ -93,22 +93,22 @@ function service_mmap_routemsg($params) {
 	global $checknum;
 	global $currentUser;
 	global $myPid;
-	
+
 	$checknum = $params[0];
 	$action = $params[1];
 	$args = $params[2];
 
-	if($args) {		
+	if($args) {
 		$args = eyeXML('xml2array',array($args));
-	}	
+	}
 	global $procInfo;
 	$procInfo = proc('getProcByChecknum',array($checknum));
-			
+
 	$currentUser = $procInfo['currentUser'];
 	$myPid = $procInfo['pid'];
-	
+
 	$procInfo['checknum'] = $checknum;//Remove this? maybe 
-	
+
 	if(!isset($_SESSION['AUTH_IP']) || empty($_SESSION['AUTH_IP'])) {
 		$_SESSION['AUTH_IP'] = $_SERVER['REMOTE_ADDR'];
 	} else {
@@ -119,33 +119,33 @@ function service_mmap_routemsg($params) {
 			return mmap('releaseBuffer');
 		}
 	}
-	
+
 	//If app does not exist...
 	if(!isset($procInfo['appName']) || empty($procInfo['appName'])) {
 		exit;
 	} 
-	
+
 	if(um('UserIsAdmin',array($currentUser))) {
 		define('ROOTUSER',$currentUser);
 	} else {
 		define('ROOTUSER',REAL_ROOTUSER);
 	}
-	
+
 	$version = CACHE_VERSION;
 	$config = eyeXML('getXMLconfig',array('eyex','eyex.xml'));
 	if ($config && $config['changes'][0]['times'][0]) {
 		$version += $config['changes'][0]['times'][0];
 	}
 	define('EXTERN_CACHE_VERSION',$version);
-	
+
 	//If events.eyecode can be included, then include it, else exit.
 	if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/'.'events'.EYE_CODE_EXTENSION)) {
 		include_once(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/'.'events'.EYE_CODE_EXTENSION);
 	} else {
-	
+
 		exit;
 	}
-	
+
 	global $outputBuffer;
 	$outputBuffer = "";
 	i18n('loadLang',array($procInfo['appName']));
@@ -153,9 +153,9 @@ function service_mmap_routemsg($params) {
 	if(function_exists($procInfo['appName'].'_on_Message')) {
 		call_user_func($procInfo['appName'].'_on_Message',$args);
 	} else {
-		reqLib('eyeWidgets','updateContent',$args);
+		eyeWidgets('updateContent',$args);
 	}
-	
+
 	if(isset($messageTable[$action])) {
 		call_user_func($messageTable[$action]['function'],$messageTable[$action]['args']);
 	} else {
@@ -184,7 +184,7 @@ function service_mmap_array2js($params) {
 	if(!$params[0]) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
+	}
 	$arrayInPHP = $params[0];
 	$code = json_encode($arrayInPHP);
 	return $code;
@@ -205,7 +205,7 @@ function service_mmap_array2jsArg($params) {
 	if(!$params[0]) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
+	}
 	$arrayInPHP = $params[0];
 	$code = '';
 	foreach ($arrayInPHP as $value) {

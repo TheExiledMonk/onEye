@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -126,7 +126,7 @@ function eyeControl_on_add_settings($params=""){
 	$id0 = $GLOBALS['uniqid']->text;
 	//$id1 = uniqid();
 	$aclName = $GLOBALS['eyeControl_acl_textbox']->text;
-	
+
 	if($GLOBALS['eyeControl_acl_service_select']->selected == 2){
 		$service = 'extern';
 	} elseif ($GLOBALS['eyeControl_acl_service_select']->selected == 3){
@@ -138,7 +138,7 @@ function eyeControl_on_add_settings($params=""){
 	} elseif ($GLOBALS['eyeControl_acl_service_select']->selected == 6){
 		$service = 'vfs';
 	}
-	
+
 	if ($service == 'extern' && $GLOBALS['eyeControl_acl_function_select']->selected == '2'){
 		$call = getFile;
 	} elseif ($service == 'mmap' && $GLOBALS['eyeControl_acl_function_select']->selected == '2') {
@@ -294,7 +294,7 @@ function eyeControl_on_add_settings($params=""){
 	} elseif ($service == 'vfs' && $GLOBALS['eyeControl_acl_function_select']->selected == '44') {
 		$call = writeFile;
 	}
-	
+
 	if($GLOBALS['eyeControl_acl_allowDeny_select']->selected == 2){
 		$action = 'Allow';
 	} elseif ($GLOBALS['eyeControl_acl_allowDeny_select']->selected == 3){
@@ -314,11 +314,11 @@ function eyeControl_on_add_settings($params=""){
 			'call' => array($call),
 			'target' => array('')
 		);
-	
+
 		//$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
 		$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
 		$config = eyeXML('getXMLfile', array($file));
-		
+
 		if(!$config){
 			$config = array('GACL' => array(array(
 				'ACL' => array()
@@ -331,7 +331,7 @@ function eyeControl_on_add_settings($params=""){
 				//eyeXML('setXMLconfig',array('eyeACL','acl.xml',$config));
 				eyeXML('setXMLfile', array($file,$config));
 				$config['GACL'][0]['ACL'][] = $acl;
-				
+
 			} else{
 				$config['GACL'][0]['ACL'][] = $acl;
 			}
@@ -350,7 +350,7 @@ function eyeControl_on_update_settings($params=""){
 
 	$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
 	$config = eyeXML('getXMLfile', array($file));
-	
+
 	$x=0;
 	if(empty($aclName)){
 		foreach ($config['GACL'][0]['ACL'] as $aclX) {
@@ -361,13 +361,13 @@ function eyeControl_on_update_settings($params=""){
 		$x++;
 		}
 	}
-	
+
 	if($GLOBALS['eyeControl_acl_allowDeny_select']->selected == 2){
 		$action = 'Allow';
 	} elseif ($GLOBALS['eyeControl_acl_allowDeny_select']->selected == 3){
 		$action = 'Deny';
 	}
-	
+
 	if(empty($aclName) || empty($action)) {
 		eyeX('messageBox',array('content'=>'Please fill and select all fields'));
 	} else {
@@ -392,7 +392,7 @@ function eyeControl_on_update_settings($params=""){
 						'call' => array($call),
 						'target' => array('')
 					);
-					
+
 					$GLOBALS['eyeControl_acl_target_sortabletable']->delRow($config['GACL'][0]['ACL'][$x]['id'][0]);
 					$row1 = array($id0,$aclName,$config['GACL'][0]['ACL'][$x]['service'][0],$config['GACL'][0]['ACL'][$x]['call'][0],$action);
 					$GLOBALS['eyeControl_acl_target_sortabletable']->addRow($row1);
@@ -456,7 +456,7 @@ function eyeControl_on_yDelete0(){
 
 function eyeControl_on_nDelete0(){
 	$GLOBALS['delete_warning0']->close();
-	return true;	
+	return true;
 }*/
 
 function eyeControl_on_target_edit($params=""){
@@ -466,6 +466,6 @@ function eyeControl_on_target_edit($params=""){
 			'text' => 'edit'
 		));
 	eyeWidgets('serialize',array($edit));
-	eyeControl_lib_loadContent('only_root','newtarget');	
+	eyeControl_lib_loadContent('only_root','newtarget');
 }
 ?>

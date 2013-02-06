@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -26,10 +26,10 @@
 */
 
 class Tab {
-	
+
 	//pid controller
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
@@ -40,7 +40,7 @@ class Tab {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	//custom widget options
 	var $useDisplay;
 	var $visible;
@@ -48,13 +48,13 @@ class Tab {
 	var $height;
 	var $signal;
 	var $tabwidth;
-	
+
 	var $showed = 0;
-	
+
 	var $counter = 0;
 	//friends abstraction
 	var $friends="";
-	
+
 	var $myTabs;
 	//constructor
 	function Tab($params) {
@@ -73,13 +73,13 @@ class Tab {
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['tabwidth']) ? $this->tabwidth = $params['tabwidth'] : $this->tabwidth = 80;
-		
+
 		//especific tab options
 		isset($params['useDisplay']) ? $this->useDisplay = $params['useDisplay'] : $this->useDisplay = 1;
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;
 	}
-	
+
 	//widget show method, send a createWidget message
 	function show($noserialize=0) {
 		$widgetsparams = array(
@@ -90,8 +90,8 @@ class Tab {
 			'signal' => $this->signal,
 			'tabwidth' => $this->tabwidth
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myTab = array(
 			'name' => $this->name,
 			'father' => $this->father,
@@ -101,16 +101,16 @@ class Tab {
 			'y' => $this->y,
 			'center' => $this->cent,
 			'widgetname' => 'Tab',
-			'params' => $widgetsparams			
+			'params' => $widgetsparams
 		);
-		
-		service('eyex','createWidget',$myTab);
+
+		eyex('createWidget',$myTab);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args = '') {
 		global $myPid;
@@ -118,60 +118,60 @@ class Tab {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
-		
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=visible'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=visible'));
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=hidden'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=hidden'));
 	}
-	
+
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_header").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_header").style.width="'.$this->width.'px";'));
 		foreach($this->myTabs as $key=>$value) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$key.'").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$key.'").style.width="'.$this->width.'px";'));
 		}
 	}
-	
+
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
-	
+
 	function addTab($tabname,$noclose=0) {
 		global $myPid;
 		$name = 'tab_'.$myPid.'_'.$this->name;
@@ -181,58 +181,68 @@ class Tab {
 			$tabname = i18n('translate',array($tabname));
 		}
 		$tokens[] = $tabname;
-		service('eyex','runjs',array('js' => $name.'.addTab( %s ,'.$this->counter.','.$noclose.');','tokens'=>$tokens));
+		eyex('runjs',array('js' => $name.'.addTab( %s ,'.$this->counter.','.$noclose.');','tokens'=>$tokens));
 		$this->counter++;
 		return $ret;
 	}
-	
+
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
-	
-	function removeTab($tabid) {
+
+	function removeTab($tabName) {
 		global $myPid;
 		$name = 'tab_'.$myPid.'_'.$this->name;
+		$tabid = $myPid.'_'.$tabName;
+		$tabid = utf8_substr($tabid,0,utf8_strlen($tabid)-utf8_strlen('_Content'));
 		$tokens[] = $tabid;
-		service('eyex','runjs',array('js' => $name.'.removeTab( %s );','tokens'=>$tokens));
+		eyex('runjs',array('js' => $name.'.removeTab( %s );','tokens'=>$tokens));
 		unset($this->myTabs[$name]);
 		$this->counter--;
 	}
-	
+
+	function removeByName($tabname) {
+		foreach($this->myTabs as $key=>$value) {
+			if($value == $tabname) {
+				$this->removeTab($key);
+			}
+		}
+	}
+
 	function getSyncString() {
 		global $myPid;
 		return $this->friends;
 	}
-	
+
 	function addFriendChild($friend,$tab) {
 		global $myPid;
 		$name = 'tab_'.$myPid.'_'.$this->name;
 
 		if(method_exists($friend,'getSyncString')) {
-			$this->friends .= "if(".$name.".getCurrentTab() == $tab) {".$friend->getSyncString()."}";				
+			$this->friends .= "if(".$name.".getCurrentTab() == $tab) {".$friend->getSyncString()."}";
 		}
 	}
-	
+
 	function selectTabContent($tabName) {
 		global $myPid;
 		$name = 'tab_'.$myPid.'_'.$this->name;
 		$tabid = $myPid.'_'.$tabName;
 		$tabid = utf8_substr($tabid,0,utf8_strlen($tabid)-utf8_strlen('_Content'));
 		$tokens[] = $tabid;
-		service('eyex','runjs',array('js' => $name.'.selectTab( %s );','tokens'=>$tokens));	
+		eyex('runjs',array('js' => $name.'.selectTab( %s );','tokens'=>$tokens));
 	}
-	
+
 	function selectTab($tabName) {
 		global $myPid;
 		$name = 'tab_'.$myPid.'_'.$this->name;
 		$tabid = $myPid.'_'.$tabName;
 		$tokens[] = $tabid;
-		service('eyex','runjs',array('js' => $name.'.selectTab( %s );','tokens'=>$tokens));	
+		eyex('runjs',array('js' => $name.'.selectTab( %s );','tokens'=>$tokens));
 	}
-	
+
 	function selectByName($tabname) {
 		foreach($this->myTabs as $key=>$value) {
 			if($value == $tabname) {
@@ -240,7 +250,7 @@ class Tab {
 			}
 		}
 	}
-	
+
 	function getRealNameByName($tabname) {
 		foreach($this->myTabs as $key=>$value) {
 			if($value == $tabname) {
@@ -252,7 +262,7 @@ class Tab {
 			}
 		}
 	}
-	
+
 	function getIdByName($tabname) {
 		foreach($this->myTabs as $key=>$value) {
 			if($value == $tabname) {
@@ -260,7 +270,7 @@ class Tab {
 			}
 		}
 	}
-	
+
 	function getNameBySignalParam($realName) {
 		return $this->myTabs[utf8_substr($realName,6) . '_Content'];
 	}

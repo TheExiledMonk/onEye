@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -29,7 +29,7 @@ if(!defined('EYE_INDEX')){
 //Check if index.php is being used to load images/files from extern directory
 if (isset($_GET['extern'])) {
 		$myExtern = $_GET['extern'];
-		//get the type for the header content-type		
+		//get the type for the header content-type
 		if(isset($_GET['type'])) {
 			$type = $_GET['type'];
 		} else {
@@ -42,13 +42,13 @@ if (isset($_GET['extern'])) {
 } else {
 	//Loading eyeWidgets definitions
 	reqLib('eyeWidgets','loadWidgets');
-	
+
 	//Starting a simple session
 	reqLib('eyeSessions','startSession');
-	
+
 	//If widget table does not exist, create it 
 	reqLib('eyeWidgets','checkTable');
-	
+
 	//if there are a shorturl in the url, like index.php/file
 	if(isset($_SERVER['PATH_INFO'])) {
 		$myInfo = $_SERVER['PATH_INFO'];
@@ -70,7 +70,7 @@ if (isset($_GET['extern'])) {
 			$_REQUEST['checknum'] = $checknum;
 		}
 	}
-	//Checking if checknum and message are set	
+	//Checking if checknum and message are set
 	if(isset($_GET['checknum']) && !empty($_GET['checknum'])) {
 		if(isset($_REQUEST['params']) && !empty($_REQUEST['params'])) {
 			$params = $_REQUEST['params'];
@@ -92,8 +92,8 @@ if (isset($_GET['extern'])) {
 			echo "<eyeMessage><action><task>pong</task></action></eyeMessage>";
 			$_SESSION['ping'] = time();
 			exit;
-		}		
-		//Loading the Mobile eyeOS code	
+		}
+		//Loading the Mobile eyeOS code
 		include_once("../mobile/mobile_eyeFiles.eyecode");
 	}
 }

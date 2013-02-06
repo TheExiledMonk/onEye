@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -21,61 +21,129 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeManageApps_run($params=null) {
-	global $myPid;
+function eyeManageApps_run($params = '') {
 	$myWindow = new Window(array(
-		'name' => 'eyeManageAppsWND',
+		'cent' => 1,
 		'father' => 'eyeApps',
-		'title' => 'Manage Applications',
-		'width' => 775,
-		'height' => 525,
-		'type' => NORESIZE_WINDOW,
-		'savePosition' => 1
+		'height' => 300,
+		'name' => 'eyeManageApps_Window',
+		'savePosition' => 1,
+		'style' => TITLE + LISTED + MIN + CLOSE,
+		'title' => 'Manage Dock',
+		'width' => 400
 	));
 	$myWindow->show();
-	eyeX('rawjs',array('js' => 'document.getElementById("'.$myPid.'_eyeManageAppsWND_Content").style.overflow="hidden";'));
-	
-	eyeX('loadCSS', array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeManageApps/css/eyeManageApps.css', 'id' => 'eyeManageApps'));
-	
-	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeManageAppsWND_Content'));
-	$myToolbar->show();
-	$myToolbar->addItem('createGroup', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/create.png','Create Group');
-	$myToolbar->addItem('addApplication','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/installapps.png','Add Application');
-	$myToolbar->addLine();
-	$myToolbar->addItem('clickProperties', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/edit.png','Properties');
-	$myToolbar->addItem('clickDelete', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/delete.png','Delete');
-	$myToolbar->addLine();
-	$myToolbar->addItem('ListApps', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/refresh.png','Refresh');
-	$myToolbar->addLine();
-	$myToolbar->addItem('clickMoveUp', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/up.png', 'Move Up');
-	$myToolbar->addItem('clickMoveDown', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/down.png', 'Move Down');
-	$myToolbar->addLine();
-	$myToolbar->addItem('useDefaults', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/edit-undo.png', 'Reset to defaults');
 
-	$myContainer = new Container(array(
-		'name' => 'appsContainer',
-		'father' => 'eyeManageAppsWND_Content',
-		'x' => 2,
-		'y' => 60,
-		'width' => 771,
-		'height' => 441
+	$y = 30;
+	$myLabel = new Label(array(
+		'father' => 'eyeManageApps_Window_Content',
+		'name' => 'eyeManageApps_Label',
+		'text' => 'This panel is made to control the Dock system. It provides some maintenance features. Please see the context menus of the dock for further options.',
+		'x' => 20,
+		'y' => $y
 	));
-	$myContainer->show();
-	eyeX('rawjs',array('js' => 'document.getElementById("'.$myPid.'_appsContainer_Container").style.width="771px";document.getElementById("'.$myPid.'_appsContainer_Container").style.overflowX="hidden";document.getElementById("'.$myPid.'_appsContainer_Container").style.overflowY="auto";'));
-	eyeWidgets('serialize', array($myContainer));
-	
-	$myHidden = new Hidden(array(
-		'name' => 'context',
-		'father' => 'eyeManageAppsWND',
-		'text' => ''
+	$myLabel->show();
+	$myLabel->setCss(array(
+		'margin-right' => '20px',
+		'text-align' => 'justify'
 	));
-	eyeWidgets('serialize', array($myHidden));
-	
-	eyeX('sendMessage', array('msg' => 'ListApps'));
+
+	// TOP
+
+	$y += 70;
+	$myLabel = new Label(array(
+		'father' => 'eyeManageApps_Window_Content',
+		'name' => 'eyeManageApps_Label_Top',
+		'text' => 'Top',
+		'x' => 20,
+		'y' => $y
+	));
+	$myLabel->show();
+	$myLabel->setCss(array(
+		'font-weight' => 'bold'
+	));
+	$y += 30;
+
+	$myButton = new Button(array(
+		'caption' => 'Show / Hide',
+		'father' => 'eyeManageApps_Window_Content',
+		'name' => 'eyeManageApps_Button_Top_ShowHide',
+		'signal' => 'Top_ShowHide',
+		'x' => 25,
+		'y' => $y
+	));
+	$myButton->show();
+
+	$myButton = new Button(array(
+		'caption' => 'Refresh',
+		'cent' => 2,
+		'father' => 'eyeManageApps_Window_Content',
+		'name' => 'eyeManageApps_Button_Top_Refresh',
+		'signal' => 'Top_Refresh',
+		'y' => $y
+	));
+	$myButton->show();
+
+	$myButton = new Button(array(
+		'caption' => 'Add Element',
+		'father' => 'eyeManageApps_Window_Content',
+		'horiz' => 1,
+		'name' => 'eyeManageApps_Button_Top_AddElement',
+		'signal' => 'Top_AddElement',
+		'x' => 25,
+		'y' => $y
+	));
+	$myButton->show();
+
+	// BOTTOM
+
+	$y += 60;
+	$myLabel = new Label(array(
+		'father' => 'eyeManageApps_Window_Content',
+		'name' => 'eyeManageApps_Label_Bottom',
+		'text' => 'Bottom',
+		'x' => 20,
+		'y' => $y
+	));
+	$myLabel->show();
+	$myLabel->setCss(array(
+		'font-weight' => 'bold'
+	));
+	$y += 30;
+
+	$myButton = new Button(array(
+		'caption' => 'Show / Hide',
+		'father' => 'eyeManageApps_Window_Content',
+		'name' => 'eyeManageApps_Button_Bottom_ShowHide',
+		'signal' => 'Bottom_ShowHide',
+		'x' => 25,
+		'y' => $y
+	));
+	$myButton->show();
+
+	$myButton = new Button(array(
+		'caption' => 'Refresh',
+		'cent' => 2,
+		'father' => 'eyeManageApps_Window_Content',
+		'name' => 'eyeManageApps_Button_Bottom_Refresh',
+		'signal' => 'Bottom_Refresh',
+		'y' => $y
+	));
+	$myButton->show();
+
+	$myButton = new Button(array(
+		'caption' => 'Add Element',
+		'father' => 'eyeManageApps_Window_Content',
+		'horiz' => 1,
+		'name' => 'eyeManageApps_Button_Bottom_AddElement',
+		'signal' => 'Bottom_AddElement',
+		'x' => 25,
+		'y' => $y
+	));
+	$myButton->show();
 }
 
-function eyeManageApps_end() {
+function eyeManageApps_end($params = '') {
 	eyeWidgets('unserialize');
 }
-
 ?>

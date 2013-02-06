@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -38,14 +38,14 @@
  */
 function eyeFTP_bounceRequest($params=null) {
 	global $checknum;
-	
+
 	$sendMsgParams = '';
 	foreach($params as $key => $value) {
 		if ($key != '__signal')
 			$sendMsgParams .= 'eyeParam("'.$key.'","'.$value.'")+';
 	}
 	$sendMsgParams .= 'eyeParam("__bounce","1")';
-	
+
 	eyeX('rawjs',array('js' => 'sendMsg('.$checknum.',"'.$params['__signal'].'",'.$sendMsgParams.');'));
 }
 
@@ -65,23 +65,23 @@ function eyeFTP_isFromBouncedRequest($params=null) {
  */
 function eyeFTP_getConf() {
 	$conf = array();
-	
+
 	$conf['isConnectionActive'] = $GLOBALS['eyeFTP_isFTPConnectionActive_HID']->text;
 	$conf['host'] = $GLOBALS['eyeFTP_host_TXTBOX']->text;
 	$conf['port'] = $GLOBALS['eyeFTP_port_TXTBOX']->text;
 	$conf['username'] = $GLOBALS['eyeFTP_username_TXTBOX']->text;
 	$conf['password'] = $GLOBALS['eyeFTP_password_TXTBOX']->text;
 	$conf['passiveMode'] = $GLOBALS['eyeFTP_passiveMode_CHKBOX']->checked;
-	
+
 	$conf['currentLocalDir'] = $GLOBALS['eyeFTP_currentLocalDir_HID']->text;
 	$conf['currentRemoteDir'] = $GLOBALS['eyeFTP_currentRemoteDir_HID']->text;
 	$conf['displayedCurrentRemoteDir'] = $GLOBALS['eyeFTP_currentRemoteDir_HID']->text;
-	
+
 	$conf['listedLocalFilesData'] = unserialize($GLOBALS['eyeFTP_serializedLocalFilesData_HID']->text);
 	$conf['listedRemoteFilesData'] = unserialize($GLOBALS['eyeFTP_serializedRemoteFilesData_HID']->text);
-	
+
 	$conf['selectedView'] = $GLOBALS['eyeFTP_selectedView_HID']->text;
-	
+
 	if ($GLOBALS['eyeFTP_localFiles_TAB']->selected)
 		$conf['selectedLocalFile'] = $conf['listedLocalFilesData'][$GLOBALS['eyeFTP_localFiles_TAB']->selected];
 	else
@@ -90,7 +90,7 @@ function eyeFTP_getConf() {
 		$conf['selectedRemoteFile'] = $conf['listedRemoteFilesData'][$GLOBALS['eyeFTP_remoteFiles_TAB']->selected];
 	else
 		$conf['selectedRemoteFile'] = false;
-	
+
 	return $conf;
 }
 
@@ -141,7 +141,7 @@ function eyeFTP_logConsole($text, $tokens=null, $type=EYEFTP_LOGSTYLE_NORMAL, $d
 	else {
 		$debug = 'false';
 	}
-	
+
 	global $myPid;
 	$text_b64 = base64_encode(i18n('translate',array($text,$tokens)));
 	eyeX('rawjs',array('js' => 'eyeFTP_logConsole("'.$myPid.'","'.$text_b64.'",100,"'.$type.'",'.$debug.')'));
@@ -164,7 +164,7 @@ function eyeFTP_setConnectionActive($active=true) {
 		$GLOBALS['eyeFTP_username_TXTBOX']->disable();
 		$GLOBALS['eyeFTP_password_TXTBOX']->disable();
 		$GLOBALS['eyeFTP_passiveMode_CHKBOX']->disable();
-		
+
 		$GLOBALS['eyeFTP_isFTPConnectionActive_HID']->setText('1');
 		$GLOBALS['eyeFTP_WND']->setTitle($GLOBALS['eyeFTP_username_TXTBOX']->text.'@'.$GLOBALS['eyeFTP_host_TXTBOX']->text.' - '.i18n('translate',array('FTP Client')));
 	}
@@ -174,7 +174,7 @@ function eyeFTP_setConnectionActive($active=true) {
 		$GLOBALS['eyeFTP_username_TXTBOX']->enable();
 		$GLOBALS['eyeFTP_password_TXTBOX']->enable();
 		$GLOBALS['eyeFTP_passiveMode_CHKBOX']->enable();
-		
+
 		$GLOBALS['eyeFTP_isFTPConnectionActive_HID']->setText('0');
 		$GLOBALS['eyeFTP_WND']->setTitle(i18n('translate',array('Disconnected - FTP Client')));
 		eyeFTP_emptyRemoteFilesTable();
@@ -195,7 +195,7 @@ function eyeFTP_setActiveView($view) {
 			$GLOBALS['eyeFTP_remoteFiles_TAB']->setContainerCss(array('border' => 'thin solid #19427f'));
 			$GLOBALS['eyeFTP_localFiles_TAB']->setContainerCss(array('border' => 'thin solid #FFFFFF'));
 			return;
-		
+
 		default:
 			$GLOBALS['eyeFTP_selectedView_HID']->setText('local');
 			$GLOBALS['eyeFTP_localFiles_TAB']->setContainerCss(array('border' => 'thin solid #19427f'));
@@ -216,12 +216,12 @@ function eyeFTP_setActiveView($view) {
  */
 function parse_rawlist($array, $addParent=true) {
 	$filesData = array();
-	
+
 	if ($addParent) {
 		//Note: Some FTP servers always return the parent folder entry (".."),
 		//and others don't. So we skip the folder entry in parsing and always
 		//add one here to ensure it will always appear in the list.
-		
+
 		//special: parent folder
 		$fileInfo = array(
 			'type'=>'d',
@@ -238,13 +238,13 @@ function parse_rawlist($array, $addParent=true) {
 		);
 		$filesData[] = $fileInfo;
 	}
-	
+
 	foreach ($array as $currentFile) {
 		//eyeFTP_logConsole($currentFile, null, true);
 		$matches = array();
 		//            type   permissions   number     owner            group          size      month            day                     time/year       name
 		preg_match("/([-dl])([rwxst-]+).* ([0-9])+ ([a-zA-Z0-9]+).* ([a-zA-Z0-9]+).* ([0-9]*) ([a-zA-Z]{3}).? ([0-9]{1,2}) ([0-9]{2}:[0-9]{2}| [0-9]{4}) (.+)/",$currentFile,$matches);
-		
+
 		$fileInfo = array();
 		$fileInfo['type'] = $matches[1];
 		$fileInfo['perms'] = $matches[2];
@@ -254,16 +254,16 @@ function parse_rawlist($array, $addParent=true) {
 		$fileInfo['size'] = $matches[6];
 		$fileInfo['month'] = $matches[7];
 		$fileInfo['day'] = $matches[8];
-		$fileInfo['year-time'] = $matches[9];		
+		$fileInfo['year-time'] = $matches[9];
 		$fileInfo['name'] = $matches[10];
 		$fileInfo['displayedName'] = $fileInfo['name'];	//originally was there because of encoding problems
-		
+
 		//eyeFTP_logConsole($fileInfo, null, true);
 		if ($fileInfo['name'] != '.' && $fileInfo['name'] != '..' && $fileInfo['name'] != '') {
 			$filesData[] = $fileInfo;
 		}
 	}
-	
+
 	//sort data (parent folder, other folders, then files)
 	usort($filesData, eyeFTP_compareFilesData);
 	$return = array();
@@ -287,10 +287,10 @@ function eyeFTP_compareFilesData($a, $b) {
 	if ($a['type'] == $b['type']) {
 		if ($a['name'] == '..')
 			return -1;
-		
+
 		if ($b['name'] == '..')
 			return 1;
-		
+
 		return strcmp($a['name'],$b['name']);
 	}
 	if ($a['type'] == 'd' && $b['type'] != 'd')
@@ -311,8 +311,8 @@ function eyeFTP_getVersionFromInfoXML() {
 	$file = EYE_ROOT.'/'.APP_DIR.'/eyeFTP/info.xml';
 	if(vfs('real_fileExists',array($file))) {
 		$content = file_get_contents($file);
-		$content = reqLib('eyeXML','xml2array',array($content));
-		
+		$content = eyeXML('xml2array',array($content));
+
 		if (is_array($content['package'])
 			&& is_array($content['package'][0])
 			&& is_array($content['package'][0]['version'])) {

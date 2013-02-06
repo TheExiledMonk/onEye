@@ -31,7 +31,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	}else{
 		var drawServerDate = '';
 	}
-	
+
 	var globalMonth = globalDate.getMonth();
 	var myDay = globalDate.getDate();
 	var globalYear = globalDate.getFullYear();
@@ -40,7 +40,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	var startMonday = params['startMonday'];
 	var calendarBase = document.createElement('div');
 	var lastSelect = false;
-	
+
 	calendarBase.setAttribute('id',name+'calendarBase');
 	calendarBase.style.width = myWidth+'px';
 	calendarBase.style.height = myHeight+'px';
@@ -51,9 +51,9 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	calendarBase.appendChild(rowsAndDate);
 	calendarBase.appendChild(weekDaysNames);
 	calendarBase.appendChild(calendarBody);
-	
+
 	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible);
-	
+
 	function getRowsAndDate()
 	{
 		var rowsAndDate = document.createElement('div');
@@ -66,7 +66,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		rowsAndDate.style.fontSize = '9px';
 		rowsAndDate.style.fontWeight = 'bold';
 		rowsAndDate.style.textAlign = 'center';
-		
+
 		var rowLeft = document.createElement('div');
 		rowLeft.setAttribute('id',name+'rowLeft');
 		rowLeft.style.position = 'absolute';
@@ -78,7 +78,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		xAddEventListener(rowLeft,'click',previousMonth);
 		var text = document.createTextNode('<<');
 		rowLeft.appendChild(text);
-		
+
 		var dateMiddle = document.createElement('div');
 		dateMiddle.setAttribute('id',name+'dateMiddle');
 		dateMiddle.style.position = 'absolute';
@@ -88,7 +88,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		dateMiddle.style.fontSize = '2em';
 		text = document.createTextNode(monthNames[globalMonth]+' '+globalYear);
 		dateMiddle.appendChild(text);
-		
+
 		var rowRight = document.createElement('div');
 		rowRight.setAttribute('id',name+'rowRight');
 		rowRight.style.position = 'absolute';
@@ -100,7 +100,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		xAddEventListener(rowRight,'click',nextMonth);
 		text = document.createTextNode('>>');
 		rowRight.appendChild(text);
-		
+
 		rowsAndDate.appendChild(rowLeft);
 		rowsAndDate.appendChild(dateMiddle);
 		rowsAndDate.appendChild(rowRight);
@@ -141,7 +141,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		weekDaysNames.appendChild(dayNameContent);
 		return weekDaysNames;
 	}
-	
+
 	function getCalendarBody()
 	{
 		var date = new Date();
@@ -157,7 +157,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		calendarBody.style.top = '18%';
 		calendarBody.style.left = '1px';
 		calendarBody.setAttribute('id','thecalendar');
-		
+
 		//Calculating the the month lenght.
 		var preMonthLenght = getMonthDays(globalMonth-1);
 		var monthLenght = getMonthDays(globalMonth);
@@ -258,7 +258,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 							lastClicked.style.color = 'black';
 							lastClicked.style.border = '1px solid grey';
 							lastClicked.style.zIndex = 1;
-						}	
+						}
 					} 
 					this.style.backgroundColor='#AEC9E2';
 					this.style.border = '1px solid #5C8DBF';
@@ -267,7 +267,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 					lastClicked = this;
 				};
 				weekDay.day = dayNums[count];//Calcule the day of the month
-				
+
 				if (thisday == dayNums[count] && thismonth == globalMonth && thisyear == globalYear && weekDay.getAttribute('id')=='day_'+dayNums[count]) {
 					thisdate = weekDay; 
 					thisdate.style.backgroundColor='#A7AEC1';
@@ -275,7 +275,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 					thisdate.style.zIndex = 3;
 					thisdate.today = 1;
 				}
-					
+
 				var text = document.createTextNode(dayNums[count]);
 				xAddEventListener(weekDay,'click',selectFunctionParser);
 				weekDay.appendChild(text);
@@ -303,7 +303,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		}
 		return calendarBody;
 	}
-	
+
 	function previousMonth()
 	{
 		calendarBase.removeChild(calendarBody);
@@ -321,7 +321,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		var dateMiddle = document.getElementById(name+'dateMiddle');
 		var textNode = dateMiddle.firstChild;
 		textNode.replaceData(0,textNode.length,monthNames[globalMonth]+' '+globalYear);
-		
+
 		var newDate = new Date();
 		newDate.setMonth(globalMonth);
 		newDate.setYear(globalYear);
@@ -346,7 +346,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		var dateMiddle = document.getElementById(name+'dateMiddle');
 		var textNode = dateMiddle.firstChild;
 		textNode.replaceData(0,textNode.length,monthNames[globalMonth]+' '+globalYear);
-		
+
 		var newDate = new Date();
 		newDate.setMonth(globalMonth);
 		newDate.setYear(globalYear);
@@ -369,7 +369,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			return 31;
 		}
 	}
-	
+
 	function selectFunctionParser(e)
 	{
 		var event = new xEvent(e);
@@ -397,7 +397,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			}
 		}
 		lastSelect = target;
-		
+
 		var dayClicked = target.day;
 		myDay = dayClicked;
 		var selectDate = new Date();
@@ -474,7 +474,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		widget.style.width = wwidth+unit;
 	}
 	if (parseInt(wheight) > 0) {
-		widget.style.height = wheight+unit;	
+		widget.style.height = wheight+unit;
 	}
 
 	if (cent == 1 && widget.style.width) {
@@ -489,10 +489,10 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 				widget.style.left = styleLeft+"px";
 				widget.style.right = styleLeft+"px";
 			} else {
-				widget.style.left = styleLeft+"px";	
+				widget.style.left = styleLeft+"px";
 			}
 		}
-		
+
 		/* Center Height */
 		var widgetheight = widget.style.height;
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
@@ -501,7 +501,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if (styleTop > 0) {
 			widget.style.top = styleTop+"px";
 		}
-		
+
 	} else if(cent == 2 && widget.style.width) {
 		/* Center Width */
 		var widgetwidth = widget.style.width;
@@ -514,10 +514,10 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 				widget.style.left = styleLeft+"px";
 				widget.style.right = styleLeft+"px";
 			} else {
-				widget.style.left = styleLeft+"px";	
+				widget.style.left = styleLeft+"px";
 			}
 		}
-		
+
 	} else if(cent == 3 && widget.style.height) {
 		/* Center Height */
 		var widgetheight = widget.style.height;
@@ -532,7 +532,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if(IEversion > 0) {
 			widget.style.right = fatherwidth+"px";
 		} else {
-			widget.style.left = fatherwidth+"px";	
+			widget.style.left = fatherwidth+"px";
 		}
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
 		widget.style.top = fatherheight+"px";
@@ -541,13 +541,13 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if(IEversion > 0) {
 			widget.style.right = fatherwidth+"px";
 		} else {
-			widget.style.left = fatherwidth+"px";	
+			widget.style.left = fatherwidth+"px";
 		}
 	} else if(cent == 6) {
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
 		widget.style.top = fatherheight+"px";
 	}
-	
+
 	if (wx >= 0) {
 		if (horiz == 1) {
 			if(cent == 1 || cent == 2 || cent == 4 || cent == 5) {
@@ -571,7 +571,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 			}
 		}
 	}
-	
+
 	if (wy >= 0) {
 		if (vert == 1) {
 			if(cent == 1 || cent == 3 || cent == 4 || cent == 6) {
@@ -595,7 +595,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 			}
 		}
 	}
-		
+
 	if (isVisible == 0) {
 		widget.style.display = 'none';
 	} else {
@@ -648,7 +648,7 @@ function xPageY(e)
   while (e) {
     if (xDef(e.offsetTop)) y += e.offsetTop;
     try{
-    	e = xDef(e.offsetParent) ? e.offsetParent : null;	
+    	e = xDef(e.offsetParent) ? e.offsetParent : null;
     }catch(err){
     	e = null;
     }
@@ -663,7 +663,7 @@ function xPageX(e)
   while (e) {
     if (xDef(e.offsetLeft)) x += e.offsetLeft;
     try{
-    	e = xDef(e.offsetParent) ? e.offsetParent : null;	
+    	e = xDef(e.offsetParent) ? e.offsetParent : null;
     }catch(err){
     	e = null;
     }

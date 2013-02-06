@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,17 +24,17 @@
 function eyeHelp_run($params=null) {
 	global $checknum,$myPid;
 	global $currentUser;
-	
+
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeHelp/events'.EYE_CODE_EXTENSION);
 	//This checks if there were passed any params (can be APP_NAME or APP_NAME.eyeHelp)
 	if($params[0]!=''){
 		if(utf8_strtolower(strrchr($params[0],'.')) == utf8_strtolower('.eyeHelp'))$params[0] = utf8_substr($params[0],0,-(utf8_strlen('.eyeHelp')));
 		$folder = eyeHelp_getFolder(array(utf8_basename($params[0])));
-	}else $folder = eyeHelp_getFolder(array('eyeHelp'));
-	
+	}else $folder = eyeHelp_getFolder(array(''));
+
 	//Main window
 	$myWindow = new Window(array(
-		'title'=>'eyeHelp',
+		'title'=>'Help Console',
 		'name'=>'WND_1',
 		'father' => 'eyeApps',
 		'type'=>1,
@@ -67,9 +67,9 @@ function eyeHelp_run($params=null) {
 		'father'=>'WND_1_Content',
 		'type'=>100,
 		'width'=>200,
-		'height'=>425,
+		'height'=>430,
 		'x'=>5,
-		'y'=>45
+		'y'=>40
 	));
 	$myWindow3->show();
 
@@ -80,7 +80,7 @@ function eyeHelp_run($params=null) {
 	));
 	$myToolbar->show();
 	$myToolbar->addItem('SendMessage',eyex('getThemeImage',array('images/toolbar/sendmessage.png',1)),'Ask for help');
-	if($currentUser == ROOTUSER){	
+	if($currentUser == ROOTUSER){
 		$myToolbar->addLine();
 		$myToolbar->addItem('pref',eyex('getThemeImage',array('images/toolbar/lin_agt_wrench.png',1)),'Preferences');
 	}
@@ -91,8 +91,8 @@ function eyeHelp_run($params=null) {
 		'father'=>'WND_3_Content',
 		'x'=>0,
 		'y'=>0,
-		'width'=>175,
-		'height'=>400,
+		'width'=>195,
+		'height'=>405,
 		'title'=>'Topics'
 	));
 	$myBox1->show(0);
@@ -103,21 +103,21 @@ function eyeHelp_run($params=null) {
 		'father' => 'BOX_1',
 		'y'=>5,
 		'x'=>5,
-		'width'=>165,
-		'height'=>390,
+		'width'=>186,
+		'height'=>397,
 		'type'=>100
 	));
 	$myWindow4->show();
-	
+
 	//Get the title of the main topic
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
 	$myDir = $folder;
 	if(utf8_substr($myDir, -1)!='/')$myDir = $myDir.'/';
 	$myInfoFile = $myDir.'info.xml';
-	$size = service('vfs','real_filesize',array($myInfoFile));
+	$size = vfs('real_filesize',array($myInfoFile));
 	if ($size > 0) {
-		$fp = service('vfs','real_open',array($myInfoFile,'r'));
+		$fp = vfs('real_open',array($myInfoFile,'r'));
 		$InfoContent = fread($fp,$size);
 		fclose($fp);
 	}
@@ -147,14 +147,14 @@ function eyeHelp_run($params=null) {
 	$myTree = new Tree(array(
 		'name'=>'Tree',
 		'father'=>'WND_BOX_1_Content',
-		'width'=>150,
+		'width'=>160,
 		'x'=>0,
 		'y'=>10,
 		'clickTree'=>1,
 		'signal'=>'goto'
 	));
 	$myTree->show();
-	
+
 	$myUdir = $folder;
 	drawTree($myTree,'Tree',$myUdir);
 	$myTree->processList();
@@ -175,7 +175,7 @@ function eyeHelp_run($params=null) {
 }
 
 function eyeHelp_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	eyeWidgets('unserialize');
 }
 
 function drawTree($object,$tree,$dir) {
@@ -192,21 +192,23 @@ function drawTree($object,$tree,$dir) {
 				if($myDir{utf8_strlen($myDir)-1}!='/')$myDir = $myDir.'/';
 				$currentUser = ROOTUSER;
 				$myInfoFile = $myDir.'info.xml';
-				$size = service('vfs','real_filesize',array($myInfoFile));
+				$size = vfs('real_filesize',array($myInfoFile));
 				if ($size > 0) {
-					$fp = service('vfs','real_open',array($myInfoFile,'r'));
+					$fp = vfs('real_open',array($myInfoFile,'r'));
 					$InfoContent = fread($fp,$size);
 					fclose($fp);
 				}
 				$currentUser = $oldUser;
-			
+
 				$info = eyeXML('xml2array',array($InfoContent));
 				$info = $info['eyeHelp'][0];
+//				$treeImg = '<img src="'. $info['img'][0].'" alt="" />';
 				if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
 					else $title = utf8_trim($info['title'][0]);
+//				$fulltitle = $treeImg . $title;
 				$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
 				if($title=="")$title = utf8_basename($myDir2);
-			
+
 				$object->addSubList('item_'.$dir,'list_'.$dir);
 				$object->addItem($tree,'item_'.$value,$title);
 				drawTree($object,'list_'.$value,$value);

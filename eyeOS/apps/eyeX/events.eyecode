@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -37,10 +37,10 @@ function eyeX_on_baseapp($params = '') {
 	} else {
 		$_SESSION['SCREEN']['refresh']++;
 	}
-	
+
 	//eyeX should be the first tty, if not, get a new one, because we don't have one already.
 	if($procInfo['tty'] < 1) {
-		$tty = proc('newTty');	
+		$tty = proc('newTty');
 	} else {
 		$tty = $procInfo['tty'];
 	}
@@ -58,7 +58,7 @@ function eyeX_on_baseapp($params = '') {
 
 function eyeX_on_resizedBrowser($params = '') {
 	if(!is_array($params) || !isset($params['height']) || !isset($params['width'])){
- 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
 	// Set width
@@ -90,15 +90,23 @@ function eyeX_on_viewTempImg($params = '') {
 }
 
 function eyeX_on_saveWinPosition($params = '') {
-	$app = proc('findNameByChecknum',array($params['appChecknum'][0]));
-	$path = um('getCurrentUserDir') . CONF_USER_DIR . '/eyex/' . $app . '.xml';
+	// X and Y
+	$x = intval($params['left'][0]);
+	$y = intval($params['top'][0]);
+
+	// $app, $pid and $name
+	$app = proc('findNameByChecknum', array($params['appChecknum'][0]));
+	$pid = utf8_substr($params['winName'][0], 0, utf8_strpos($params['winName'][0], '_'));
+	$name = utf8_substr($params['winName'][0], 1 + utf8_strlen($pid));
 	
-	$window = $params['winName'][0];
-	$window = utf8_substr($window,1 + utf8_strpos($window,'_'));
-	if ($window) {
+	if (is_object($_SESSION[WTABLE][$pid][$name])) {
+		// Update PHP object
+		$_SESSION[WTABLE][$pid][$name]->x = $x;
+		$_SESSION[WTABLE][$pid][$name]->y = $y;
+		// Update XML file
 		$xml = eyeXML('getXMLconfig',array('eyex',$app . '.xml'));
-		$xml[$window][0]['left'][0] = intval($params['left'][0]);
-		$xml[$window][0]['top'][0] = intval($params['top'][0]);
+		$xml[$name][0]['left'][0] = $x;
+		$xml[$name][0]['top'][0] = $y;
 		eyeXML('setXMLconfig',array('eyex',$app . '.xml',$xml));
 	} else {
 		eyex('messageBox',array('content' => 'Unable to save position!'));

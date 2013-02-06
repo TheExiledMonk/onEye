@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -51,7 +51,7 @@ function eyeFTP_emptyRemoteFilesTable() {
 		'dblsignal' => 'eyeFTP_remoteFilesDblClick'
 	));
 	$remoteFilesTable->show();
-	service('eyex','addEvent',array(
+	eyex('addEvent',array(
 		'name' => $myPid.'_eyeFTP_remoteFiles_TAB_Container',
 		'action' => 'sendMsg('.$checknum.',"eyeFTP_remoteFilesClick","")',
 		'event' => 'onclick',

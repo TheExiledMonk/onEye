@@ -1,9 +1,6 @@
 <eyeDesk>
-	<theme>default</theme>
-	<autolaunch>eyeDockText</autolaunch>
-	<autolaunch>eyeBar</autolaunch>
-	<autolaunch>eyeDesk_extras</autolaunch>
+	<autolaunch>eyeDock</autolaunch>
 	<autolaunch>miniActions</autolaunch>
-	<wallpaper></wallpaper>
-	<restoreDock>5</restoreDock>
+	<confVersion>1.9.0.0</confVersion>
+	<theme>default</theme>
 </eyeDesk>

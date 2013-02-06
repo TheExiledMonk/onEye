@@ -162,6 +162,6 @@ function crypt_rc4_decrypt($params) { // eyeOS
 	$key = $params[1];
 	$myClass = new Crypt_RC4($key);
 	$ret = $myClass->decrypt($str);
-	return $ret;	
+	return $ret;
 }
 ?>

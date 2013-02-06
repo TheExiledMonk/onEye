@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -60,37 +60,37 @@ $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Username'
+	'text' => 'User Name'
 ));
 $myLabel->show();
 $myLabel_username = new Label(array(
 	'name' => 'eyeControl_edituser_label_username_2',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY + 3,
 	'text' => $user
 ));
 $myLabel_username->show();
-$ContentY += 30;
+$ContentY += 25;
 // Full name
 $myLabel = new Label(array(
 	'name' => 'eyeControl_edituser_label_fullname',
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Full name'
+	'text' => 'Full Name'
 ));
 $myLabel->show();
 $myTextbox_fullname = new Textbox(array(
 	'name' => 'eyeControl_edituser_textbox_fullname',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY,
 	'text' => $UserXML['fullname'][0]
 ));
 $myTextbox_fullname->show();
 $myTextbox_fullname->focus();
-$ContentY += 30;
+$ContentY += 25;
 // E-mail
 $myLabel = new Label(array(
 	'name' => 'eyeControl_edituser_label_email',
@@ -103,30 +103,30 @@ $myLabel->show();
 $myTextbox_email = new Textbox(array(
 	'name' => 'eyeControl_edituser_textbox_email',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY,
 	'text' => $UserXML['email'][0]
 ));
 $myTextbox_email->show();
-$ContentY += 30;
+$ContentY += 25;
 // Created on
 $myLabel = new Label(array(
 	'name' => 'eyeControl_edituser_label_createdate_1',
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Created on'
+	'text' => 'Created On'
 ));
 $myLabel->show();
 $myLabel = new Label(array(
 	'name' => 'eyeControl_edituser_label_createdate_2',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY + 3,
 	'text' => date('d/m/Y H:i:s',$UserXML['createDate'][0])
 ));
 $myLabel->show();
-$ContentY += 30;
+$ContentY += 25;
 if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	// Permissions
 	$myLabel = new Label(array(
@@ -141,7 +141,7 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		'name' => 'eyeControl_edituser_select_permissions',
 		'father' => $eyeContainer,
 		'width' => 125,
-		'x' => 160,
+		'x' => 190,
 		'y' => $ContentY + 3
 	));
 	$mySelect->show();
@@ -174,15 +174,15 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		$myCheckbox_block = new Checkbox(array(
 			'name' => 'eyeControl_edituser_checkbox_block',
 			'father' => $eyeContainer,
-			'text' => 'Block user',
-			'x' => 300,
+			'text' => 'Block User',
+			'x' => 330,
 			'y' => $ContentY + 3,
 			'checked' => $UserXML['disabled'][0]
 		));
 		$myCheckbox_block->show();
 	}
-	$ContentY += 30;
-	
+	$ContentY += 25;
+
 	// Full name
 	$myLabel = new Label(array(
 		'name' => 'eyeControl_edituser_label_expire',
@@ -200,20 +200,39 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	$myTextbox_expire = new Textbox(array(
 		'name' => 'eyeControl_edituser_textbox_expire',
 		'father' => $eyeContainer,
-		'x' => 160,
+		'x' => 190,
 		'y' => $ContentY,
 		'text' => $exp
 	));
 	$myTextbox_expire->show();
-	$ContentY += 30;
+	$ContentY += 25;
 }
+// Set new passwort on next login
+$myLabel = new Label(array(
+	'name' => 'eyeControl_edituser_label_setnewpassword',
+	'father' => $eyeContainer,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'Set new password on next login'
+));
+$myLabel->show();
+$myCheckbox_setnewpassword = new Checkbox(array(
+	'checked' => $UserXML['resetPassword'][0],
+	'father' => $eyeContainer,
+	'name' => 'eyeControl_edituser_checkbox_setnewpassword',
+	'text' => ' ',
+	'x' => 330,
+	'y' => $ContentY
+));
+$myCheckbox_setnewpassword->show();
+$ContentY += 25;
 // Save changes
 $myButton = new Button(array(
 	'name' => 'eyeControl_edituser_button_save',
 	'father' => $eyeContainer,
 	'x' => 40,
 	'y' => $ContentY,
-	'caption' => 'Save changes',
+	'caption' => 'Save Changes',
 	'signal' => 'edituser_save'
 ));
 $ContentY += 40;
@@ -387,6 +406,7 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		}
 	}
 }
+$myButton->addFriend($myCheckbox_setnewpassword);
 $myButton->addFriend($myHidden);
 $myButton->addFriend($myTextbox_fullname);
 $myButton->addFriend($myTextbox_email);
@@ -429,7 +449,7 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		'father' => 'eyeControl_edituser_container_maintained_users',
 		'x' => 50,
 		'y' => 10,
-		'text' => 'Maintained users'
+		'text' => 'Maintained Users'
 	));
 	$myLabel->show();
 	$myLabel->setCss(array('font-weight' => 'bold'));

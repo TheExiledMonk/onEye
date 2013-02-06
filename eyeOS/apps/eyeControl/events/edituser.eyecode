@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,19 +24,19 @@
 function eyeControl_on_edituser_save($params = '') {
 	global $currentUser;
 	global $myPid;
-	
+
 	if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		$myUserXml = um('retrieveUser',array(eyeControl_lib_getConfigUser()));
 	}
-	
+
 	$array['username'] = $GLOBALS['eyeControl_edituser_hidden']->text;
-	
+
 	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser())) || um('checkMaintainer',array(eyeControl_lib_getConfigUser())) && !in_array($array['username'],$myUserXml['eyeUser'][0]['mngUser'])) {
 		eyex('messageBox',array('content' => 'You are not allowed to manage users!'));
 		eyeControl_lib_loadContent();
 		return;
 	}
-	
+
 	$array['fullname'] = $GLOBALS['eyeControl_edituser_textbox_fullname']->text;
 	$array['email'] = $GLOBALS['eyeControl_edituser_textbox_email']->text;
 	if (utf8_strtolower($GLOBALS['eyeControl_edituser_textbox_expire']->text) == 'never' || utf8_strtolower($GLOBALS['eyeControl_edituser_textbox_expire']->text) == utf8_strtolower(i18n('translate',array('Never')))) {
@@ -45,6 +45,7 @@ function eyeControl_on_edituser_save($params = '') {
 		$date = explode("/",$GLOBALS['eyeControl_edituser_textbox_expire']->text);
 		$exp = mktime(0,0,0,$date[1],$date[0],$date[2]);
 	}
+	$array['resetPassword'] = $GLOBALS['eyeControl_edituser_checkbox_setnewpassword']->checked;
 	$array['expirationDate'] = $exp;
 	if ($array['username'] != ROOTUSER || $currentUser == REAL_ROOTUSER && $array['username'] != REAL_ROOTUSER) {
 		$array['disabled'] = $GLOBALS['eyeControl_edituser_checkbox_block']->checked;

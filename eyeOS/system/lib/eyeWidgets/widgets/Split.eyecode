@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,7 @@ define('SPLIT_HORIZONTAL',2);
 
 class Split {
 	//pid controller
-	
+
 	var $creatorPid;
 	//global widgets options without default
 	var $name;
@@ -43,9 +43,9 @@ class Split {
 	var $vert;
 	var $cent;
 	var $visible;
-	
+
 	var $showed = 0;
-	
+
 	//custom widget options
 	var $width;
 	var $height;
@@ -53,8 +53,8 @@ class Split {
 	var $position;
 	var $sendResizeMsg;
 	var $sigResize;
-	
-	function Split($params) {	
+
+	function Split($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
@@ -68,7 +68,7 @@ class Split {
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
-		
+
 		//especific window options
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
@@ -81,7 +81,7 @@ class Split {
 		isset($params['sendResizeMsg']) ? $this->sendResizeMsg = $params['sendResizeMsg'] : $this->sendResizeMsg = 0;
 		isset($params['sigResize']) ? $this->sigResize = $params['sigResize'] : $this->sigResize = 'splitResize';
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -89,7 +89,7 @@ class Split {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 
 	function show($noserialize=1) {
@@ -105,8 +105,8 @@ class Split {
 			'sigResize' => $this->sigResize,
 			'sendResizeMsg' => $this->sendResizeMsg
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$mySplit = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -119,107 +119,107 @@ class Split {
 			'center' => $this->cent
 		);
 		$this->showed=1;
-		service('eyex','createWidget',$mySplit);
+		eyex('createWidget',$mySplit);
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
-		
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
-	
+
 	function setHeight($height) {
 		global $myPid;
 		$oldHeight = $this->height;
 		$this->height = intval($height);
 		if($this->orientation == SPLIT_VERTICAL) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.height="'.$this->height.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.height="'.$this->height.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_first").style.height="'.$this->height.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_last").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_first").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_last").style.height="'.$this->height.'px";'));
 		} else {
 			$diff = $this->height-$oldHeight;
 			$js = 'increaseHeight("'.$myPid.'_'.$this->name.'_last",'.$diff.');';
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.height="'.$this->height.'px";'));
-			service('eyex','rawjs',array('js' => $js));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.height="'.$this->height.'px";'));
+			eyex('rawjs',array('js' => $js));
 		}
 	}
-	
+
 	function setPosition($position) {
 		global $checknum;
 		global $myPid;
 		$this->position = intval($position);
 		$js = 'splitter_setPosition("'.$myPid.'_'.$this->name.'",'.intval($position).','.$this->orientation.','.$checknum.',"'.$this->sigResize.'");';
-		service('eyex','rawjs',array('js' => $js));
+		eyex('rawjs',array('js' => $js));
 	}
-	
+
 	function setValue($position) {
 		$this->position = intval($position);
 	}
-	
+
 	function hideSplitter() {
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.display="none"'));
 	}
-	
+
 	function showSplitter() {
 		global $myPid;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.display="block"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.display="block"'));
 	}
-	
+
 	function setWidth($width) {
 		global $myPid;
 		$oldWidth = $this->width;
 		$this->width = intval($width);
 		if($this->orientation == SPLIT_HORIZONTAL) {
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.width="'.$this->width.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.width="'.$this->width.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_first").style.width="'.$this->width.'px";'));
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_last").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_splitter").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_first").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_last").style.width="'.$this->width.'px";'));
 		} else {
 			$diff = $this->width-$oldWidth;
 			$js = 'increaseWidth("'.$myPid.'_'.$this->name.'_last",'.$diff.');';
-			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.width="'.$this->width.'px";'));
-			service('eyex','rawjs',array('js' => $js));
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_split").style.width="'.$this->width.'px";'));
+			eyex('rawjs',array('js' => $js));
 		}
 	}
-	
+
 	function remove() {
 		global $myPid;
 		$name = $this->name;
-		service('eyex','removeWidget',array('name'=>$name.'_Container'));
+		eyex('removeWidget',array('name'=>$name.'_Container'));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
-	
+
 }
 ?>

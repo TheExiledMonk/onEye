@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -78,16 +78,16 @@ function lib_i18n_init() {
 * @date 2008/03/11
 */
 function lib_i18n_loadLang($params) {
-	$paths[] = EYE_ROOT.'/i18n/' . DEFAULT_LANGUAGE . EYE_CODE_EXTENSION;
+	$paths[] = EYE_ROOT.'/i18n/' . DEFAULT_I18N . EYE_CODE_EXTENSION;
 	$paths[] = EYE_ROOT . '/i18n/' . $_SESSION['lang'] . EYE_CODE_EXTENSION;
 	if ($app = utf8_basename($params[0])) {
-		$paths[] = EYE_ROOT . '/' . APP_DIR . '/' . $app . '/lang/' . DEFAULT_LANGUAGE . EYE_CODE_EXTENSION;
+		$paths[] = EYE_ROOT . '/' . APP_DIR . '/' . $app . '/lang/' . DEFAULT_I18N . EYE_CODE_EXTENSION;
 		$paths[] = EYE_ROOT . '/' . APP_DIR . '/' . $app . '/lang/' . $_SESSION['lang'] . EYE_CODE_EXTENSION;
 	}
 	foreach ($paths as $path) {
 		if (file_exists($path)) {
 			include_once($path);
-	}	
+	}
 		}
 		return true;
 }
@@ -108,7 +108,7 @@ function lib_i18n_translate($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$string = $params[0];
 	if(isset($params[1])) {
 		$tokens = $params[1];

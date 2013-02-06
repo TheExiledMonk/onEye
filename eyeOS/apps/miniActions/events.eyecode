@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,7 @@ function miniActions_on_Close($params=null) {
 }
 
 
-function miniActions_on_closeApp($params=null) {	
+function miniActions_on_closeApp($params=null) {
 	$config = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeDesk/conf.xml';
 	$xml = eyeXML('getXMLfile',array($config));
 	$autorun = $xml['eyeDesk'][0]['autolaunch'];
@@ -95,7 +95,7 @@ function miniActions_on_Launch4($params=null) {
 
 function miniActions_on_Launch($params=null) {
 	$messagesPid = proc('findPidByName', array('eyeCalendar'));
-	
+
 	if($messagesPid == false) {
 		proc('launch', array('eyeCalendar'));
 	}

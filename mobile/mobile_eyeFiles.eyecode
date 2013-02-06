@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,7 @@
 
 //Exit when requested
 if(isset($_REQUEST['exit'])) {
-	reqLib('eyeSessions','endSession');
+	eyeSessions('endSession');
 }
 global $currentUser;
 //Check for logged user
@@ -76,8 +76,8 @@ if(empty($currentUser)) {
 </html>';
 } else {
 	//Draw file list
-	
-	
+
+
 	//Pick current userdir and path
 	$dir = um('getCurrentUserDir')."files/";
 	$userPath = "";
@@ -86,10 +86,10 @@ if(empty($currentUser)) {
 		$userPath = utf8_trim($_REQUEST['path']);
 		$dir = $dir.$userPath;
 	}
-	
+
 	//Include some functions -create directory, upload files, download files-
 	include_once("../mobile/mobile_functions.eyecode");
-	
+
 	echo '<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 <html>
@@ -110,16 +110,16 @@ if(empty($currentUser)) {
 				text-decoration: none;
 				color: #2560d9;
 			}
-			
+
 			a:hover {
 				text-decoration: none;
 			}
-			
+
 			.listfile {
 				border-top: 1px solid #ddd;
 				padding: 4px;
 			}
-			
+
 			.path {
 				background-color: #e6f3fc;
 				border-bottom: 1px solid #88c2e8;
@@ -138,7 +138,7 @@ if(empty($currentUser)) {
 	</head>
 	<body>
 	';
-	
+
 	//Display the path links
 	$link = "";
 	$splittedPath = explode ('/', $userPath);
@@ -150,7 +150,7 @@ if(empty($currentUser)) {
 		}
 	}
 	echo "</div><br />";
-	
+
 	//List the files
 	$fileList = vfs('getDirContent', array($dir));
 	if(is_array($fileList)) {
@@ -167,7 +167,7 @@ if(empty($currentUser)) {
 	} else {
 		echo "This directory is empty.<br />";
 	}
-	
+
 	//Draw the bottom forms -create directory, upload files-
 	echo '<div class="graybg">
 	  <img style="margin-bottom: -2px;" border="0" src="index.php?theme=1&extern=icons/16x16/upload.png" /> <span class="optionsText">Upload a file:</span> <br />

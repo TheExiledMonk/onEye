@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -37,10 +37,10 @@ function eyeConsole_on_sendCmd($params=null) {
 	$cmd = $GLOBALS['cmd']->text;
 	$GLOBALS['cmd']->setText("");
 	$arguments = parseArguments($cmd);
-	$myApp = $arguments[0];	
+	$myApp = $arguments[0];
 	array_shift($arguments);
 	eyeX('print',array('eyeOS> '.$cmd));
-	if(!service('proc','launch',array($myApp,$arguments))) {
+	if(!proc('launch',array($myApp,$arguments))) {
 		eyeX('print',array("Command not found"));
 	}
 }
@@ -69,7 +69,7 @@ function parseArguments($myApp){
 		$quoteRemplace = utf8_substr(uniqid(rand()),0,8);
 		$myApp = str_replace('\ ',$quoteRemplace,$myApp);
 	}
-	
+
 	$items = array();
 //Getting the name if it is a quoted string.
 	if($myApp{0} == '"'){
@@ -83,17 +83,17 @@ function parseArguments($myApp){
 		if(utf8_strpos($myApp,' ')){
 			$appName = utf8_substr($myApp,0,utf8_strpos($myApp,' '));
 			$myApp = str_replace($appName,'',$myApp);
-			$items[0] = $appName;	
+			$items[0] = $appName;
 		}else{
 			$appName = $myApp;
 			$items[0] = $appName;
 			return $items;
-		}	
-		
+		}
+
 	}
-	
+
 //Getting quoted arguments
-	$con = array();	
+	$con = array();
 	preg_match_all("/\".+\"/U",$myApp,$con);
 	foreach ($con[0] as $quotedString){
 		//First delete it from myApp string
@@ -106,13 +106,13 @@ function parseArguments($myApp){
 //Getting rest of arguments
 	preg_match_all("/ .+ /U",$myApp,$rest);
 	foreach($rest[0] as $argument){
-		$myApp = str_replace($argument,'',$myApp);		
+		$myApp = str_replace($argument,'',$myApp);
 		$items[] = utf8_trim($argument);
 	}
-	
-//The last argument if it exists	
-	$items[] = utf8_trim($myApp);	
-	return $items;	
+
+//The last argument if it exists
+	$items[] = utf8_trim($myApp);
+	return $items;
 }
 
 ?>

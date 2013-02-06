@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,6 +22,6 @@
 */
 
 function eyeFiles($call,$args = null,$noList = false) {
-	return reqLib('eyeFiles',$call,$args,$noList);
+	return reqLib('eyeFiles', $call, $args, $noList);
 }
 ?>

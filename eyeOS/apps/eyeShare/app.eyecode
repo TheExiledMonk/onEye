@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,7 @@
 
 function eyeShare_run($params = '') {
 	global $myPid;
-	
+
 	$myWindow = new Window(array(
 		'cent' => 1,
 		'father' => 'eyeApps',
@@ -35,14 +35,14 @@ function eyeShare_run($params = '') {
 		'width' => 300
 	));
 	$myWindow->show();
-	
+
 	$myHidden = new Hidden(array(
 		'father' => 'eyeShare_Window_Content',
 		'name' => 'eyeShare_Hidden',
 		'text' => $params[0]
 	));
 	eyeWidgets('serialize',array($myHidden));
-	
+
 	$myLabel = new Label(array(
 		'father' => 'eyeShare_Window_Content',
 		'name' => 'eyeShare_Label',
@@ -51,7 +51,7 @@ function eyeShare_run($params = '') {
 	$myLabel->show();
 	$myLabel->setCSS(array('font-weight' => 'bold'));
 	eyex('rawjs', array('js' => 'setWidgetPos("' . $myPid . '_eyeShare_Label_Container", "' . $myPid . '_eyeShare_Window_Content", 0, 0, 0, 20, 2);'));
-	
+
 	$myButton = new Button(array(
 		'cent' => 2,
 		'caption' => 'Share',
@@ -62,7 +62,7 @@ function eyeShare_run($params = '') {
 		'x' => 0,
 		'y' => 20
 	));
-	
+
 	$myContainer = new Container(array(
 		'cent' => 2,
 		'father' => 'eyeShare_Window_Content',
@@ -77,7 +77,7 @@ function eyeShare_run($params = '') {
 		'overflow' => 'auto',
 		'position' => 'absolute'
 	));
-	
+
 	$y = 0;
 	foreach (um('getCurrentGroups') as $group => $value) {
 		$myCheckbox = new Checkbox(array(

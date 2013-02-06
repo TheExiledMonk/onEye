@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -55,7 +55,7 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 	if (is_array($path)) {
 		$path = '';
 	}
-	
+
 	if ($config['eyeDesk'][0]['wallpaper'][0] && is_string($config['eyeDesk'][0]['wallpaper'][0])) {
 		$cw = 1;
 	} else {
@@ -82,7 +82,7 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		$centerHeight = 33;
 		$centerWidth = 104;
 	}
-	
+
 	// Use a custom wallpaper
 	$myCheckbox_use = new Checkbox(array(
 		'name' => 'eyeControl_desktop_checkbox_use',
@@ -101,7 +101,7 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		'father' => $wallpaperTab,
 		'x' => 60,
 		'y' => $ContentY + 3,
-		'text' => 'New wallpaper'
+		'text' => 'New Wallpaper'
 	));
 	$myLabel->show();
 	$myTextbox = new Textbox(array(
@@ -150,7 +150,7 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		'father' => $wallpaperTab,
 		'x' => 245,
 		'y' => $ContentY,
-		'text' => 'Repeat wallpaper',
+		'text' => 'Repeat Wallpaper',
 		'checked' => $repeat
 	));
 	$myCheckbox_repeat->show();
@@ -162,7 +162,7 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		'father' => $wallpaperTab,
 		'x' => 245,
 		'y' => $ContentY,
-		'text' => 'Center wallpaper',
+		'text' => 'Center Wallpaper',
 		'checked' => $center
 	));
 	$myCheckbox_center->show();
@@ -185,7 +185,7 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		'father' => $wallpaperTab,
 		'x' => 60,
 		'y' => $ContentY + 3,
-		'text' => 'Background color'
+		'text' => 'Background Color'
 	));
 	$myLabel->show();
 	$myTextbox_color = new Textbox(array(
@@ -197,7 +197,27 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 		'text' => $config['eyeDesk'][0]['bgColor'][0]
 	));
 	$myTextbox_color->show();
-	$myTextbox_color->addEvent('onkeyup', 'if (this.value == "") {
+	$myTextbox_color->setCss(array('text-shadow' => 'none'));
+	// INIT
+	eyex('rawjs', array('js' => 'var e = document.getElementById("' . $myPid . '_eyeControl_desktop_textbox_color");
+	e.style.backgroundColor = "#ffffff";
+	e.style.backgroundColor = e.value;
+	var bgColor = xParseColor(xGetComputedStyle(e, "background-color"));
+	if (bgColor.s !== "#000000" && bgColor.s !== "#ffffff" && (e.value.length !== 4 || e.value.substr(0, 1) !== "#") || e.value.toLowerCase() === "black" || e.value.toLowerCase() === "white") {
+		e.value = bgColor.s;
+	}
+	if (e.style.backgroundColor === "transparent") {
+		e.style.backgroundColor = "#ffffff";
+	}
+	e.style.color = "rgb(" + String(288 - bgColor.r) + ", " + String(288 - bgColor.g) + ", " + String(288 - bgColor.b) + ")";'));
+	// CHANGE
+	$myTextbox_color->addEvent('onchange', 'if (this.value == "" || this.value.toLowerCase() === "transparent") {
+		document.getElementById("' . $myPid . '_eyeControl_desktop_checkbox_use_color").checked = false;
+	} else {
+		document.getElementById("' . $myPid . '_eyeControl_desktop_checkbox_use_color").checked = true;
+	}');
+	// KEYUP
+	$myTextbox_color->addEvent('onkeyup', 'if (this.value == "" || this.value.toLowerCase() === "transparent") {
 		document.getElementById("' . $myPid . '_eyeControl_desktop_checkbox_use_color").checked = false;
 	} else {
 		document.getElementById("' . $myPid . '_eyeControl_desktop_checkbox_use_color").checked = true;
@@ -205,11 +225,17 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 	this.style.backgroundColor = "#ffffff";
 	this.style.backgroundColor = this.value;
 	var bgColor = xParseColor(xGetComputedStyle(this, "background-color"));
-	this.style.color = "rgb(" + String(288 - bgColor.r) + ", " + String(288 - bgColor.g) + ", " + String(288 - bgColor.b) + ")";');
-	eyex('rawjs', array('js' => 'var e = document.getElementById("' . $myPid . '_eyeControl_desktop_textbox_color");
-	e.style.backgroundColor = e.value;
-	var bgColor = xParseColor(xGetComputedStyle(e, "background-color"));
-	e.style.color = "rgb(" + String(288 - bgColor.r) + ", " + String(288 - bgColor.g) + ", " + String(288 - bgColor.b) + ")";'));
+	if (bgColor.s !== "#000000" && bgColor.s !== "#ffffff" && (this.value.length !== 4 || this.value.substr(0, 1) !== "#") || this.value.toLowerCase() === "black" || this.value.toLowerCase() === "white") {
+		this.value = bgColor.s;
+	}
+	if (this.value.toLowerCase() === "transparent") {
+		this.style.backgroundColor = "#ffffff";
+		this.style.color = "#000000";
+	} else {
+		this.style.color = "rgb(" + String(288 - bgColor.r) + ", " + String(288 - bgColor.g) + ", " + String(288 - bgColor.b) + ")";
+	}');
+	// JSCOLOR
+	eyex('jscolor', array($myPid . '_eyeControl_desktop_textbox_color'));
 	$ContentY += 60;
 	// Save changes
 	$myButton = new Button(array(
@@ -276,7 +302,7 @@ $myLabel = new Label(array(
 	'father' => $iconsTab,
 	'x' => 20,
 	'y' => $ContentY,
-	'text' => 'Desktop icons'
+	'text' => 'Desktop Icons'
 ));
 $myLabel->show();
 $myLabel->setCss(array(
@@ -299,7 +325,7 @@ $myRadioSmooth = new Radio(array(
 	'father' => $iconsTab,
 	'group' => 'Icons',
 	'name' => 'eyeControl_desktop_Radio_Smooth',
-	'text' => 'Smooth: Icons can be moved everywhere',
+	'text' => 'Smooth: Icons can be moved anywhere',
 	'x' => 50,
 	'y' => $ContentY
 ));
@@ -335,7 +361,7 @@ $myButton = new Button(array(
 	'father' => $iconsTab,
 	'x' => 20,
 	'y' => $ContentY,
-	'caption' => 'Save changes',
+	'caption' => 'Save Changes',
 	'signal' => 'desktop_save_icons'
 ));
 $myButton->addFriend($myRadioFixed);
@@ -363,7 +389,7 @@ $myCheckbox = new Checkbox(array(
 	'father' => $iconsTab,
 	'x' => 50,
 	'y' => $ContentY,
-	'text' => 'Use doubleclicks',
+	'text' => 'Use Doubleclicks',
 	'checked' => $xml['eyeFiles'][0]['clickMethod'][0] == '2'
 ));
 $myCheckbox->show();

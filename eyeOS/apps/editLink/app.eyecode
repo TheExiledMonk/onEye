@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -26,6 +26,7 @@ function editLink_run($params = '') {
 	$file = utf8_basename($params[0]);
 	$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/' . $file));
 	if ($xml['eyeLink'][0]) {
+		eyex('systemSound', array('message'));
 		$myWindow = new Window(array(
 			'cent' => 1,
 			'father' => 'eyeApps',
@@ -37,21 +38,21 @@ function editLink_run($params = '') {
 			'width' => 350
 		));
 		$myWindow->show();
-		
+
 		$myHidden = new Hidden(array(
 			'father' => 'eyeApps',
 			'name' => 'editLink_Hidden_File',
 			'text' => $file
 		));
 		$myHidden->show();
-		
+
 		$myHidden = new Hidden(array(
 			'father' => 'eyeApps',
 			'name' => 'editLink_Hidden_Callback',
 			'text' => $params[1]
 		));
 		$myHidden->show();
-		
+
 		$myImage = new Imagebox(array(
 			'father' => 'editLink_Window_Content',
 			'name' => 'editLink_Imagebox',
@@ -60,7 +61,7 @@ function editLink_run($params = '') {
 			'y' => 28
 		));
 		$myImage->show();
-		
+
 		$mySelect = new Select(array(
 			'father' => 'editLink_Window_Content',
 			'name' => 'editLink_Select',
@@ -79,7 +80,7 @@ function editLink_run($params = '') {
 				}
 			}
 		}
-		
+
 		$myLabel = new Label(array(
 			'name' => 'editLink_Label',
 			'father' => 'editLink_Window_Content',
@@ -88,7 +89,7 @@ function editLink_run($params = '') {
 			'y' => 25
 		));
 		$myLabel->show();
-		
+
 		$myTextbox = new Textbox(array(
 			'father' => 'editLink_Window_Content',
 			'name' => 'editLink_Textbox',
@@ -100,7 +101,7 @@ function editLink_run($params = '') {
 		$myTextbox->addFriend($mySelect);
 		$myTextbox->show();
 		$myTextbox->addEnterEventMsg('Do');
-		
+
 		$myButton = new Button(array(
 			'caption' => 'Update',
 			'father' => 'editLink_Window_Content',

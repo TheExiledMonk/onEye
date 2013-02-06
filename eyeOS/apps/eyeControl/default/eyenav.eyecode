@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -64,7 +64,7 @@ $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'x' => 320,
 	'y' => $ContentY + 3,
-	'text' => 'Test address',
+	'text' => 'Test Address',
 	'disablemsg' => 0,
 	'signal' => 'eyenav_test'
 ));
@@ -116,7 +116,7 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'x' => 50,
 	'y' => $ContentY,
-	'caption' => 'Save changes',
+	'caption' => 'Save Changes',
 	'signal' => 'eyenav_save'
 ));
 $myButton->addFriend($myTextbox);
@@ -180,7 +180,7 @@ if (eyeControl_lib_getConfigUser() != '[skel]') {
 		'name' => 'eyeControl_eyenav_button_bookmarks_default',
 		'father' => $eyeContainer,
 		'signal' => 'eyenav_bookmarks_default',
-		'caption' => 'Use defaults',
+		'caption' => 'Use Defaults',
 		'width' => 100,
 		'x' => 200,
 		'y' => $ContentY,
@@ -220,7 +220,7 @@ if (eyeControl_lib_getConfigUser() != '[skel]') {
 		'name' => 'eyeControl_eyenav_button_search_default',
 		'father' => $eyeContainer,
 		'signal' => 'eyenav_search_default',
-		'caption' => 'Use defaults',
+		'caption' => 'Use Defaults',
 		'width' => 100,
 		'x' => 200,
 		'y' => $ContentY,

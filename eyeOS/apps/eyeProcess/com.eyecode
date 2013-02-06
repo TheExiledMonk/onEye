@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,7 @@ function eyeProcess_com_onClose($params = '') {
 function eyeProcess_com_onLaunch($params = '') {
 	global $currentUser;
 	eyeWidgets('updateContent',$params);
-	$themeDir = EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/'. $_SESSION['usertheme'] .'/icons/20x20';
+	$themeDir = EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/'. $_SESSION['usertheme'] .'/icons/22x22';
 	//If user is not root, get root access.
 	if($currentUser != ROOTUSER){
 		$oldUser = $currentUser;
@@ -44,7 +44,7 @@ function eyeProcess_com_onLaunch($params = '') {
 	//Get current process and show them
 	foreach (proc('getProcessTable') as $key => $value) {
 		$GLOBALS['eyeProcess_Sortabletable']->addRow(array($key,$value['appName'],$value['currentUser']));
-		//If one of them is marked as Application in its info.xml show it in application table	
+		//If one of them is marked as Application in its info.xml show it in application table
 		foreach($dirContent as $appName){
 			if(utf8_basename($appName) == $value['appName']){
 				$appName .= '/info.xml';
@@ -52,10 +52,10 @@ function eyeProcess_com_onLaunch($params = '') {
 					$config = eyeXML('getXMLfile', array($appName));
 					if($config){
 						if($config['package'][0]['type'][0] == 'Application'){
-							if(!file_exists(EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/'. $_SESSION['usertheme'] .'/icons/20x20/' . $value['appName'] .'.png')){
-								$urlIcon = 'index.php?theme=1&amp;extern=icons/20x20/exec.png';
+							if(!file_exists(EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/'. $_SESSION['usertheme'] .'/icons/22x22/' . $value['appName'] .'.png')){
+								$urlIcon = 'index.php?theme=1&amp;extern=icons/22x22/exec.png';
 							} else {
-								$urlIcon = 'index.php?theme=1&amp;extern=icons/20x20/'.$value['appName'].'.png';
+								$urlIcon = 'index.php?theme=1&amp;extern=icons/22x22/'.$value['appName'].'.png';
 							} 
 							$GLOBALS['eyeProcess_appSortabletable']->addRow(array($key,'<img src="'.$urlIcon.'" /> &nbsp;&nbsp;<span style="position:relative;top:-6px">'.$config['package'][0]['name'][0]."</span>"));
 						}
@@ -64,7 +64,7 @@ function eyeProcess_com_onLaunch($params = '') {
 			}
 		}
 	}
-	
+
 	//If we were not root but we got root access undo it.
 	if(isset($oldUser)){
 		$currentUser = $oldUser;

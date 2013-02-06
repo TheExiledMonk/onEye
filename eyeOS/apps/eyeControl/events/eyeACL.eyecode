@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -33,7 +33,7 @@ function eyeControl_on_acl_add($params=''){
 
 function eyeControl_on_acl_edit($params=''){
 	$id = $GLOBALS['eyeControl_acl_sortabletable']->selected;
-	
+
 	if(empty($id)){
 		eyeX('messageBox',array('content'=>"Please choose an ACL to edit from the list"));
 		return true;
@@ -49,7 +49,7 @@ function eyeControl_on_acl_edit($params=''){
 }
 
 function eyeControl_on_acl_delete($params=''){
-	
+
 	$id = $GLOBALS['eyeControl_acl_sortabletable']->selected;
 
 	if(empty($id)){
@@ -74,7 +74,7 @@ function eyeControl_on_acl_delete($params=''){
 
 function eyeControl_on_yDelete0($params=''){
 	$id0 = $GLOBALS['eyeControl_acl_sortabletable']->selected;
-	
+
 	//$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
 	$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
 	$config = eyeXML('getXMLfile', array($file));
@@ -95,7 +95,7 @@ function eyeControl_on_yDelete0($params=''){
 }
 
 function eyeControl_on_nDelete0($params=''){
-	$GLOBALS['delete_warning0']->close();	
+	$GLOBALS['delete_warning0']->close();
 }
 
 ?>

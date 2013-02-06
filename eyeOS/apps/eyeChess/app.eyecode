@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,10 +24,11 @@
 function eyeChess_run($params = '') {
 	global $checknum;
 	global $myPid;
+	
 	$myWindow = new Window(array(
 		'cent' => 1,
 		'father' => 'eyeApps',
-		'height' => 550,
+		'height' => 530,
 		'name' => 'eyeChess_Window',
 		'savePosition' => 1,
 		'title' => 'Chess Game',

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -27,7 +27,7 @@
 
 class Listbox {
 	//pid controller
-	
+
 	var $creatorPid;
 	//global widgets options without default
 	var $name;
@@ -40,9 +40,9 @@ class Listbox {
 	var $vert;
 	var $cent;
 	var $visible;
-	
+
 	var $showed = 0;
-	
+
 	//custom widget options
 	var $width;
 	var $height;
@@ -54,7 +54,7 @@ class Listbox {
     var $disableMsg;
     var $selected;
     
-	function Listbox($params) {	
+	function Listbox($params) {
 		if(!is_array($params)){
 			//TODO: put this error handler in all widgets an use errorLib
 			return false;
@@ -72,7 +72,7 @@ class Listbox {
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
-		
+
 		//especific window options
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
@@ -83,7 +83,7 @@ class Listbox {
         isset($params['mode']) ? $this->mode = $params['mode'] : $this->mode = 1;
         isset($params['disableMsg']) ? $this->disableMsg = $params['disableMsg'] : $this->disableMsg = 0;
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -91,7 +91,7 @@ class Listbox {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 
 	function show($noserialize=1) {
@@ -102,8 +102,8 @@ class Listbox {
             'orientation' => $this->orientation,
 			'border'=> $this->border
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myBox = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -113,20 +113,20 @@ class Listbox {
 			'father' => $this->father,
 			'widgetname' => 'Listbox',
 			'params' => $widgetsparams,
-			'center' => $this->cent			
+			'center' => $this->cent
 		);
 		$this->showed=1;
-		service('eyex','createWidget',$myBox);
+		eyex('createWidget',$myBox);
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
-			
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
@@ -134,29 +134,29 @@ class Listbox {
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 	}
-	
+
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
-	}	
-	
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+	}
+
     function addItem($text,$id=null,$image=0) {
         global $myPid;
         global $checknum;
@@ -197,7 +197,7 @@ class Listbox {
     }
     
 	function setValue($selected) {
-		$this->selected = $selected;	
+		$this->selected = $selected;
 	}
     
     function sort($type) {
@@ -210,19 +210,19 @@ class Listbox {
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
-	
+
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }

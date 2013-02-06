@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,7 @@
 
 include(EYE_ROOT.'/'.APP_DIR.'/eyeMedia/lib'.EYE_CODE_EXTENSION);
 
-// $users_home_dir = service('um','getCurrentUserDir');
+// $users_home_dir = um('getCurrentUserDir');
 // eyex('messageBox',array('content'=>'This is a message'));
 
 function eyeMedia_on_Message($params="") {
@@ -176,12 +176,12 @@ function eyeMedia_on_Sound_Finished($params=null) {
 function eyeMedia_on_WNDResize($params=null) {
 	$width = intval($params['arg'][0]);
 	$height = intval($params['arg'][1]);
-	
+
 	$widthDiff = $GLOBALS['eyeMedia_WND']->width - $width;
 	$heightDiff = $GLOBALS['eyeMedia_WND']->height - $height;
 	$GLOBALS['eyeMedia_WND']->setWidth($width);
 	$GLOBALS['eyeMedia_WND']->setHeight($height);
-	
+
 	//Reusing  the var because we don't need it anymore
 	// Doesn't work. Containers can't be resized for some reason.
 	// Fixed in 1.8! :D
@@ -191,11 +191,11 @@ function eyeMedia_on_WNDResize($params=null) {
 	$GLOBALS['eyeMedia_conContainer']->setWidth($width);
 	//$GLOBALS['eyeMedia_conContainer']->height = $height;
 	$GLOBALS['eyeMedia_conContainer']->setHeight($height);
-	
+
 	$width = $GLOBALS['eyeMedia_txtStatus']->width - $widthDiff;
 	//$GLOBALS['eyeMedia_txtStatus']->width = $width;
 	$GLOBALS['eyeMedia_txtStatus']->setWidth($width);
-	
+
 	$width = $GLOBALS['eyeMedia_tblPlaylist']->width - $widthDiff;
 	$height = $GLOBALS['eyeMedia_tblPlaylist']->height - $heightDiff;
 	//$GLOBALS['eyeMedia_tblPlaylist']->width = $width;

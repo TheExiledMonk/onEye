@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -99,14 +99,14 @@ function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var multiple = params.multiple;
 	var pid = params.pid;
 	var myIframe = document.createElement('iframe');
-	
+
 	var width = '250px';
 	var height = '90px';
 	if (multiple == 1) {
 		width = '300px';
 		height = '350px';
 	}
-	
+
 	myIframe.setAttribute('id',name);
 	myIframe.style.width = width;
 	myIframe.style.height = height;
@@ -141,14 +141,14 @@ function Listbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = params.height;
 	var mywidth = params.width;
 	var visible = params.visible;
-    var orientation = params.orientation;
+	var orientation = params.orientation;
 	var divBox = document.createElement('div');
 	divBox.setAttribute('id',name);
-    divBox.setAttribute('lastFocus','');
-    divBox.setAttribute('orientation',orientation);
+	divBox.setAttribute('lastFocus','');
+	divBox.setAttribute('orientation',orientation);
 	divBox.style.width = mywidth+'px';
 	divBox.style.height = myheight+'px';
-    divBox.className = "eyeListbox_box";
+	divBox.className = "eyeListbox_box";
 	if(params.border == 1){
 		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible,'Listbox');
 	}else{
@@ -157,84 +157,157 @@ function Listbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 }
 
 function Listbox_addItem(pid,name,checknum,sig,rowSize,disablemsg,text,id,image) {
-    var obj = document.getElementById(pid+'_'+name);
-    var orientation = obj.getAttribute('orientation');
+	var obj = document.getElementById(pid+'_'+name);
+	var orientation = obj.getAttribute('orientation');
 	var divBox;
 	var divImage;
 	var divText;
-    if (orientation == 'vertical') {
-        obj.style.overflowX = "hidden";
-        obj.style.overflowY = "auto";
-        divBox = document.createElement('div');
-        divBox.setAttribute('id',pid+'_'+id);
-        divBox.style.height = rowSize + 'px';
-        divBox.style.width = 100+'%';
-        if (image != 0) {
-            divImage = document.createElement('img');
-            divImage.setAttribute('src',image);
-            divImage.setAttribute('id','img_'+id);
-            divImage.className = "eyeListbox_img";
-            divImage.style.marginTop = (parseInt(divBox.style.height, 10) * 3 / 10) + "px";
-            divBox.appendChild(divImage);
-        }
-        
-        if (text) {
-            divText = document.createElement('div');
-            divText.appendChild(document.createTextNode(text));
-            divText.className = "eyeListbox_txt";
-            divText.setAttribute('id','txt_'+id);
-            divBox.appendChild(divText);
-        }
-        obj.appendChild(divBox);
+	if (orientation == 'vertical') {
+		obj.style.overflowX = "hidden";
+		obj.style.overflowY = "auto";
+		divBox = document.createElement('div');
+		divBox.setAttribute('id',pid+'_'+id);
+		divBox.style.height = rowSize + 'px';
+		divBox.style.width = 100+'%';
+		if (image != 0) {
+			divImage = document.createElement('img');
+			divImage.setAttribute('src',image);
+			divImage.setAttribute('id','img_'+id);
+			divImage.className = "eyeListbox_img";
+			divImage.style.marginTop = (parseInt(divBox.style.height, 10) * 3 / 10) + "px";
+			divBox.appendChild(divImage);
+		}
 
-        divBox.onmouseover = function() {
-            var lastFocus = obj.getAttribute('lastfocus');
-            if (lastFocus.length === 0 || lastFocus != id) {
-                this.className = "eyeListbox_over";
-            }
-        };
-        divBox.onmouseout = function() {
-            var lastFocus = obj.getAttribute('lastfocus');
-            if (lastFocus.length === 0 || lastFocus != id) {
-                this.className = "eyeListbox_out";
-            }
-        };
-        divBox.onmousedown = function() {
-            var lastFocus = obj.getAttribute('lastfocus');
-            if (lastFocus.length === 0) {
-                obj.setAttribute('lastfocus',id);
-            } else {
-                var lastObj = document.getElementById(pid+'_'+lastFocus);
-                lastObj.className = "eyeListbox_out";
-                obj.setAttribute('lastfocus',id);
-            }
-            this.className = "eyeListbox_focus";
-        };
-        if (disablemsg == 0) {
-            divBox.onmouseup = function() {
-                sendMsg(checknum,sig,eyeParam('id',id));
-            };
-        }
-    }
+		if (text) {
+			divText = document.createElement('div');
+			divText.appendChild(document.createTextNode(text));
+			divText.className = "eyeListbox_txt";
+			divText.setAttribute('id','txt_'+id);
+			divBox.appendChild(divText);
+		}
+		obj.appendChild(divBox);
+
+		divBox.onmouseover = function() {
+			var lastFocus = obj.getAttribute('lastfocus');
+			if (lastFocus.length === 0 || lastFocus != id) {
+				this.className = "eyeListbox_over";
+			}
+		};
+		divBox.onmouseout = function() {
+			var lastFocus = obj.getAttribute('lastfocus');
+			if (lastFocus.length === 0 || lastFocus != id) {
+				this.className = "eyeListbox_out";
+			}
+		};
+		divBox.onmousedown = function() {
+			var lastFocus = obj.getAttribute('lastfocus');
+			if (lastFocus.length === 0) {
+				obj.setAttribute('lastfocus',id);
+			} else {
+				var lastObj = document.getElementById(pid+'_'+lastFocus);
+				lastObj.className = "eyeListbox_out";
+				obj.setAttribute('lastfocus',id);
+			}
+			this.className = "eyeListbox_focus";
+		};
+		if (disablemsg == 0) {
+			divBox.onmouseup = function() {
+				sendMsg(checknum,sig,eyeParam('id',id));
+			};
+		}
+	} else {
+		obj.style.overflowY = "hidden";
+		obj.style.overflowX = "auto";
+		divBox = document.createElement('div');
+		divBox.setAttribute('id',pid+'_'+id);
+		divBox.style.width = rowSize + 'px';
+		divBox.style.height = 100+'%';
+		if (image) {
+			divImage = document.createElement('img');
+			divImage.setAttribute('src',image);
+			divImage.setAttribute('id','img_'+id);
+			divImage.className = "eyeListbox_img";
+			divBox.appendChild(divImage);
+		}
+		if (text) {
+			divText = document.createElement('div');
+			divText.appendChild(document.createTextNode(text));
+			divText.className = "eyeListbox_txt";
+			divText.setAttribute('id','txt_'+id);
+			divBox.appendChild(divText);
+		}
+		obj.appendChild(divBox);
+
+		divBox.onmouseover = function() {
+			var lastFocus = obj.getAttribute('lastfocus');
+			if (lastFocus.length === 0 || lastFocus != id) {
+				this.className = "eyeListbox_over";
+			}
+		};
+		divBox.onmouseout = function() {
+			var lastFocus = obj.getAttribute('lastfocus');
+			if (lastFocus.length === 0 || lastFocus != id) {
+				this.className = "eyeListbox_out";
+			}
+		};
+		divBox.onmousedown = function() {
+			var lastFocus = obj.getAttribute('lastfocus');
+			if (lastFocus.length === 0) {
+				obj.setAttribute('lastfocus',id);
+			} else {
+				var lastObj = document.getElementById(pid+'_'+lastFocus);
+				lastObj.className = "eyeListbox_out";
+				obj.setAttribute('lastfocus',id);
+			}
+			this.className = "eyeListbox_focus";
+		};
+		if (!disablemsg) {
+			divBox.onmouseup = function() {
+				sendMsg(checknum,sig,eyeParam('id',id));
+			};
+		}
+	}
 }
 
 function Listbox_selectItem(pid,name,id) {
-    var item = document.getElementById(pid+'_'+id);
-    if (!item) { 
-        return false; 
-    }
-    var obj = document.getElementById(pid+'_'+name);
-    var lastid = obj.getAttribute('lastfocus');
-    if (lastid.length !== 0) {
-        var tempobj = document.getElementById(pid+'_'+lastid);
-        tempobj.className = "eyeListbox_out";
-    }
-    obj.setAttribute('lastfocus',id);
-    item.className = "eyeListbox_focus";
-    if (typeof item.onmouseup == 'function') {
-        item.onmouseup();
-    }
+	var item = document.getElementById(pid+'_'+id);
+	if (!item) { 
+		return false; 
+	}
+	var obj = document.getElementById(pid+'_'+name);
+	var lastid = obj.getAttribute('lastfocus');
+	if (lastid.length !== 0) {
+		var tempobj = document.getElementById(pid+'_'+lastid);
+		tempobj.className = "eyeListbox_out";
+	}
+	obj.setAttribute('lastfocus',id);
+	item.className = "eyeListbox_focus";
+	if (typeof item.onmouseup == 'function') {
+		item.onmouseup();
+	}
 }
+
+function Listbox_sort(mypid,name,type) {
+	var father = document.getElementById(mypid+"_"+name).childNodes;
+	var childs = father.length;
+	var items = [];
+	for (var i = 0; i < childs; ++i) {
+		items.push(father[i].firstChild.firstChild.nodeValue);
+	}
+	// Fill up all the values in the items array
+
+	if (type=='ad') {
+	} else if (type=='aa') {
+	} else if (type=='na') {
+	} else if (type=='nd') {
+	} else if (type=='random') {
+	}
+
+	// items array sorted, now sort the DOM elements
+
+	// TODO ALL Function
+}
+
 function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var highlight = params.highlight;
 	var caption = params.caption;
@@ -274,8 +347,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myButton = document.createElement('button');
 		myButton.setAttribute('id',name);
 		caption = tinyMCE.entityDecode(caption);
-		theText=document.createTextNode(caption);
-		myButton.appendChild(theText);
+		myButton.appendChild(document.createTextNode(caption));
 	}
 
 	if(highlight == 1) {
@@ -320,15 +392,14 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		}
 	}
 
-    myContainer.appendChild(myButton);
-    if(myContent) {
-        myContainer.appendChild(myContent);
-    }
-    createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible,'Button');
-    if (myImg != null) {
-        fixPNG(myButton);
-    }
-	
+	myContainer.appendChild(myButton);
+	if(myContent) {
+		myContainer.appendChild(myContent);
+	}
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible,'Button');
+	if (myImg != null) {
+		fixPNG(myButton);
+	}
 }
 
 function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -356,7 +427,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var startMonday = params.startMonday;
 	var calendarBase = document.createElement('div');
 	var lastSelect = false;
-	
+
 	function previousMonth()
 	{
 		calendarBase.removeChild(calendarBody);
@@ -379,7 +450,9 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		newDate.setMonth(globalMonth);
 		newDate.setYear(globalYear);
 		newDate.setDate(myDay);
-		sendMsg(checknum,selectFunc,eyeParam('date',newDate.getTime()));
+		if (selectFunc !== '') {
+			sendMsg(checknum,selectFunc,eyeParam('date',newDate.getTime()));
+		}
 	}
 	function nextMonth()
 	{
@@ -403,7 +476,9 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		newDate.setMonth(globalMonth);
 		newDate.setYear(globalYear);
 		newDate.setDate(myDay);
-		sendMsg(checknum,selectFunc,eyeParam('date',newDate.getTime()));
+		if (selectFunc !== '') {
+			sendMsg(checknum,selectFunc,eyeParam('date',newDate.getTime()));
+		}
 	}
 	function getRowsAndDate()
 	{
@@ -446,12 +521,12 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			var dayNameContent = document.createElement('div');
 			dayNameContent.style.textAlign = 'center';
 				var left = 11;
-				for (var x = 0; x < 7; x++) {
+				for (var i = 0; i < 7; i++) {
 					var dayName = document.createElement('div');
 					dayName.style.left = left + '%';
 					dayName.style.color = params.dayName;
 					dayName.className = 'calendar_dayName';
-					var text = document.createTextNode(weekDays[x]);
+					var text = document.createTextNode(weekDays[i]);
 					dayName.appendChild(text);
 					dayNameContent.appendChild(dayName);
 					left = left+12;
@@ -509,14 +584,16 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		selectDate.setMonth(globalMonth);
 		selectDate.setYear(globalYear);
 		selectDate.setDate(dayClicked);
-		sendMsg(checknum,selectFunc,eyeParam('date',selectDate.getTime()));
+		if (selectFunc !== '') {
+			sendMsg(checknum,selectFunc,eyeParam('date',selectDate.getTime()));
+		}
 	}
 	function getCalendarBody()
 	{
 		var date = new Date();
 		date.setMonth(globalMonth);
 		date.setYear(globalYear);
-		var x,y = 0;//For bucles
+		var x2 = 0; // For bucles
 		date.setDate(1);//First day of month
 		var dayOfWeek = date.getDay();
 		var calendarBody = document.createElement('div');
@@ -534,22 +611,21 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		var discount = 1;
 		if(startMonday == 1){
 			if(dayOfWeek === 0){
-				dayOfWeek = 7;
-			}else if(dayOfWeek == 6){
-				dayOfWeek = 0;
+				dayOfWeek = 6;
+			} else {
+				dayOfWeek--;
 			}
-			discount = 2;
 		}
-		for (x = dayOfWeek - discount; x >= 0; x--) {
-			dayNums.push(preMonthLenght-x);
-			dayIds.push(name+'_'+(preMonthLenght-x)+'_pre');
+		for (i = dayOfWeek - discount; i >= 0; i--) {
+			dayNums.push(preMonthLenght-i);
+			dayIds.push(name+'_'+(preMonthLenght-i)+'_pre');
 			dayColors.push(params.preMonthDays);//Hardcoded at the moment
 		}
 		//Fill all month day
-		for (x = 1; x <= monthLenght; x++) {
-			dayNums.push(x);
-			dayIds.push(name+'_'+x+'_current');
-			date.setDate(x);
+		for (i = 1; i <= monthLenght; i++) {
+			dayNums.push(i);
+			dayIds.push(name+'_'+i+'_current');
+			date.setDate(i);
 			if(date.getDay() === 0 || date.getDay() == 6)
 			{
 				dayColors.push(params.weekEnd);
@@ -559,28 +635,28 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		}
 		//Fill rest days
 		var rest = 42-dayNums.length;
-		for (x = 1; x <= rest; x++) {
-			dayNums.push(x);
-			dayIds.push(name+'_'+x+'_rest'	);
+		for (i = 1; i <= rest; i++) {
+			dayNums.push(i);
+			dayIds.push(name+'_'+i+'_rest'	);
 			dayColors.push(params.nextMonthDays);//Hardcoded at the moment
 		}
 
 		//Now, fill the body with days!
 		var top = 7.5;//Hardcoded at the moment
 		var count = 0;
-		for (x = 0; x < 6; x++) {
+		for (i = 0; i < 6; i++) {
 			var weekMonth = document.createElement('div');
 			weekMonth.className = 'calendar_weekMonth';
 			weekMonth.style.top = top+'%';
-			/*if(weekHighlight !== false && weekHighlight == x && drawHighlight){
+			/*if(weekHighlight !== false && weekHighlight == i && drawHighlight){
 				weekMonth.style.backgroundColor = params.clickedWeek;
 				weekMonth.style.borderColor = params.clickedWeek;
 				weekMonth.style.borderStyle = 'solid';
 				weekMonth.style.borderWidth = '1px';
 			}*/
 			var left = 11;
-			vdate = new Date();
-			for (y = 0; y < 7; y++) {
+			var vdate = new Date();
+			for (var y2 = 0; y2 < 7; y2++) {
 				var weekDay = document.createElement('div');
 				weekDay.className = 'calendar_weekDay';
 				weekDay.style.left = left+'%';
@@ -602,7 +678,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 						weekMonth.current = true;
 						weekDay.current = true;
-						weekHighlight = x;
+						weekHighlight = x2;
 					}
 					if(drawServerDate !== ''){
 						if(dayNums[count] == drawServerDate.getDate() && globalMonth == drawServerDate.getMonth() && globalYear == drawServerDate.getFullYear()){
@@ -621,7 +697,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 				var text = document.createTextNode(dayNums[count]);
 				// the dayColors fix is only for some time, in the next version this days will send a correct data
-				if(selectFunc !== '' && dayColors[count] != params.preMonthDays && dayColors[count] != params.nextMonthDays)
+				if(dayColors[count] != params.preMonthDays && dayColors[count] != params.nextMonthDays)
 				{
 					xAddEventListener(weekDay,'click',selectFunctionParser);
 				}
@@ -649,7 +725,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	calendarBase.appendChild(weekDaysNames);
 	calendarBase.appendChild(calendarBody);
 
-	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible,'Calendar');
+	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible,'Calendar',1);
 }
 
 function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -681,8 +757,7 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myCheckbox.className = 'eyeCheckbox';
 	myContainer.appendChild(myCheckbox);
 	myContainer.className='eyeCheckboxText';
-	theText=document.createTextNode(text);
-	myContainer.appendChild(theText);
+	myContainer.appendChild(document.createTextNode(text));
 	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckboxContainer",cent,'px',visible,'Checkbox');
 }
 
@@ -727,12 +802,12 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myFlash.setAttribute('data',src);
 		myFlash.setAttribute('type','application/x-shockwave-flash');
 		myFlash.setAttribute('id', name);
-		
+
 		var myTempParam = document.createElement('param');
 		myTempParam.setAttribute('name','src');
 		myTempParam.setAttribute('value',src);
 		myFlash.appendChild(myTempParam);
-		
+
 		for (key in flashParamsNames) {
 			myTempParam = document.createElement('param');
 			myTempParam.setAttribute('name',flashParamsNames[key]);
@@ -776,120 +851,120 @@ function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 }
 
 function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
-    var text = params.text;
-    var image = params.image;
-    var draggable = params.draggable;
-    var onclick = params.onclick;
-    var content = params.content;
-    var myWidth = params.width;
-    var myHeight = params.height;
-    var visible = params.visible;
-    var myOnLoad = params.myonload;
-    var realname = params.realname;
-    var overBorder = params.overBorder;
-    var overBorderBackground = params.overBorderBg;
-    var overBorderColor = params.overBorderColor;
-    var textColor = params.textColor;
-    var useClass = params.useClass;
-    overClass = params.overClass;
+	var text = params.text;
+	var image = params.image;
+	var draggable = params.draggable;
+	var onclick = params.onclick;
+	var content = params.content;
+	var myWidth = params.width;
+	var myHeight = params.height;
+	var visible = params.visible;
+	var myOnLoad = params.myonload;
+	var realname = params.realname;
+	var overBorder = params.overBorder;
+	var overBorderBackground = params.overBorderBg;
+	var overBorderColor = params.overBorderColor;
+	var textColor = params.textColor;
+	var useClass = params.useClass;
+	var overClass = params.overClass;
 
-    var myGlobalContainer = document.createElement('div');
-    myGlobalContainer.style.width='65px';
-    myGlobalContainer.setAttribute('id',name+'_globalContainer');
-    
-    var myImage = document.createElement('img');
-    if(myOnLoad != null) {
-        myImage.onload=function(){eval(myOnLoad);};
-    }
-    myImage.src = image;
-    myImage.setAttribute('id','img_'+name);
-    myImage.className = 'eyeIcon_Image';
+	var myGlobalContainer = document.createElement('div');
+	myGlobalContainer.style.width='65px';
+	myGlobalContainer.setAttribute('id',name+'_globalContainer');
 
-    if(myWidth > 0) {
-        myImage.setAttribute('width',myWidth);
-    }
-    if(myHeight > 0) {
-        myImage.setAttribute('height',myHeight);
-    }
+	var myImage = document.createElement('img');
+	if(myOnLoad != null) {
+		myImage.onload=function(){eval(myOnLoad);};
+	}
+	myImage.src = image;
+	myImage.setAttribute('id','img_'+name);
+	myImage.className = 'eyeIcon_Image';
 
-    var myIconText = document.createElement('div');
-    myIconText.className = 'eyeIcon_Text';
-    myIconText.setAttribute('align','center');
-    myIconText.setAttribute('id',name+'_text');
-    myIconText.style.width = '65px';
+	if(myWidth > 0) {
+		myImage.setAttribute('width',myWidth);
+	}
+	if(myHeight > 0) {
+		myImage.setAttribute('height',myHeight);
+	}
 
-    text = tinyMCE.entityDecode(text);
-    var theText = document.createTextNode(text);
-    myIconText.appendChild(theText);
+	var myIconText = document.createElement('div');
+	myIconText.className = 'eyeIcon_Text';
+	myIconText.setAttribute('align','center');
+	myIconText.setAttribute('id',name+'_text');
+	myIconText.style.width = '65px';
 
-    myGlobalContainer.appendChild(myImage);
-    myGlobalContainer.appendChild(myIconText);
+	text = tinyMCE.entityDecode(text);
+	var theText = document.createTextNode(text);
+	myIconText.appendChild(theText);
 
-    var myContent = document.createElement('input');
-    myContent.setAttribute('type', 'hidden');
-    myContent.setAttribute('id',name+'_Content');
-    myContent.value = content;
+	myGlobalContainer.appendChild(myImage);
+	myGlobalContainer.appendChild(myIconText);
 
-    myGlobalContainer.appendChild(myContent);
-    realname = tinyMCE.entityDecode(realname);
-    if(overBorder != 0) {
-        if(IEversion && IEversion < 7) {
-            myGlobalContainer.style.border = 'none';
-        } else {
-            myGlobalContainer.onmouseover = function() {
-                myGlobalContainer.style.backgroundColor = overBorderBackground;
-                myGlobalContainer.style.border = overBorderColor;
-                myIconText.innerHTML = "";
-                myIconText.appendChild(document.createTextNode(realname));
-            };
+	var myContent = document.createElement('input');
+	myContent.setAttribute('type', 'hidden');
+	myContent.setAttribute('id',name+'_Content');
+	myContent.value = content;
 
-            myGlobalContainer.onmouseout = function() {
-                myGlobalContainer.style.border = '1px solid transparent';
-                myGlobalContainer.style.backgroundColor = 'transparent';
-                myIconText.innerHTML = "";
-                myIconText.appendChild(document.createTextNode(text));
-            };
-            myGlobalContainer.style.border = '1px solid transparent';
-        }
-    }
-    if (useClass != 0) {
-        myGlobalContainer.onmouseover = function() {
-            myIconText.innerHTML = "";
-            myIconText.appendChild(document.createTextNode(realname));
-        };
-        myGlobalContainer.onmouseout = function() {
-            myIconText.innerHTML = "";
-            myIconText.appendChild(document.createTextNode(text));
-        };
-    }
-    createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,'eyeIcon_blank',0,'px',visible,'Icon');
-    xGetElementById(name + '_globalContainer').className = overClass;
-    var globalContainer = xGetElementById(name+'_Container');
-    globalContainer.checknum = checknum;
-    globalContainer.style.color = textColor;
-    if (draggable==1) {
-            makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
-    }
-    if(onclick==1){
-        myGlobalContainer.onclick = function(){
-            var myContent = getArrayArg(content);
-            var result = '';
-            for (var i in myContent) {
-                result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
-            }
-            sendMsg(checknum,'Icon_Clicked',result);
-        };
-    } else if (onclick == 2) {
-        myGlobalContainer.ondblclick = function() {
-            var myContent = getArrayArg(content);
-            var result = '';
-            for (var i in myContent) {
-                result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
-            }
-            sendMsg(checknum,'Icon_Clicked',result);
-        };
-    }
-    fixPNG(myImage);
+	myGlobalContainer.appendChild(myContent);
+	realname = tinyMCE.entityDecode(realname);
+	if(overBorder != 0) {
+		if(IEversion && IEversion < 7) {
+			myGlobalContainer.style.border = 'none';
+		} else {
+			myGlobalContainer.onmouseover = function() {
+				myGlobalContainer.style.backgroundColor = overBorderBackground;
+				myGlobalContainer.style.border = overBorderColor;
+				myIconText.innerHTML = "";
+				myIconText.appendChild(document.createTextNode(realname));
+			};
+
+			myGlobalContainer.onmouseout = function() {
+				myGlobalContainer.style.border = '1px solid transparent';
+				myGlobalContainer.style.backgroundColor = 'transparent';
+				myIconText.innerHTML = "";
+				myIconText.appendChild(document.createTextNode(text));
+			};
+			myGlobalContainer.style.border = '1px solid transparent';
+		}
+	}
+	if (useClass != 0) {
+		myGlobalContainer.onmouseover = function() {
+			myIconText.innerHTML = "";
+			myIconText.appendChild(document.createTextNode(realname));
+		};
+		myGlobalContainer.onmouseout = function() {
+			myIconText.innerHTML = "";
+			myIconText.appendChild(document.createTextNode(text));
+		};
+	}
+	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,'eyeIcon_blank',0,'px',visible,'Icon');
+	xGetElementById(name + '_globalContainer').className = overClass;
+	var globalContainer = xGetElementById(name+'_Container');
+	globalContainer.checknum = checknum;
+	globalContainer.style.color = textColor;
+	if (draggable==1) {
+			makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
+	}
+	if(onclick==1){
+		myGlobalContainer.onclick = function(){
+			var myContent = getArrayArg(content);
+			var result = '';
+			for (var i in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
+			}
+			sendMsg(checknum,'Icon_Clicked',result);
+		};
+	} else if (onclick == 2) {
+		myGlobalContainer.ondblclick = function() {
+			var myContent = getArrayArg(content);
+			var result = '';
+			for (var i in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
+			}
+			sendMsg(checknum,'Icon_Clicked',result);
+		};
+	}
+	fixPNG(myImage);
 }
 
 var widgetDrop_behaviours = [];
@@ -986,7 +1061,7 @@ function addDropBehaviour(params,name,type){
 }
 
 function hideSimpleMenu(menuName) {
-	obj = document.getElementById(menuName);
+	var obj = document.getElementById(menuName);
 	if(!obj) {
 		return;
 	}
@@ -1009,7 +1084,7 @@ function showSimpleMenu(e,menuName,rFather) {
 		top += xTop(father);
 		left += xLeft(father);
 	}
-	myMenu = document.getElementById(menuName);
+	var myMenu = document.getElementById(menuName);
 	myMenu.style.top = top+'px';
 	myMenu.style.left = left+'px';
 	myMenu.style.display = 'block';
@@ -1142,7 +1217,7 @@ function moveAndClick(name){
 
 //Handle drag and drop callbacks
 
-function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){
+function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){ // TODOTODO
 	if(typeof(callback) == 'string'){
 		try{
 			eval(callback);
@@ -1219,7 +1294,7 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 		if(!top){
 			top = 0;
 		}
- 		mouseX -= left;
+		mouseX -= left;
 		mouseY -= top;
 		if (cursorPos == 0) {
 			startX = mouseX-event.offsetX;
@@ -1302,7 +1377,7 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
 	var movedX = newX - ancientX;
 	var movedY = newY - ancientY;
-	myContent = getArrayArg(content);
+	var myContent = getArrayArg(content);
 
 	var result="";
 	for (var i in myContent) {
@@ -1410,7 +1485,7 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if (IEversion && IEversion < 8) {
 		myRadio.onclick = function() {
 			this.checked = 1;
-			inputs = document.getElementsByTagName('input');
+			var inputs = document.getElementsByTagName('input');
 			for (var i = 0; i < inputs.length; i++) {
 				if (inputs[i].type == 'radio' && inputs[i].name == this.name && inputs[i].id != this.id) {
 					inputs[i].checked = 0;
@@ -1436,7 +1511,7 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var mySelect = document.createElement("select");
 
 	if (enabled == 0) {
-		mySelect.disabled = 1;
+		mySelect.disabled = true;
 	}
 
 	if(mywidth > 0) {
@@ -1445,6 +1520,15 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	mySelect.setAttribute('id',name);
 	mySelect.className = 'eyeSelect';
 	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"",cent,'px',visible,'Select');
+}
+
+function Sortabletable_updateHeight(table, tbody) {
+	tbody.style.height = 'auto';
+	var heightTable = xHeight(table);
+	var heightDiv = xHeight(table.parentNode);
+	if (heightTable > heightDiv) {
+		tbody.style.height = String(heightDiv - (heightTable - xHeight(tbody))) + 'px';
+	}
 }
 
 function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -1459,6 +1543,7 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var master = params.master;
 	var realName = params.realName;
 	var tBorder = params.border;
+	var sync = params.sync;
 	var oTable = document.createElement("TABLE");
 	var oTHead = document.createElement("THEAD");
 	var oTBody = document.createElement("TBODY");
@@ -1504,16 +1589,18 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	oTable.appendChild(oTHead);
 	oTBody.setAttribute('id',name+'_Body');
 	oTable.appendChild(oTBody);
-	oWidthNoHorizScrollbar = width - 17;
-	oTable.style.width=oWidthNoHorizScrollbar+sizeUnit;
+	oTable.style.width = width + sizeUnit;
 	oTable.setAttribute('id',name);
 	oTable.className="sort-table";
 	widget.appendChild(oTable);
 	createWidget(name+'_Container',father,widget,horiz,vert,x,y,-1,-1,"eyeTable",cent,sizeUnit,visible,'SortableTable');
-	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'","'+dsignal+'");');
+	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'","'+dsignal+'", "' + escape(sync) + '");');
+
+	oTBody.style.width = width + sizeUnit;
+	Sortabletable_updateHeight(oTable, oTBody);
 }
 
-function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName, dsignal) {
+function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName, dsignal, sync) {
 
 	this.sortTypes = oSortTypes || [];
 	this.normalSort = oSortTypes;
@@ -1525,6 +1612,7 @@ function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireN
 	this.mydSignal = dsignal;
 	this.myMaster = master;
 	this.realName = rName;
+	this.mysync = unescape(sync);
 	this.mychecknum = checknum;
 	this.entName = entireName;
 	this.lastID = 0;
@@ -1636,6 +1724,7 @@ SortableTable.prototype.addEntry = function(entry) {
 	if (tBody) {
 		tBody.appendChild(oRow);
 	}
+	Sortabletable_updateHeight(this.element, this.tBody, this.tHead);
 };
 
 SortableTable.prototype.delEntry = function(entry) {
@@ -1648,6 +1737,7 @@ SortableTable.prototype.delEntry = function(entry) {
 			}
 		}
 	}
+	Sortabletable_updateHeight(this.element, this.tBody, this.tHead);
 };
 
 SortableTable.prototype.setTBody = function (oTBody) {
@@ -1772,7 +1862,7 @@ SortableTable.prototype.bodyOndblclick = function(e) {
 	this.lastClick = el;
 	el.className = 'sort-table-select';
 	if(this.mydSignal) {
-		sendMsg(this.mychecknum,this.mydSignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)));
+		sendMsg(this.mychecknum,this.mydSignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)) + eval(this.mysync));
 	}
 };
 
@@ -1787,7 +1877,7 @@ SortableTable.prototype.bodyOnclick = function(e) {
 	this.lastClick = el;
 	el.className = 'sort-table-select';
 	if(this.mySignal) {
-		sendMsg(this.mychecknum,this.mySignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)));
+		sendMsg(this.mychecknum,this.mySignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)) + eval(this.mysync));
 	}
 };
 
@@ -2173,10 +2263,9 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	myNewTab.style.position = 'absolute';
 	myNewTab.style.top = '0px';
 	myNewTab.style.height = this.tabHeight + 'px';
+	var offset2 = 1;
 	if (IEversion && IEversion < 7) {
 		offset2 = 0;
-	} else {
-		offset2 = 1;
 	}
 	var offset = counter * (Number(this.tabWidth) + offset2) + this.initialOffset;
 	myNewTab.style.left = offset+'px';
@@ -2420,110 +2509,17 @@ function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'px',visible,'Textbox');
 }
 
-var Taskbars = {
-	Entries : {},
-	
-	Add: function () {
-		document.getElementById('minIconLeft').onclick = function () { Taskbars.MoveLeft(); };
-		document.getElementById('minIconRight').onclick = function () { Taskbars.MoveRight(); };
-		xAddEventListener(window,'resize',Taskbars.SetWidth,false);
-	},
-	
-	AddEntry: function (id,title,onclick) {
-		Taskbars.Entries[id] = {};
-		Taskbars.Entries[id].title = title;
-		Taskbars.Entries[id].onclick = onclick;
-		document.getElementById('minimizedAppsIn').innerHTML += '<div class="eyeWindowOnBar_Container" id="' + id + '_WindowOnBarContainer"><div class="eyeWindowOnBar_On" id="' + id + '_WindowOnBar" onclick="' + onclick + '"><div class="eyeWindowOnBar_text" id="' + id + '_WindowOnBar_text">' + tinyMCE.entityDecode(title) + '</div></div></div>';
-		Taskbars.SetWidth();
-	},
-	
-	FocusEntry: function (id) {
-		if (Taskbars.Entries[id]) {
-			document.getElementById(id + '_WindowOnBar').className = 'eyeWindowOnBar_On';
-		}
-	},
-	
-	MoveLeft: function () {
-		var left = xLeft('minimizedAppsIn') + 100;
-		var width = xWidth('minimizedApps') - xWidth('minimizedAppsIn');
-		if (left > 0) {
-			left = 0;
-		} else if (left < width) {
-			left = width;
-		}
-		xSlideTo('minimizedAppsIn',left,0,1000);
-	},
-	
-	MoveRight: function () {
-		var left = xLeft('minimizedAppsIn') - 100;
-		var width = xWidth('minimizedApps') - xWidth('minimizedAppsIn');
-		if (left < width) {
-			left = width;
-		} else if (left > 0) {
-			left = 0;
-		}
-		xSlideTo('minimizedAppsIn',left,0,1000);
-	},
-	
-	RemoveEntry: function (id) {
-		if (Taskbars.Entries[id]) {
-			Taskbars.Entries[id] = 0;
-			var e = document.getElementById(id + '_WindowOnBarContainer');
-			e.parentNode.removeChild(e);
-			Taskbars.SetWidth();
-		}
-	},
-	
-	RenameEntry: function (id, title) {
-		if (Taskbars.Entries[id]) {
-			Taskbars.Entries[id].title = title;
-			document.getElementById(id + '_WindowOnBar_text').innerHTML = tinyMCE.entityDecode(title);
-		}
-	},
-	
-	SetWidth : function () {
-		var minIconLeft = document.getElementById('minIconLeft');
-		var minimizedApps = document.getElementById('minimizedApps');
-		var minimizedAppsIn = document.getElementById('minimizedAppsIn');
-		var width = xWidth(minimizedApps) - 128;
-		var widthEntries = xWidth(minimizedAppsIn);
-		if (widthEntries > width) {
-			minIconLeft.style.display = 'block';
-			document.getElementById('minIconRight').style.display = 'block';
-			var minIconLeftWidth = xWidth(minIconLeft);
-			minimizedApps.style.left = String(minIconLeftWidth) + 'px';
-			width -= minIconLeftWidth;
-			if (xLeft(minimizedAppsIn) < width - widthEntries) {
-				xSlideTo(minimizedAppsIn,width - widthEntries,0,1000);
-			}
-		} else {
-			minIconLeft.style.display = 'none';
-			document.getElementById('minIconRight').style.display = 'none';
-			minimizedApps.style.left = '0';
-			if (xLeft(minimizedAppsIn)) {
-				xSlideTo(minimizedAppsIn,0,0,1000);
-			}
-		}
-	},
-	
-	UnfocusEntry: function (id) {
-		if (Taskbars.Entries[id]) {
-			document.getElementById(id + '_WindowOnBar').className = 'eyeWindowOnBar_Off';
-		}
-	}
-};
-
 var Windows = {
 	Infos : {},
 	List : {},
-	
+
 	Clear : function (id) {
 		var e = document.getElementById(id + '_Content');
 		if (e) {
 			e.innerHTML = '';
 		}
 	},
-	
+
 	Close : function (id,closingType,noCloseMessage) {
 		if (!closingType) {
 			closingType = Windows.List[id].closingType;
@@ -2542,7 +2538,7 @@ var Windows = {
 			Windows.Hide(id);
 		}
 	},
-	
+
 	CloseButton : function (id,show) {
 		var e = document.getElementById(id + '_WindowCloseButton');
 		if (e) {
@@ -2553,7 +2549,7 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	Create : function (id,checknum,params) {
 		Windows.List[id] = {};
 		Windows.List[id].checknum = checknum;
@@ -2568,6 +2564,7 @@ var Windows = {
 		Windows.List[id].minWidth = params.minWidth;
 		Windows.List[id].minimized = 0;
 		Windows.List[id].noDrag = params.nodrag;
+		Windows.List[id].noResize = params.noresize;
 		Windows.List[id].noZIndex = params.noZindex;
 		Windows.List[id].resizing = 0;
 		Windows.List[id].showDragContent = params.showDragContent;
@@ -2583,22 +2580,59 @@ var Windows = {
 		}
 		if (params.resizeElement) {
 			xEnableDrag(params.resizeElement,function () { Windows.ResizeBefore(id,1,1); },function (e,x,y) { Windows.ResizeEvent(id,1,x,1,y); },function () { Windows.ResizeAfter(id,1,1); });
-			document.getElementById(id + '_WindowBottom_left').style.cursor = 'sw-resize';
-			xEnableDrag(id + '_WindowBottom_left',function () { Windows.ResizeBefore(id,2,1); },function (e,x,y) { Windows.ResizeEvent(id,2,x,1,y); },function () { Windows.ResizeAfter(id,2,1); });
-			document.getElementById(id + '_WindowBottom_center').style.cursor = 's-resize';
-			xEnableDrag(id + '_WindowBottom_center',function () { Windows.ResizeBefore(id,0,1); },function (e,x,y) { Windows.ResizeEvent(id,0,x,1,y); },function () { Windows.ResizeAfter(id,0,1); });
-			document.getElementById(id + '_WindowBottom_right').style.cursor = 'se-resize';
-			xEnableDrag(id + '_WindowBottom_right',function () { Windows.ResizeBefore(id,1,1); },function (e,x,y) { Windows.ResizeEvent(id,1,x,1,y); },function () { Windows.ResizeAfter(id,1,1); });
-			document.getElementById(id + '_WindowLeft').style.cursor = 'w-resize';
-			xEnableDrag(id + '_WindowLeft',function () { Windows.ResizeBefore(id,2,0); },function (e,x,y) { Windows.ResizeEvent(id,2,x,0,y); },function () { Windows.ResizeAfter(id,2,0); });
-			document.getElementById(id + '_WindowRight').style.cursor = 'e-resize';
-			xEnableDrag(id + '_WindowRight',function () { Windows.ResizeBefore(id,1,0); },function (e,x,y) { Windows.ResizeEvent(id,1,x,0,y); },function () { Windows.ResizeAfter(id,1,0); });
-			document.getElementById(id + '_WindowTitle_border_left').style.cursor = 'nw-resize';
-			xEnableDrag(id + '_WindowTitle_border_left',function () { Windows.ResizeBefore(id,2,2); },function (e,x,y) { Windows.ResizeEvent(id,2,x,2,y); },function () { Windows.ResizeAfter(id,2,2); });
-			document.getElementById(id + '_WindowTitle_border_right').style.cursor = 'ne-resize';
-			xEnableDrag(id + '_WindowTitle_border_right',function () { Windows.ResizeBefore(id,1,2); },function (e,x,y) { Windows.ResizeEvent(id,1,x,2,y); },function () { Windows.ResizeAfter(id,1,2); });
-			document.getElementById(id + '_WindowTitle_center').style.cursor = 'n-resize';
-			xEnableDrag(id + '_WindowTitle_center',function () { Windows.ResizeBefore(id,0,2); },function (e,x,y) { Windows.ResizeEvent(id,0,x,2,y); },function () { Windows.ResizeAfter(id,0,2); });
+			// South West
+			var e = document.getElementById(id + '_WindowBottom_left');
+			e.style.cursor = 'sw-resize';
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,2,1); },function (e,x,y) { Windows.ResizeEvent(id,2,x,1,y); },function () { Windows.ResizeAfter(id,2,1); });
+			// South
+			e = document.getElementById(id + '_WindowBottom_center');
+			e.style.cursor = 's-resize';
+			e.ondblclick = function () {
+				Windows.MaxHeight(id);
+			};
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,0,1); },function (e,x,y) { Windows.ResizeEvent(id,0,x,1,y); },function () { Windows.ResizeAfter(id,0,1); });
+			// South East
+			e = document.getElementById(id + '_WindowBottom_right');
+			e.style.cursor = 'se-resize';
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,1,1); },function (e,x,y) { Windows.ResizeEvent(id,1,x,1,y); },function () { Windows.ResizeAfter(id,1,1); });
+			// West
+			e = document.getElementById(id + '_WindowLeft');
+			e.style.cursor = 'w-resize';
+			e.ondblclick = function () {
+				Windows.MaxWidth(id);
+			};
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,2,0); },function (e,x,y) { Windows.ResizeEvent(id,2,x,0,y); },function () { Windows.ResizeAfter(id,2,0); });
+			// East
+			e = document.getElementById(id + '_WindowRight');
+			e.style.cursor = 'e-resize';
+			e.ondblclick = function () {
+				Windows.MaxWidth(id);
+			};
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,1,0); },function (e,x,y) { Windows.ResizeEvent(id,1,x,0,y); },function () { Windows.ResizeAfter(id,1,0); });
+			// North West
+			e = document.getElementById(id + '_WindowTitle_border_left');
+			e.style.cursor = 'nw-resize';
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,2,2); },function (e,x,y) { Windows.ResizeEvent(id,2,x,2,y); },function () { Windows.ResizeAfter(id,2,2); });
+			// North East
+			e = document.getElementById(id + '_WindowTitle_border_right');
+			e.style.cursor = 'ne-resize';
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,1,2); },function (e,x,y) { Windows.ResizeEvent(id,1,x,2,y); },function () { Windows.ResizeAfter(id,1,2); });
+			// North
+			e = document.getElementById(id + '_WindowTitle_center');
+			e.style.cursor = 'n-resize';
+			e.ondblclick = function () {
+				Windows.MaxHeight(id);
+			};
+			xEnableDrag(e,function () { Windows.ResizeBefore(id,0,2); },function (e,x,y) { Windows.ResizeEvent(id,0,x,2,y); },function () { Windows.ResizeAfter(id,0,2); });
+
+			if (params.titleElement) {
+				params.titleElement.ondblclick = function (e) {
+					e = new xEvent(e);
+					if (e.target.id != id + '_WindowTitle_center') {
+						Windows.Maximize(id);
+					}
+				};
+			}
 		}
 		if (params.sendCloseMsg) {
 			Windows.List[id].closeMessage = params.sigClose;
@@ -2615,13 +2649,8 @@ var Windows = {
 		if (params.sendResizeMsg) {
 			Windows.List[id].resizeMessage = params.sigResize;
 		}
-		if (params.titleElement) {
-			params.titleElement.ondblclick = function () {
-				Windows.Maximize(id);
-			};
-			if (!params.allDrag) {
-				xEnableDrag(params.titleElement,function () { Windows.MoveBefore(id); },function (e,x,y) { Windows.MoveEvent(id,x,y); },function () { Windows.MoveAfter(id); });
-			}
+		if (params.titleElement && !params.allDrag) {
+			xEnableDrag(params.titleElement,function () { Windows.MoveBefore(id); },function (e,x,y) { Windows.MoveEvent(id,x,y); },function () { Windows.MoveAfter(id); });
 		}
 		if (params.allDrag) {
 			xEnableDrag(id,function () { Windows.MoveBefore(id); },function (e,x,y) { Windows.MoveEvent(id,x,y); },function () { Windows.MoveAfter(id); });
@@ -2637,7 +2666,7 @@ var Windows = {
 		};
 		Windows.Focus(id);
 	},
-	
+
 	DragAfter : function (id) {
 		if (!Windows.List[id].showDragContent) {
 			document.getElementById(id + '_Content').style.display = 'block';
@@ -2651,7 +2680,7 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	DragBefore : function (id) {
 		if (!Windows.List[id].showDragContent) {
 			document.getElementById(id + '_Content').style.display = 'none';
@@ -2665,7 +2694,7 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	Focus : function (id) {
 		var e = document.getElementById(id);
 		if (id && e) {
@@ -2688,7 +2717,7 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	Hide : function (id) {
 		var e = document.getElementById(id);
 		if (e) {
@@ -2697,18 +2726,9 @@ var Windows = {
 			} else {
 				e.style.display = 'none';
 			}
-			var i;
 			if (IEversion && IEversion < 7) {
-				selects = e.getElementsByTagName('select');
-				for (i = 0; i < selects.length; i++) {
-					if (selects[i].name == 'visible') {
-						selects[i].style.visibility = 'visible';
-					}
-				}
-			}
-			if (IEversion && IEversion < 7) {
-				selects = e.getElementsByTagName('select');
-				for (i = 0; i < selects.length; i++) {
+				var selects = e.getElementsByTagName('select');
+				for (var i = 0; i < selects.length; i++) {
 					if (selects[i].style.visibility != 'hidden') {
 						selects[i].name = 'visible';
 						selects[i].style.visibility = 'hidden';
@@ -2717,39 +2737,73 @@ var Windows = {
 			}
 		}
 	},
-	
+
+	MaxHeight : function (id) {
+		var e = document.getElementById(id);
+		if (e && !Windows.List[id].noResize && Windows.List[id].maximized != 2) {
+			var height;
+			var width;
+			if (Windows.List[id].maximized) {
+				height = Windows.List[id].height;
+				Windows.SetHeight(id,height,1);
+				width = Windows.List[id].width;
+				Windows.SetWidth(id,width,1);
+				Windows.SetX(id,Windows.List[id].x);
+				Windows.SetY(id,Windows.List[id].y);
+				Windows.List[id].maximized = 0;
+			} else {
+				if (!Windows.List[id].maximized) {
+					Windows.List[id].height = xHeight(id);
+					Windows.List[id].width = xWidth(id);
+					Windows.List[id].x = xLeft(id);
+					Windows.List[id].y = xTop(id);
+				}
+				height = xHeight(e.parentNode);
+				Windows.SetHeight(id,height,2);
+				width = Windows.List[id].width;
+				Windows.SetY(id,0,1);
+				Windows.List[id].maximized = 1;
+			}
+			if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
+				sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',width) + eyeParam('arg',height));
+			}
+		}
+	},
+
 	Maximize : function (id) {
-		var height;
-		var width;
-		if (Windows.List[id].maximized) {
-			Windows.List[id].maximized = 0;
-			height = Windows.List[id].height;
-			Windows.SetHeight(id,height,1);
-			width = Windows.List[id].width;
-			Windows.SetWidth(id,width,1);
-			Windows.SetX(id,Windows.List[id].x);
-			Windows.SetY(id,Windows.List[id].y);
-		} else {
-			Windows.List[id].maximized = 1;
-			Windows.List[id].height = xHeight(id);
-			Windows.List[id].width = xWidth(id);
-			Windows.List[id].x = xLeft(id);
-			Windows.List[id].y = xTop(id);
-			var e = document.getElementById(id);
-			if (e) {
+		var e = document.getElementById(id);
+		if (e && !Windows.List[id].noResize) {
+			var height;
+			var width;
+			if (Windows.List[id].maximized == 2) {
+				height = Windows.List[id].height;
+				Windows.SetHeight(id,height,1);
+				width = Windows.List[id].width;
+				Windows.SetWidth(id,width,1);
+				Windows.SetX(id,Windows.List[id].x);
+				Windows.SetY(id,Windows.List[id].y);
+				Windows.List[id].maximized = 0;
+			} else {
+				if (!Windows.List[id].maximized) {
+					Windows.List[id].height = xHeight(id);
+					Windows.List[id].width = xWidth(id);
+					Windows.List[id].x = xLeft(id);
+					Windows.List[id].y = xTop(id);
+				}
 				height = xHeight(e.parentNode);
 				Windows.SetHeight(id,height,2);
 				width = xWidth(e.parentNode);
 				Windows.SetWidth(id,width,2);
+				Windows.SetX(id,0,1);
+				Windows.SetY(id,0,1);
+				Windows.List[id].maximized = 2;
 			}
-			Windows.SetX(id,0,1);
-			Windows.SetY(id,0,1);
-		}
-		if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
-			sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',width) + eyeParam('arg',height));
+			if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
+				sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',width) + eyeParam('arg',height));
+			}
 		}
 	},
-	
+
 	MaximizeButton : function (id,show) {
 		var e = document.getElementById(id + '_WindowMaxButton');
 		if (e) {
@@ -2760,7 +2814,39 @@ var Windows = {
 			}
 		}
 	},
-	
+
+	MaxWidth : function (id) {
+		var e = document.getElementById(id);
+		if (e && !Windows.List[id].noResize && Windows.List[id].maximized != 2) {
+			var height;
+			var width;
+			if (Windows.List[id].maximized) {
+				height = Windows.List[id].height;
+				Windows.SetHeight(id,height,1);
+				width = Windows.List[id].width;
+				Windows.SetWidth(id,width,1);
+				Windows.SetX(id,Windows.List[id].x);
+				Windows.SetY(id,Windows.List[id].y);
+				Windows.List[id].maximized = 0;
+			} else {
+				if (!Windows.List[id].maximized) {
+					Windows.List[id].height = xHeight(id);
+					Windows.List[id].width = xWidth(id);
+					Windows.List[id].x = xLeft(id);
+					Windows.List[id].y = xTop(id);
+				}
+				height = Windows.List[id].height;
+				width = xWidth(e.parentNode);
+				Windows.SetWidth(id,width,2);
+				Windows.SetX(id,0,1);
+				Windows.List[id].maximized = 1;
+			}
+			if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
+				sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',width) + eyeParam('arg',height));
+			}
+		}
+	},
+
 	Minimize : function (id,special) {
 		if (special) {
 			Windows.List[id].minimized = 2;
@@ -2770,7 +2856,7 @@ var Windows = {
 		Windows.Hide(id);
 		Taskbars.UnfocusEntry(id);
 	},
-	
+
 	MinimizeButton : function (id,show) {
 		var e = document.getElementById(id + '_WindowMinimizeButton');
 		if (e) {
@@ -2781,7 +2867,7 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	MinMaxAll : function () {
 		var id;
 		if (Windows.List[Windows.Infos.focus].minimized) {
@@ -2800,11 +2886,11 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	MoveAfter : function (id) {
-		if (!Windows.List[id].noDrag && !Windows.List[id].maximized) {
+		if (!Windows.List[id].noDrag) {
 			Windows.DragAfter(id);
-			if (typeof(Windows.List[id].moveMessage) != 'undefined') {
+			if (!Windows.List[id].maximized && typeof(Windows.List[id].moveMessage) != 'undefined') {
 				if (Windows.List[id].moveChecknum == Windows.List[id].checknum) {
 					sendMsg(Windows.List[id].checknum,Windows.List[id].moveMessage,eyeParam('x',xLeft(id)) + eyeParam('y',xTop(id)) + eyeParam('winName',id));
 				} else {
@@ -2813,24 +2899,25 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	MoveBefore : function (id) {
-		if (!Windows.List[id].noDrag && !Windows.List[id].maximized) {
-			Windows.List[id].x = xLeft(id);
-			Windows.List[id].y = xTop(id);
+		if (!Windows.List[id].noDrag && Windows.List[id].maximized != 2) {
+			Windows.List[id].x2 = xLeft(id);
+			Windows.List[id].y2 = xTop(id);
 			Windows.DragBefore(id);
 		}
 	},
-	
+
 	MoveEvent : function (id,x,y) {
-		if (!Windows.List[id].noDrag && !Windows.List[id].maximized && !Windows.List[id].resizing) {
-			Windows.List[id].x += x;
-			Windows.List[id].y += y;
-			Windows.SetX(id,Windows.List[id].x);
-			Windows.SetY(id,Windows.List[id].y);
+		if (!Windows.List[id].noDrag && Windows.List[id].maximized != 2 && !Windows.List[id].resizing) {
+			Windows.List[id].maximized = 0;
+			Windows.List[id].x2 += x;
+			Windows.List[id].y2 += y;
+			Windows.SetX(id,Windows.List[id].x2);
+			Windows.SetY(id,Windows.List[id].y2);
 		}
 	},
-	
+
 	OnClickTaskbar : function (id) {
 		if (Windows.List[id].minimized) {
 			Windows.List[id].minimized = 0;
@@ -2842,43 +2929,45 @@ var Windows = {
 			Windows.Focus(id);
 		}
 	},
-	
+
 	ResizeAfter : function (id,xtype,ytype) {
-		if (!Windows.List[id].maximized) {
-			Windows.List[id].resizing = 0;
+		if (!Windows.List[id].noResize) {
 			Windows.DragAfter(id);
-			if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
-				sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',xWidth(id)) + eyeParam('arg',xHeight(id)));
-			}
-			if ((xtype == 2 || ytype == 2) && typeof(Windows.List[id].moveMessage) != 'undefined') {
-				if (Windows.List[id].moveChecknum == Windows.List[id].checknum) {
-					sendMsg(Windows.List[id].checknum,Windows.List[id].moveMessage,eyeParam('x',xLeft(id)) + eyeParam('y',xTop(id)) + eyeParam('winName',id));
-				} else {
-					sendMsg(Windows.List[id].moveChecknum,'saveWinPosition',eyeParam('left',xLeft(id)) + eyeParam('top',xTop(id)) + eyeParam('winName',id) + eyeParam('appChecknum',Windows.List[id].checknum));
+			if (!Windows.List[id].maximized) {
+				Windows.List[id].resizing = 0;
+				if (typeof(Windows.List[id].resizeMessage) != 'undefined') {
+					sendMsg(Windows.List[id].checknum,Windows.List[id].resizeMessage,eyeParam('arg',xWidth(id)) + eyeParam('arg',xHeight(id)));
+				}
+				if ((xtype == 2 || ytype == 2) && typeof(Windows.List[id].moveMessage) != 'undefined') {
+					if (Windows.List[id].moveChecknum == Windows.List[id].checknum) {
+						sendMsg(Windows.List[id].checknum,Windows.List[id].moveMessage,eyeParam('x',xLeft(id)) + eyeParam('y',xTop(id)) + eyeParam('winName',id));
+					} else {
+						sendMsg(Windows.List[id].moveChecknum,'saveWinPosition',eyeParam('left',xLeft(id)) + eyeParam('top',xTop(id)) + eyeParam('winName',id) + eyeParam('appChecknum',Windows.List[id].checknum));
+					}
 				}
 			}
 		}
 	},
-	
+
 	ResizeBefore : function (id,xtype,ytype) {
-		if (!Windows.List[id].maximized) {
+		if (!Windows.List[id].noResize && Windows.List[id].maximized != 2) {
 			Windows.List[id].resizing = 1;
 			if (xtype) {
-				Windows.List[id].width = xWidth(id);
+				Windows.List[id].width2 = xWidth(id);
 				if (xtype == 2) {
-					Windows.List[id].x = xLeft(id);
+					Windows.List[id].x2 = xLeft(id);
 				}
 			}
 			if (ytype) {
-				Windows.List[id].height = xHeight(id);
+				Windows.List[id].height2 = xHeight(id);
 				if (ytype == 2) {
-					Windows.List[id].y = xTop(id);
+					Windows.List[id].y2 = xTop(id);
 				}
 			}
 			Windows.DragBefore(id);
 		}
 	},
-	
+
 	ResizeButton : function (id,show) {
 		var e = document.getElementById(id + '_WindowResizeButton');
 		if (e) {
@@ -2889,30 +2978,31 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	ResizeEvent : function (id,xtype,x,ytype,y) {
-		if (!Windows.List[id].maximized) {
+		if (!Windows.List[id].noResize && Windows.List[id].maximized != 2) {
+			Windows.List[id].maximized = 0;
 			if (xtype == 2) {
-				Windows.List[id].width -= x;
-				Windows.SetWidth(id,Windows.List[id].width);
-				Windows.List[id].x += x;
-				Windows.SetX(id,Windows.List[id].x);
+				Windows.List[id].width2 -= x;
+				Windows.SetWidth(id,Windows.List[id].width2);
+				Windows.List[id].x2 += x;
+				Windows.SetX(id,Windows.List[id].x2);
 			} else if (xtype) {
-				Windows.List[id].width += x;
-				Windows.SetWidth(id,Windows.List[id].width);
+				Windows.List[id].width2 += x;
+				Windows.SetWidth(id,Windows.List[id].width2);
 			}
 			if (ytype == 2) {
-				Windows.List[id].height -= y;
-				Windows.SetHeight(id,Windows.List[id].height);
-				Windows.List[id].y += y;
-				Windows.SetY(id,Windows.List[id].y);
+				Windows.List[id].height2 -= y;
+				Windows.SetHeight(id,Windows.List[id].height2);
+				Windows.List[id].y2 += y;
+				Windows.SetY(id,Windows.List[id].y2);
 			} else if (ytype) {
-				Windows.List[id].height += y;
-				Windows.SetHeight(id,Windows.List[id].height);
+				Windows.List[id].height2 += y;
+				Windows.SetHeight(id,Windows.List[id].height2);
 			}
 		}
 	},
-	
+
 	SetHeight : function (id,height,force) {
 		var e = document.getElementById(id);
 		var heightEparent = xHeight(e.parentNode);
@@ -2932,7 +3022,7 @@ var Windows = {
 			e.style.height = height + 'px';
 		}
 	},
-	
+
 	SetRawContent : function (id,content,base64encoded) {
 		var e = document.getElementById(id + '_Content');
 		if (e) {
@@ -2942,7 +3032,7 @@ var Windows = {
 			e.innerHTML = content;
 		}
 	},
-	
+
 	SetTitle : function (id,title) {
 		var e = document.getElementById(id + '_WindowTitle_text');
 		if (e) {
@@ -2950,7 +3040,7 @@ var Windows = {
 		}
 		Taskbars.RenameEntry(id,title);
 	},
-	
+
 	SetWidth : function (id,width,force) {
 		var e = document.getElementById(id);
 		var widthEparent = xWidth(e.parentNode);
@@ -2970,7 +3060,7 @@ var Windows = {
 			e.style.width = width + 'px';
 		}
 	},
-	
+
 	SetX : function (id,x,force) {
 		var e = document.getElementById(id);
 		var widthE = xWidth(e);
@@ -2995,7 +3085,7 @@ var Windows = {
 			e.style.left = x + 'px';
 		}
 	},
-	
+
 	SetY : function (id,y,force) {
 		var e = document.getElementById(id);
 		if (typeof(force) == 'undefined' || !force) {
@@ -3016,7 +3106,7 @@ var Windows = {
 			e.style.top = y + 'px';
 		}
 	},
-	
+
 	SplitX : function (objects) {
 		var height = xHeight('eyeApps');
 		var width = xWidth('eyeApps') / objects.length;
@@ -3029,7 +3119,7 @@ var Windows = {
 			x += width;
 		}
 	},
-	
+
 	SplitY : function (objects) {
 		var height = xHeight('eyeApps') / objects.length;
 		var width = xWidth('eyeApps');
@@ -3042,7 +3132,7 @@ var Windows = {
 			y += height;
 		}
 	},
-	
+
 	Unfocus : function (id) {
 		var e = document.getElementById(id);
 		if (id && e && e.parentNode.id == 'eyeApps') {
@@ -3060,7 +3150,7 @@ var Windows = {
 			}
 		}
 	},
-	
+
 	Unhide : function (id) {
 		var e = document.getElementById(id);
 		if (e) {
@@ -3070,7 +3160,7 @@ var Windows = {
 				e.style.display = 'block';
 			}
 			if (IEversion && IEversion < 7) {
-				selects = e.getElementsByTagName('select');
+				var selects = e.getElementsByTagName('select');
 				for (var i = 0; i < selects.length; i++) {
 					if (selects[i].name == 'visible') {
 						selects[i].style.visibility = 'visible';
@@ -3089,13 +3179,13 @@ function Window_show(params,id,father,x,y,horiz,vert,checknum,cent) {
 	params.minElement = 0;
 	params.resizeElement = 0;
 	params.titleElement = 0;
-	
+
 	var textNode = document.createTextNode('');
 	var widget = createWidget(id,father,textNode,horiz,vert,x,y,params.width,params.height,params.wMain,cent,null,null,'Window');
-	
+
 	widget.xDropEnabled = false;
 	xEnableDrag.drops[xEnableDrag.drops.length] = { e : widget };
-	
+
 	if (params.type == 2) {
 		createWidget(id + '_Content',id,textNode,0,0,-1,-1,-1,-1,'eyeWindowContentInvisible',0);
 		params.allDrag = 0;
@@ -3122,25 +3212,25 @@ function Window_show(params,id,father,x,y,horiz,vert,checknum,cent) {
 		createWidget(id + '_WindowBottom_center',id,textNode,0,0,-1,-1,-1,-1,params.wBottomCenter,0);
 		createWidget(id + '_WindowBottom_left',id,textNode,0,0,-1,-1,-1,-1,params.wBottomLeft,0);
 		createWidget(id + '_WindowBottom_right',id,textNode,0,0,-1,-1,-1,-1,params.wBottomRight,0);
-		
+
 		createWidget(id + '_Content',id,textNode,0,0,-1,-1,-1,-1,params.wContent,0);
 		createWidget(id + '_WindowLeft',id,textNode,0,0,-1,-1,-1,-1,params.wLeft,0);
 		createWidget(id + '_WindowRight',id,textNode,0,0,-1,-1,-1,-1,params.wRight,0);
-		
+
 		params.titleElement = createWidget(id + '_WindowTitle',id,textNode,0,0,-1,-1,-1,-1,params.wTitle,0);
 		createWidget(id + '_WindowTitle_border_left',id + '_WindowTitle',textNode,0,0,-1,-1,-1,-1,params.wTitleLeft,0);
 		createWidget(id + '_WindowTitle_border_right',id + '_WindowTitle',textNode,0,0,-1,-1,-1,-1,params.wTitleRight,0);
 		createWidget(id + '_WindowTitle_center',id + '_WindowTitle',textNode,0,0,-1,-1,-1,-1,params.wTitleCenter,0);
 		createWidget(id + '_WindowTitle_text',id + '_WindowTitle',document.createTextNode(tinyMCE.entityDecode(params.title)),0,0,-1,-1,-1,-1,params.wTitleText,0);
-		
+
 		if (params.min) {
-			params.minElement = createWidget(id + '_WindowMinimizeButton',id,textNode,1,0,params.min_pos * 16 - 10,-1,-1,-1,'eyeWindowMinimizeButton',0);
+			params.minElement = createWidget(id + '_WindowMinimizeButton',id,textNode,1,0,params.min_pos * 23 - 16,-1,-1,-1,'eyeWindowMinimizeButton',0);
 		}
 		if (params.max) {
-			params.maxElement = createWidget(id + '_WindowMaxButton',id,textNode,1,0,params.max_pos * 16 - 10,-1,-1,-1,'eyeWindowMaxButton',0);
+			params.maxElement = createWidget(id + '_WindowMaxButton',id,textNode,1,0,params.max_pos * 23 - 16,-1,-1,-1,'eyeWindowMaxButton',0);
 		}
 		if (params.close) {
-			params.closeElement = createWidget(id + '_WindowCloseButton',id,textNode,1,0,params.close_pos * 16 - 10,-1,-1,-1,'eyeWindowCloseButton',0);
+			params.closeElement = createWidget(id + '_WindowCloseButton',id,textNode,1,0,params.close_pos * 23 - 15,-1,-1,-1,'eyeWindowCloseButton',0);
 		}
 		if (params.resize) {
 			params.resizeElement = createWidget(id + '_WindowResizeButton',id,textNode,0,0,-1,-1,-1,-1,'eyeWindowResizeButton',0);
@@ -3149,7 +3239,7 @@ function Window_show(params,id,father,x,y,horiz,vert,checknum,cent) {
 			params.titleElement = 0;
 		}
 	}
-	
+
 	Windows.Create(id,checknum,params);
 }
 
@@ -3442,7 +3532,7 @@ Tree.prototype.selectItem = function(el) {
 		this.lastClick.style.backgroundColor = '';
 	}
 	this.lastClick = el;
-	el.style.backgroundColor = '#99CCFF';
+	el.style.backgroundColor = '';
 };
 
 // Performs 3 functions:
@@ -3614,9 +3704,8 @@ function SimpleMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	} else {
 		obj.appendChild(myMenu);
 	}
-	var openedDiv = name;
-	var codeClick = "hideSimpleMenu('"+name+"');";
-	addClickHandler(openedDiv,codeClick);
+
+	EventHandler.Add('mousedown', name, 'hideSimpleMenu("' + name + '");', true);
 }
 
 function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params,imgId) {
@@ -3629,13 +3718,13 @@ function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params,imgId
 	myEntry.setAttribute('id',entryName);
 	myEntry.className = 'eyeContextMenuEntry';
 	myEntry.innerHTML = text;
-	myEntry.onclick = function() { sendMsg(checknum,signal,params);};
+	myEntry.onclick = function() { sendMsg(checknum,signal,params); hideSimpleMenu(menuName); };
 	obj.appendChild(myEntry);
 	fixPNG(imgId);
 }
 
 function hideContextMenu(menuName) {
-	obj = document.getElementById(menuName);
+	var obj = document.getElementById(menuName);
 	if(!obj) {
 		return;
 	}
@@ -3725,9 +3814,7 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		}
 	};
 
-	var openedDiv = name;
-	var codeClick = "hideContextMenu('"+name+"');";
-	addClickHandler(openedDiv,codeClick);
+	EventHandler.Add('mousedown', name, 'hideContextMenu("' + name + '");', true);
 }
 
 function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
@@ -3740,10 +3827,10 @@ function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	myEntry.setAttribute('id',entryName);
 	myEntry.className = 'eyeContextMenuEntry';
 	myEntry.innerHTML = text;
-	myEntry.onclick = function() { sendMsg(checknum,signal,params);};
+	myEntry.onclick = function() { sendMsg(checknum,signal,params); hideContextMenu(menuName); };
 	obj.appendChild(myEntry);
 	if(IEversion && IEversion < 7) {
-	    fixPNG(imgId);
+		fixPNG(imgId);
 	}
 }
 
@@ -3832,7 +3919,7 @@ function Split_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		lastPanel.style.right = '0px';
 		lastPanel.style.top = '0px';
 		splitter.style.height = myheight+'px';
-		splitter.style.width = '3px';
+//		splitter.style.width = '3px';
 		splitter.style.top = '0px';
 		splitter.style.cursor = 'w-resize';
 
@@ -3852,7 +3939,7 @@ function Split_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		lastPanel.style.bottom = '0px';
 		lastPanel.style.left = '0px';
 		splitter.style.width = mywidth+'px';
-		splitter.style.height = '3px';
+//		splitter.style.height = '3px';
 		splitter.style.left = '0px';
 		splitter.style.zIndex = '1';
 		splitter.style.cursor = 's-resize';

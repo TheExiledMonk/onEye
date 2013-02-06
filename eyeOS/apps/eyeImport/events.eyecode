@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -28,7 +28,7 @@ function eyeImport_on_Import($params="") {
 		'SelectDestDialog',
 		$checknum
 	);
-	service('proc','launch',array('eyeDialog',$options));
+	proc('launch',array('eyeDialog',$options));
 }
 
 function eyeImport_on_doImport($params="") {
@@ -47,7 +47,7 @@ function eyeImport_on_SelectDestDialog($params="") {
 }
 
 function eyeImport_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeImport_on_Close(){

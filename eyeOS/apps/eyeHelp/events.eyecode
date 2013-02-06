@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,7 +22,7 @@
 */
 
 function eyeHelp_on_Message($params=null) {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeHelp_on_Resize($params = ''){
@@ -41,22 +41,22 @@ function eyeHelp_on_Resize($params = ''){
 
 function eyeHelp_getFolder($params=null){
 	global $myPid;
-	
-	$return = EYE_ROOT.'/'.APP_DIR.'/'.SHARE_USER_DIR.'/eyeHelp/1.8';
+
+	$return = EYE_ROOT.'/'.APP_DIR.'/'.SHARE_USER_DIR.'/eyeHelp/';
 	if($params[0]){
 		eyeSessions('setVar',array('eyeHelp_'.$myPid.'_app',$params[0]));
 	}
 	$app = eyeSessions('getVar',array('eyeHelp_'.$myPid.'_app'));
 	if($app!='' && $params['root']!=1)
 		$return .= '/'.$app;
-	
+
 	return $return;
 }
 
 function eyeHelp_on_goto($params=null){
 	global $myPid,$checknum;
 	global $currentUser;
-	
+
 	$folder = eyeHelp_getFolder();
 	$open = utf8_substr($params['itemName'][0],5);
 	if($params[0]){
@@ -72,21 +72,21 @@ function eyeHelp_on_goto($params=null){
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		$myInfoFile = $myDir.'info.xml';
-		$size = service('vfs','real_filesize',array($myInfoFile));
+		$size = vfs('real_filesize',array($myInfoFile));
 		if ($size > 0) {
-			$fp = service('vfs','real_open',array($myInfoFile,'r'));
+			$fp = vfs('real_open',array($myInfoFile,'r'));
 			$InfoContent = fread($fp,$size);
 			fclose($fp);
 		}
-	
+
 		$info = eyeXML('xml2array',array($InfoContent));
 		$info = $info['eyeHelp'][0];;
 		if(file_exists($myDir.$_SESSION['lang'].'.eyeHelp') && filesize($myDir.$_SESSION['lang'].'.eyeHelp') > 0)
 			$myIndexFile = $myDir.$_SESSION['lang'].'.eyeHelp';
 			else $myIndexFile = $myDir.'index.eyeHelp';
-		$size = service('vfs','real_filesize',array($myIndexFile));
+		$size = vfs('real_filesize',array($myIndexFile));
 		if ($size > 0) {
-			$fp = service('vfs','real_open',array($myIndexFile,'r'));
+			$fp = vfs('real_open',array($myIndexFile,'r'));
 			$IndexContent = fread($fp,$size);
 			fclose($fp);
 		}
@@ -96,15 +96,15 @@ function eyeHelp_on_goto($params=null){
 			else $title = utf8_trim($info['title'][0]);
 		$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
 		if($title=="")$title = utf8_basename($myDir2);
-	
+
 		eyeX('runjs',array('js'=>'document.getElementById("'.$myPid.'_label1").innerHTML="<h1>'.str_replace('"','\\"',$title).'</h1><hr />";'));
-		
+
 		if(utf8_trim($info['HTML-only'][0])!=1)$IndexContent = eyeHelp_BBCode($IndexContent);
 		$IndexContent_array = explode('<br />[split]<br />',$IndexContent);
-		
+
 		foreach($IndexContent_array as $value){
 			eyeX('concatDiv',array('name'=>$myPid.'_label1','value'=>$value));
-		}		
+		}
 	}
 }
 
@@ -138,7 +138,7 @@ function eyeHelp_on_pref() {
 
 function eyeHelp_on_submit(){
 	global $currentUser;
-	if($currentUser == ROOTUSER){	
+	if($currentUser == ROOTUSER){
 		if($GLOBALS['eyeHelp_contact_box']->text!=''){
 			$xml['eyeHelp'][0]['contact'][0] = $GLOBALS['eyeHelp_contact_box']->text;
 			eyeXML('setXMLfile',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/eyeHelp/conf.xml',$xml));
@@ -179,6 +179,9 @@ function eyeHelp_BBCode($Text){
 	$Text = preg_replace("/\[goto\]([$URLSearchString]*)\[\/goto\]/", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'open\',\'$1\');">$1</span>', $Text);
 	$Text = preg_replace("(\[goto\=([$URLSearchString]*)\](.+?)\[/goto\])", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'open\',\'$1\');">$2</span>', $Text);
 
+	//Perform Get a GOTO Search for eyeHelp root folder 
+	$Text = preg_replace("(\[get\=([../$URLSearchString]*)\](.+?)\[/get\])", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'open\',\'$1\');">$2</span>', $Text);
+
 	// Perform URL Search
 	$Text = preg_replace("/\[url\]([$URLSearchString]*)\[\/url\]/", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'eyeNav\',\'$1\');">$1</span>', $Text);
 	$Text = preg_replace("(\[url\=([$URLSearchString]*)\](.+?)\[/url\])", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'eyeNav\',\'$1\');">$2</span>', $Text);
@@ -206,7 +209,7 @@ function eyeHelp_BBCode($Text){
 	$Text = preg_replace("(\[o\](.+?)\[\/o\])is",'<span style="text-decoration: overline;">$1</span>',$Text);
 
 	// Check for header text (applies a h2 and then a hr)
-	$Text = preg_replace("(\[h\](.+?)\[\/h\])is",'<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$1</h2><hr style="width:90%" />',$Text);
+	$Text = preg_replace("(\[h\](.+?)\[\/h\])is",'<h2>&nbsp;&nbsp;$1</h2><hr style="width:95%" />',$Text);
 
 	// Check for colored text
 	$Text = preg_replace("(\[color=(.+?)\](.+?)\[\/color\])is","<span style=\"color: $1\">$2</span>",$Text);
@@ -257,7 +260,7 @@ function eyeHelp_BBCode($Text){
          
 	// [img=widthxheight]image source[/img]
 	$Text = preg_replace("/\[img\=([0-9]*)x([0-9]*)\](.+?)\[\/img\]/", '<img src="$3" height="$2" width="$1">', $Text);
-         
+
 	return $Text;
 }
 

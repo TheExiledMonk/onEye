@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,7 @@
 
 function systemConsole_run($params=null) {
 	global $myPid;
-	
+
 	$myWindow = new Window(array(
 		'father' => 'eyeApps',
 		'name' => 'Window',
@@ -35,13 +35,13 @@ function systemConsole_run($params=null) {
 		'sigResize' => 'Resize'
 	));
 	$myWindow->show();
-	
+
 	$myToolbar = new Toolbar(array(
 		'name' => 'toolbar',
 		'father' => 'Window_Content'
 	));
 	$myToolbar->show();
-	
+
 	$myBox = new Container(array(
 		'name' => 'consoleContent',
 		'father' => 'Window_Content',
@@ -51,13 +51,13 @@ function systemConsole_run($params=null) {
 		'y' => 60,
 	));
 	$myBox->show(1);
-	
+
 	$js = 'var content = document.getElementById("1_tty").innerHTML;';
 	$js .= 'document.getElementById("'.$myPid.'_consoleContent").innerHTML = content;';
 	eyeX('rawjs',array('js'=>$js));
-	
-	$myToolbar->addItem('clean','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/button_cancel.png','Clean');
-	
+
+	$myToolbar->addItem('clean','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/button_cancel.png','Clean');
+
 	addListenerServiceCall('onPrint','eyex','print',1);
 }
 

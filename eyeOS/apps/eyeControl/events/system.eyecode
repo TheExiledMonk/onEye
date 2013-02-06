@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -41,18 +41,18 @@ function eyeControl_on_system_system($params = '') {
 			break;
 		}
 	}
-	
+
 	$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
 	$xml = eyeXML('getXMLfile',array($file));
 	$xml['CONFIG'][0]['EYEOS_HOSTNAME'][0] = $GLOBALS['eyeControl_system_system_textbox_hostname']->text;
 	$xml['CONFIG'][0]['DEFAULT_LANGUAGE'][0] = $GLOBALS['eyeControl_system_system_select_language']->selected;
 	$xml['CONFIG'][0]['DEFAULT_QUOTA'][0] = strval($quota);
 	eyeXML('setXMLFile',array($file,$xml));
-	
+
 	$xml = getConfig('eyeFiles','conf.xml');
 	$xml['eyeFiles'][0]['CreateThumbnails'][0] = $GLOBALS['eyeControl_system_system_checkbox_thumbnails']->checked;
 	setConfig('eyeFiles','conf.xml',$xml);
-	
+
 	eyex('messageBox',array('content' => 'Changes successfully saved.'));
 }
 
@@ -67,7 +67,7 @@ function eyeControl_on_system_permissions($params = '') {
 }
 
 function eyeControl_on_system_cache_label($params = ''){
-	proc('launch',array('eyeNav',array('http://wiki.eyeos.org/Development:Cache_System_Documentation')));
+	proc('launch',array('eyeHelp','eyeControl'));
 }
 
 function eyeControl_on_system_cache_save($params = ''){
@@ -98,11 +98,11 @@ function eyeControl_on_system_office($params = '') {
 }
 
 function eyeControl_on_system_office_howtowindows($params = '') {
-	proc('launch',array('eyeNav','http://wiki.eyeos.org/Setting_Up_Office_Microsoft'));
+	proc('launch',array('eyeHelp','eyeControl'));
 }
 
 function eyeControl_on_system_office_howtolinux($params = '') {
-	proc('launch',array('eyeNav','http://wiki.eyeos.org/Setting_Up_Office_Linux'));
+	proc('launch',array('eyeHelp','eyeControl'));
 }
 
 function eyeControl_on_system_uninstall($params = '') {

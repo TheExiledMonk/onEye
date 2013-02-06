@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,9 +23,8 @@
 
 function eyeAddressBook_com_fullResized($params = '') {
 	eyeWidgets('updateContent',$params);
-	if($GLOBALS['eyeAddressBook_WND']->fullScreen != 1){
-		return false;
+	if ($GLOBALS['eyeAddressBook_WND']->fullScreen) {
+		$GLOBALS['eyeAddressBook_WND']->listenerResizeFullScreen($params);
 	}
-	$GLOBALS['eyeAddressBook_WND']->listenerResizeFullScreen($params);
 }
 ?>

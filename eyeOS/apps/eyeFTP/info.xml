@@ -1,6 +1,6 @@
 <package>
 	<name>eyeFTP</name>
-	<category>Utilities</category>
+	<category>Networking</category>
 	<version>3.3.0-1</version>
 	<description>FTP client for eyeOS.</description>
 	<author>Nanawel [nanawel@eyeos.org]</author>

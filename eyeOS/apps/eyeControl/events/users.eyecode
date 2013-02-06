@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,7 @@
 
 function eyeControl_on_users_load($params = '') {
 	global $myPid;
-	
+
 	eyex('messageBox',array(
 		'buttons' => array(array('users_load_selected','Show users'),array('users_load_all','Show all'),array('users_load_cancel','Cancel')),
 		'content' => 'You can use /a (ending), /b (beginning) and /c (counts) to list users.',
@@ -74,7 +74,7 @@ function eyeControl_on_users_delete($params = '') {
 			'father' => 'eyeControl_container_big',
 			'hiddens' => array(array('users_delete_hidden',$user)),
 			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
-			'title' => 'Delete user',
+			'title' => 'Delete User',
 			'type' => 3,
 			'win_name' => 'eyeControl_users_delete_window',
 			'win_style' => TITLE + CLOSE
@@ -89,19 +89,19 @@ function eyeControl_on_users_delete($params = '') {
 function eyeControl_on_users_delete_yes($params = '') {
 	global $currentUser;
 	global $myPid;
-	
+
 	if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		$myUserXml = um('retrieveUser',array(eyeControl_lib_getConfigUser()));
 	}
-	
+
 	$user = $GLOBALS['users_delete_hidden']->text;
-	
+
 	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser())) || um('checkMaintainer',array(eyeControl_lib_getConfigUser())) && !in_array($user,$myUserXml['eyeUser'][0]['mngUser'])) {
 		eyex('messageBox',array('content' => 'You are not allowed to manage users!'));
 		eyeControl_lib_loadContent();
 		return;
 	}
-	
+
 	if ($user && $user != REAL_ROOTUSER) {
 		$oldUser = $currentUser;
 		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
@@ -114,7 +114,7 @@ function eyeControl_on_users_delete_yes($params = '') {
 			}
 			um('updateUser',array('username' => $oldUser,'mngUser' => $mngUsers));
 		}
-		
+
 		um('deleteUser',array($user));
 		eyex('messageBox',array('content' => 'User successfully deleted.'));
 		$currentUser = $oldUser;

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -26,7 +26,7 @@
 */
 /*
  	Process table structure
-	
+
 	[pid][appName],[checknum],[time],[currentUser],[pid] 
 	[pid]  
 	[pid]
@@ -38,9 +38,9 @@ define('TABLENAME','ProcessTable');
 
 function service_proc_init() {
 	//start random
-	mt_srand(make_seed());	
+	mt_srand(make_seed());
 	//create the process table if it hadn't been created
-	if(eyeSessions('checkVar',array(TABLENAME)) == false){		
+	if(eyeSessions('checkVar',array(TABLENAME)) == false){
 		eyeSessions('makeArrayVar',array(TABLENAME));
 		eyeSessions('setVar',array('next_tty',0));
 	}
@@ -77,14 +77,14 @@ function service_proc_end($params=null) {
 * @exception PROC_APP_DONT_HAVE_RUN_FUNCTION The application does not have a start function.
 * @date 2008/03/18
 */
-function service_proc_launch($params) {		
+function service_proc_launch($params) {
 	//Needed params to start
 	if(!isset($params[0])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
+	}
 	$appName = utf8_basename($params[0]);
-	
+
 	//All params and needed vars.
 	global $currentUser;
 	if(isset($params[1])) {
@@ -92,15 +92,15 @@ function service_proc_launch($params) {
 	} else {
 		$appArgs = "";
 	}
-	
+
 	global $myPid;
-	
+
 	//Get the process table.
 	$processTable = proc('getProcessTable');
-	
+
 	//Getting unique pid. 
 	$oldPid = $myPid;
-	$myPid = make_unique_pid();	
+	$myPid = make_unique_pid();
 
 	//Filling the proc values.
 	global $procInfo;
@@ -112,25 +112,28 @@ function service_proc_launch($params) {
 	$procInfo['pid'] = $myPid;
 	$procInfo['tty'] = get_tty($oldPid);
 	$procInfo['exec'] = 'launch';
-						
+
 	//Try running app.
 	if(!is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/app'.EYE_CODE_EXTENSION)) {
+		$checknum = $oldchecknum;
+		$myPid = $oldPid;
+		$procInfo = $oldProcInfo;
 		errorCodes('setErrorCode',array(PROC_APP_NOT_FOUND));
 		return false;
 	}
 	//Including app php code.
 	include_once(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/app'.EYE_CODE_EXTENSION);
-			
+
 	if(function_exists($appName.'_run')){
 		//Adding process in the process table.
-		eyeSessions('AddArrayValueByKey',array(TABLENAME,$procInfo,$myPid));				
+		eyeSessions('AddArrayValueByKey',array(TABLENAME,$procInfo,$myPid));
 		//Setting new cheknum in global
 		global $checknum;
 		$oldchecknum = $checknum;
 		$checknum = $procInfo['checknum'];//Set global for new Checknum.
 		//load i18n
 		i18n('loadLang',array($appName));
-		//Calling the run function and returning the result.	
+		//Calling the run function and returning the result.
 		if (!is_array($appArgs)) {
 			$appArgs = array($appArgs);
 		}
@@ -141,7 +144,7 @@ function service_proc_launch($params) {
 		$procInfo = $oldProcInfo;
 		return $return;
 	}else{
-		//$checknum = $oldchecknum;
+		$checknum = $oldchecknum;
 		$myPid = $oldPid;
 		$procInfo = $oldProcInfo;
 		errorCodes('setErrorCode',array(PROC_APP_DONT_HAVE_RUN_FUNCTION));
@@ -179,17 +182,23 @@ function service_proc_getTask($params) {
 	$oldPid = $myPid;
 	$myPid = intval($params[0]);
 	$oldProcInfo = $procInfo;
-	
-	
-	
-	$procInfo = proc('getProcByPid',array($myPid));	
+
+
+
+	$procInfo = proc('getProcByPid',array($myPid));
 	if(!$procInfo['checknum'] || !$procInfo['appName'])
 	{
+		$myPid = $oldPid;
+		$checknum = $oldchecknum;
+		$procInfo = $oldProcInfo;
 		errorCodes('setErrorCode',array(PROC_APP_NOT_ARE_RUNNING));
 		return false;
 	}
-		
+
 	if(!is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/app'.EYE_CODE_EXTENSION)) {
+		$myPid = $oldPid;
+		$checknum = $oldchecknum;
+		$procInfo = $oldProcInfo;
 		errorCodes('setErrorCode',array(PROC_APP_NOT_FOUND));
 		return false;
 	}
@@ -200,7 +209,7 @@ function service_proc_getTask($params) {
 		$appArgs = "";
 	}
 	//Set the new checknum
-	
+
 	$oldchecknum = $checknum;
 	$checknum = $procInfo['checknum'];
 	if(function_exists($procInfo['appName'].'_run')){
@@ -218,7 +227,7 @@ function service_proc_getTask($params) {
 		$procInfo = $oldProcInfo;
 		errorCodes('setErrorCode',array(PROC_APP_DONT_HAVE_RUN_FUNCTION));
 		return false;
-	}	
+	}
 }
 
 /**
@@ -236,7 +245,7 @@ function service_proc_getTask($params) {
 * @exception INCORRECT_PARAMS No pid is specified.
 * @date 2008/03/11
 */
-function service_proc_close($params) {	
+function service_proc_close($params) {
 	if(!isset($params[0])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -260,7 +269,7 @@ function service_proc_close($params) {
 		$oldProc = $procInfo;
 		$procInfo = $appProc;
 		$procInfo['exec'] = 'close';//Maybe the _end user can call another function not only designed for the close action
-		$myTempVar = call_user_func($appName.'_end');	
+		$myTempVar = call_user_func($appName.'_end');
 		$myPid = $oldPid;
 		$checkunm = $oldChecknum;
 		$procInfo = $oldProc;
@@ -270,11 +279,11 @@ function service_proc_close($params) {
 	removeListenerServiceCallByPid($pid,1);
 	//Delete the proc
 	eyeSessions('DelArrayValueByKey',array(TABLENAME,$pid));
-	
+
 	//If doesn't have end function, return true.
 	if(isset($myTempVar))
 	{
-		return $myTempVar;	
+		return $myTempVar;
 	}else{
 		return true;
 	}
@@ -315,14 +324,14 @@ function service_proc_getProcessList() {
 * @exception PROC_APP_NOT_ARE_RUNNING No process with the specified ID exists.
 * @date 2008/03/11
 */
-function service_proc_setProcessUser($params) { 	
+function service_proc_setProcessUser($params) { 
 	if(!isset($params[0])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	$pid = $params[0];
 	global $currentUser;
-	
+
 	$proc = eyeSessions('getArrayValueByKey',array(TABLENAME,$pid));
 	if(!$proc) {
 		errorCodes('setErrorCode',array(PROC_APP_NOT_ARE_RUNNING));
@@ -350,7 +359,7 @@ function service_proc_findPidByName($params) {
 	if(!isset($params[0])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
+	}
 	$appName = $params[0];
 	if(!$appName) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
@@ -383,8 +392,8 @@ function service_proc_findChecknumByName($params) {
 	if(!isset($params[0])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	}	
-	$appName = $params[0];	
+	}
+	$appName = $params[0];
 	if(!$appName) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -417,7 +426,7 @@ function service_proc_findNameByPid($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$pid = $params[0];	
+	$pid = $params[0];
 	if(!$pid) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -445,13 +454,13 @@ function service_proc_findNameByPid($params) {
 * @exception INCORRECT_PARAMS No pid is specified.
 * @date 2008/03/11
 */
-function service_proc_findNameByChecknum($params) {	
+function service_proc_findNameByChecknum($params) {
 	if(!isset($params[0])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	$checknum = $params[0];
-	
+
 	if(!$checknum) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -483,7 +492,7 @@ function service_proc_findNChecknumByPid($params) {
 		return false;
 	}
 	$pid = $params[0];
-		
+
 	if(!$pid) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -522,7 +531,7 @@ function service_proc_findChecknum($params){//Find the checkNum in processTable 
 		return false;
 	}
 	$processTable = proc('getProcessTable');
-	
+
 	foreach ($processTable as $array){
 		if (floatval($array['checknum']) === floatval($checknum)) { // workaround to prevent infinite loops on some servers
 			return true;
@@ -543,14 +552,14 @@ function service_proc_findChecknum($params){//Find the checkNum in processTable 
 * @date 2008/03/11
 */
 function service_proc_findPid($params){
-	//Getting the Process register for given pid	
+	//Getting the Process register for given pid
 	if(!isset($params[0])) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	$pid = $params[0];
 	$processTable = proc('getProcessTable');
-	
+
 	foreach ($processTable as $key => $array){
 		if($key == $pid){
 			return true;
@@ -578,14 +587,14 @@ function service_proc_getProcByChecknum($params) {
 		return false;
 	}
 	$checknum = $params[0];
-	
-	$processTable = proc('getProcessTable');	
+
+	$processTable = proc('getProcessTable');
 	foreach ($processTable as $key => $array){
 		if (floatval($array['checknum']) === floatval($checknum)) { // workaround to prevent infinite loops on some servers
 			return $array;
 		}
-	}	
-	return false;	
+	}
+	return false;
 }
 
 /**
@@ -607,14 +616,14 @@ function service_proc_getProcByPid($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$pid = $params[0];	
-	$processTable = proc('getProcessTable');	
+	$pid = $params[0];
+	$processTable = proc('getProcessTable');
 	foreach ($processTable as $key => $array){
 		if($key == $pid){
 			return $array;
 		}
-	}	
-	return false;	
+	}
+	return false;
 }
 
 /**
@@ -638,18 +647,18 @@ function service_proc_getTtyByPid($params){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$processTable = proc('getProcessTable');	
+	$processTable = proc('getProcessTable');
 	foreach ($processTable as $key => $array){
 		if($key == $pid){
 			return $array['tty'];
 		}
-	}	
-	return false;	
+	}
+	return false;
 }
 
 function service_proc_newTty($params=null) {
 	global $procInfo;
-	
+
 	$proc = proc('getProcByPid',array($procInfo['pid']));
 	$tty = eyeSessions('getVar',array('next_tty'));
 	$tty++;

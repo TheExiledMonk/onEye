@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -53,15 +53,15 @@ function newMessage_on_send($params) {
 	$content = $GLOBALS['contentTarea']->text;
 	$attach = um('getCurrentUserDir').FILES_USER_DIR.'/'.$GLOBALS['tboxAttach']->text;
 
-	if(reqLib('eyeMessages', 'sendMessage', array($to_users, $subject, $content, $attach, $to_groups))) {
+	if(eyeMessages('sendMessage', array($to_users, $subject, $content, $attach, $to_groups))) {
 		eyeX('messageBox', array('content' => 'Message sent'));
-		
+
 		if(is_object($GLOBALS['callback'])) {
 			$appChecknum = $GLOBALS['callback']->text[0];
 			$appMessage = $GLOBALS['callback']->text[1];
 			eyeX('sendMessage', array('checknum' => $appChecknum, 'msg' => $appMessage));
 		}
-		
+
 		proc('end');
 	} else {
 		eyeX('messageBox', array('content' => 'Error sending message'));

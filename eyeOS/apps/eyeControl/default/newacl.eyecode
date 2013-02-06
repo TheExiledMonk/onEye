@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -209,7 +209,7 @@ if($text == 'add'){
 	eyeWidgets('serialize',array($myHidden));
 
 } else {
-	
+
 	$myLabel4->show();
 	$myLabel4->setCSS(array('font-weight' => 'bolder'));
 	$mySortableTable->show();
@@ -222,7 +222,7 @@ if($text == 'add'){
 	$myLabel0->setY(74);
 	$myLabel3->setY(109);
 	$mySelect3->setY(105);
-	
+
 	$id = $GLOBALS['eyeControl_acl_sortabletable']->selected;
 	$myHidden = new Hidden(array(
 			'name' => 'uniqid',
@@ -245,7 +245,7 @@ if($text == 'add'){
 	$myButton99->addFriend($mySelect3);
 	$myButton99->addFriend($mySortableTable);
 	$myButton99->show();
-	
+
 	$myButton01 = new Button(array(
 		'name' => 'eyeControl_acl_target_button_edit',
 		'father' => $eyeContainer,
@@ -270,7 +270,7 @@ if($text == 'add'){
 	$myButton01->show();
 
 	$id0 = $GLOBALS['eyeControl_acl_sortabletable']->selected;
-	
+
 //	$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
 $file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
 $config = eyeXML('getXMLfile', array($file));

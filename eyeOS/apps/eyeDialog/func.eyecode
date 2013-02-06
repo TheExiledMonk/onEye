@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -29,11 +29,11 @@ function eyeDialog_openFile($folderPath, $filename) {
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
 	$callback = $dialogParams[1];
 	$callback_checknum = $dialogParams[2];
-	
+
 	$folderPath = eyeDialog_resolvePath($folderPath,true);		//true only for eyeDialog1 compatibility
 	$filePath = eyeDialog_getFormatedDirPath($folderPath.'/'.$filename);
 	if($callback && $callback_checknum) {
-		service('eyex','rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$filePath.'"));'));
+		eyex('rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$filePath.'"));'));
 	}
 	eyeDialog_closeDialog();
 }
@@ -41,10 +41,10 @@ function eyeDialog_selectFolder($folderPath) {
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
 	$callback = $dialogParams[1];
 	$callback_checknum = $dialogParams[2];
-	
+
 	$folderPath = eyeDialog_resolvePath($folderPath,true);		//true only for eyeDialog1 compatibility
 	if($callback && $callback_checknum) {
-		service('eyex','rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$folderPath.'"));'));
+		eyex('rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$folderPath.'"));'));
 	}
 	//eyeX('messageBox',array('content'=> 'Select folder OK: '.$folderPath));
 	eyeDialog_closeDialog();
@@ -53,7 +53,7 @@ function eyeDialog_saveAs($folderPath, $filename, $overwrite=false) {
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
 	$callback = $dialogParams[1];
 	$callback_checknum = $dialogParams[2];
-	
+
 	$folderPath = eyeDialog_resolvePath($folderPath,true);		//true only for eyeDialog1 compatibility
 	if (vfs('checkSpecialChars',array($filename)) === false) {
 		$filename = str_replace('/','',$filename);
@@ -61,7 +61,7 @@ function eyeDialog_saveAs($folderPath, $filename, $overwrite=false) {
 	}
 	$filename = eyeDialog_autoSetExtensionToFilename($filename, $dialogParams[6], true);		//force extension if needed
 	$filePath = eyeDialog_getFormatedDirPath($folderPath.'/'.$filename);
-	
+
 	//eyeX('rawjs', array('js' => 'console.log("'.eyeDialog_resolvePath($folderPath).'/'.$filename.'")'));
 	$filenameExtension = eyeDialog_getFilenameAndExtension($filename);
 	$filenameExtension = $filenameExtension[1];
@@ -69,9 +69,9 @@ function eyeDialog_saveAs($folderPath, $filename, $overwrite=false) {
 		eyeDialog_confirmFileReplace($folderPath, $filename);
 		return;
 	}
-	
+
 	if($callback && $callback_checknum) {
-		service('eyex','rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$filePath.'")+eyeParam("ext","'.$filenameExtension.'")+eyeParam("fileType","'.$GLOBALS['selectedFileType']->text.'"));'));
+		eyex('rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$filePath.'")+eyeParam("ext","'.$filenameExtension.'")+eyeParam("fileType","'.$GLOBALS['selectedFileType']->text.'"));'));
 	}
 	//eyeX('messageBox',array('content'=> 'Save as OK: '.$filePath));
 	eyeDialog_closeDialog();
@@ -120,11 +120,11 @@ function eyeDialog_autoSetExtensionToFilename($filename, $forceExtension=false, 
 	$return = '';
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
 	$displayedFiletypes = explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
-	
+
 	$defaultFilenameExt = eyeDialog_getFilenameAndExtension($displayedFiletypes[0]);	//first one is default
 	$filenameExt = eyeDialog_getFilenameAndExtension($filename);
 	$extensionOk = false;
-	
+
 	if ($filenameExt[1] != '') {
 		//the filename has an extension
 		foreach($displayedFiletypes as $filetype) {
@@ -137,7 +137,7 @@ function eyeDialog_autoSetExtensionToFilename($filename, $forceExtension=false, 
 	else {
 		$filenameExt[0] = $filename;
 	}
-	
+
 	if ($extensionOk) {
 		//the filename is already correct, no need to change anything
 		$return = $filename;
@@ -173,11 +173,11 @@ function eyeDialog_autoSetExtensionToFilename($filename, $forceExtension=false, 
  */
 function eyeDialog_clearFiles() {
 	global $myPid;
-	
+
 	//remove previous table
 	if ($GLOBALS['files_TAB'])
 		$GLOBALS['files_TAB']->remove();
-	
+
 	//create and add new table
 	$filesTable = new Sortabletable(array(
 		'name' => 'files_TAB',
@@ -194,16 +194,16 @@ function eyeDialog_clearFiles() {
 	));
 	$filesTable->show();
 	$filesTable->setCss(array('white-space' => 'nowrap'));
-	
+
 	return $filesTable;
 }
 
 function eyeDialog_drawFoldersTree($selectedFolder='') {
 	global $currentUser;
-	
+
 	if ($GLOBALS['folders_TREE'])
 		$GLOBALS['folders_TREE']->remove();
-	
+
 	$myTree = new Tree(array(
 		'name'=>'folders_TREE',
 		'father'=>'folders_CTN',
@@ -214,22 +214,22 @@ function eyeDialog_drawFoldersTree($selectedFolder='') {
 		'clickTree'=>1
 	));
 	$myTree->show();
-	
+
 	switch ($GLOBALS['currentPlace_HID']->text) {
 		case __EYEDIALOG_PLACE_GROUPS:
 			//TODO
 			/*$rootNodeName = __EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS;*/
 			break;
-			
+
 		default:
 			$rootNodeName = __EYEDIALOG_FOLDERSTREE_ROOTNODE_HOME;
 			break;
 	}
-	
+
 	//root node
 	$myTree->addItem('folders_TREE', 'item_root', i18n('translate',array($rootNodeName)));
 	$myTree->addSubList('item_root', 'list_root');
-	
+
 	switch ($GLOBALS['currentPlace_HID']->text) {
 		case __EYEDIALOG_PLACE_GROUPS:
 			//TODO
@@ -242,13 +242,13 @@ function eyeDialog_drawFoldersTree($selectedFolder='') {
 				eyeDialog_drawFolderNode($myTree, 'list_'.$itemId, $relativePath);
 			}*/
 			break;
-			
+
 		default:
 			$relativePath = eyeDialog_resolvePathInUserDir('/');
 			$firstSubItemId = eyeDialog_drawFolderNode($myTree, 'list_root', $relativePath);
 			break;
 	}
-	
+
 	$myTree->processList();
 	$myTree->selectItem('item_root');
 	if ($firstSubItemId) {
@@ -297,15 +297,15 @@ function eyeDialog_selectTreeFolder($path) {
  */
 function eyeDialog_browseHome($path = '/') {
 	$filesTable = eyeDialog_clearFiles();
-	
+
 	$displayedFiletypes = explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
-	
+
 	$path = eyeDialog_resolvePathInUserDir($path);
 	if ($path === false) {
 		eyeX('messageBox',array('content'=> i18n("translate",array('Error while trying to browse folder'))));
 		return;
 	}
-	
+
 	$fullPath = eyeDialog_resolvePathInUserDir($path,false);
 	$filesData = eyeDialog_listDir($fullPath);
 	foreach($filesData as $id => $fileInfo) {
@@ -314,12 +314,12 @@ function eyeDialog_browseHome($path = '/') {
 				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/folder.png';
 				$size = ' ';
 				break;
-			
+
 			case 'l':
 				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/link.png';
 				$size  = ' ';
 				break;
-			
+
 			default:
 				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/file.png';
 				$size  = $fileInfo['size'].' B';
@@ -338,7 +338,7 @@ function eyeDialog_browseHome($path = '/') {
 		else {
 			$displayOk = true;
 		}
-		
+
 		if ($displayOk) {
 			$filesTable->addRow(array(
 				$fileInfo['id']? $fileInfo['id'] : urlencode(serialize(array($fileInfo['type'], $fileInfo['path']))),
@@ -361,9 +361,9 @@ function eyeDialog_browseHome($path = '/') {
 //function eyeDialog_browseGroups($path, $groupname = ''){
 //	global $currentUser;
 //	$filesTable = eyeDialog_clearFiles();
-//	
+//
 //	$filesData = array();
-//	
+//
 //	//groups root
 //	if ($groupname == '') {
 //		$userInfo = um('retrieveUser', array($currentUser));
@@ -385,7 +385,7 @@ function eyeDialog_browseHome($path = '/') {
 //	//not groups root (other internal folder)
 //	else {
 //		$displayedFiletypes = explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
-//		
+//
 //		$fullPath = eyeDialog_resolvePathInGroupsDir($path, false, $groupname);
 //		if ($path === false) {
 //			eyeX('messageBox',array('content'=> i18n("translate",array('Error while trying to browse folder'))));
@@ -393,20 +393,20 @@ function eyeDialog_browseHome($path = '/') {
 //		}
 //		$filesData = eyeDialog_listDir($fullPath, $groupname);
 //	}
-//	
-//	
+//
+//
 //	foreach($filesData as $id => $fileInfo) {
 //		switch($fileInfo['type']) {
 //			case 'd':
 //				$urlIcon = 'index.php?extern=apps/eyeDialog/gfx/typefolder.png';
 //				$size = ' ';
 //				break;
-//			
+//
 //			case 'l':
 //				$urlIcon = 'index.php?extern=apps/eyeDialog/gfx/typelink.png';
 //				$size  = ' ';
 //				break;
-//			
+//
 //			default:
 //				$urlIcon = 'index.php?extern=apps/eyeDialog/gfx/typedefault.png';
 //				$size  = $fileInfo['size'].' B';
@@ -425,7 +425,7 @@ function eyeDialog_browseHome($path = '/') {
 //		else {
 //			$displayOk = true;
 //		}
-//		
+//
 //		if ($displayOk) {
 //			$filesTable->addRow(array(
 //				$fileInfo['id']? $fileInfo['id'] : urlencode(serialize(array($fileInfo['type'], $fileInfo['path'], $groupname))),
@@ -447,7 +447,7 @@ function eyeDialog_browseHome($path = '/') {
 function eyeDialog_listDir($dir) {
 	$dir = eyeDialog_getFormatedDirPath($dir);
 	$content = vfs('getDirContent', array($dir));
-	
+
 	$i = 1;
 	$filesData = array();
 	//add parent entry (..) only if we are not in the root directory
@@ -465,7 +465,7 @@ function eyeDialog_listDir($dir) {
 		);
 		$filesData[$i++] = $fileInfo;
 	}
-	
+
 	if (is_array($content)) {
 		foreach($content as $file) {
 			$fileInfo = vfs('readInfo', array($file));
@@ -491,7 +491,7 @@ function eyeDialog_listDir($dir) {
 				$name = $fileInfo['eyeFile'][0]['filename'][0];
 			}
 			$path = $dir.'/'.$name;
-			
+
 			$fileInfo = array(
 				'id' => '',				//filled in browseXxx()
 				'type'=>$type,
@@ -505,7 +505,7 @@ function eyeDialog_listDir($dir) {
 			$filesData[$i++] = $fileInfo;
 		}
 	}
-	
+
 	usort($filesData, eyeDialog_compareFilesData);
 	return $filesData;
 }
@@ -523,10 +523,10 @@ function eyeDialog_compareFilesData($a, $b) {
 	if ($a['type'] == $b['type']) {
 		if ($a['name'] == '..')
 			return -1;
-		
+
 		if ($b['name'] == '..')
 			return 1;
-		
+
 		return strcmp($a['name'],$b['name']);
 	}
 	if ($a['type'] == 'd' && $b['type'] != 'd')

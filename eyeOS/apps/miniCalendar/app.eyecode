@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,19 +23,45 @@
 
 function miniCalendar_run($params=null) {
 	global $myPid;
-	
-	$pid = proc('findPidByName', array('miniCalendar'));
-	
-	if($pid !== $myPid) {
-		proc('end');
-		return;
+
+	foreach (proc('getProcessTable') as $process) {
+		if ($process['appName'] == 'miniCalendar' && $process['pid'] != $myPid) {
+			eyex('messageBox', array('content' => 'miniCalendar is already running!'));
+			return proc('end');
+		}
 	}
-	
-	eyeX('createDiv', array('name' => 'miniCalendarOuter', 'father' => 'eyeApps', 'class' => 'miniCalendarOuter'));
-	eyeX('createDiv', array('name' => 'miniCalendarInnerLeft', 'father' => 'miniCalendarOuter', 'class' => 'miniCalendarInnerLeft'));
-	eyeX('createDiv', array('name' => 'miniCalendarInnerRight', 'father' => 'miniCalendarOuter', 'class' => 'miniCalendarInnerRight'));
-	eyeX('loadCSS', array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniCalendar/css/miniCalendar.css', 'id' => 'miniCalendar'));
-	
+
+	// Window
+	$myWindow = new Window(array(
+		'name'=>'miniCalendarOuter',
+		'father' => 'eyeWidgets',
+		'removeFatherPid' => 1,
+		'type'=>WIN_IMAGE_DRAGGABLE_NOTLISTED,
+		'title'=>'miniCalendar',
+		'background'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=default&extern=images/apps/miniApps/miniCalendar/miniCalendar.png',
+		'width'=>470,
+		'height'=>170,
+		'forceSavePosition'=>1,
+	));
+	$myWindow->show();
+	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_miniCalendarOuter_Content").style.top = "0px";'));
+
+	eyeX('createDiv', array(
+		'name' => 'miniCalendarInnerLeft',
+		'father' => 'miniCalendarOuter',
+		'class' => 'miniCalendarInnerLeft'
+	));
+	eyeX('createDiv', array(
+		'name' => 'miniCalendarInnerRight',
+		'father' => 'miniCalendarOuter',
+		'class' => 'miniCalendarInnerRight'
+	));
+
+	eyeX('loadCSS', array(
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniCalendar/miniCalendar.css',
+		'id' => 'miniCalendar.css'
+	));
+
 	$myImage = new Imagebox(array(
 		'name' => 'imgLaunch',
 		'father' => 'miniCalendarOuter',
@@ -47,7 +73,7 @@ function miniCalendar_run($params=null) {
 	));
 	$myImage->show();
 	$myImage->setCss(array('cursor' => 'Pointer'));
-	
+
 	$myLabel0 = new Label(array(
 		'name' => 'Launch',
 		'father' => 'miniCalendarOuter',
@@ -58,7 +84,7 @@ function miniCalendar_run($params=null) {
 	));
 	$myLabel0->show();
 	$myLabel0->setCss(array('cursor' => 'Pointer', 'color' => '#155D9A', 'font-weight' => 'bold'));
-	
+
 	$myImage1 = new Imagebox(array(
 		'name' => 'imgClose',
 		'father' => 'miniCalendarOuter',
@@ -71,20 +97,19 @@ function miniCalendar_run($params=null) {
 	));
 	$myImage1->show();
 	$myImage1->setCss(array('cursor' => 'Pointer'));
-	
+
 	$myCalendar = new Calendar(array(
 		'name' => 'myCalendar',
 		'father' => 'miniCalendarInnerLeft',
 		'width' => 158,
 		'height' => 148,
-		'x'=>0,
-		'y'=>5,
+		'x'=>5,
+		'y'=>21,
 		'drawOnClick'=>1,
 		'drawHighlight'=>1
 	));
 	$myCalendar->show();
-	
-	eyeX('makeDrag', array('name' => $myPid.'_miniCalendarOuter', 'father' => 'eyeApps', 'noIndex' => 1));
+
 	eyeX('sendMessage', array('msg' => 'today', 'params' => '<date>'.time().'</date>'));
 }
 

@@ -6,7 +6,7 @@
  * ---------------------------------------------- 
  * Released under GPL version 2 
  **/ 
- 
+
 var strings = new Array();
 
 // Menu
@@ -45,8 +45,10 @@ strings["Sunday"] = "Sunday";
 
 // eyeOS
 strings["Copy / paste this code to other spreadsheet applications (e.g. Excel)"] = "Copy / paste this code to other spreadsheet applications (e.g. Excel)";
+strings["Help"] = "Help";
 strings["Del. Column"] = "Del. Column";
 strings["Del. Row"] = "Del. Row";
+strings["Full Screen"] = "Full Screen";
 strings["Ins. Column"] = "Ins. Column";
 strings["Ins. Row"] = "Ins. Row";
 strings["Open"] = "Open";

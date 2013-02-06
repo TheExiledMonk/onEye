@@ -6,7 +6,7 @@
  * Developers:
  *		Fernando M.A.d.S. <fermads@gmail.com>
  *		Michael Hurni <michael.hurni@gmail.com>
- * Contributors: 	
+ * Contributors: 
  *		Martin D. Kirk
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the 
@@ -36,7 +36,7 @@ CodePress = {
 
 	// treat key bindings
 	keyHandler : function(evt) {
-    	keyCode = evt.keyCode;	
+    	keyCode = evt.keyCode;
 		charCode = evt.charCode;
 		fromChar = String.fromCharCode(charCode);
 
@@ -74,7 +74,7 @@ CodePress = {
 		if(self.find(cc))
 			window.getSelection().getRangeAt(0).deleteContents();
 	},
-	
+
 	// split big files, highlighting parts of it
 	split : function(code,flag) {
 		if(flag=='scroll') {
@@ -91,7 +91,7 @@ CodePress = {
 			return code;
 		}
 	},
-	
+
 	getEditor : function() {
 		if(!document.getElementsByTagName('pre')[0]) {
 			body = document.getElementsByTagName('body')[0];
@@ -101,7 +101,7 @@ CodePress = {
 		}
 		return document.getElementsByTagName('pre')[0];
 	},
-	
+
 	// syntax highlighting parser
 	syntaxHighlight : function(flag) {
 		//if(document.designMode=='off') document.designMode='on'
@@ -114,23 +114,23 @@ CodePress = {
 		x = x.replace(/\n/g,'<br>');
 
 		if(arguments[1]&&arguments[2]) x = x.replace(arguments[1],arguments[2]);
-	
+
 		for(i=0;i<Language.syntax.length;i++) 
 			x = x.replace(Language.syntax[i].input,Language.syntax[i].output);
 
 		editor.innerHTML = this.actions.history[this.actions.next()] = (flag=='scroll') ? x : o.split(z).join(x);
 		if(flag!='init') this.findString();
 	},
-	
+
 	getLastWord : function() {
 		var rangeAndCaret = CodePress.getRangeAndCaret();
 		words = rangeAndCaret[0].substring(rangeAndCaret[1]-40,rangeAndCaret[1]);
 		words = words.replace(/[\s\n\r\);\W]/g,'\n').split('\n');
 		return words[words.length-1].replace(/[\W]/gi,'').toLowerCase();
 	},
-	
+
 	snippets : function(evt) {
-		var snippets = Language.snippets;	
+		var snippets = Language.snippets;
 		var trigger = this.getLastWord();
 		for (var i=0; i<snippets.length; i++) {
 			if(snippets[i].input == trigger) {
@@ -145,7 +145,7 @@ CodePress = {
 			}
 		}
 	},
-	
+
 	readOnly : function() {
 		document.designMode = (arguments[0]) ? 'off' : 'on';
 	},
@@ -168,14 +168,14 @@ CodePress = {
 			cChars += '|'+Language.complete[i].input;
 		return cChars+'|';
 	},
-	
+
 	getCompleteEndingChars : function() {
 		var cChars = '';
 		for(var i=0;i<Language.complete.length;i++)
 			cChars += '|'+Language.complete[i].output.charAt(Language.complete[i].output.length-1);
 		return cChars+'|';
 	},
-	
+
 	completeEnding : function(trigger) {
 		var range = window.getSelection().getRangeAt(0);
 		try {
@@ -193,7 +193,7 @@ CodePress = {
 			return true;
 		}
 	},
-	
+
 	shortcuts : function() {
 		var cCode = arguments[0];
 		if(cCode==13) cCode = '[enter]';
@@ -203,16 +203,16 @@ CodePress = {
 			if(Language.shortcuts[i].input == cCode)
 				this.insertCode(Language.shortcuts[i].output,false);
 	},
-	
-	getRangeAndCaret : function() {	
+
+	getRangeAndCaret : function() {
 		var range = window.getSelection().getRangeAt(0);
 		var range2 = range.cloneRange();
-		var node = range.endContainer;			
+		var node = range.endContainer;
 		var caret = range.endOffset;
-		range2.selectNode(node);	
+		range2.selectNode(node);
 		return [range2.toString(),caret];
 	},
-	
+
 	insertCode : function(code,replaceCursorBefore) {
 		var range = window.getSelection().getRangeAt(0);
 		var node = window.document.createTextNode(code);
@@ -223,12 +223,12 @@ CodePress = {
 		range.deleteContents();
 		range.insertNode(node);
 		// Move the cursor to the end of text
-		range2.selectNode(node);		
+		range2.selectNode(node);
 		range2.collapse(replaceCursorBefore);
 		selct.removeAllRanges();
 		selct.addRange(range2);
 	},
-	
+
 	// get code from editor
 	getCode : function() {
 		if(!document.getElementsByTagName('pre')[0] || editor.innerHTML == '')
@@ -259,7 +259,7 @@ CodePress = {
 	actions : {
 		pos : -1, // actual history position
 		history : [], // history vector
-		
+
 		undo : function() {
 			editor = CodePress.getEditor();
 			if(editor.innerHTML.indexOf(cc)==-1){
@@ -273,7 +273,7 @@ CodePress = {
 			if(editor.innerHTML.indexOf(cc)>-1) editor.innerHTML+=cc;
 			CodePress.findString();
 		},
-		
+
 		redo : function() {
 			// editor = CodePress.getEditor();
 			this.pos++;
@@ -281,7 +281,7 @@ CodePress = {
 			editor.innerHTML = this.history[this.pos];
 			CodePress.findString();
 		},
-		
+
 		next : function() { // get next vector position and clean old ones
 			if(this.pos>20) this.history[this.pos-21] = undefined;
 			return ++this.pos;

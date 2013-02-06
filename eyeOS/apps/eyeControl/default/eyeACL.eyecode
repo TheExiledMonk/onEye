@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -87,11 +87,11 @@ $config = eyeXML('getXMLfile', array($file));
 
 //$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
 	if($config){
-		foreach($config['GACL'][0] as $acl => $value) {	
+		foreach($config['GACL'][0] as $acl => $value) {
 				foreach($value as $value2){
 					$myTable->addRow(array($value2['id'][0],$value2['description'][0],$value2['action'][0],$value2['service'][0],$value2['call'][0]));
 				}
-		}	
+		}
 	}
 
 ?>

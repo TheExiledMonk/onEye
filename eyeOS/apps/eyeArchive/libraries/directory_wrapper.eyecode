@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,17 +24,17 @@
 define('WRAPPER_TYPE','directory');
 function getFiles($file){
 		global $currentUser;
-		$tmpContent = reqLib('eyeFileArchive','list',array($file));		
-		$contentLen = count($tmpContent);				
+		$tmpContent = eyeFileArchive('list',array($file));
+		$contentLen = count($tmpContent);
 		$content = array();
-		for($x=0;$x <$contentLen;$x++){			
+		for($x=0;$x <$contentLen;$x++){
 			if(utf8_strpos($tmpContent[$x],EYEOS_FILE_EXT)){
 				$content['path'][] = $file.$tmpContent[$x];
 				$name = utf8_substr($tmpContent[$x],0,utf8_strpos($tmpContent[$x],'_'));
-				$content['names'][] = $name;				
-			}			
-		}		
-		return $content;	
+				$content['names'][] = $name;
+			}
+		}
+		return $content;
 }
 
 function getFileType(){

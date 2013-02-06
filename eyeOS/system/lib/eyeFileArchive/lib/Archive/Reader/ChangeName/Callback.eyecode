@@ -39,7 +39,7 @@ class File_Archive_Reader_ChangeName_Callback extends File_Archive_Reader_Change
     var $function;
     function File_Archive_Reader_ChangeName_Callback($function, &$source)
     {
-        parent::File_Archive_Reader_ChangeName($source);
+        parent::File_Archive_Reader_Relay($source);
         $this->function = $function;
     }
 

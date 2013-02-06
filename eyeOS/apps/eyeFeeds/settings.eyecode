@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -26,9 +26,9 @@ define('EYEFEEDS_WIN_CONFDLG_WIDTH',400);
 
 function eyeFeeds_createSettingsDialog($params=null) {
 	global $checknum, $myPid;
-	
+
 	$savedSettings = eyeFeeds_loadSettings();
-	
+
 	$mainWindow = new Window(array(
 		'name' => 'settings_DLG',
 		'father' => 'eyeFeeds_WND',
@@ -40,7 +40,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'removepid' => 0
 	));
 	$mainWindow->show();
-	
+
 	$logo = new Imagebox(array(
 		'name' => 'settings_logo_IMG',
 		'father' => 'settings_DLG_Content',
@@ -49,7 +49,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/settings_logo.png'
 	));
 	$logo->show();
-	
+
 	//TITLE
 	$title = new Label(array(
 		'name' => 'settings_title_LBL',
@@ -64,7 +64,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'font-weight' => 'bold',
 		'color' => '#004488'
 	));
-	
+
 	//REMARK
 	$remark = new Label(array(
 		'name' => 'settings_remark_LBL',
@@ -79,7 +79,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'font-style' => 'italic',
 		'color' => '#AAAAAA'
 	));
-	
+
 	//LINE
 	$line = new Line(array(
 		'name' => 'settings_line_LIN',
@@ -90,7 +90,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'height' => 2
 	));
 	$line->show(0);
-	
+
 	//CANCEL BUTTON
 	$cancelButton = new Button(array(
 		'name' => 'settings_cancel_BTN',
@@ -102,7 +102,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'enabled' => 1
 	));
 	$cancelButton->show(0);
-	
+
 	//SAVE BUTTON
 	$saveButton = new Button(array(
 		'name' => 'settings_save_BTN',
@@ -113,11 +113,11 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'width' => 70,
 		'enabled' => 1
 	));
-	
+
 	/**********************************************************/
 	//		INPUT ELEMENTS
 	/**********************************************************/
-	
+
 	//NUMBER OF TITLES LABEL
 	$titlesNumberLabel = new Label(array(
 		'name' => 'settings_titlesNumber_LBL',
@@ -127,7 +127,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => 'Number of titles displayed in the list:'
 	));
 	$titlesNumberLabel->show();
-	
+
 	//NUMBER OF TITLES TEXTBOX
 	$titlesNumberTextbox = new Textbox(array(
 		'name' => 'settings_titlesNumber_TXTBOX',
@@ -139,7 +139,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => $savedSettings['titlesNumber'][0]
 	));
 	$titlesNumberTextbox->show();
-	
+
 	//SIZE OF CONTENT PREVIEW LABEL
 	$contentSizeLabel = new Label(array(
 		'name' => 'settings_contentSize_LBL',
@@ -149,7 +149,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => 'Size of content preview (char.):'
 	));
 	$contentSizeLabel->show();
-	
+
 	//SIZE OF CONTENT PREVIEW TEXTBOX
 	$contentSizeTextbox = new Textbox(array(
 		'name' => 'settings_contentSize_TXTBOX',
@@ -161,7 +161,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => $savedSettings['contentSize'][0]
 	));
 	$contentSizeTextbox->show();
-	
+
 	//CACHE DURATION LABEL
 	$cacheDurationLabel = new Label(array(
 		'name' => 'settings_cacheDuration_LBL',
@@ -171,7 +171,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => 'Feeds cache duration (sec.):'
 	));
 	$cacheDurationLabel->show();
-	
+
 	//CACHE DURATION TEXTBOX
 	$cacheDurationTextbox = new Textbox(array(
 		'name' => 'settings_cacheDuration_TXTBOX',
@@ -183,7 +183,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => $savedSettings['cacheDuration'][0]
 	));
 	$cacheDurationTextbox->show();
-	
+
 	//READING HISTORY DURATION LABEL
 	$readingHistoryDurationLabel = new Label(array(
 		'name' => 'settings_readingHistoryDuration_LBL',
@@ -193,7 +193,7 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => 'Reading history cache duration (days):'
 	));
 	$readingHistoryDurationLabel->show();
-	
+
 	//READING HISTORY DURATION TEXTBOX
 	$readingHistoryDurationTextbox = new Textbox(array(
 		'name' => 'settings_readingHistoryDuration_TXTBOX',
@@ -205,8 +205,8 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'text' => $savedSettings['readingHistoryDuration'][0]
 	));
 	$readingHistoryDurationTextbox->show();
-	
-	
+
+
 	$saveButton->addFriend($titlesNumberTextbox);
 	$saveButton->addFriend($contentSizeTextbox);
 	$saveButton->addFriend($cacheDurationTextbox);
@@ -230,21 +230,21 @@ function eyeFeeds_on_settings_save_BTN($params=null) {
 	$contentSize = ($contentSize >= 100 && $contentSize <= 8000)? $contentSize : EYEFEEDS_FEEDITEMS_CONTENT_DISPLAYEDSIZE;
 	$cacheDuration = ($cacheDuration > 0 && $cacheDuration <= 20000)? $cacheDuration : EYEFEEDS_FEEDITEMS_CACHEDURATION;
 	$readingHistoryDuration = ($readingHistoryDuration > 0 && $readingHistoryDuration <= 100)? $readingHistoryDuration : EYEFEEDS_FEEDITEMS_READINGHISTORYDURATION;
-	
+
 	$newSettings = array(
 		'titlesNumber' => array($titlesNumber),
 		'contentSize' => array($contentSize),
 		'cacheDuration' => array($cacheDuration),
 		'readingHistoryDuration' => array($readingHistoryDuration)
 	);
-	
+
 	if (eyeFeeds_saveSettings($newSettings)) {
 		eyeX('messageBox',array('content'=> 'Settings saved successfully'));
 	}
 	else {
 		eyeX('messageBox',array('content'=> 'Error saving settings'));
 	}
-	
+
 	if (is_object($GLOBALS['settings_DLG'])) {
 		$GLOBALS['settings_DLG']->close();
 	}

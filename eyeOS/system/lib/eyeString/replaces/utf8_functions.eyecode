@@ -585,71 +585,71 @@ function utf8_ord($chr) {
     
 }
 
-function utf8_wordwrap($str,$width=75,$break='\n',$cut=false){	
-	
+function utf8_wordwrap($str,$width=75,$break='\n',$cut=false){
+
 	$newString = '';
 	if($cut == true){
 		$y = 1;
-		for($x=0;$x < utf8_strlen($str);$x++){						
+		for($x=0;$x < utf8_strlen($str);$x++){
 			$newString .= utf8_substr($str,$x,1);
 			if($y == $width){
 				$newString .= $break;
-				$y = 1;	
-			}else{
-				$y++;
-			}
-		}		
-		return $newString;
-	}
-	
-	$y = 1;
-	for($x=0;$x < utf8_strlen($str);$x++){			
-		$newString .= utf8_substr($str,$x,1);
-		if($str{$x} == ' '){			
-			if($y >= $width){
-				$newString .= $break;	
 				$y = 1;
 			}else{
 				$y++;
 			}
-		}			
+		}
+		return $newString;
 	}
-	
+
+	$y = 1;
+	for($x=0;$x < utf8_strlen($str);$x++){
+		$newString .= utf8_substr($str,$x,1);
+		if($str{$x} == ' '){
+			if($y >= $width){
+				$newString .= $break;
+				$y = 1;
+			}else{
+				$y++;
+			}
+		}
+	}
+
 	return $newString;
 }
 
-function utf8_pathinfo($string){		
+function utf8_pathinfo($string){
 	$info['basename'] = utf8_basename($string);
 	$info['dirname'] = dirname($string);
 	$info['filename'] = utf8_getFileName($string);
 	$info['extension'] = utf8_getExtension($string);
-	
+
 	return $info;
 }
 
-function utf8_basename($string,$suffix=''){	
-	//Checking if path are from windows...\	
+function utf8_basename($string,$suffix=''){
+	//Checking if path are from windows...\
 	if(utf8_strpos($string,'\\') !== false){
 		//Replacing all \ with /
 		$string = utf8_ireplace('\\','/',$string);
 	}
-	
+
 	//Remove the last character if it is a slash
 	if(utf8_strrpos($string,'/') == utf8_strlen($string)-1){
-		$string = utf8_substr($string,0,utf8_strlen($string)-1);		
-	}	
+		$string = utf8_substr($string,0,utf8_strlen($string)-1);
+	}
 	//TODO: check if dirname is more speed than utf8_str*** functions.
-	//If is a directory	
-	if(utf8_strpos($string,'/') && utf8_strrpos($string,'/') == utf8_strlen($string)-1){		
-		while(utf8_strrpos($string,'/') == utf8_strlen($string)-1){			
+	//If is a directory
+	if(utf8_strpos($string,'/') && utf8_strrpos($string,'/') == utf8_strlen($string)-1){
+		while(utf8_strrpos($string,'/') == utf8_strlen($string)-1){
 			$string = utf8_substr($string,0,utf8_strrpos($string,'/'));
-		}		
+		}
 	}
-	
+
 	if(utf8_strpos($string,'/') !== false){
-		$string =  utf8_substr($string,utf8_strrpos($string,'/')+1,utf8_strlen($string));	
+		$string =  utf8_substr($string,utf8_strrpos($string,'/')+1,utf8_strlen($string));
 	}
-		
+
 	if($suffix != ''){
 		$pos = utf8_strrpos($string,$suffix);
 		if($pos === false){
@@ -658,7 +658,7 @@ function utf8_basename($string,$suffix=''){
 			return utf8_substr($string,0,utf8_strrpos($string,$suffix));
 		}
 	}
-	
+
 	return $string;
 }
 

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -34,25 +34,38 @@ function eyeUpload_run($params = '') {
 		'width' => 470
 	));
 	$myWindow->show();
-	
+
+	$myImage = new Imagebox(array(
+		'name' => 'eyeUpload_help',
+		'father' => 'eyeUpload_Window',
+		'horiz' => 1,
+		'x' => 8,
+		'y' => 28,
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/eyeHelp.png',
+		'disableMsg' => 0,
+		'signal' => 'help'
+	));
+	$myImage->show();
+	$myImage->setCss(array('cursor' => 'Pointer'));
+
 	$myHidden = new Hidden(array(
 		'father' => 'eyeUpload_Window_Content',
 		'name' => 'eyeUpload_Hidden_Path',
 		'text' => $params[0]
 	));
 	$myHidden->show();
-	
+
 	$myHidden = new Hidden(array(
 		'father' => 'eyeUpload_Window_Content',
 		'name' => 'eyeUpload_Hidden_Callback',
 		'text' => $params[1]
 	));
 	$myHidden->show();
-	
+
 	$myTab = new Tab(array(
 		'father' => 'eyeUpload_Window_Content',
 		'name' => 'eyeUpload_Tab',
-		'height' => 210,
+		'height' => 240,
 		'tabwidth' => 90,
 		'useDisplay' => 0,
 		'width' => 466,
@@ -60,7 +73,7 @@ function eyeUpload_run($params = '') {
 		'y' => 5
 	));
 	$myTab->show();
-	
+
 	$simpleTab = $myTab->addTab('Simple',1);
 	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeUpload/tabs/simple.eyecode');
 	if ($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] > 8 && (!$_SERVER['HTTPS'] || IE)) {

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -35,20 +35,20 @@
 * @date 2008/03/11
 */
 function lib_eyeCrypt_crypt($params) {
-	
+
 	if($params == null || count($params) < 3 || !isset($params['data']) || !isset($params['key']) || !isset($params['cipher']) ){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$str = $params['data'];
 	$key = $params['key'];
 	$cip = utf8_basename($params['cipher']);
-	
+
 	if(file_exists(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode')) {
 		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode');
 		if(function_exists('crypt_'.$cip.'_crypt')) {
-			return call_user_func('crypt_'.$cip.'_crypt',array($str,$key));	
+			return call_user_func('crypt_'.$cip.'_crypt',array($str,$key));
 		}
 	}
 	return false;
@@ -68,20 +68,20 @@ function lib_eyeCrypt_crypt($params) {
 * @date 2008/03/11
 */
 function lib_eyeCrypt_decrypt($params) {
-	
+
 	if($params == null || count($params) < 3 || !isset($params['data']) || !isset($params['key']) || !isset($params['cipher']) ){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$str = $params['data'];
 	$key = $params['key'];
 	$cip = utf8_basename($params['cipher']);
-	
+
 	if(file_exists(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode')) {
 		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode');
 		if(function_exists('crypt_'.$cip.'_crypt')) {
-			return call_user_func('crypt_'.$cip.'_decrypt',array($str,$key));	
+			return call_user_func('crypt_'.$cip.'_decrypt',array($str,$key));
 		}
 	}
 	return false;

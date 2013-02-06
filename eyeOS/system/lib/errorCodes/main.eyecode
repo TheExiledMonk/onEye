@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -28,7 +28,7 @@
 function lib_errorCodes_loadCodes($params=null){
 	global $errorCode;
 	$errorCode = "";
-	
+
 	//kernel & generic errorCodes -1/-99
 	define('ERROR_SERVICE_NOT_EXIST',-1);
 	define('ERROR_LIB_NOT_EXIST',-2);
@@ -43,25 +43,25 @@ function lib_errorCodes_loadCodes($params=null){
 	define('VFS_FILE_NOT_EXISTS',-103);
 	define('VFS_DIR_NOT_EXISTS',-104);
 	define('VFS_FILE_NOT_FOUND',105);
-	define('VFS_INVALID_CHARS',106);	
-	
+	define('VFS_INVALID_CHARS',106);
+
 	//Proc service errorCodes -200/-299
 	define('PROC_APP_NOT_ARE_RUNNING',-200);
 	define('PROC_APP_ALREADY_RUNNING',-201);
 	define('PROC_APP_NOT_FOUND',-202);
 	define('PROC_APP_DONT_HAVE_RUN_FUNCTION',-203);
-	
+
 	//um service errorCodes -300/-399
 	define('UM_USER_PERMISSIONS',-300);
 	define('UM_USER_ALREADY_EXISTS',-301);
 	define('UM_USERNAME_REQUIRED',-302);
 	define('UM_USER_NOT_EXISTS',-303);
 	define('UM_USER_IS_DISABLED',-304);
-	
+
 	//log service errorCodes -400/-499
 	define('EYEOS_LOG_BAD_VALUE',-400);
 	define('EYEOS_LOG_SERVICE_IGNORED',-401);
-	
+
 	//php native errorCodes -500/599
 	define('PHP_ERROR_ON_FOPEN',-500);
 	define('PHP_ERROR_ON_UNLINK',-501);
@@ -79,14 +79,14 @@ function lib_errorCodes_loadCodes($params=null){
 * @date 2008/03/11
 */
 function lib_errorCodes_setErrorCode($params) {
-	
+
 	if(!is_array($params) || !isset($params[0])) {
 		return false;
 	}
-	
+
 	global $errorCode;
 	$errorCode = $params[0];
-	
+
 	return true;
 }
 

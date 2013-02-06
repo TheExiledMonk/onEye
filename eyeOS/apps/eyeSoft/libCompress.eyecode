@@ -70,9 +70,9 @@ class ArchiveExtractor {
   function extractTarGzip($archFile, $extractPath=".") {
     /* include TAR library */
     //require_once 'libCompress/pcltar.func'.EYE_CODE_EXTENSION;
-  	
+  
     /* extract and return list of extracted files */
-  	
+  
     return PclTarExtract($archFile,$extractPath);
   }
     

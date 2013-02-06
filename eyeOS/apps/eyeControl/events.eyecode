@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -41,6 +41,10 @@ $openDir = vfs('real_getDirContent',array($dir,'*' . EYE_CODE_EXTENSION));
 $currentUser = $oldUser;
 foreach ($openDir as $file) {
 	include_once($file);
+}
+
+function eyeControl_on_help($params=null) {
+	proc('launch',array('eyeHelp','eyeControl'));
 }
 
 function eyeControl_on_Message($params = '') {

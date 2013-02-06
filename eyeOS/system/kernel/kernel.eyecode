@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -36,7 +36,7 @@ if(strstr($ua,'MSIE 6')){
 	define('IE',0);
 }
 
-function service($servicename,$servicefunction=null,$params=null,$noListen=0) {	
+function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 	$sec_servicename = utf8_basename($servicename);
 	if(ACL_SUPPORT == 1) {
 		if(!checkACL($sec_servicename,$servicefunction,$params)) {
@@ -54,13 +54,13 @@ function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 			return false;
 		}
 	} 
-	
+
 	//TODO: THIS SHOULD WORK USING LISTENER SERVICE CALLS IN A FUTURE.
-	if(EYEOS_LOG > 0){	
+	if(EYEOS_LOG > 0){
 		if(!function_exists('service_log_init')){
-			include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/log/main'.EYE_CODE_EXTENSION);						
-		}	
-		
+			include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/log/main'.EYE_CODE_EXTENSION);
+		}
+
 		if(service_log_checkLog() == false)
 		{
 			service_log_Lock();
@@ -71,11 +71,11 @@ function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 			service_log_unLock();
 		}
 	}
-	
+
 	if(!$servicefunction) {
 		return false;
 	}
-	
+
 	if(!function_exists('service_'.$sec_servicename.'_'.$servicefunction)) {
 		return false;
 	}
@@ -91,9 +91,9 @@ function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 *The reqLib have noListen as true by default since the libraries listener calls are not usually used
 */
 function reqLib($libname,$function,$params=null,$noListen=true) {
-	$sec_libname = utf8_basename($libname);	
-	if(!checkLibraryLoaded($sec_libname)) {				
-		if(is_readable(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/'.$sec_libname.'/main'.EYE_CODE_EXTENSION)) {						
+	$sec_libname = utf8_basename($libname);
+	if(!checkLibraryLoaded($sec_libname)) {
+		if(is_readable(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/'.$sec_libname.'/main'.EYE_CODE_EXTENSION)) {
 			include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/'.$sec_libname.'/main'.EYE_CODE_EXTENSION);
 			setLibraryLoaded($sec_libname);
 			if(function_exists('lib_'.$sec_libname.'_init')) {
@@ -128,7 +128,7 @@ function genericListener($type,$sec_servicename,$minfunction,$noListen,$params){
 			$oldProcInfo = $procInfo;
 			$oldPid = $myPid;
 			$oldChecknum = $checknum;
-			$appName = service('proc','findNameByPid',array($key));
+			$appName = proc('findNameByPid',array($key));
 			if(!$appName) {
 				unset($_SESSION[$type][$sec_servicename][$minfunction][$key]);
 			} else {
@@ -137,8 +137,8 @@ function genericListener($type,$sec_servicename,$minfunction,$noListen,$params){
 					include_once(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/com'.EYE_CODE_EXTENSION);
 					if(function_exists($appName.'_com_'.$value)) {
 						$myPid = $key;
-						$checknum = service('proc','findNChecknumByPid',array($myPid));
-						$procInfo = service('proc','getProcByPid',array($myPid));
+						$checknum = proc('findNChecknumByPid',array($myPid));
+						$procInfo = proc('getProcByPid',array($myPid));
 						i18n('loadLang',array($appName));
 						call_user_func($appName.'_com_'.$value,$params);
 						$procInfo = $oldProcInfo;
@@ -193,18 +193,15 @@ function checkLibraryLoaded($name) {
 	}
 }
 
-function loadServiceConfig() {	
-	if ($handler = opendir(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/')) {		
-		while (false !== ($archivo = readdir($handler))) {			
-			if(is_file(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo)) {
-				if ($archivo{0} != "." && filesize(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo) > 1) {
-					$myFile = fopen(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo,'r');
-					$myContent = fread($myFile,filesize(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo));
-					fclose($myFile);					
-					$myArray = reqLib('eyeXML','xml2array',array($myContent));										
+function loadServiceConfig() {
+	if ($handler = opendir(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/')) {
+		while (false !== ($file = readdir($handler))) {
+			if(is_file(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$file)) {
+				if ($file{0} != '.') {
+					$myArray = eyeXML('xml2array', array(file_get_contents(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/' . $file)));
 					if(isset($myArray['CONFIG']) && is_array($myArray['CONFIG'])) {
 						if(is_array($myArray['CONFIG'][0])) {
-							foreach($myArray['CONFIG'][0] as $key => $value) {								
+							foreach($myArray['CONFIG'][0] as $key => $value) {
 								define($key,$value[0]);
 							}
 						}
@@ -219,12 +216,9 @@ function loadServiceConfig() {
 function loadConfig($appName) {
 	$appName = utf8_basename($appName);
 	if ($handler = opendir(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/')) {
-		while (false !== ($archivo = readdir($handler))) {
-			if ($archivo{0} != "." && filesize(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo) > 1) {
-				$myFile = fopen(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo,'r');
-				$myContent = fread($myFile,filesize(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo));
-				fclose($myFile);
-				$myArray = reqLib('eyeXML','xml2array',array($myContent));
+		while (false !== ($file = readdir($handler))) {
+			if ($file{0} != '.') {
+				$myArray = eyeXML('xml2array', array(file_get_contents(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/' . $appName . '/' . $file)));
 				if(is_array($myArray['CONFIG'][0])) {
 					foreach($myArray['CONFIG'][0] as $key => $value) {
 						define($key,$value[0]);
@@ -233,20 +227,11 @@ function loadConfig($appName) {
 			}
 		}
 		closedir($handler);
-	}	
+	}
 }
 
-function getConfig($appName,$archivo='conf.xml') {
-	$appName = utf8_basename($appName);
-	$archivo = utf8_basename($archivo);
-	if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo)) {
-		$myFile = fopen(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo,'r');
-		$myContent = fread($myFile,filesize(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo));
-		fclose($myFile);
-		$myArray = reqLib('eyeXML','xml2array',array($myContent));
-		return $myArray;
-	}
-	return false;
+function getConfig($appName,$file = 'conf.xml') {
+	return eyeXML('xml2array', array(@file_get_contents(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/' . utf8_basename($appName) . '/' . utf8_basename($file))));
 }
 
 function setConfig($appName,$file='conf.xml',$arr) {
@@ -263,7 +248,7 @@ function getAppInfo($app) {
 	global $currentUser;
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
-	$xml = reqLib('eyeXML', 'getXMLfile', array($myFile.'info.xml'));
+	$xml = eyeXML('getXMLfile', array($myFile.'info.xml'));
 	$currentUser = $oldUser;
 	return $xml;
 }
@@ -399,26 +384,26 @@ function _getAlias($path,$baseFunc,$noListen){
 
 function checkACL($sec_servicename,$servicefunction,$params) {
 	global $ACL;
-	
+
 	//if there is not acls, stop.
 	if(!$ACL || !is_array($ACL)) {
 		return true;
 	}
-	
+
 	global $currentUser;
-	
+
 	//the real root user is inmune to ACL's.
 	if($currentUser == REAL_ROOTUSER) {
 		return true;
 	}
-	
+
 	$servname = $sec_servicename;
 	$servfunc = $servicefunction;
-	
+
 	foreach($ACL['GACL'][0]['ACL'] as $rule) {
 		if(preg_match('/^'.$rule['service'][0].'$/i',$servname) && 
 			preg_match('/^'.$rule['call'][0].'$/i',$servfunc)) {
-			
+
 			foreach($rule['target'] as $target) {
 				foreach($target['targetname'] as $targetname) {
 					if(utf8_strtolower($target['type'][0]) == 'user') {
@@ -442,7 +427,7 @@ function checkACL($sec_servicename,$servicefunction,$params) {
 										return true;
 									} else {
 										return false;
-									}				
+									}
 								}
 							}
 						}
@@ -455,9 +440,9 @@ function checkACL($sec_servicename,$servicefunction,$params) {
 										return true;
 									} else {
 										return false;
-									}							
+									}
 								}
-							}					
+							}
 						}
 					}
 				}
@@ -503,16 +488,13 @@ function loadACLTables() {
 	$ACL = array();
 	$aclpath = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ACL/';
 	$found = 0;
-	if ($handler = opendir($aclpath)) {		
-		while (false !== ($file = readdir($handler))) {			
+	if ($handler = opendir($aclpath)) {
+		while (false !== ($file = readdir($handler))) {
 			if(is_file($aclpath.$file)) {
-				if ($file{0} != "." && filesize($aclpath.$file) > 1) {
+				if ($file{0} != '.') {
 					$found = 1;
-					$myFile = fopen($aclpath.$file,'r');
-					$myContent = fread($myFile,filesize($aclpath.$file));
-					fclose($myFile);					
-					$myArray = reqLib('eyeXML','xml2array',array($myContent));
-					$ACL = array_merge($ACL,$myArray);								
+					$myArray = eyeXML('xml2array', array(file_get_contents($aclpath . $file)));
+					$ACL = array_merge($ACL,$myArray);
 				}
 			}
 		}

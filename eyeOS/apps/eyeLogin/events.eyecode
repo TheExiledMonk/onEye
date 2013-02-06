@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -139,10 +139,120 @@ function eyeLogin_on_successLogin($params = '') {
 	if ($currentUser) {
 		$pid = proc('findPidByName',array('eyeX'));
 		proc('setProcessUser',array($pid));
+		eyex('systemSound', array('login'));
 		eyex('rawjs',array('js' => 'xGetElementById("eyex-info").style.display = "none"; xGetElementById("eyex-powered").style.display = "none";'));
-		loadConfig('eyeLogin');
-		proc('launch',array(LOGIN_EXECUTE,'autorun'));
-		proc('end');
+
+		$xml = um('retrieveUser',array($currentUser));
+		if ($xml['eyeUser'][0]['resetPassword'][0]) {
+			eyeLogin_dialog_ResetPassword();
+		} else {
+			loadConfig('eyeLogin');
+			proc('launch',array(LOGIN_EXECUTE,'autorun'));
+			proc('end');
+		}
+	}
+}
+
+function eyeLogin_dialog_ResetPassword() {
+	$myWindow = new Window(array(
+		'cent' => 1,
+		'father' => 'eyeApps',
+		'height' => 200,
+		'name' => 'eyeLogin_Window_ResetPassword',
+		'style' => TITLE,
+		'title' => 'Change password',
+		'width' => 350
+	));
+	$myWindow->show();
+
+	$y = 20;
+	$myLabel = new Label(array(
+		'father' => 'eyeLogin_Window_ResetPassword_Content',
+		'name' => 'eyeLogin_Label_ResetPassword',
+		'text' => 'You need to specify a new password for this account now...',
+		'x' => 10,
+		'y' => $y
+	));
+	$myLabel->show();
+
+	$y += 40;
+	$myLabel = new Label(array(
+		'father' => 'eyeLogin_Window_ResetPassword_Content',
+		'name' => 'eyeLogin_Label_ResetPassword_1',
+		'text' => 'New Password:',
+		'x' => 10,
+		'y' => $y + 3
+	));
+	$myLabel->show();
+	$myTextbox_1 = new Textbox(array(
+		'father' => 'eyeLogin_Window_ResetPassword_Content',
+		'name' => 'eyeLogin_Textbox_ResetPassword_1',
+		'password' => 2,
+		'width' => 160,
+		'x' => 160,
+		'y' => $y
+	));
+	$myTextbox_1->show();
+	$myTextbox_1->focus();
+
+	$y += 40;
+	$myLabel = new Label(array(
+		'father' => 'eyeLogin_Window_ResetPassword_Content',
+		'name' => 'eyeLogin_Label_ResetPassword_2',
+		'text' => 'Retype password:',
+		'x' => 10,
+		'y' => $y + 3
+	));
+	$myLabel->show();
+	$myTextbox_2 = new Textbox(array(
+		'father' => 'eyeLogin_Window_ResetPassword_Content',
+		'name' => 'eyeLogin_Textbox_ResetPassword_2',
+		'password' => 2,
+		'width' => 160,
+		'x' => 160,
+		'y' => $y
+	));
+	$myTextbox_2->addFriend($myTextbox_1);
+	$myTextbox_2->show();
+	$myTextbox_2->addEnterEventMsg('ResetPassword');
+
+	$y += 40;
+	$myButton = new Button(array(
+		'caption' => 'Set new password',
+		'cent' => 2,
+		'father' => 'eyeLogin_Window_ResetPassword_Content',
+		'name' => 'eyeLogin_Button_ResetPassword',
+		'signal' => 'ResetPassword',
+		'y' => $y
+	));
+	$myButton->addFriend($myTextbox_1);
+	$myButton->addFriend($myTextbox_2);
+	$myButton->show();
+}
+
+function eyeLogin_on_ResetPassword($params = '') {
+	global $currentUser;
+
+	if ($currentUser) {
+		$password1 = base64_decode($GLOBALS['eyeLogin_Textbox_ResetPassword_1']->text);
+		$password2 = base64_decode($GLOBALS['eyeLogin_Textbox_ResetPassword_2']->text);
+
+		if (!$password1 || !$password2) {
+			eyex('messageBox', array('content' => 'Please fill out all fields!'));
+		} elseif (utf8_strlen($password1) < 4) {
+			eyex('messageBox', array('content' => 'Password is too short!'));
+		} elseif ($password1 != $password2) {
+			eyex('messageBox', array('content' => 'Password fields do not match!'));
+		} else {
+			$oldUser = $currentUser;
+			$currentUser = ROOTUSER;
+			um('updateUser',array('username' => $oldUser, 'password' => $password1, 'resetPassword' => 0));
+			$currentUser = $oldUser;
+
+			loadConfig('eyeLogin');
+			proc('launch',array(LOGIN_EXECUTE,'autorun'));
+			proc('end');
+		}
 	}
 }
 ?>

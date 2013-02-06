@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -31,7 +31,7 @@ function miniCalendar_on_Close($params=null) {
 
 function miniCalendar_on_Launch($params=null) {
 	$messagesPid = proc('findPidByName', array('eyeCalendar'));
-	
+
 	if($messagesPid == false) {
 		proc('launch', array('eyeCalendar'));
 	}
@@ -42,7 +42,7 @@ function miniCalendar_on_changeDate($params=null){
 	$year = date('Y',$date);
 	$month= date('n',$date);
 	$day  = date('j',$date);
-	
+
 	miniCalendar_dayNotes($year, $month, $day);
 }
 
@@ -50,22 +50,22 @@ function miniCalendar_on_today($params=null) {
 	$year = date('Y');
 	$month = date('n');
 	$day = date('j');
-	
+
 	miniCalendar_dayNotes($year, $month, $day);
 }
 
 function miniCalendar_dayNotes($year, $month, $day) {
 	global $myPid;
-	
-	$num = reqLib('eyeCalendar','getDayNotes', array('year' => $year, 'month' => $month, 'mday' => $day));
+
+	$num = eyeCalendar('getDayNotes', array('year' => $year, 'month' => $month, 'mday' => $day));
 	eyeX('setDiv', array('name' => 'miniCalendarInnerRight', 'content' => ' '));
-	
+
 	if(is_array($num)) {
 		$gCounter = 0;
 		$Yoffset = 4;
 		$text = '';
 		foreach($num as $event) {
-			$cname = reqLib('eyeCalendar', 'getCalendarName', array($event['note'][0]['calendar'][0]));
+			$cname = eyeCalendar('getCalendarName', array($event['note'][0]['calendar'][0]));
 
 			$text = base64_decode($event['note'][0]['title'][0]);
 			if(!empty($text)) {
@@ -78,7 +78,7 @@ function miniCalendar_dayNotes($year, $month, $day) {
 				));
 				$myLabel->show();
 				eyeX('rawjs', array('js' => 'document.getElementById("'.$myPid.'_cal_label_'.$gCounter.'_Container").className="cal'.$event['note'][0]['calendar'][0].'";'));
-				
+
 				$myLabel1 = new Label(array(
 					'name' => 'hour'.$gCounter,
 					'father' => 'miniCalendarInnerRight',
@@ -88,7 +88,7 @@ function miniCalendar_dayNotes($year, $month, $day) {
 				));
 				$myLabel1->show();
 				$myLabel1->setCss(array('font-weight' => 'bold'));
-				
+
 				$myLabel2 = new Label(array(
 					'name' => 'content'.$gCounter,
 					'father' => 'miniCalendarInnerRight',
@@ -98,7 +98,7 @@ function miniCalendar_dayNotes($year, $month, $day) {
 				));
 				$myLabel2->show();
 			}
-			
+
 			$Yoffset += 25;
 			$gCounter++;
 		}

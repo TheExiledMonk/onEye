@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -51,18 +51,18 @@ $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Username *'
+	'text' => 'User Name *'
 ));
 $myLabel->show();
 $myTextbox_username = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_username',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY
 ));
 $myTextbox_username->show();
 $myTextbox_username->focus();
-$ContentY += 30;
+$ContentY += 25;
 // Password
 $myLabel = new Label(array(
 	'name' => 'eyeControl_newuser_label_password',
@@ -75,12 +75,12 @@ $myLabel->show();
 $myTextbox_password = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_password',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY,
 	'password' => 2
 ));
 $myTextbox_password->show();
-$ContentY += 30;
+$ContentY += 25;
 // Password (again)
 $myLabel = new Label(array(
 	'name' => 'eyeControl_newuser_label_pwd_again',
@@ -93,29 +93,29 @@ $myLabel->show();
 $myTextbox_pwd_again = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_pwd_again',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY,
 	'password' => 2
 ));
 $myTextbox_pwd_again->show();
-$ContentY += 30;
+$ContentY += 25;
 // Full name
 $myLabel = new Label(array(
 	'name' => 'eyeControl_newuser_label_fullname',
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Full name'
+	'text' => 'Full Name'
 ));
 $myLabel->show();
 $myTextbox_fullname = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_fullname',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY
 ));
 $myTextbox_fullname->show();
-$ContentY += 30;
+$ContentY += 25;
 // E-mail
 $myLabel = new Label(array(
 	'name' => 'eyeControl_newuser_label_email',
@@ -128,11 +128,11 @@ $myLabel->show();
 $myTextbox_email = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_email',
 	'father' => $eyeContainer,
-	'x' => 160,
+	'x' => 190,
 	'y' => $ContentY
 ));
 $myTextbox_email->show();
-$ContentY += 30;
+$ContentY += 25;
 if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	// Permissions
 	$myLabel = new Label(array(
@@ -147,7 +147,7 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		'name' => 'eyeControl_newuser_select_permissions',
 		'father' => $eyeContainer,
 		'width' => 125,
-		'x' => 160,
+		'x' => 190,
 		'y' => $ContentY + 3
 	));
 	$mySelect->show();
@@ -162,7 +162,7 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		document.getElementById("' . $myPid . '_eyeControl_newuser_label_maintain").style.display = "none";
 		document.getElementById("' . $myPid . '_eyeControl_newuser_window_maintain").style.display = "none";
 	}');
-	$ContentY += 30;
+	$ContentY += 25;
 	// Expire
 	$myLabel = new Label(array(
 		'name' => 'eyeControl_newuser_label_expire',
@@ -175,20 +175,39 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	$myTextbox_expire = new Textbox(array(
 		'name' => 'eyeControl_newuser_textbox_expire',
 		'father' => $eyeContainer,
-		'x' => 160,
+		'x' => 190,
 		'y' => $ContentY,
 		'text' => i18n('translate',array('Never'))
 	));
 	$myTextbox_expire->show();
-	$ContentY += 30;
+	$ContentY += 25;
 }
+// Set new password on next login
+$myLabel = new Label(array(
+	'name' => 'eyeControl_newuser_label_setnewpassword',
+	'father' => $eyeContainer,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'Set new password on next login'
+));
+$myLabel->show();
+$myCheckbox_setnewpassword = new Checkbox(array(
+	'checked' => 0,
+	'father' => $eyeContainer,
+	'name' => 'eyeControl_newuser_checkbox_setnewpassword',
+	'text' => ' ',
+	'x' => 330,
+	'y' => $ContentY
+));
+$myCheckbox_setnewpassword->show();
+$ContentY += 25;
 // Create user
 $myButton = new Button(array(
 	'name' => 'eyeControl_newuser_button_save',
 	'father' => $eyeContainer,
 	'x' => 40,
 	'y' => $ContentY,
-	'caption' => 'Create user',
+	'caption' => 'Create User',
 	'signal' => 'newuser_save'
 ));
 $ContentY += 40;
@@ -355,6 +374,7 @@ $myButton->addFriend($myTextbox_password);
 $myButton->addFriend($myTextbox_pwd_again);
 $myButton->addFriend($myTextbox_fullname);
 $myButton->addFriend($myTextbox_email);
+$myButton->addFriend($myCheckbox_setnewpassword);
 if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	$myButton->addFriend($mySelect);
 	$myButton->addFriend($myTextbox_expire);

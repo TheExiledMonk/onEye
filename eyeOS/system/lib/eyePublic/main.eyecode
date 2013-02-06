@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -21,80 +21,80 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function lib_eyePublic_getConfig($params=null) {	
+function lib_eyePublic_getConfig($params=null) {
 	if(!isset($params) || !isset($params[0]) || !isset($params[1])){
 		//TODO: set error Code
 		return false;
-	}	
+	}
 	eyePublic('checkPublicStarted',$params);
-	
+
 	$app = $params[0];
 	$file = $params[1];
 	$user = _getUser($params);
-	
-	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));	
+
+	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));
 	$userPath = $userPath.'/'.$app.'/'.$file;
 	$userPath = _cleanPath($userPath);
-	
+
 	global $currentUser;
 	$oldUser = $currentUser;
-	$currentUser = $user;	
+	$currentUser = $user;
 	$file = eyeXML('getXMLfile',array($userPath));
 	$currentUser = $oldUser;
-	
+
 	if(!$file){
 		return false;
 	}else{
 		return $file;
-	}	
+	}
 }
-function lib_eyePublic_setConfig($params=null) {	
+function lib_eyePublic_setConfig($params=null) {
 	if(!isset($params) || !isset($params[0])  || !isset($params[1]) || !isset($params[2])){
 		//TODO: set error Code
 		return false;
 	}
 	eyePublic('checkPublicStarted',$params);
-	
+
 	global $currentUser;
 	$user = $currentUser;
 	$app = $params[0];
 	$file = $params[1];
 	$newFile = $params[2];
-	
-	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));	
+
+	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));
 	$userPath = $userPath.'/'.$app.'/'.$file;
 	$userPath = _cleanPath($userPath);
-	
+
 	$oldUser = $currentUser;
-	$currentUser = $user;	
+	$currentUser = $user;
 	eyeXML('setXMLfile',array($userPath,$newFile));
 	$currentUser = $oldUser;
-	
+
 	return true;
 }
 function lib_eyePublic_delConfig($params=null){
 	if(!isset($params) || !isset($params[0])){
-		//TODO: set error Code		
+		//TODO: set error Code
 		return false;
-	}	
+	}
 	eyePublic('checkPublicStarted',$params);
-	
+
 	global $currentUser;
 	$user = $currentUser;
 	$app = $params[0];
 	if(isset($params[1])){
 		$file = $params[1];
 	}
-	
+
 	$userPath = eyePublic('getConfPublicPath',array('user'=>$user)).'/'.$userPath.'/'.$app;
 	if(isset($file)){
-		$userPath = $userPath.'/'.$file;	
+		$userPath = $userPath.'/'.$file;
 	}
-		
+
 	$userPath = _cleanPath($userPath);
-		
+
 	$oldUser = $currentUser;
-	$currentUser = $user;	
+	$currentUser = $user;
 	if(vfs('isDir',array($userPath))){
 		if(!vfs('rmdir',array($userPath))){
 			$currentUser = $oldUser;
@@ -104,31 +104,31 @@ function lib_eyePublic_delConfig($params=null){
 		if(!vfs('real_delete',array($userPath))){
 			$currentUser = $oldUser;
 			return false;
-		}	
-	}	
+		}
+	}
 	$currentUser = $oldUser;
 	return true;
 }
-function lib_eyePublic_listConfigs($params=null){		
+function lib_eyePublic_listConfigs($params=null){
 	if(isset($params) && isset($params[0])){
 		$app = $params[0];
 	}
 	eyePublic('checkPublicStarted',$params);
-	
+
 	$user = _getUser($params);
-	
+
 	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));
 	if(isset($app)){
 		$userPath = $userPath.'/'.$app;
-		$userPath = _cleanPath($userPath);	
+		$userPath = _cleanPath($userPath);
 	}
-	
+
 	global $currentUser;
 	$oldUser = $currentUser;
-	$currentUser = $user;	
+	$currentUser = $user;
 	$content = vfs('real_getDirContent',array($userPath));//Needed just for suid hack
 	$currentUser = $oldUser;
-	
+
 	if($content == false){
 		return false;
 	}else{
@@ -137,39 +137,39 @@ function lib_eyePublic_listConfigs($params=null){
 			$returnValue[] = utf8_basename($dir);
 		}
 	}
-	
+
 	return $returnValue;//Return false directly from real_getDirContent
 }
 
 //Raw functions
-function lib_eyePublic_getXMLfile($params) {	
+function lib_eyePublic_getXMLfile($params) {
 	if(!isset($params) || !isset($params[0])){
 		//TODO: set error Code
 		return false;
 	}
 	eyePublic('checkPublicStarted',$params);
-	
+
 	$file = $params[0];
 	$user = _getUser($params);
-			
-	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));	
+
+	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));
 	$userPath = $userPath.'/'.$file;
 	$userPath = _cleanPath($userPath);
-	
+
 	global $currentUser;
 	$oldUser = $currentUser;
 	$currentUser = $user;
-		
+
 	$file = eyeXML('getXMLfile',array($userPath));
 	$currentUser = $oldUser;
-	
+
 	if(!$file){
 		return false;
 	}else{
 		return $file;
 	}
 }
-function lib_eyePublic_setXMLfile($params) {	
+function lib_eyePublic_setXMLfile($params) {
 	if(!isset($params) || !isset($params[0])  || !isset($params[1])){
 		//TODO: set error Code
 		return false;
@@ -179,11 +179,11 @@ function lib_eyePublic_setXMLfile($params) {
 	$user = $currentUser;
 	$file = $params[0];
 	$newFile = $params[1];
-	
+
 	$userPath = eyePublic('getConfPublicPath',array('user'=>$user));
 	$userPath = $userPath.'/'.$file;
 	$userPath = _cleanPath($userPath);
-	
+
 	$oldUser = $currentUser;
 	$currentUser = $user;
 	eyeXML('setXMLfile',array($userPath,$newFile));
@@ -191,32 +191,32 @@ function lib_eyePublic_setXMLfile($params) {
 	return true;
 }
 
-function lib_eyePublic_checkPublicStarted($params=null){		
-	$user = _getUser($params);	
-	
+function lib_eyePublic_checkPublicStarted($params=null){
+	$user = _getUser($params);
+
 	//if the public config path already exists, return true because user have the needed directories
 	//Yes, use the getConfPublicPath inside isDir function is a bit ugly code but I prefer it for performance reasons.	 
-	if(vfs('isdir',array(eyePublic('getConfPublicPath',array('user'=>$user))))){		
+	if(vfs('isdir',array(eyePublic('getConfPublicPath',array('user'=>$user))))){
 		return true;
 	}
-	
-//If the user dosen't have the eyePublic started, start it creating the needed folders	
+
+//If the user dosen't have the eyePublic started, start it creating the needed folders
 	$userPath = um('getUserDir',array($user)).'/'.PUBLIC_USER_DIR;
-	
+
 	//Suid the process, the user will be restored after directory creation
 	global $currentUser;
 	$oldUser = $currentUser;
-	$currentUser = $user;	
+	$currentUser = $user;
 	if(!vfs('real_mkdir',array($userPath))){
 		return false;
-	}	
+	}
 	$userPath = $userPath.'/'.CONF_USER_DIR;
 	if(!vfs('real_mkdir',array($userPath))){
 		return false;
 	}
 	//Restore the user
 	$currentUser = $oldUser;
-	
+
 	//If paths are created successfully
 	return true;
 }
@@ -231,8 +231,8 @@ function lib_eyePublic_getConfPublicPath($params=null){
 //Private and dirty tools :)
 //If user is passed as params[0] return it, else return the global current user
 function _getUser($params=null){
-	global $currentUser;	
-	if(!isset($params['user'])){	
+	global $currentUser;
+	if(!isset($params['user'])){
 		return $currentUser;
 	}else{
 		return $params['user'];

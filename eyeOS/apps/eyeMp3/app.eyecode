@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -50,7 +50,7 @@ function eyeMp3_run($params=null) {
 			eyex('runjs',array('js' => 'eyeMp3_loadSound(' . $myPid . ',"index.php/.mp3",%s);','tokens' => array(utf8_basename($params[0]) . ' - eyeMp3')));
 		} else {
 			eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeMp3/js/eyeMp3' . EYE_CODE_EXTENSION . '&type=dynamic&params[]=' . $myPid . '&params[]=' . $checknum));
-			
+
 			$myWindow = new Window(array(
 				'cent' => 1,
 				'father' => 'eyeApps',
@@ -63,7 +63,7 @@ function eyeMp3_run($params=null) {
 				'width' => 280
 			));
 			$myWindow->show();
-			
+
 			$myLabel = new Label(array(
 				'father' => 'eyeMp3_Window_Content',
 				'name' => 'eyeMp3_Label',
@@ -72,7 +72,7 @@ function eyeMp3_run($params=null) {
 				'y' => 20
 			));
 			$myLabel->show();
-			
+
 			$myFlash = new Flash(array(
 				'father' => 'eyeMp3_Window_Content',
 				'flashParamsNames' => array('flashvars','menu','scale','bgcolor'),

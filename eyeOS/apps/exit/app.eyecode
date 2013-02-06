@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,17 +24,18 @@
 /*
 	This application is a "logout" app and is a part of eyeOS utils.
 	When this app is executed, eyeOS end current session and relaunch the base_app,
-	normally eyeLogin, by refreshing the current page.	
+	normally eyeLogin, by refreshing the current page.
 */
 
 /*
 	Entry point for exit app, this function is called when the app exit is launched,
 	the only two actions performed by this application are:
-	
+
 	1. Delete the current session via eyeSessions lib
 	2. refresh the page using service eyex, function rawjs
 */
 function exit_run($params=null) {
+	eyex('systemSound', array('logout'));
 	eyeSessions('endSession'); //delete session
 	eyex('rawjs',array('js' => 'window.onbeforeunload = ""'));
 	eyeX('rawjs',array('js'=>'location.reload();')); //refresh the page

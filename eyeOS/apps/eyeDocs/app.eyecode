@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,7 @@ function eyeDocs_run($params=null) {
 	if($params[0]) {
 		//get the filename
 		$file = $params[0];
-		
+
 		//if the file doesn't exists, show a messagebox informing the user, else
 		//read the file etc.
 		if(!vfs('fileExists',array($file))) {
@@ -38,7 +38,7 @@ function eyeDocs_run($params=null) {
 		} else {
 			//set the filename in the title
 			$title = utf8_basename($file).' - '.$title;
-			
+
 			//open the file, get the contents, and save the path
 			$content = eyeDocs_openFile($file);
 		}
@@ -58,7 +58,7 @@ function eyeDocs_run($params=null) {
 		'minWidth'=>780,
 		'minHeight'=>550
 	));
-	
+
 	//the main textarea, using tinymce (rich = 2)
 	$myTextArea = new Textarea(array(
 		'name'=>'fileContent',
@@ -70,24 +70,25 @@ function eyeDocs_run($params=null) {
 		'rich'=>2,
 		'text'=>$content
 	));
-	
+
 	//the window should be friend of the textarea, to get the final contents when closing
 	//so we can compare if the contents are different.
 	$myWindow->addFriend($myTextArea);
-	
+
 	//add a sync to calc de crc32
-	
+
 	$myWindow->show();
 	$myTextArea->show();
 
 	eyeDocs_updateServerContent();
-	
+
 	//add a listener service call to get the resize events
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 }
 
 function eyeDocs_end($params=null) {
 	eyeConverter('cleanTmp');
+	removeListenerServiceCall('eyex','resizedbrowser');
 	eyeWidgets('unserialize');
 }
 ?>

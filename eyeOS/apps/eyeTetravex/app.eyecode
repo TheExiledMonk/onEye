@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,7 @@
 function eyeTetravex_run($params=null) {
 	global $myPid;
 	global $checknum;
-	
+
 	$myWindow = new Window(array(
 		'name'=>'eyeTetravex_WND',
 		'father'=>'eyeApps',
@@ -43,7 +43,7 @@ function eyeTetravex_run($params=null) {
 		'savePosition' => 1
 	));
 	$myWindow->show();
-	
+
 	$flashParamsNames[] = 'flashvars';
 	$flashParamsValues[] = "autostart=yes"
 							."&loop=no"
@@ -57,7 +57,7 @@ function eyeTetravex_run($params=null) {
 	$flashParamsValues[] = $checknum;
 	$flashParamsNames[] = 'allowFullScreen';
 	$flashParamsValues[] = 'true';
-	
+
 	$myFlash = new Flash(array(
 		'name'=>'eyeTetravex_SWF',
 		'title' => 'eyeTetravex',
@@ -70,18 +70,18 @@ function eyeTetravex_run($params=null) {
 		'flashParamsNames' => $flashParamsNames,
 		'flashParamsValues' => $flashParamsValues
 	));
-	
+
 	$myFlash->show();
-	
+
 	//check the user's configuration directory and create it if needed 
-	$confDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex';
+	$confDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeTetravex';
 	if(!vfs('real_fileExists',array($confDir))) {
 		vfs('real_mkdir',array($confDir));
 	}
 }
 
 function eyeTetravex_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	eyeWidgets('unserialize');
 }
 
 ?>

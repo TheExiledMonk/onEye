@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,22 +23,23 @@
 
 function miniMessages_run($params=null) {
 	global $myPid;
-	
-	$pid = proc('findPidByName', array('miniMessages'));
-	
-	if($pid !== $myPid) {
-		proc('end');
-		return;
+
+	foreach (proc('getProcessTable') as $process) {
+		if ($process['appName'] == 'miniMessages' && $process['pid'] != $myPid) {
+			eyex('messageBox', array('content' => 'miniMessages is already running!'));
+			return proc('end');
+		}
 	}
-	
+
 	$myWindow = new Window(array(
 		'name' => 'miniMessagesWND',
-		'father' => 'eyeApps',
+		'father' => 'eyeWidgets',
+		'removeFatherPid' => 1,
 		'width' => 382,
 		'height' => 180,
 		'type' => WIN_IMAGE_DRAGGABLE_NOTLISTED,
 		'savePosition' => 1,
-		'background' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniMessages/minimessages.png'
+		'background' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniMessages/minimessages.png'
 	));
 	$myWindow->show();
 	eyeX('updateCSS', array('name' => $myPid.'_miniMessagesWND_Content', 'property' => 'overflow', 'value' => 'hidden'));
@@ -54,7 +55,7 @@ function miniMessages_run($params=null) {
 	));
 	$myImage->show();
 	$myImage->setCss(array('cursor' => 'Pointer'));
-	
+
 	$myLabel = new Label(array(
 		'name' => 'Launch',
 		'father' => 'miniMessagesWND_Content',
@@ -65,7 +66,7 @@ function miniMessages_run($params=null) {
 	));
 	$myLabel->show();
 	$myLabel->setCss(array('cursor' => 'Pointer', 'color' => '#155D9A', 'fontWeight' => 'bold'));
-	
+
 	$myImage1 = new Imagebox(array(
 		'name' => 'imgClose',
 		'father' => 'miniMessagesWND_Content',
@@ -78,7 +79,7 @@ function miniMessages_run($params=null) {
 	));
 	$myImage1->show();
 	$myImage1->setCss(array('cursor' => 'Pointer'));
-	
+
 	$myImage2 = new Imagebox(array(
 		'name' => 'imgRefresh',
 		'father' => 'miniMessagesWND_Content',
@@ -91,7 +92,7 @@ function miniMessages_run($params=null) {
 	));
 	$myImage2->show();
 	$myImage2->setCss(array('cursor' => 'Pointer'));
-	
+
 	$containerMessages = new Container(array(
 		'name' => 'containerMessages',
 		'father' => 'miniMessagesWND_Content',
@@ -101,12 +102,12 @@ function miniMessages_run($params=null) {
 		'height' => 153
 	));
 	$containerMessages->show();
-	
-	$newMsgs = reqLib('eyeMessages', 'getUnread');
-	
+
+	$newMsgs = eyeMessages('getUnread');
+
 	if(is_array($newMsgs)) {
 		$newMsgs = date_sort($newMsgs);
-		
+
 		$count = 0;
 		$Yoffset = 5;
 		//miniMessages only lists the newest 6 messages
@@ -122,7 +123,7 @@ function miniMessages_run($params=null) {
 				'text' => $msg['author']
 			));
 			$msgLabel->show(1);
-			
+
 			$strSubject = $msg['subject'];
 			if(utf8_strlen($strSubject) > 27) {
 				$strSubject = utf8_substr($strSubject, 0, 25).'...';
@@ -135,7 +136,7 @@ function miniMessages_run($params=null) {
 				'text' => $strSubject
 			));
 			$msgLabel->show(1);
-			
+
 			if(date('d') == date('d', $date)) {
 				$date = date('G:i', $date);
 			} else {
@@ -150,7 +151,7 @@ function miniMessages_run($params=null) {
 				'text' => $date
 			));
 			$msgLabel->show(1);
-			
+
 			$Yoffset+=25;
 			$count++;
 		}
@@ -163,9 +164,9 @@ function date_sort($list) {
 	foreach($list as $msg) {
 		$myArray[$msg['date']] = $msg;
 	}
-	
+
 	krsort($myArray);
-	
+
 	return $myArray;
 }
 

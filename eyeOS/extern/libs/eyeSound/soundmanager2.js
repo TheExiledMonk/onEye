@@ -490,7 +490,7 @@ function SoundManager(smURL,smID) {
   };
 
   this.canPlayURL = function(sURL) {
-    return (sURL?(sURL.match(_s.filePattern)?true:false):null);	
+    return (sURL?(sURL.match(_s.filePattern)?true:false):null);
   };
 
   this.getSoundById = function(sID,suppressDebug) {
@@ -628,7 +628,7 @@ function SoundManager(smURL,smID) {
 	  return false; // ignore if already succeeded
 	}
     _s._didAppend = true;
-	
+
     // safety check for legacy (change to Flash 9 URL)
     _s._setVersionInfo();
     _s.url = _s._normalizeMovieURL(_s._overHTTP?remoteURL:localURL);
@@ -900,7 +900,7 @@ function SoundManager(smURL,smID) {
 	  try {
 	    sm2Debugger.handleEvent(sEventType,bSuccess,sMessage);
 	  } catch(e) {
-	    // oh well	
+	    // oh well
 	  }
     }
   };
@@ -1602,7 +1602,7 @@ function SoundManager(smURL,smID) {
       // can happen at the end of a video where nPosition == 33 for some reason, after finishing.???
       // can also happen with a normal stop operation. This resets the position to 0.
       // _s._writeDebug('Note: Not playing, but position = '+nPosition);
-      nPosition = 0;	
+      nPosition = 0;
     }
     _t.position = nPosition;
 	if (_t._iO.usePeakData && typeof oPeakData != 'undefined' && oPeakData) {
@@ -1755,7 +1755,7 @@ function SoundManager(smURL,smID) {
 	if (_t.playState > 0) { // hack: called at start, and end from flash at/after onfinish().
 	  _s._wD('SMSound._ondataerror(): '+sError);
 	  if (_t._iO.ondataerror) {
-	    _t._iO.ondataerror.apply(_t);	
+	    _t._iO.ondataerror.apply(_t);
 	  }
 	} else {
 	  // _s._wD('SMSound._ondataerror(): ignoring');

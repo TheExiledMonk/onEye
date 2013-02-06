@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -31,7 +31,7 @@ function lib_vGroups_createGroup($params=null) {
 			//TODO: set error code
 			return false;
 		}
-		
+
 		$groupName = $params['name'];
 		$desc = $params['desc'];
 		if(vGroups('groupExists',array($groupName))){
@@ -60,15 +60,15 @@ function lib_vGroups_updateGroup($params){
 	$groupName = $params['name'];
 	$groupOldName = $params['oldName'];
 	$newInfo = $params['info'];
-	
+
 	if(!isset($groupOldName) && $groupOldName != $groupName){
 		$oldPath = vGroups('groupInfoPath',array($groupOldName));
-		$newPath = vGroups('groupInfoPath',array($groupName));		
+		$newPath = vGroups('groupInfoPath',array($groupName));
 		if(!vfs('real_move',array($oldPath,$newPath))){
 			return false;
 		}
 	}
-	$path = vGroups('groupInfoPath',array($groupName));	
+	$path = vGroups('groupInfoPath',array($groupName));
 	if(eyeXML('setXMLfile',array($path,$newInfo))){
 		return true;
 	}else{
@@ -81,20 +81,20 @@ function lib_vGroups_retriveGroup($params){
 		return false;
 	}
 	$groupName = $params['name'];
-	$path = vGroups('groupInfoPath',array($groupName));	
+	$path = vGroups('groupInfoPath',array($groupName));
 	return eyeXML('getXMLfile',array($path));
 }
-function lib_vGroups_deleteGroup($params=null){	
+function lib_vGroups_deleteGroup($params=null){
 	if($params == null || empty($params['name'])){
 		return false;
 	}
-	
-	$groupName = $params['name'];	
+
+	$groupName = $params['name'];
 	$path = vGroups('groupInfoPath',array($groupName));
 	$path = dirname($path);//We only want the directory
-	if(!vfs('real_rmdir',array($path))){		
+	if(!vfs('real_rmdir',array($path))){
 		return false;//VFS errorcode is ok here
-	}	
+	}
 	return true;
 }
 function lib_vGroups_groupExists($params=null){
@@ -102,24 +102,24 @@ function lib_vGroups_groupExists($params=null){
 		//TODO: set error code
 		return false;
 	}
-	$groupName = $params[0];	
+	$groupName = $params[0];
 	$path = vGroups('groupInfoPath',array($groupName));
 	//If already exists a group with name "groupName", return false;
 	if(!vfs('real_fileExists',array($path))){
 		return false;
 	}
-	return true;			
+	return true;
 }
 function lib_vGroups_groupInfoPath($params){
 	if($params == null || empty($params[0])){
 		//TODO: set error code
 		return false;
 	}
-	$groupName = $params[0];	
+	$groupName = $params[0];
 	return um('getCurrentUserDir').'/'.CONF_USER_DIR.'/'.VGROUPS_DIR.'/'.$groupName.'/'.VGROUP_INFO_FILE;
 }
 //List all virtual groups
-function lib_vGroups_listGroups() {	
+function lib_vGroups_listGroups() {
 	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/'.VGROUPS_DIR.'/';
 	$dirs = vfs('real_getDirContent',array($path));
 	$basenames = array();
@@ -137,16 +137,16 @@ function lib_vGroups_memberInfoPath($params){
 	}
 	$name = $params[0];
 	$group = $params[1];
-	
+
 	$path = dirname(vGroups('groupInfoPath',array($group)));
-	return $path.'/'.$name.'.'.VMEMBERS_INFO_EXTENSION;	
+	return $path.'/'.$name.'.'.VMEMBERS_INFO_EXTENSION;
 }
 //Add member in a group
-function lib_vGroups_addMember($params=null) {	
+function lib_vGroups_addMember($params=null) {
 	if($params == null || empty($params['name']) || empty($params['group'])){
 		return false;
 	}
-	
+
 	$name = $params['name'];
 	$group = $params['group'];
 	$note = $params['note'];
@@ -163,7 +163,7 @@ function lib_vGroups_addMember($params=null) {
 		//TODO: set errorCode
 		return false;
 	}
-	$path = vGroups('memberInfoPath',array($name,$group));	
+	$path = vGroups('memberInfoPath',array($name,$group));
 	$memberInfo = Array(
 		'info' => array(
 			array(
@@ -172,10 +172,10 @@ function lib_vGroups_addMember($params=null) {
 		)
 	);
 	eyeXML('setXMLfile',array($path,$memberInfo));
-	return true;	
+	return true;
 }
 //List all memebers of one group
-function lib_vGroups_memberExists($params=null) {	
+function lib_vGroups_memberExists($params=null) {
 	if($params == null || empty($params[0]) || empty($params[1])){
 		return false;
 	}
@@ -191,21 +191,21 @@ function lib_vGroups_memberExists($params=null) {
 }
 
 //Delete a member in a group
-function lib_vGroups_deleteMember($params=null) {	
+function lib_vGroups_deleteMember($params=null) {
 	if($params == null || empty($params[0]) || empty($params[1])){
 		return false;
 	}
 	$name = $params[0];
 	$group = $params[1];
 
-	$path = vGroups('memberInfoPath',array($name,$group));	
+	$path = vGroups('memberInfoPath',array($name,$group));
 	if(vfs('real_delete',array($path))){
 		return true;
 	}else{
 		return false;
 	}
 }
-function lib_vGroups_retriveMember($params=null) {		
+function lib_vGroups_retriveMember($params=null) {
 	if($params == null || empty($params[0]) || empty($params[1])){
 		return false;
 	}
@@ -213,19 +213,19 @@ function lib_vGroups_retriveMember($params=null) {
 	$group = $params[1];
 
 	$path = vGroups('memberInfoPath',array($name,$group));
-	
+
 	return eyeXML('getXMLfile',array($path));
 }
-function lib_vGroups_updateMember($params=null) {	
+function lib_vGroups_updateMember($params=null) {
 	if($params == null || empty($params['name']) || empty($params['group'])){
 		return false;
 	}
 	$name = $params['name'];
 	$group = $params['group'];
 	$info = $params['info'];
-	
+
 	$path = vGroups('memberInfoPath',array($name,$group));
-	
+
 	if(eyeXML('setXMLfile',array($path,$info))){
 		return true;
 	}else{
@@ -233,15 +233,15 @@ function lib_vGroups_updateMember($params=null) {
 	}
 }
 //List all memebers of one group
-function lib_vGroups_listMembers($params=null) {	
+function lib_vGroups_listMembers($params=null) {
 	if($params == null || empty($params[0])){
 		return false;
 	}
 	$group = $params[0];
-	
+
 	$path = vGroups('groupInfoPath',array($group));
 	$path = dirname($path);
-	$members = vfs('real_getDirContent',array($path,'*'.VMEMBERS_INFO_EXTENSION));	
+	$members = vfs('real_getDirContent',array($path,'*'.VMEMBERS_INFO_EXTENSION));
 	$basenames = array();
 	foreach($members as $member){
 		$basenames[] = utf8_basename($member,'.'.VMEMBERS_INFO_EXTENSION);

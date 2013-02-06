@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,9 +23,9 @@
 
 class File {
 	//pid controller
-	
+
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
@@ -36,21 +36,21 @@ class File {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	var $showed = 0;
-	
+
 	//custom widget options
 	var $filename;
 	var $visible;
 	var $callback;
 	var $multiple;
 	//constructor
-	function File($params) {	
+	function File($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
 		$this->name = $params['name'];
-		isset($params['father']) ? $this->father = $params['father'] : $this->father = 'eyeApps';	
+		isset($params['father']) ? $this->father = $params['father'] : $this->father = 'eyeApps';
 		//generic widget options with default
 		isset($params['horiz']) ? $this->horiz = $params['horiz'] : $this->horiz = 0;
 		isset($params['vert']) ? $this->vert = $params['vert'] : $this->vert = 0;
@@ -63,9 +63,9 @@ class File {
 		isset($params['filename']) ? $this->filename = $params['filename'] : $this->filename = "";
 		isset($params['multiple']) ? $this->multiple = $params['multiple'] : $this->multiple = 0;
 	}
-	
+
 	//widget show method, send a createWidget message
-		
+
 	function show($noserialize=0) {
 		global $myPid;
 		$widgetsparams = array(
@@ -74,9 +74,9 @@ class File {
 			'filename' => $this->filename,
 			'multiple' => $this->multiple,
 			'pid' => $myPid
-		);		
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		);
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myFile = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -88,84 +88,84 @@ class File {
 			'params' => $widgetsparams,
 			'center' => $this->cent
 		);
-		service('eyex','createWidget',$myFile);
+		eyex('createWidget',$myFile);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
 	}
-			
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args='') {
 		global $myPid;
 		$myname = $myPid.'_'.$this->name.'_Container';
 		if($this->showed == 0) {
 			$this->show();
-		}		
-		service('eyex','addEvent',array('name' => $myname, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		}
+		eyex('addEvent',array('name' => $myname, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
-	
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	//set properties functions.
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
-	
+
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 	}
-	
+
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
 
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
-	
+
 	function notify($callback) {
 		global $checknum;
 		$js = '<script>window.parent.sendMsg('.$checknum.',"'.$callback.'","");</script>';
 		echo $js;
 	}
-	
+
 	function checkfile() {
 		if ($this->multiple != 0 && is_array($_FILES[$this->filename]['tmp_name']) && count($_FILES[$this->filename]['tmp_name'])) {
 			foreach ($_FILES[$this->filename]['tmp_name'] as $index => $file) {
@@ -182,7 +182,7 @@ class File {
 		}
 		return false;
 	}
-	
+
 	function saveFile($where,$suffix = '') {
 		if(!vfs($suffix . 'checkPermissions',array($where))) {
 			return false;
@@ -207,7 +207,7 @@ class File {
 					$countFiles++;
 					$finalPath = $finalPathTemp . '_' . $countFiles . '.' . $extension;
 				}
-				
+
 				move_uploaded_file($file,$finalPath);
 				if (!$suffix) {
 					vfs('realToVirtual',array($finalPath));
@@ -229,7 +229,7 @@ class File {
 				$countFiles++;
 				$finalPath = $finalPathTemp . '_' . $countFiles . '.' . $extension;
 			}
-			
+
 			move_uploaded_file($_FILES[$this->filename]['tmp_name'],$finalPath);
 			if (!$suffix) {
 				vfs('realToVirtual',array($finalPath));
@@ -237,7 +237,7 @@ class File {
 		}
 		return true;
 	}
-	
+
 	function getRemoteName() {
 		return $_FILES[$this->filename]['name']; 
 	}

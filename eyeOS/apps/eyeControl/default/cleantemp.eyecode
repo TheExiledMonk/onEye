@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -35,7 +35,7 @@ if ($folder != array()) {
 	$myLabel->setCss(array(
 		'font-weight' => 'bold'
 	));
-	
+
 	$myButton = new Button(array(
 		'name' => 'eyeControl_cleantemp_button',
 		'father' => $eyeContainer,

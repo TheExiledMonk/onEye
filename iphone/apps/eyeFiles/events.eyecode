@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,18 +30,12 @@ function eyeFiles_getIcon() {
 	if(!$mime) {
 		exit;
 	}
-	$fp = fopen($rpath,'r');
-	if(!$fp) {
-		return;
-	}
 	$len = filesize($rpath);
 	header('Content-Type: '.$mime['mime']);
 	header("Content-Length: $len");
 	header("Accept-Ranges: bytes");
 	header("X-Pad: avoid browser bug");
-	$content = fread($fp,$len);
-	echo $content;
-	fclose($fp);
+	readfile($rpath);
 	exit;
 }
 

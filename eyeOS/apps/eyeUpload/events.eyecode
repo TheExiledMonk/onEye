@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -24,10 +24,10 @@
 function eyeUpload_on_advanced_Do($params = '') {
 	global $myPid, $charBlackList;
 	$file = utf8_basename($_FILES['Filedata']['name']);
-	
+
 	//We replace the forbidden characters by '-' to avoid failing the transfer just because of that
 	$file = str_replace($charBlackList, '-', $file);
-	
+
 	$path = eyeFiles('cleanPath',array($GLOBALS['eyeUpload_Hidden_Path']->text));
 	$path[0] .= '/' . $file;
 	if (is_uploaded_file($_FILES['Filedata']['tmp_name'])) {
@@ -85,6 +85,10 @@ function eyeUpload_on_Close($params = '') {
 		eyeFiles('update',array($GLOBALS['eyeUpload_Hidden_Path']->text));
 	}
 	proc('end');
+}
+
+function eyeUpload_on_help($params=null) {
+	proc('launch',array('eyeHelp','eyeUpload'));
 }
 
 function eyeUpload_on_initFlash($params = '') {

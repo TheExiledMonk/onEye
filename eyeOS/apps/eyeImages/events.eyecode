@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -53,7 +53,7 @@ function eyeImages_on_Close($params = '') {
 }
 
 function eyeImages_on_Message($params = '') {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeImages_on_Fullscreen($params = '') {
@@ -113,16 +113,16 @@ function eyeImages_on_Init($params = '') {
 	));
 	$myWindow->show();
 	$GLOBALS['eyeImages_Window'] = $myWindow;
-	
+
 	$myToolbar = new Toolbar(array(
 		'father' => 'eyeImages_Window_Content',
 		'name' => 'eyeImages_Toolbar'
 	));
 	$myToolbar->show();
-	$myToolbar->addItem('Previous','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/previous.png','Previous');
-	$myToolbar->addItem('Next','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/next.png','Next');
-	$myToolbar->addItem('Fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
-	
+	$myToolbar->addItem('Previous','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/previous.png','Previous');
+	$myToolbar->addItem('Next','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/next.png','Next');
+	$myToolbar->addItem('Fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+
 	$myIframe = new Iframe(array(
 		'father' => 'eyeImages_Window_Content',
 		'height' => $myWindow->height - 83,
@@ -134,7 +134,7 @@ function eyeImages_on_Init($params = '') {
 	));
 	$myIframe->show();
 	$GLOBALS['eyeImages_Iframe'] = $myIframe;
-	
+
 	$myHidden = new Hidden(array(
 		'father' => 'eyeImages_Window_Content',
 		'name' => 'eyeImages_Hidden_Path',
@@ -142,7 +142,7 @@ function eyeImages_on_Init($params = '') {
 	));
 	$myHidden->show();
 	$GLOBALS['eyeImages_Hidden_Path'] = $myHidden;
-	
+
 	$myHidden = new Hidden(array(
 		'father' => 'eyeImages_Window_Content',
 		'name' => 'eyeImages_Hidden_Resized',

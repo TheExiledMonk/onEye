@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -26,7 +26,7 @@ function eyeNotes_run($params=null) {
 	$content = ' ';
 	$myWindow = new Window(array('name'=>'eyeNotesWND','father'=>'eyeApps', 'removeWin' => 2,
 	'cent'=>1,'width'=>600,'height'=>500,'title'=>'Text Editor','sendResizeMsg'=>1,'sigResize'=>'Resize','savePosition' => 1));
-	
+
 	if (IE && IE < 7 || eregi('safari',$_SERVER['HTTP_USER_AGENT'])) {
 		$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
 			'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60));
@@ -70,40 +70,40 @@ function eyeNotes_run($params=null) {
 		}
 		$myWindow->setTitle(utf8_basename($params[0].' - '.i18n('translate',array('Text Editor'))));
 		$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
-			'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60,'code'=>1,'lang'=>$lang));
+			'width'=>$myWindow->width-8,'height'=>$myWindow->height-84,'x'=>2,'y'=>57,'code'=>1,'lang'=>$lang));
 	}
 	$myWindow->addFriend($myTextArea);
 	$myWindow->show();
-	
+
 	$myTextArea->show();
 	$myTextArea->focus();
-	
+
 	$myCssText = array(
 		'border'=>'0px',
 		'font-size'=>'9pt'
 	);
-	
+
 	$myTextArea->setCss($myCssText);
-		
+
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeNotesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filenew.png','New');
-	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
-	$myToolbar->addItem('save','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesave.png','Save',array($myTextArea));
-	$myToolbar->addItem('saveAs','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesaveas.png','Save As',array($myTextArea));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/filenew.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fileopen.png','Open');
+	$myToolbar->addItem('save','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/filesave.png','Save',array($myTextArea));
+	$myToolbar->addItem('saveAs','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/filesaveas.png','Save As',array($myTextArea));
 	$myToolbar->addLine();
-	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
+	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 	if($params[0]) {
 		$file = $params[0];
-		$fp = service('vfs','open',array($file,'r'));
+		$fp = vfs('open',array($file,'r'));
 		if(!$fp) {
-			service('eyex','messageBox',array('content'=>'File not found'));
+			eyex('messageBox',array('content'=>'File not found'));
 			return;
 		}
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
-		reqLib('eyeWidgets','serialize',array($myHidden));
-		$size = service('vfs','filesize',array($file));
+		eyeWidgets('serialize',array($myHidden));
+		$size = vfs('filesize',array($file));
 		$content = fread($fp,$size);
 		fclose($fp);
 		$myTextArea->setText($content);
@@ -117,7 +117,8 @@ function eyeNotes_run($params=null) {
 }
 
 function eyeNotes_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	removeListenerServiceCall('eyex','resizedbrowser');
+	eyeWidgets('unserialize');
 }
 
 

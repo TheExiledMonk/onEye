@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -27,7 +27,7 @@ function eyeContacts_run($params=null) {
 }
 
 function eyeContacts_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	eyeWidgets('unserialize');
 }
 
 

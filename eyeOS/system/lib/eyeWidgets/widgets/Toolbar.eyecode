@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -27,7 +27,7 @@
 
 class Toolbar {
 	//pid controller
-	
+
 	var $creatorPid;
 	//global widgets options without default
 	var $name;
@@ -39,13 +39,13 @@ class Toolbar {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	var $paintOnClick;
 	var $select;
 	var $friends = array();
-	var $showed = 0;	
-	
-	function Toolbar($params) {	
+	var $showed = 0;
+
+	function Toolbar($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
@@ -58,7 +58,7 @@ class Toolbar {
 		isset($params['paintOnClick']) ? $this->paintOnClick = $params['paintOnClick'] : $this->paintOnClick = 1;
 		isset($params['select']) ? $this->select = $params['select'] : $this->select = 0;
 	}
-	
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -66,7 +66,7 @@ class Toolbar {
 		if($this->showed == 0) {
 			$this->show();
 		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		eyex('addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 
 	function show($noserialize = 1) {
@@ -74,8 +74,8 @@ class Toolbar {
 			'paintOnClick'=>$this->paintOnClick,
 			'select'=>$this->select
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myToolbar = array(
 			'name' => $this->name,
 			'x' => 0,
@@ -91,24 +91,24 @@ class Toolbar {
 		if ($noserialize == 0) {
 			eyeWidgets('serialize',array($this));
 		}
-		service('eyex','createWidget',$myToolbar);
+		eyex('createWidget',$myToolbar);
 	}
-	
-		
+
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	function remove() {
 		global $myPid;
-		eyex('removeWidget', array('name' => $this->name . '_Container'));
+		eyex('removeWidget', array('name' => $this->name));
 	}
-	
+
 	function addGroup($params) {
 		global $myPid;
 		global $checknum;
@@ -119,9 +119,9 @@ class Toolbar {
 		}
 		$thefriends = mmap("array2js",array($thefriends));
 		$js = 'Toolbar_groups('.$ids.','.$checknum.','.$myPid.','.$thefriends.');';
-		service('eyex','rawjs',array('js' => $js));
+		eyex('rawjs',array('js' => $js));
 	}
-	
+
 	function pressItem($params) {
 		global $myPid;
 		foreach ($params as $value) {
@@ -129,7 +129,7 @@ class Toolbar {
 			eyeX('rawjs',array('js' => $js));
 		}
 	}
-	
+
 	function unpressItem($params) {
 		global $myPid;
 		foreach ($params as $value) {
@@ -137,13 +137,13 @@ class Toolbar {
 			eyeX('rawjs',array('js' => $js));
 		}
 	}
-	
+
 	function addLine($id = '',$right = 0) {
 		global $myPid;
 		$js = 'addLineToBar("'.$myPid.'_'.$this->name.'","' . $id . '",' . $right . ');';
 		eyeX('rawjs',array('js'=>$js));
 	}
-	
+
 	function addItem($itemName,$img,$text,$ofriends=null,$right=0,$height = 22,$width = 22) {
 		global $myPid;
 		global $checknum;
@@ -152,7 +152,7 @@ class Toolbar {
 			foreach($ofriends as $value) {
 				if(method_exists($value,'getSyncString')) {
 					if($thefriends == "''") {
-						$thefriends = $value->getSyncString();				
+						$thefriends = $value->getSyncString();
 					} else {
 						$thefriends .= '+'.$value->getSyncString();
 					}

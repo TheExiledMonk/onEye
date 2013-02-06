@@ -1,7 +1,7 @@
 <package>
 	<name>vCardImport</name>
-	<category>Utilities</category>
-	<version>1.8</version>
+	<category>Core Utilities</category>
+	<version>1.9</version>
 	<description>Utility to import vCards</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

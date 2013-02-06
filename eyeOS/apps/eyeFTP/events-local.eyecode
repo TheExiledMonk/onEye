@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -114,7 +114,7 @@ function eyeFTP_on_eyeFTP_localFilesDblClick($params=null) {
 		case 'd':
 			eyeFTP_on_eyeFTP_browseLocal();
 			break;
-		
+
 		case '-':
 			if ($conf['isConnectionActive'])
 				eyeFTP_on_eyeFTP_transferToRight_IMG();

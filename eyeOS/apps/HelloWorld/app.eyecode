@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -32,7 +32,7 @@ function HelloWorld_run($params = '') {
 		'width' => 250
 	));
 	$myWindow->show();
-	
+
 	// Now we create the initial "Hello World!" Label:
 	$myLabel = new Label(array(
 		'father' => 'HelloWorld_Window_Content',
@@ -42,7 +42,7 @@ function HelloWorld_run($params = '') {
 		'y' => 20
 	));
 	$myLabel->show(0);
-	
+
 	// Afterwards we create the Textbox, where the user 
 	// will add the new "Hello World!" message:
 	$myTextbox = new Textbox(array(
@@ -57,7 +57,7 @@ function HelloWorld_run($params = '') {
 	// from the moment he opens the application without 
 	// having to click into the Textbox we focus it:
 	$myTextbox->focus();
-	
+
 	// 
 	$myButton = new Button(array(
 		'caption' => 'Change Label Text',

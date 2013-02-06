@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -37,9 +37,9 @@ function eyeMail_starter() {
 		eyeX('rawjs',array('js'=>'setTimeout("sendMsg('.$checknum.',\'fetch\',\'\');",1000*60*60);'));
 	}
 	eyeX('sendMessage',array('msg'=>'printMails'));
-	
+
 	//check if accounts list is empty
-	
+
 	$accountsFile = eyeXML('getXMLconfig',array('eyeMail','accounts.xml'));
 	if (empty($accountsFile)) {
 		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/preferences'.EYE_CODE_EXTENSION);
@@ -113,10 +113,10 @@ function eyeMail_createXMLmail($params=null) {
 	imap_close($connection);
 
 	$myHidden = new Hidden(array('name'=>'savednm','father'=>'eyeApps','text'=>$nm->uidnext));
-	reqLib('eyeWidgets','serialize',array($myHidden));
+	eyeWidgets('serialize',array($myHidden));
 
 	$myHidden2 = new Hidden(array('name'=>'steps','father'=>'eyeApps','text'=>1));
-	reqLib('eyeWidgets','serialize',array($myHidden2));
+	eyeWidgets('serialize',array($myHidden2));
 	eyeX('sendMessage',array('msg'=>'getMails'));
 }
 
@@ -141,7 +141,7 @@ function eyeMail_on_getMails($params=null) {
 	$connection = imap_open('{'.$server.'/'.$type.':'.$port.$usessl.'/novalidate-cert}INBOX',$user,$password);
 
 	$x = intval($GLOBALS['steps']->text);
-	
+
 	if($x > $nm) {
 		$GLOBALS['eyeMail_cXMLwindow']->close();
 		eyeMail_on_printMails();
@@ -150,7 +150,7 @@ function eyeMail_on_getMails($params=null) {
 	}
 
 	$k = $x+299;
-	
+
 	$result = imap_fetch_overview($connection,$x.':'.$k,FT_UID);
 
 	foreach ($result as $overview) {
@@ -158,7 +158,7 @@ function eyeMail_on_getMails($params=null) {
 		if (isset($overview->from)) {
 			$thefrom = $overview->from;
 		}
-		
+
 		if($type == 'pop') {
 			$body = get_part($connection,$overview->msgno,'TEXT/PLAIN');
 			$sqlInsert = 'INSERT INTO mails (subject, date, sender, uid, to, body) VALUES (\''.sqlite_escape_string(imap_utf8($overview->subject)).'\',';
@@ -176,7 +176,7 @@ function eyeMail_on_getMails($params=null) {
 	$x+=300;
 
 	$myHidden2 = new Hidden(array('name'=>'steps','father'=>'eyeApps','text'=>$x));
-	reqLib('eyeWidgets','serialize',array($myHidden2));
+	eyeWidgets('serialize',array($myHidden2));
 
 	eyeX('sendMessage',array('msg'=>'getMails'));
 }
@@ -248,13 +248,13 @@ function eyeMail_checkNew($params=null) {
 	$dbPath = um('getCurrentUserDir').'/conf/eyeMail/db_'.$userconfig['id'][0].'.sqlite';
 	$sqliteError = null;
 	$dbHandle = sqlite_open($dbPath, 0666, $sqliteError) or die($sqliteError);
-	
+
 	$sqlGetView = 'SELECT count(*) as number FROM mails';
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
-	
+
 	$numMsg = $result[0]['number'];
-	
+
 	if($msgs > $numMsg) {
 		$dif = $msgs - $numMsg;
 		$result = imap_fetch_overview($connection,($numMsg+1).':'.$msgs);
@@ -263,14 +263,14 @@ function eyeMail_checkNew($params=null) {
 			if (isset($overview->from)) {
 				$thefrom = $overview->from;
 			}
-			
+
 			if($type == 'pop') {
 				$body = get_part($connection,$overview->msgno,'TEXT/PLAIN');
 				$sqlInsert = 'INSERT INTO mails (subject, date, sender, uid, to, body) VALUES (\''.sqlite_escape_string(imap_utf8($overview->subject)).'\',';
 				$sqlInsert.= '\''.sqlite_escape_string(date('d/m/y',strtotime($overview->date))).'\', \''.sqlite_escape_string($thefrom).'\', \''.sqlite_escape_string($overview->msgno).'\', \''.sqlite_escape_string($overview->to).'\', \''.sqlite_escape_string($body).'\')';
 				sqlite_exec($dbHandle, $sqlInsert);
 			}
-	
+
 			$sqlInsert = 'INSERT INTO mails (subject, date, sender, uid, to) VALUES (\''.sqlite_escape_string(imap_utf8($overview->subject)).'\',';
 			$sqlInsert.= '\''.sqlite_escape_string(date('d/m/y',strtotime($overview->date))).'\', \''.sqlite_escape_string($thefrom).'\', \''.sqlite_escape_string($overview->msgno).'\', \''.sqlite_escape_string($overview->to).'\')';
 			sqlite_exec($dbHandle, $sqlInsert);
@@ -285,7 +285,7 @@ function eyeMail_checkNew($params=null) {
 			}
 		}
 	}
-	
+
 	imap_close($connection);
 }
 
@@ -396,7 +396,7 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	global $checknum;
 
 	$config = eyeXML('getXMLconfig',array('eyeMail','settings.xml'));
-	
+
 	if(is_object($GLOBALS['eyeMail_Compose'])) {
 		$GLOBALS['eyeMail_Compose']->close();
 	}
@@ -486,10 +486,10 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	}
 	if(is_array($attachments)) {
 		foreach($attachments as $value) {
-			$mySortabletable->addRow(array($value[2].','.$value[3],$value[0],eyeMail_ByteSize($value[1])));	
+			$mySortabletable->addRow(array($value[2].','.$value[3],$value[0],eyeMail_ByteSize($value[1])));
 		}
 	}
-	
+
 	$menuContainer = new Simplebox(array(
 		'name' => 'eyeMail_sendContainer',
 		'father' => 'eyeMail_Compose_Content',
@@ -512,7 +512,7 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	} else {
 		$text = 'From:';
 	}
-	
+
 	$toLabel = new Label(array(
 		'name'=>'eyeMail_to_lbl',
 		'father'=>'eyeMail_sendContainer',
@@ -615,12 +615,12 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	}
 	$myToolbar->show();
 	if($recv == 0) {
-		$myToolbar->addItem('sendMail','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/mail-send.png','Send',array($myTextArea,$toTextbox,$ccTextbox,$ccoTextbox,$sbjTextbox));
+		$myToolbar->addItem('sendMail','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/message_restore.png','Send',array($myTextArea,$toTextbox,$ccTextbox,$ccoTextbox,$sbjTextbox));
 		$myToolbar->addLine();
-		$myToolbar->addItem('attachMail','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/mail-attach.png','Attach');
+		$myToolbar->addItem('attachMail','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/mail-attach.png','Attach');
 	} else {
-		$myToolbar->addItem('reply','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/mail-reply-sender.png','Reply');
-		$myToolbar->addItem('forward','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/mail-forward.png','Forward');
+		$myToolbar->addItem('reply','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/mail-reply-sender.png','Reply');
+		$myToolbar->addItem('forward','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/mail-forward.png','Forward');
 	}
 }
 
@@ -628,23 +628,21 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 function eyeMail_drawBoxes() {
 	global $myPid;
 	global $checknum;
+	
 	$menuContainer = new Simplebox(array(
+		'border' => 0,
 		'name' => 'eyeMail_menuContainer',
-		'father' => 'eyeMail_WND_1_Content',
+		'father' => 'eyeMail_menuContainer_box_Container',
 		'x' => 0,
-		'y' => 59,
-		'width' => 141,
-		'height' => 266,
-		'border' => 0
+		'y' => 0,
+		'width' => 140,
+		'height' => 370,
+		'title' => ''
 	));
 	$menuContainer->show(0);
-	$menuContainer->setCSS(array(
-		'background-color'=>'#d5dde6'
-	));
 	eyeX('rawjs',array('js'=>'
 		xGetElementById("'.$myPid.'_eyeMail_menuContainer_Container").style.overflowX = "hidden";
 		xGetElementById("'.$myPid.'_eyeMail_menuContainer_Container").style.overflowY = "auto";
-		xGetElementById("'.$myPid.'_eyeMail_menuContainer_Container").style.backgroundColor = "#d5dde6";
 	'));
 
 	$config = eyeXML('getXMLConfig',array('eyeMail','accounts.xml'));
@@ -659,14 +657,14 @@ function eyeMail_drawBoxes() {
 				'father'=>'eyeApps',
 				'text'=>$value
 			));
-			reqLib('eyeWidgets','serialize',array($myHidden));
+			eyeWidgets('serialize',array($myHidden));
 		}
 		$firstLabel = new Label(array(
 			'name'=>'eyeMail_firstLabel_'.$y,
 			'father'=>'eyeMail_menuContainer',
 			'text'=>$value['description'][0],
 			'x'=>10,
-			'y'=>$y+4
+			'y'=>$y+5
 		));
 		$firstLabel->show();
 		$firstLabel->setCSS(array(
@@ -676,35 +674,30 @@ function eyeMail_drawBoxes() {
 			'font-weight'=>'bold'
 		));
 
+		//inbox
 		$inboxMenu = new Simplebox(array(
 			'name' => 'eyeMail_inboxMenu_'.$y,
 			'father' => 'eyeMail_menuContainer',
 			'x' => 0,
-			'y' => $y+20,
+			'y' => $y+25,
 			'width' => 141,
 			'height' => 20,
 			'border' => 0
 		));
 		$inboxMenu->show(0);
-		// $inboxMenu->setCSS(array(
-			// 'background-color'=>'grey'
-		// ));
-
 		$imageInboxMenu = new Imagebox(array(
 			'name' => 'eyeMail_imageInboxMenu_'.$y,
 			'father' => 'eyeMail_inboxMenu_'.$y,
 			'x'=>30,
 			'y'=>2,
 			'alt' => 'Inbox',
-			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/mail-folder-inbox.png'
+			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/inbox.png'
 		));
 		$imageInboxMenu->show(0);
 		$imageInboxMenu->setCSS(array(
 			'cursor' => 'pointer'
 		));
-
 		$imageInboxMenu->addEvent('onclick','sendMsg(' . $checknum . ',"openMailBox",eyeParam("mailbox","'.$value['id'][0].'"));');
-
 		$labelInboxMenu = new Label(array(
 			'name' => 'eyeMail_labelInboxMenu_'.$y,
 			'father' => 'eyeMail_inboxMenu_'.$y,
@@ -718,10 +711,9 @@ function eyeMail_drawBoxes() {
 			'cursor' => 'pointer',
 			'white-space' => 'nowrap'
 		));
-
 		$labelInboxMenu->addEvent('onclick','sendMsg(' . $checknum . ',"openMailBox",eyeParam("mailbox","'.$value['id'][0].'"));');
 
-
+		//sent
 		$sentMenu = new Simplebox(array(
 			'name' => 'eyeMail_sentMenu_'.$y,
 			'father' => 'eyeMail_menuContainer',
@@ -732,31 +724,26 @@ function eyeMail_drawBoxes() {
 			'border' => 0
 		));
 		$sentMenu->show(0);
-		// $sentMenu->setCSS(array(
-			// 'background-color'=>'orange'
-		// ));
-
+		$senty = 7;
 		$imageSentMenu = new Imagebox(array(
 			'name' => 'eyeMail_imageSentMenu_'.$y,
 			'father' => 'eyeMail_sentMenu_'.$y,
 			'x'=>30,
-			'y'=>2,
+			'y'=>$senty,
 			'signal' => 'sentClick',
 			'alt' => 'Sent',
-			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/mail-folder-sent.png'
+			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/sent.png'
 		));
 		$imageSentMenu->show(0);
 		$imageSentMenu->setCSS(array(
 			'cursor' => 'pointer'
 		));
-
 		$imageSentMenu->addEvent('onclick','sendMsg(' . $checknum . ',"openMailSent",eyeParam("mailbox","'.$value['id'][0].'"));');
-
 		$labelSentMenu = new Label(array(
 			'name' => 'eyeMail_labelSentMenu_'.$y,
 			'father' => 'eyeMail_sentMenu_'.$y,
 			'x' => 50,
-			'y' => 3,
+			'y' => $senty + 1,
 			'signal' => 'sentClick',
 			'text' => 'Sent'
 		));
@@ -764,7 +751,6 @@ function eyeMail_drawBoxes() {
 		$labelSentMenu->setCSS(array(
 			'cursor' => 'pointer',
 		));
-
 		$labelSentMenu->addEvent('onclick','sendMsg(' . $checknum . ',"openMailSent",eyeParam("mailbox","'.$value['id'][0].'"));');
 
 		$y += 80;

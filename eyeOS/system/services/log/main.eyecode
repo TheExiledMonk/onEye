@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -40,7 +40,7 @@
 */
 function service_log_init(){
 	if(EYEOS_LOG != 1 && EYEOS_LOG != 2){
-		reqLib('errorCodes','setErrorCode',array(EYEOS_LOG_BAD_VALUE));
+		errorCodes('setErrorCode',array(EYEOS_LOG_BAD_VALUE));
 		return false;
 	}
 	return true;
@@ -66,26 +66,26 @@ function service_log_addLog($params) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$serviceName = $params[0];
 	$serviceFunction = $params[1];
 	$serviceArgs = $params[2];
 	$ignoredServices = array('mmap','eyex','extern');
 	$servicesWithParams = array('proc','vfs');
-	
+
 	foreach ($ignoredServices as $value)
 	{
 		if($serviceName == $value){
-			reqLib('errorCodes','setErrorCode',array(EYEOS_LOG_SERVICE_IGNORED));
+			errorCodes('setErrorCode',array(EYEOS_LOG_SERVICE_IGNORED));
 			return false;
 		}
 	}
-	
+
 	global $currentUser;
 	$remoteIp = $_SERVER['REMOTE_ADDR'];//Get address by service? maybe...
 	$time = time();
-	
-	
+
+
 	foreach ($servicesWithParams as $value){
 		if($serviceName == $value)
 		{
@@ -94,17 +94,17 @@ function service_log_addLog($params) {
 				//If it is a valid service save the params
 				foreach ($serviceArgs as $param)
 				{
-					$serviceParams .= "$param ";	
-				}	
+					$serviceParams .= "$param ";
+				}
 			}else{
 				$serviceParams = $serviceArgs;
 			}
 		}
 	}
-	
+
 	//Making the string
 	$log = $serviceName."\t"."\t".$serviceFunction."\t"."\t"."\t".$serviceParams."\t"."\t".$currentUser."\t"."\t".$remoteIp."\t"."\t".$time."\n";
-	
+
 	//Every EYEOS_LOG type has a function
 	if(EYEOS_LOG == 1)
 	{
@@ -114,7 +114,7 @@ function service_log_addLog($params) {
 	{
 		saveServer(array($log,$serviceName));
 	}else{
-		reqLib('errorCodes','setErrorCode',array(EYEOS_LOG_BAD_VALUE));
+		errorCodes('setErrorCode',array(EYEOS_LOG_BAD_VALUE));
 		return false;
 	}
 	return true;
@@ -145,7 +145,7 @@ function service_log_lock()
 function service_log_unlock()
 {
 	global $logRunning;
-	$logRunning = false;	
+	$logRunning = false;
 }
 
 /**
@@ -177,25 +177,25 @@ function service_log_checkLog()
 * Last update 2007-02-19
 ***/
 function saveOne($params){
-	
+
 	$log = $params[0];
 	$path = onePath();
-	if(!service('vfs','fileExists',array($path))){
-		if(!service('vfs','create',array($path)));
+	if(!vfs('fileExists',array($path))){
+		if(!vfs('create',array($path)));
 		{
 			return false;
 		}
 	}
-	
+
 	if(filesize($path) > LOG_FILE_SIZE)
 	{
 		if(!backupLog()){
 			return false;
 		}
 	}
-		
-	$fp = service('vfs','real_open',array($path,'a+'));
-	
+
+	$fp = vfs('real_open',array($path,'a+'));
+
 	//Error handling
 	if(!$fp){
 		return false;
@@ -217,13 +217,13 @@ function saveOne($params){
 * Last update 2007-02-19
 ***/
 function saveServer($params){
-	
+
 	$log = $params[0];
-	$serviceName = $params[1];			
+	$serviceName = $params[1];
 	$path = servicePath($serviceName);
-	
-	if(!service('vfs','fileExists',array($path))){
-		if(!service('vfs','create',array($path)));
+
+	if(!vfs('fileExists',array($path))){
+		if(!vfs('create',array($path)));
 		{
 			return false;
 		}
@@ -232,11 +232,11 @@ function saveServer($params){
 	{
 		if(!backupLog()){
 			return false;
-		}	
+		}
 	}
-	
-	$fp = service('vfs','real_open',array($path,'a+'));
-	
+
+	$fp = vfs('real_open',array($path,'a+'));
+
 	//Error handling
 	if(!$fp){
 		return false;
@@ -253,7 +253,7 @@ function saveServer($params){
 * Arguments: none
 *
 * Return: none
-*		
+*
 * Last update 2007-02-19
 ***/
 function backupLog($path)
@@ -262,7 +262,7 @@ function backupLog($path)
 	if(LOG_SAVE_ALL == 1)
 	{
 		$newPath = $path.time();
-		if(!service('vfs','real_move',array($path,$newPath)))
+		if(!vfs('real_move',array($path,$newPath)))
 		{
 			return false;
 		}else{
@@ -273,19 +273,19 @@ function backupLog($path)
 	{
 		$newPath = $path.'.back';
 		//Put file cheks? is_file etc...
-		//First delete old .back. real_delete automatically checks if it exists	
-		
+		//First delete old .back. real_delete automatically checks if it exists
+
 		//Error handling
-		if(!service('vfs','real_delete',array($newPath))){
+		if(!vfs('real_delete',array($newPath))){
 			return false;
 		}
-		
-		if(!service('vfs','real_move',array($path,$newPath)))
+
+		if(!vfs('real_move',array($path,$newPath)))
 		{
 			return false;
 		}
-			
-		return true;		
+
+		return true;
 	}
 }
 
@@ -301,7 +301,7 @@ function backupLog($path)
 ***/
 function onePath()
 {
-	return  EYE_ROOT.'/'.LOG_DIR.'/'.LOG_ONE.'/'.LOG_NAME;	
+	return  EYE_ROOT.'/'.LOG_DIR.'/'.LOG_ONE.'/'.LOG_NAME;
 }
 
 /***
@@ -317,6 +317,6 @@ function onePath()
 ***/
 function servicePath($serviceName)
 {
-	return EYE_ROOT.'/'.LOG_DIR.'/'.$serviceName.'/'.LOG_NAME;	
+	return EYE_ROOT.'/'.LOG_DIR.'/'.$serviceName.'/'.LOG_NAME;
 }
 ?>

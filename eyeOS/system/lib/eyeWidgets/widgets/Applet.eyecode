@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,9 +23,9 @@
 
 class Applet {
 	//pid controller
-	
+
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
@@ -36,9 +36,9 @@ class Applet {
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	var $showed = 0;
-	
+
 	//custom widget options
 	var $codebase;
 	var $visible;
@@ -47,12 +47,12 @@ class Applet {
 	var $appletParamsNames;
 	var $appletParamsValues;
 	//constructor
-	function Applet($params) {	
+	function Applet($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
 		$this->name = $params['name'];
-		isset($params['father']) ? $this->father = $params['father'] : $this->father = 'eyeApps';	
+		isset($params['father']) ? $this->father = $params['father'] : $this->father = 'eyeApps';
 		//generic widget options with default
 		isset($params['horiz']) ? $this->horiz = $params['horiz'] : $this->horiz = 0;
 		isset($params['vert']) ? $this->vert = $params['vert'] : $this->vert = 0;
@@ -64,7 +64,7 @@ class Applet {
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = -1;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = -1;
-		
+
 		if(isset($params['appletParamsNames']) || isset($params['appletParamsValues'])){
 			//Every value needs a name
 			if(count($params['appletParamsNames']) != count($params['appletParamsValues'])){
@@ -76,14 +76,14 @@ class Applet {
 			}
 		}
 	}
-	
+
 	//widget show method, send a createWidget message
-		
+
 	function show($noserialize=1) {
 		global $myPid;
 		if(is_array($this->appletParamsNames) && is_array($this->appletParamsValues)){
-			$appletParamsNames =service("mmap","array2jsArg",array($this->appletParamsNames,1));
-			$appletParamsValues =service("mmap","array2jsArg",array($this->appletParamsValues,1));
+			$appletParamsNames =mmap('array2jsArg',array($this->appletParamsNames,1));
+			$appletParamsValues =mmap('array2jsArg',array($this->appletParamsValues,1));
 		}else{
 			$appletParamsNames = '';
 			$appletParamsValues ='';
@@ -95,9 +95,9 @@ class Applet {
 			'height' => $this->height,
 			'appletParamsNames' => $appletParamsNames,
 			'appletParamsValues'=>$appletParamsValues
-		);		
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		);
+		$widgetsparams = mmap('array2js',array($widgetsparams));
+
 		$myApplet = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -109,69 +109,69 @@ class Applet {
 			'params' => $widgetsparams,
 			'center' => $this->cent
 		);
-		service('eyex','createWidget',$myApplet);
+		eyex('createWidget',$myApplet);
 		$this->showed=1;
 		if($noserialize == 0) {
-			reqLib('eyeWidgets','serialize',array($this));
+			eyeWidgets('serialize',array($this));
 		}
-	}	
-		
+	}
+
 	//event handling
 	function addEvent($eventName,$eventFunc,$args='') {
 		global $myPid;
 		$myname = $myPid.'_'.$this->name.'_Container';
 		if($this->showed == 0) {
 			$this->show();
-		}		
-		service('eyex','addEvent',array('name' => $myname, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+		}
+		eyex('addEvent',array('name' => $myname, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
-	
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
 			}
 		}
 	}
-	
+
 	//set properties functions.
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
-	
+
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 	}
-	
+
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
 
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
+		eyex('removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }

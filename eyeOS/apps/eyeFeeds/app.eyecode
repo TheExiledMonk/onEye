@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -156,7 +156,7 @@ function eyeFeeds_run($params=null) {
 	));
 	$treeContainer->show();
 	eyeWidgets('serialize',array($treeContainer));
-	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_tree_CTN_Container").style.overflow="auto";'));
+	eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_tree_CTN_Container").style.overflow="auto";'));
 
 	//FEEDS TREE
 	//@see func.eyecode#eyeFeeds_drawFeedsTree()
@@ -213,9 +213,9 @@ function eyeFeeds_run($params=null) {
 		'text' => ''
 	));
 	$contentLabel->show(0);
-	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.width="99%";'));
-	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.height="170px";'));
-	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.overflow="auto";'));
+	eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.width="99%";'));
+	eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.height="170px";'));
+	eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.overflow="auto";'));
 
 
 	//"LOADING" IMAGE+LABEL 
@@ -229,16 +229,16 @@ function eyeFeeds_run($params=null) {
 	$loadingContainer->show();
 	eyeWidgets('serialize',array($loadingContainer));
 	$loadingContainer->hide();
-	
+
 	$loadingImage = new Imagebox(array(
 		'name' => 'loading_IMG',
 		'father' => 'loading_CTN',
-		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/clock.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/loading.gif',
 		'x' => 50,
 		'y' => 0
 	));
 	$loadingImage->show();
-	
+
 	$loadingLabel = new Label(array(
 		'name' => 'loading_LBL',
 		'father' => 'loading_CTN',
@@ -248,7 +248,7 @@ function eyeFeeds_run($params=null) {
 	));
 	$loadingLabel->show();
 
-	
+
 	/**********************************************************/
 	//		HIDDEN ELEMENTS
 	/**********************************************************/
@@ -258,18 +258,18 @@ function eyeFeeds_run($params=null) {
 		'father' => 'eyeFeeds_WND_Content',
 		'text' => serialize('')
 	));
-	reqLib('eyeWidgets','serialize',array($currentFeedUrl));
+	eyeWidgets('serialize',array($currentFeedUrl));
 
 	$selectedFeedId = new Hidden(array(
 		'name' =>'selectedFeedId_HID',
 		'father' => 'eyeFeeds_WND_Content',
 		'text' => ''
 	));
-	reqLib('eyeWidgets','serialize',array($selectedFeedId));
+	eyeWidgets('serialize',array($selectedFeedId));
 
 
 	//check the user's configuration directory and create it if needed
-	$confDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeFeeds';
+	$confDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeFeeds';
 	if(!vfs('real_fileExists',array($confDir))) {
 		vfs('real_mkdir',array($confDir));
 	}
@@ -281,6 +281,7 @@ function eyeFeeds_run($params=null) {
 
 
 function eyeFeeds_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	removeListenerServiceCall('eyex','resizedbrowser');
+	eyeWidgets('unserialize');
 }
 ?>

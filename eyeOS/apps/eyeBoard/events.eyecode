@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,11 +22,11 @@
 */
 
 function eyeBoard_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 function eyeBoard_on_getMessages($params=null) {
-	echo reqLib('eyeBoard','getMessagesHtml');
+	echo eyeBoard('getMessagesHtml');
 	exit;
 }
 
@@ -46,7 +46,7 @@ function eyeBoard_on_mainResize($params){
 
 	$width = $GLOBALS['MessageB']->width - $widthDiff;
 	$GLOBALS['MessageB']->setWidth($width);
-	
+
 }
 
 function eyeBoard_on_addMsg($params=null) {
@@ -56,13 +56,13 @@ function eyeBoard_on_addMsg($params=null) {
 		return;
 	}
 	$GLOBALS['MessageB']->setText("");
-	reqLib('eyeBoard','newMessage',array($content));
+	eyeBoard('newMessage',array($content));
 	$GLOBALS['eyeBoardFrame']->setUrl("index.php?checknum=$checknum&msg=getMessages");
 }
 
 function eyeBoard_on_clear($params=null){
 	global $checknum;
-	reqLib('eyeBoard','clear');
+	eyeBoard('clear');
 	$GLOBALS['eyeBoardFrame']->setUrl("index.php?checknum=$checknum&msg=getMessages");
 }
 

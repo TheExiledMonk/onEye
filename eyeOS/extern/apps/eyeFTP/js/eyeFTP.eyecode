@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -23,7 +23,11 @@
 
 function get_dynamic_content($params = '') {
 	header('Content-type: text/javascript; charset=utf-8');
-	$content = file_get_contents(EYE_ROOT . '/' . EXTERN_DIR . '/' . APP_DIR . '/eyeFTP/js/eyeFTP.js');
+	if (USE_COMPRESSED) {
+		$content = file_get_contents(EYE_ROOT . '/' . EXTERN_DIR . '/' . APP_DIR . '/eyeFTP/js/eyeFTP.min.js');
+	} else {
+		$content = file_get_contents(EYE_ROOT . '/' . EXTERN_DIR . '/' . APP_DIR . '/eyeFTP/js/eyeFTP.js');
+	}
 	$content = str_replace('$myPid',$params[0],$content);
 	$content = str_replace('$checknum',$params[1],$content);
 	return $content;

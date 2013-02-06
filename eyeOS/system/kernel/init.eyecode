@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,9 +22,9 @@
 */
 
 $pid = proc('findPidByName',array('eyeX'));
-if(!$pid) {	
+if(!$pid) {
 	proc('launch',array('eyeX'));
-} else {	
+} else {
 	proc('getTask',array($pid));
 }
 

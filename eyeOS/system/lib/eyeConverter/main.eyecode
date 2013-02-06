@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -22,50 +22,50 @@
 */
 
 function lib_eyeConverter_convert($params) {
-	
+
 	if($params == null || count($params) < 3){
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
+
 	$orig = $params[0];
 	$dest = $params[1];
 	$format = $params[2];
-	
+
 	if(isset($params[3])) {
 		$useReal = $params[3];
 	} else {
 		$useReal = false;
 	}
-	
+
 	if(!vfs('real_checkPermissions',array($orig)) && !vfs('checkPermissions',array($orig))) {
-		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+		errorCodes('setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
 		return false;
 	}
-	
+
 	if(!vfs('real_checkPermissions',array($dest)) && !vfs('checkPermissions',array($dest))) {
-		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+		errorCodes('setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
 		return false;
 	}
-	
+
 	if($useReal) {
 		$forig = $orig;
 	} else {
 		$forig = vfs('getRealName',array($orig));
-	}	
-	
+	}
+
 	$forig = realpath(dirname($forig)).'/'.utf8_basename($forig);
 	$dest = realpath(dirname($dest)).'/'.utf8_basename($dest);
-	
+
 	$format = escapeshellarg($format);
 	$format = utf8_substr($format,1,-1);
 
 	$forig = escapeshellarg($forig);
 	$forig = utf8_substr($forig,1,-1);
-	
+
 	$dest = escapeshellarg($dest);
 	$dest = utf8_substr($dest,1,-1);
-	
+
 	if(FORMAT_PARSER == 'OpenOffice') {
 		if($format == 'pdf') {
 			$format = 'writer_pdf_Export';
@@ -98,7 +98,7 @@ function lib_eyeConverter_convert($params) {
 		} else if($format == 'MS Excel 97') {
 			$format = 'xls';
 		}
-		
+
 		$cmd = 'unoconv --format='.$format.' --output=file://'.$dest.' '.$forig;
 		shell_exec($cmd);
 		return true;

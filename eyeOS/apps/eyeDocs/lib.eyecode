@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -28,7 +28,7 @@ function eyeDocs_saveFile($content) {
 	$info = utf8_pathinfo($file);
 	//get the extension, see http://www.php.net/pathinfo for more information
 	$extension = utf8_strtolower($info['extension']);
-	
+
 	if($extension == 'doc' || $extension == 'odt') {
 		$tempFile = um('getCurrentUserDir').'/tmp/'.$myPid.'_new.html';
 		$pos = utf8_strpos($content,'--&gt;</p>');
@@ -68,21 +68,21 @@ function eyeDocs_saveFile($content) {
 			eyex('messageBox',array('content'=>'Error saving file.'));
 			return false;
 		}
-		
+
 		if(fwrite($fp,$realContent) != utf8_strlen($realContent)) {
 			eyex('messageBox',array('content' => 'Error saving file.'));
 			return false;
 		}
-		fclose($fp);	
+		fclose($fp);
 	}
-	
+
 	$myHiddenMD5 = new Hidden(array(
 		'name'=>'fileMD5',
 		'father'=>'eyeApps',
 		'text'=>md5($content)
 	));
-	reqLib('eyeWidgets','serialize',array($myHiddenMD5));
-	
+	eyeWidgets('serialize',array($myHiddenMD5));
+
 	eyex('messageBox',array('content' => 'Document saved successfully.'));
 	return true;
 }
@@ -93,7 +93,7 @@ function eyeDocs_openFile($file) {
 	$info = utf8_pathinfo($file);
 	//get the extension, see http://www.php.net/pathinfo for more information
 	$extension = utf8_basename(utf8_strtolower($info['extension']));
-	
+
 	if($extension == 'doc' || $extension == 'odt') {
 		$tCheckNum = proc('findChecknumByName',array('eyeX'));
 		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
@@ -104,7 +104,7 @@ function eyeDocs_openFile($file) {
 			eyeX('messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
 			return false;
 		}
-		
+
 		copy($real,$nfile);
 		$to = 'HTML (StarWriter)';
 		eyeConverter('convert',array($nfile,$myHTML,$to,1));
@@ -115,33 +115,33 @@ function eyeDocs_openFile($file) {
 		}
 		$content = fread($fp,vfs('real_filesize',array($myHTML)));
 		fclose($fp);
-		
+
 		$content = str_replace('<IMG SRC="','<IMG SRC="index.php?checknum='.$tCheckNum.'&msg=viewTempImg&params=',$content);
-		
+
 		$pos = utf8_strpos($content,'</HEAD>');
 		$header = utf8_substr($content,0,$pos+7);
-		
+
 		$myHiddenHeader = new Hidden(array(
 			'name'=>'fileHeader',
 			'father'=>'eyeApps',
 			'text'=>$header
 		));
-		reqLib('eyeWidgets','serialize',array($myHiddenHeader));
+		eyeWidgets('serialize',array($myHiddenHeader));
 	} else {
 		$fp = vfs('open',array($file,'r'));
 		if(!$fp) {
 			eyex('messageBox',array('content'=>'File not found.'));
 			return false;
 		}
-		
+
 		$size = vfs('filesize',array($file));
 		$content = fread($fp,$size);
-		fclose($fp);	
+		fclose($fp);
 	}
-	
+
 	eyeDocs_setCurrentFile($file);
 	//we will use the extension for office formats and eyeConverter
-	
+
 	//saving the md5 of the opened file
 	//so we can compare to the md5 of the file
 	//when closing, and know if we have to ask for saving
@@ -150,8 +150,8 @@ function eyeDocs_openFile($file) {
 		'father'=>'eyeApps',
 		'text'=>md5($content)
 	));
-	reqLib('eyeWidgets','serialize',array($myHiddenMD5));
-	
+	eyeWidgets('serialize',array($myHiddenMD5));
+
 	return $content;
 }
 
@@ -168,7 +168,7 @@ function eyeDocs_setCurrentFile($file) {
 		'father'=>'eyeApps',
 		'text'=>$file
 	));
-	eyeWidgets('serialize',array($myHiddenPath));	
+	eyeWidgets('serialize',array($myHiddenPath));
 }
 
 function eyeDocs_getHeader() {

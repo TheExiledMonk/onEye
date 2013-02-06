@@ -30,7 +30,7 @@
  */
 
 require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader' . EYE_CODE_EXTENSION; // eyeOS
-require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/ChangeName/AddDirectory' . EYE_CODE_EXTENSION; // eyeOS
+require_once EYE_ROOT . '/' . SYSTEM_DIR . '/' . LIB_DIR . '/eyeFileArchive/lib/Archive/Reader/ChangeName/AddDirectory' . EYE_CODE_EXTENSION; // eyeOS
 
 /**
  * Recursively uncompress every file it finds

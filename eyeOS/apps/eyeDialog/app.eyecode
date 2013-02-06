@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -42,7 +42,7 @@ define('__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS', 'Groups');
  * 							5 => default_path
  * 							6 => force_extension
  * 							7 => callbackFunction_on_Cancel_event)
- * 				
+ * 
  * 				Example of filestypes:
  * 					array(
  * 						'Text files' => '*.txt',							//the first one is selected by default
@@ -53,7 +53,7 @@ define('__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS', 'Groups');
  */
 function eyeDialog_run($params=null) {
 	global $checknum, $myPid;
-	
+
 	//DEBUG
 	/*$params = array( 
 		//0 => EYEDIALOG_TYPE_OPENFILE,
@@ -63,7 +63,7 @@ function eyeDialog_run($params=null) {
 		2 => $checknum,
 		3 => 'defaultFilename.ext',
 		4 => array(
-				'Text files' => '*.txt',							//the first one is selected by default 						
+				'Text files' => '*.txt',							//the first one is selected by default 
 				'Images' => '*.bmp|*.jpg|*.gif|*.png',
 				'Configuration files' => 'conf.xml|conf.ini',
 				'eyeOS links' => '*.eyeLink',
@@ -78,8 +78,8 @@ function eyeDialog_run($params=null) {
 		'All types' => '*'
 	);
 	$params[6] = true;*/
-	
-	
+
+
 	$filetypes = array();
 	if (is_array($params)) {
 		//0- dialog type
@@ -147,7 +147,7 @@ function eyeDialog_run($params=null) {
 		);
 	}
 	$onCancelCallback = $params[7];
-	
+
 	$params = array(
 		$type,
 		$callback_event,
@@ -158,7 +158,7 @@ function eyeDialog_run($params=null) {
 		$forceExtension,
 		$onCancelCallback
 	);
-	
+
 	switch($type) {
 		case EYEDIALOG_TYPE_OPENFILE:
 			$windowTitle = i18n("translate",array('Select a file to open'));
@@ -173,11 +173,11 @@ function eyeDialog_run($params=null) {
 			$okButtonCaption = i18n("translate",array('Save'));
 			break;
 	}
-	
-	
-	
+
+
+
 	/********** INTERFACE COMPONENTS **********/
-	
+
 	$mainWindow = new Window(array(
 		'name' => 'eyeDialog_WND',
 		'father' => 'eyeApps',
@@ -188,7 +188,7 @@ function eyeDialog_run($params=null) {
 		'title' => $windowTitle
 	));
 	$mainWindow->show();
-	
+
 	//folders box
 	$foldersBox = new Box(array(
 		'name'=>'folders_BOX',
@@ -200,7 +200,7 @@ function eyeDialog_run($params=null) {
 		'title'=>'Folders'
 	));
 	$foldersBox->show(0);
-	
+
 	$foldersRefreshImage = new Imagebox(array(
 		'name' => 'foldersRefresh_IMG',
 		'father' => 'folders_BOX',
@@ -211,7 +211,7 @@ function eyeDialog_run($params=null) {
 	));
 	$foldersRefreshImage->show(0);
 	$foldersRefreshImage->setCss(array('cursor' => 'Pointer'));
-	
+
 	//folders box container (for scrolling)
 	$foldersContainer = new Container(array(
 		'name'=>'folders_CTN',
@@ -222,8 +222,8 @@ function eyeDialog_run($params=null) {
 		'height'=>$foldersBox->height -40
 	));
 	$foldersContainer->show();
-	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_folders_CTN_Container").style.overflow="auto";'));
-	
+	eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_folders_CTN_Container").style.overflow="auto";'));
+
 	//FILENAME TEXTBOX
 	$filenameTextbox = new Textbox(array(
 		'name' => 'filename_TXTBOX',
@@ -241,7 +241,7 @@ function eyeDialog_run($params=null) {
 	));
 	$filenameTextbox->addEvent('onchange', 'sendMsg('.$checknum.', "filename_TXTBOX_change", '.$filenameTextbox->getSyncString().')');
 	$filenameTextbox->addEnterEventMsg('ok_BTN');
-	
+
 	//FILETYPE SELECT
 	$filetypeSelect = new Select(array(
 		'name'=>'filetype_SEL',
@@ -251,7 +251,7 @@ function eyeDialog_run($params=null) {
 		'width' => 320
 	));
 	$filetypeSelect->show();
-	
+
 	//fill in filetypes select with formatted values
 	foreach($filetypes as $label => $filetype) {
 		$ft = explode('|', $filetype);
@@ -263,7 +263,7 @@ function eyeDialog_run($params=null) {
 		}
 		$formattedLabel = utf8_substr($formattedLabel, 0, utf8_strlen($formattedLabel) -2).')';
 		$formattedFiletype = utf8_substr($formattedFiletype, 0, utf8_strlen($formattedFiletype) -1);
-		
+
 		$filetypeSelect->addOption($formattedLabel, $formattedFiletype);
 	}
 	$filetypeSelect->setCss(array(
@@ -275,7 +275,7 @@ function eyeDialog_run($params=null) {
 		'height' => '22px'
 	));
 	$filetypeSelect->addEvent('onchange', 'sendMsg('.$checknum.', "filetype_SEL_change", eyeParam("filetype", this.value))');
-	
+
 	//OK BUTTON
 	$okButton = new Button(array(
 		'name' => 'ok_BTN',
@@ -289,7 +289,7 @@ function eyeDialog_run($params=null) {
 	));
 	$okButton->addFriend($filenameTextbox);
 	$okButton->show(0);
-	
+
 	//CANCEL BUTTON
 	$cancelButton = new Button(array(
 		'name' => 'cancel_BTN',
@@ -302,53 +302,53 @@ function eyeDialog_run($params=null) {
 		'enabled' => 1
 	));
 	$cancelButton->show(0);
-	
+
 	/**********************************************************/
 	//		HIDDEN ELEMENTS
 	/**********************************************************/
-	
+
 	$dialogParams = new Hidden(array(
 		'name' =>'serialized_dialogParams_HID',
 		'father' => 'eyeDialog_WND_Content',
 		'text' => serialize($params)
 	));
-	reqLib('eyeWidgets','serialize',array($dialogParams));
-	
+	eyeWidgets('serialize',array($dialogParams));
+
 	$currentFiletypeFilter = new Hidden(array(
 		'name' =>'currentFiletypeFilter_HID',
 		'father' => 'eyeDialog_WND_Content',
 		'text' => current($params[4])
 	));
-	reqLib('eyeWidgets','serialize',array($currentFiletypeFilter));
-	
+	eyeWidgets('serialize',array($currentFiletypeFilter));
+
 	$currentPath = new Hidden(array(
 		'name' =>'currentPath_HID',
 		'father' => 'eyeDialog_WND_Content',
 		'text' => $currentPath
 	));
-	reqLib('eyeWidgets','serialize',array($currentPath));
-	
+	eyeWidgets('serialize',array($currentPath));
+
 	$currentPlace = new Hidden(array(
 		'name' =>'currentPlace_HID',
 		'father' => 'eyeDialog_WND_Content',
 		'text' => $currentPlaceId
 	));
-	reqLib('eyeWidgets','serialize',array($currentPlace));
-	
+	eyeWidgets('serialize',array($currentPlace));
+
 	$currentGroup = new Hidden(array(
 		'name' =>'currentGroup_HID',
 		'father' => 'eyeDialog_WND_Content',
 		'text' => ''
 	));
-	reqLib('eyeWidgets','serialize',array($currentGroup));
-	
+	eyeWidgets('serialize',array($currentGroup));
+
 	//INITIALIZATION
 	eyeX('rawjs',array('js' => 'sendMsg('.$checknum.',"initComplete","");'));
 }
 
 
 function eyeDialog_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	eyeWidgets('unserialize');
 }
 
 ?>

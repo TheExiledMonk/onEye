@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -25,15 +25,21 @@ var eyeCalc_$myPid = {
 	Action : 0,
 	ClearOnNext : 0,
 	Memory : 'null',
-	
+
 	OnClickAddNumer : function () {
 		eyeCalc_$myPid.AddNumber(this.id.substr(this.id.length - 1)); 
 	},
-	
+
 	Init : function () {
-		for (var i = 1; i < 10; i++) {
-			document.getElementById('$myPid_eyeCalc_Button_' + String(i)).onclick = eyeCalc_$myPid.OnClickAddNumber;
-		}
+		document.getElementById('$myPid_eyeCalc_Button_1').onclick = function () { eyeCalc_$myPid.AddNumber('1'); };
+		document.getElementById('$myPid_eyeCalc_Button_2').onclick = function () { eyeCalc_$myPid.AddNumber('2'); };
+		document.getElementById('$myPid_eyeCalc_Button_3').onclick = function () { eyeCalc_$myPid.AddNumber('3'); };
+		document.getElementById('$myPid_eyeCalc_Button_4').onclick = function () { eyeCalc_$myPid.AddNumber('4'); };
+		document.getElementById('$myPid_eyeCalc_Button_5').onclick = function () { eyeCalc_$myPid.AddNumber('5'); };
+		document.getElementById('$myPid_eyeCalc_Button_6').onclick = function () { eyeCalc_$myPid.AddNumber('6'); };
+		document.getElementById('$myPid_eyeCalc_Button_7').onclick = function () { eyeCalc_$myPid.AddNumber('7'); };
+		document.getElementById('$myPid_eyeCalc_Button_8').onclick = function () { eyeCalc_$myPid.AddNumber('8'); };
+		document.getElementById('$myPid_eyeCalc_Button_9').onclick = function () { eyeCalc_$myPid.AddNumber('9'); };
 		document.getElementById('$myPid_eyeCalc_Button_c').onclick = function () { eyeCalc_$myPid.C(); };
 		document.getElementById('$myPid_eyeCalc_Button_ce').onclick = function () { eyeCalc_$myPid.CE(); };
 		document.getElementById('$myPid_eyeCalc_Button_delete').onclick = function () { eyeCalc_$myPid.Delete(); };
@@ -61,7 +67,7 @@ var eyeCalc_$myPid = {
 			document.getElementById('$myPid_eyeCalc_Button_xpowtwo').onclick = function () { eyeCalc_$myPid.XPowTwo(); };
 			document.getElementById('$myPid_eyeCalc_Button_xpowy').onclick = function () { eyeCalc_$myPid.DoAction('^'); };
 		}
-		
+
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.onkeydown = function (e) {
 			e = new xEvent(e);
@@ -112,7 +118,7 @@ var eyeCalc_$myPid = {
 		};
 		e.readOnly = true;
 	},
-	
+
 	Actions : {
 		Divide : function (one, two) {
 			var exponent = 0;
@@ -140,7 +146,7 @@ var eyeCalc_$myPid = {
 			}
 			return output + 'e-' + String(exponent);
 		},
-		
+
 		Input : function (one) {
 			var dot = 0;
 			var exponent = '+';
@@ -227,7 +233,7 @@ var eyeCalc_$myPid = {
 			}
 			return sign + output;
 		},
-		
+
 		LogGamma : function (x) { // Token from http://mathe-online.at/javacalc/jcintro.html
 			var v = 1;
 			while (x < 8) {
@@ -237,7 +243,7 @@ var eyeCalc_$myPid = {
 			var w = 1 / (x * x);
 			return ((((((((- 3617 / 122400) * w + 7 / 1092) * w - 691 / 360360) * w + 5 / 5940) * w - 1 / 1680) * w + 1 / 1260) * w - 1 / 360) * w + 1 / 12) / x + 0.5 * Math.log(2 * Math.PI) - Math.log(v) - x + (x - 0.5) * Math.log(x);
 		},
-		
+
 		Multiply : function (one, two) {
 			var dot = 0;
 			var letter = '';
@@ -273,7 +279,7 @@ var eyeCalc_$myPid = {
 			}
 			return sign + eyeCalc_$myPid.Actions.Input(output).substr(1) + 'e-' + String(exponent);
 		},
-		
+
 		Output : function (one) {
 			one = eyeCalc_$myPid.Actions.Input(one);
 			if (one.substr(0, 1) == '+') {
@@ -281,7 +287,7 @@ var eyeCalc_$myPid = {
 			}
 			return parseFloat(one);
 		},
-		
+
 		Plus : function(one, two) {
 			var action = '+';
 			var exponent = 0;
@@ -360,7 +366,7 @@ var eyeCalc_$myPid = {
 			return sign + output + 'e-' + exponent;
 		}
 	},
-	
+
 	AddNumber : function (value) {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -373,7 +379,7 @@ var eyeCalc_$myPid = {
 			e.value += value;
 		}
 	},
-	
+
 	C : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -382,21 +388,21 @@ var eyeCalc_$myPid = {
 		eyeCalc_$myPid.ClearOnNext = 0;
 		eyeCalc_$myPid.Memory = 'null';
 	},
-	
+
 	CE : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = '0';
 		eyeCalc_$myPid.ClearOnNext = 0;
 	},
-	
+
 	Cos : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.cos(parseFloat(e.value) / 180 * Math.PI));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Delete : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -406,7 +412,7 @@ var eyeCalc_$myPid = {
 			eyeCalc_$myPid.ClearOnNext = 0;
 		}
 	},
-	
+
 	DoAction : function (action) {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -439,7 +445,7 @@ var eyeCalc_$myPid = {
 		eyeCalc_$myPid.ClearOnNext = 1;
 		return true;
 	},
-	
+
 	Dot : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -453,19 +459,19 @@ var eyeCalc_$myPid = {
 			e.value += '.';
 		}
 	},
-	
+
 	Equal : function () {
 		eyeCalc_$myPid.DoAction(0);
 		eyeCalc_$myPid.Memory = 'null';
 	},
-	
+
 	Exp : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.exp(parseFloat(e.value)));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	LN : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -477,7 +483,7 @@ var eyeCalc_$myPid = {
 		}
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Log : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -489,7 +495,7 @@ var eyeCalc_$myPid = {
 		}
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Factorial : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -513,7 +519,7 @@ var eyeCalc_$myPid = {
 		}
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	OneDivX : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -525,21 +531,21 @@ var eyeCalc_$myPid = {
 		}
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Percentage : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Input(e.value) + 'e-2'));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Pi : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.PI);
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Sign : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -553,14 +559,14 @@ var eyeCalc_$myPid = {
 			e.value = '-' + e.value;
 		}
 	},
-	
+
 	Sin : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.sin(parseFloat(e.value) / 180 * Math.PI));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Sqrt : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
@@ -572,25 +578,25 @@ var eyeCalc_$myPid = {
 		}
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	Tan : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.tan(parseFloat(e.value) / 180 * Math.PI));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	XPowThree : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
-		e.value = String(Math.pow(parseFloat(e.value), 3));
+		e.value = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Multiply(eyeCalc_$myPid.Actions.Multiply(e.value, e.value), e.value));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
-	
+
 	XPowTwo : function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
-		e.value = String(Math.pow(parseFloat(e.value), 2));
+		e.value = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Multiply(e.value, e.value));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	}
 };

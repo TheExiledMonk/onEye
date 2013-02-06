@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.8
+                      |___/              1.9
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,7 @@ $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Username'
+	'text' => 'User Name'
 ));
 $myLabel->show();
 $myLabel = new Label(array(
@@ -48,7 +48,7 @@ $myLabel = new Label(array(
 	'father' => $eyeContainer,
 	'x' => 40,
 	'y' => $ContentY + 3,
-	'text' => 'Change password',
+	'text' => 'Change Password',
 	'disablemsg' => 0,
 	'signal' => 'account_password'
 ));
@@ -133,7 +133,7 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		'father' => $eyeContainer,
 		'x' => 20,
 		'y' => $ContentY + 3,
-		'text' => 'Maintained users'
+		'text' => 'Maintained Users'
 	));
 	$myLabel->show();
 	foreach ($UserXML['mngUser'] as $mngUser) {
@@ -158,7 +158,7 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 			'father' => $eyeContainer,
 			'x' => 40,
 			'y' => $ContentY + 3,
-			'text' => 'Manage users',
+			'text' => 'Manage Users',
 			'disablemsg' => 0,
 			'signal' => 'account_users'
 		));
@@ -175,7 +175,7 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		'father' => $eyeContainer,
 		'x' => 20,
 		'y' => $ContentY + 3,
-		'text' => 'Maintained groups'
+		'text' => 'Maintained Groups'
 	));
 	$myLabel->show();
 	foreach ($UserXML['maintain'] as $maintain) {
@@ -200,7 +200,7 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 			'father' => $eyeContainer,
 			'x' => 40,
 			'y' => $ContentY + 3,
-			'text' => 'Manage groups',
+			'text' => 'Manage Groups',
 			'disablemsg' => 0,
 			'signal' => 'account_groups'
 		));
@@ -229,7 +229,7 @@ $myButton = new Button(array(
 	'x' => 425,
 	'horiz' => 1,
 	'y' => $ContentY,
-	'caption' => 'Save changes',
+	'caption' => 'Save Changes',
 	'signal' => 'account_save'
 ));
 $myButton->addFriend($myTextbox_fullname);
@@ -243,7 +243,7 @@ if (eyeControl_lib_getConfigUser() != REAL_ROOTUSER) {
 		'x' => 160,
 		'y' => $ContentY,
 		'enabled' => $DeleteEnabled,
-		'caption' => 'Delete user',
+		'caption' => 'Delete User',
 		'signal' => 'account_delete'
 	));
 	$myButton->show();

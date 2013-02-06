@@ -33,7 +33,7 @@ CodePress = {
 
 	// treat key bindings
 	keyHandler : function(evt) {
-    	keyCode = evt.keyCode;	
+    	keyCode = evt.keyCode;
 		charCode = evt.charCode;
 
 		if((evt.ctrlKey || evt.metaKey) && evt.shiftKey && charCode!=90)  { // shortcuts = ctrl||appleKey+shift+key!=z(undo) 
@@ -65,7 +65,7 @@ CodePress = {
 		var sel = window.getSelection();
 		var range = window.document.createRange();
 		var span = window.document.getElementsByTagName('span')[0];
-			
+
 		range.selectNode(span);
 		sel.removeAllRanges();
 		sel.addRange(range);
@@ -73,7 +73,7 @@ CodePress = {
 		//if(self.find(cc))
 		//window.getSelection().getRangeAt(0).deleteContents();
 	},
-	
+
 	// split big files, highlighting parts of it
 	split : function(code,flag) {
 		if(flag=='scroll') {
@@ -90,7 +90,7 @@ CodePress = {
 			return code;
 		}
 	},
-	
+
 	// syntax highlighting parser
 	syntaxHighlight : function(flag) {
 		//if(document.designMode=='off') document.designMode='on'
@@ -113,7 +113,7 @@ CodePress = {
 
 
 		if(arguments[1]&&arguments[2]) x = x.replace(arguments[1],arguments[2]);
-	
+
 		for(i=0;i<Language.syntax.length;i++) 
 			x = x.replace(Language.syntax[i].input,Language.syntax[i].output);
 
@@ -121,16 +121,16 @@ CodePress = {
 
 		if(flag!='init') this.findString();
 	},
-	
+
 	getLastWord : function() {
 		var rangeAndCaret = CodePress.getRangeAndCaret();
 		words = rangeAndCaret[0].substring(rangeAndCaret[1]-40,rangeAndCaret[1]);
 		words = words.replace(/[\s\n\r\);\W]/g,'\n').split('\n');
 		return words[words.length-1].replace(/[\W]/gi,'').toLowerCase();
 	}, 
-	
+
 	snippets : function(evt) {
-		var snippets = Language.snippets;	
+		var snippets = Language.snippets;
 		var trigger = this.getLastWord();
 		for (var i=0; i<snippets.length; i++) {
 			if(snippets[i].input == trigger) {
@@ -145,7 +145,7 @@ CodePress = {
 			}
 		}
 	},
-	
+
 	readOnly : function() {
 		document.designMode = (arguments[0]) ? 'off' : 'on';
 	},
@@ -178,16 +178,16 @@ CodePress = {
 			if(Language.shortcuts[i].input == cCode)
 				this.insertCode(Language.shortcuts[i].output,false);
 	},
-	
-	getRangeAndCaret : function() {	
+
+	getRangeAndCaret : function() {
 		var range = window.getSelection().getRangeAt(0);
 		var range2 = range.cloneRange();
-		var node = range.endContainer;			
+		var node = range.endContainer;
 		var caret = range.endOffset;
-		range2.selectNode(node);	
+		range2.selectNode(node);
 		return [range2.toString(),caret];
 	},
-	
+
 	insertCode : function(code,replaceCursorBefore) {
 		var range = window.getSelection().getRangeAt(0);
 		var node = window.document.createTextNode(code);
@@ -198,12 +198,12 @@ CodePress = {
 		range.deleteContents();
 		range.insertNode(node);
 		// Move the cursor to the end of text
-		range2.selectNode(node);		
+		range2.selectNode(node);
 		range2.collapse(replaceCursorBefore);
 		selct.removeAllRanges();
 		selct.addRange(range2);
 	},
-	
+
 	// get code from editor
 	getCode : function() {
 		var code = editor.innerHTML;
@@ -230,7 +230,7 @@ CodePress = {
 	actions : {
 		pos : -1, // actual history position
 		history : [], // history vector
-		
+
 		undo : function() {
 			if(editor.innerHTML.indexOf(cc)==-1){
 				window.getSelection().getRangeAt(0).insertNode(document.createTextNode(cc));
@@ -241,14 +241,14 @@ CodePress = {
 			editor.innerHTML = this.history[this.pos];
 			CodePress.findString();
 		},
-		
+
 		redo : function() {
 			this.pos++;
 			if(typeof(this.history[this.pos])=='undefined') this.pos--;
 			editor.innerHTML = this.history[this.pos];
 			CodePress.findString();
 		},
-		
+
 		next : function() { // get next vector position and clean old ones
 			if(this.pos>20) this.history[this.pos-21] = undefined;
 			return ++this.pos;

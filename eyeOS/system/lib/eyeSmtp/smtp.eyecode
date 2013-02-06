@@ -114,7 +114,7 @@ class smtp_class
 {/metadocument}
 */
 	var $workstation="";
-	
+
 /*
 {metadocument}
 	<variable>
@@ -760,7 +760,7 @@ class smtp_class
 		}
 		return(1);
 	}
-	
+
 	Function StartSMTP($localhost)
 	{
 		$success = 1;
