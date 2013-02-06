@@ -181,7 +181,7 @@ $params = $params['arg'][0];
 $myUdir = um('getCurrentUserDir').'/'.FILES_USER_DIR.'/';
 $file = "./".$myUdir."/".$params;
 $rfile = vfs('getRealName',array($file));
-$info = getimagesize($rfile);
+$info = @getimagesize($rfile);
 $ratio = $info[0]/$info[1];
 $width = 40 ;
 $height = 40/$ratio ;
@@ -198,18 +198,20 @@ function eyeShow_on_getImageShow($params=null) {
 	$file = "./".$myUdir."/".$params;
 	$len = vfs('filesize',array($file));
 	$rfile = vfs('getRealName',array($file));
-	$info = getimagesize($rfile);
-	$fp = vfs('open',array($file,'r'),1);
-	if(!$fp) {
-		return;
+	$info = @getimagesize($rfile);
+	if ($info !== false) {
+		$fp = vfs('open',array($file,'r'),1);
+		if(!$fp) {
+			return;
+		}
+		header('Content-Type: '.$info['mime']);
+		header("Content-Length: $len");
+		header("Accept-Ranges: bytes");
+		header("X-Pad: avoid browser bug");
+		$content = fread($fp,$len);
+		echo $content;
+		fclose($fp);
 	}
-	header('Content-Type: '.$info['mime']);
-	header("Content-Length: $len");
-	header("Accept-Ranges: bytes");
-	header("X-Pad: avoid browser bug");
-	$content = fread($fp,$len);
-	echo $content;
-	fclose($fp);
 	exit;
 
 }

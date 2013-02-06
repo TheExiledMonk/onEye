@@ -94,17 +94,19 @@ function eyePresentation_on_getSlide($params=null) {
 	}
 	$len = filesize($file);
 	$info = @getimagesize($file);
-	$fp = vfs('real_open',array($file,'r'),1);
-	if(!$fp) {
-		return;
+	if ($info !== false) {
+		$fp = vfs('real_open',array($file,'r'),1);
+		if(!$fp) {
+			return;
+		}
+		header('Content-Type: '.$info['mime']);
+		header("Content-Length: $len");
+		header("Accept-Ranges: bytes");
+		header("X-Pad: avoid browser bug");
+		$content = fread($fp,$len);
+		echo $content;
+		fclose($fp);
 	}
-	header('Content-Type: '.$info['mime']);
-	header("Content-Length: $len");
-	header("Accept-Ranges: bytes");
-	header("X-Pad: avoid browser bug");
-	$content = fread($fp,$len);
-	echo $content;
-	fclose($fp);
 	exit;
 }
 

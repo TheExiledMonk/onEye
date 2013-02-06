@@ -158,7 +158,7 @@ function lib_eyeFiles_createThumbnail($params = '') {
 	} else {
 		exit;
 	}
-	$info = getimagesize($path);
+	$info = @getimagesize($path);
 	if ($info[0] > $info[1]) {
 		$height = $params[2] / $info[0] * $info[1];
 		$width = $params[2];

@@ -81,11 +81,13 @@ function eyeX_on_resizedBrowser($params = '') {
 
 function eyeX_on_viewTempImg($params = '') {
 	$path = um('getCurrentUserDir') . '/tmp/' . utf8_basename($params);
-	$info = getimagesize($path);
-	header('Content-Type: ' . $info['mime']);
-	header('Accept-Ranges: bytes');
-	header('X-Pad: avoid browser bug');
-	vfs('printFile',array($path));
+	$info = @getimagesize($path);
+	if ($info !== false) {
+		header('Content-Type: ' . $info['mime']);
+		header('Accept-Ranges: bytes');
+		header('X-Pad: avoid browser bug');
+		vfs('printFile',array($path));
+	}
 	exit;
 }
 

@@ -68,7 +68,7 @@ function eyeClipart_on_goDir() {
 		$icon = "http://clipart.eyeos.org".$dir."".$value ;
 		$icon2 = "http://clipart.eyeos.org/thumb.php?src=".$dir."".$value."&w=50&y=50" ;
 
-		$info = getimagesize($icon);
+		$info = @getimagesize($icon);
 		$ratio = $info[0]/$info[1];
 
 		if($info[0]>$info[1]) {

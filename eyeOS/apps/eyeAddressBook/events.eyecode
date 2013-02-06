@@ -1107,11 +1107,14 @@ function eyeAddressBook_on_showImage() {
     }
     $imagePath = $GLOBALS['eyeAddressBook_photoPath']->text;
     $imageInfo = @getimagesize($imagePath);
-    header('Content-Type: ' . $imageInfo['mime']);
-    header('Content-Length: ' . vfs('real_filesize',array($imagePath)));
-    header('Accept-Ranges: bytes');
-    header('X-Pad: avoid browser bug');
-    vfs('printFile',array($imagePath));
+	if ($imageInfo !== false) {
+		header('Content-Type: ' . $imageInfo['mime']);
+		header('Content-Length: ' . vfs('real_filesize',array($imagePath)));
+		header('Accept-Ranges: bytes');
+		header('X-Pad: avoid browser bug');
+		vfs('printFile',array($imagePath));
+	}
+	exit;
 }
 
 function eyeAddressBook_on_viewContact($params=null) {

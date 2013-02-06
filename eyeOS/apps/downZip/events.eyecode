@@ -71,7 +71,7 @@ function downZip_on_download($params = '') {
 		return false;
 	}
 	header('Content-Disposition: attachment; filename="' . $file . '.zip"');
-	header('Content-Length: ' . utf8_strlen($content));
+	header('Content-Length: ' . strlen($content));
 	header('Content-Type: application/zip');
 	header('Accept-Ranges: bytes');
 	header('X-Pad: avoid browser bug');

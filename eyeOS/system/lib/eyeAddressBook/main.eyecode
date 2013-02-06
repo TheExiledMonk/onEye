@@ -61,11 +61,13 @@ function lib_eyeAddressBook_getImage($params=null) {
 	}
 	$imagePath = um('getCurrentUserDir').CONF_USER_DIR.'/eyeAddressBook/images/'.$params[0].'.png';
 	$imageInfo = @getimagesize($imagePath);
-	header('Content-Type: ' . $imageInfo['mime']);
-	header('Content-Length: ' . vfs('real_filesize',array($imagePath)));
-	header('Accept-Ranges: bytes');
-	header('X-Pad: avoid browser bug');
-	vfs('printFile',array($imagePath));
+	if ($imageInfo !== false) {
+		header('Content-Type: ' . $imageInfo['mime']);
+		header('Content-Length: ' . vfs('real_filesize',array($imagePath)));
+		header('Accept-Ranges: bytes');
+		header('X-Pad: avoid browser bug');
+		vfs('printFile',array($imagePath));
+	}
 	return true;
 }
 

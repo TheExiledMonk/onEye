@@ -73,7 +73,7 @@ function eyeFiles_openLocation($file) {
 			echo '</div>';
 		} elseif($info == 'png' || $info == 'jpg' || $info == 'jpeg' || $info == 'bmp' || $info == 'gif') {
 			$rfile = vfs('getRealName',array($file));
-			$mime = getimagesize($rfile);
+			$mime = @getimagesize($rfile);
 			if(!$mime) {
 				exit;
 			}

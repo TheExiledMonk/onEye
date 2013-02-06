@@ -75,11 +75,13 @@ function eyeImages_on_Fullscreen($params = '') {
 function eyeImages_on_getImage($params = '') {
 	$path = $GLOBALS['eyeImages_Hidden_Path']->text;
 	$info = @getimagesize(vfs('getRealName',array($path)));
-	header('Content-Type: ' . $info['mime']);
-	header('Content-Length: ' . vfs('filesize',array($path)));
-	header('Accept-Ranges: bytes');
-	header('X-Pad: avoid browser bug');
-	vfs('readFile',array($path));
+	if ($info !== false) {
+		header('Content-Type: ' . $info['mime']);
+		header('Content-Length: ' . vfs('filesize',array($path)));
+		header('Accept-Ranges: bytes');
+		header('X-Pad: avoid browser bug');
+		vfs('readFile',array($path));
+	}
 	exit;
 }
 

@@ -144,7 +144,11 @@ class Textarea {
 		global $myPid;
 		if(is_array($params)) {
 			foreach($params as $key => $value) {
-				eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				if ($this->code === 1) {
+					eyex('updateCss', array('name' => $myPid . '_' . $this->name . '_cp', 'property' => $key, 'value' => $value));
+				} else {
+					eyex('updateCss',array('name' => $myPid.'_'.$this->name,'property' => $key,'value' => $value));
+				}
 			}
 		}
 	}
@@ -236,7 +240,11 @@ class Textarea {
 
 	function focus() {
 		global $myPid;
-		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
+		if ($this->code === 1) {
+			eyex('rawjs', array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '_cp").focus();'));
+		} else {
+			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
+		}
 	}
 
 //friend functions
