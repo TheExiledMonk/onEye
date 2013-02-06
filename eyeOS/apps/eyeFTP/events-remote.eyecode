@@ -28,8 +28,6 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/dialogs'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-ftp'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/hosts'.EYE_CODE_EXTENSION);
 
-define('EYEFTP_USE_REQUEST_BOUNCING',true);
-
 /*********************************************************************************************/
 /*********************************************************************************************/
 /*					FUNCTIONS TRIGGERED BY SIGNALS RAISED BY THE INTERFACE					 */
@@ -184,13 +182,7 @@ function eyeFTP_on_eyeFTP_delete_deleteNo_BTN($params=null) {
 function eyeFTP_on_eyeFTP_downloadRemote($params=null) {
 	// === BOUNCED REQUEST PROCESSING ===
 	if (eyeFTP_isFromBouncedRequest($params)) {
-		$downloadParams = array(
-			'target' => 'browser',
-			'path' => ''
-		);
-		if (! eyeFTP_ftpGet(base64_decode($params['dir_b64'][0]),
-							base64_decode($params['filename_b64'][0]),
-							$downloadParams)) {
+		if (! eyeFTP_ftpGetToBrowser(base64_decode($params['dir_b64'][0]), base64_decode($params['filename_b64'][0]))) {
 			eyeFTP_logConsole('Unable to download file, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 		}
 		return;
@@ -205,19 +197,14 @@ function eyeFTP_on_eyeFTP_downloadRemote($params=null) {
 				array(eyeFTP_getFormatedDirPath($conf['currentRemoteDir'].'/'.$conf['selectedRemoteFile']['name']))			
 			);
 			
-			if (EYEFTP_USE_REQUEST_BOUNCING) {
-				eyeFTP_bounceRequest(array(
-					'__signal' => 'eyeFTP_downloadRemote',
-					'dir_b64' => base64_encode($conf['currentRemoteDir']),
-					'filename_b64' => base64_encode($conf['selectedRemoteFile']['name'])
-				));
-			}
-			else {
-				$downloadParams = array('target' => 'browser','path' => '');
-				if (! eyeFTP_ftpGet($conf['currentRemoteDir'],$conf['selectedRemoteFile']['name'])) {
-					eyeFTP_logConsole('Unable to download file, error occured', null, EYEFTP_LOGSTYLE_ERROR);
-				}
-			}
+			eyeFTP_bounceRequest(array(
+				'__signal' => 'eyeFTP_downloadRemote',
+				'dir_b64' => base64_encode($conf['currentRemoteDir']),
+				'filename_b64' => base64_encode($conf['selectedRemoteFile']['name'])
+			));
+		}
+		else {
+			eyeX('messageBox',array('content'=> 'Only files can be downloaded'));
 		}
 	}
 	else {
@@ -227,20 +214,20 @@ function eyeFTP_on_eyeFTP_downloadRemote($params=null) {
 function eyeFTP_on_eyeFTP_downloadRemote_finished($params=null) {
 	if ($params == null) exit;
 	$params = unserialize(urldecode($params));
+	$tmpFilePath = $params['tmpfilepath'];
 	
-	$size = filesize($params['tmpfilepath']);
-	if ($size !== false) {
-		$tmpfile = fopen($params['tmpfilepath'],'r');
-		$content = fread($tmpfile,$size);
-		fclose($tmpfile);
+	$filesize = vfs('real_filesize', array($tmpFilePath));
+	if ($filesize !== false) {
+		$content = vfs('real_getFileContent',array($tmpFilePath));
 		
 		header('Content-Type: application/octet-stream');
+		header('Content-Length: '.$filesize);
 		header('Content-Disposition: attachment; filename="'.$params['filename'].'"');
 		echo $content;
 		
 		//once file's content has been read, the file could be deleted to avoid space wasting
 		//but if download fails, the file will have to be transfered to eyeOS server again :(
-		unlink($params['tmpfilepath']);
+		//unlink($tmpFilePath);
 	}
 	exit;
 }
@@ -280,21 +267,8 @@ function eyeFTP_on_eyeFTP_uploadRemote_initForm($params=null) {
 </html>';
 	exit;
 }
-/*
- * IMPORTANT NOTE ABOUT THIS FUNCTION:
- * The following code is not executed during an AJAX request, so it's impossible to use the main functions
- * of the eyeOS API (widgets, etc.) to work on the display.
- * Moreover, the HTML code generated is "displayed" INTO the Iframe located in the upload dialog box, so the
- * JS elements and functions located in the eyeOS interface must be accessed through the following syntax:
- *      window.parent.[ELEMENT_ID]    or    window.parent.[FUNCTION_NAME]
- * 
- * In order to refresh the interface (among other things...) at the end of a transfer, the function makes
- * an AJAX call through the JS function "sengMsg()" which sends another signal received and processed by
- * the next function named "eyeFTP_on_eyeFTP_upload_notifyEndOfUpload()". This one can now interact with
- * the interface.
- * 
- * Update: this work I made has finally been introduced in eyeOS by the Core Team to create the File Widget.
- *         I'm very happy the several hours I spent in front of my screen were so useful :)
+/**
+ * Note: The following code is *not* executed during an AJAX request.
  */
 function eyeFTP_on_eyeFTP_uploadRemote_uploadComplete() {
 	global $checknum;
@@ -303,11 +277,7 @@ function eyeFTP_on_eyeFTP_uploadRemote_uploadComplete() {
 					'+window.parent.eyeParam("filename","'.$_FILES['myFile']['name'].'")';
 	
 	if (is_uploaded_file($_FILES['myFile']['tmp_name'])) {
-		$uploadParams = array('source' => 'browser',
-								'tmpName' => $_FILES['myFile']['tmp_name'],
-								'realName' => $_FILES['myFile']['name'],
-								'remotePath' => $remotePath);
-		if (eyeFTP_ftpPut($uploadParams)) {
+		if (eyeFTP_ftpPutFromBrowser($_FILES['myFile']['tmp_name'], $remotePath, utf8_basename($_FILES['myFile']['name']))) {
 			$sendMsgParams .= '+window.parent.eyeParam("statut","UPLOAD_SUCCESS")';
 		}
 		else {

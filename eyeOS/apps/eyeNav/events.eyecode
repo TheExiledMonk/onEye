@@ -79,6 +79,13 @@ function eyeNav_on_Forward($params = '') {
 	eyex('rawjs',array('js' => 'parent.frames["' . $myPid . '_eyeNav_frame"].history.forward();'));
 }
 
+function eyeNav_on_Refresh($params = '') {
+	global $myPid;
+	$js = 'var obj = document.getElementById("' . $myPid . '_eyeNav_frame");';
+	$js .= 'obj.parentNode.appendChild(obj)';
+	eyex('rawjs',array('js' => $js));
+}
+
 function eyeNav_on_Startpage($params = '') {
 	eyeNav_lib_doUrl();
 }
@@ -272,7 +279,7 @@ function eyeNav_on_saveUrl($params = '') {
 		'win_name' => 'eyeNav_window_saveUrl',
 		'win_style' => TITLE + CLOSE,
 		'win_removepid' => 0,
-		'btn1_capt' => 'Add',
+		'btn1_capt' => 'Accept',
 		'btn1_name' => 'saveUrl_add',
 		'btn2_capt' => 'Cancel',
 		'btn2_name' => 'saveUrl_cancel',

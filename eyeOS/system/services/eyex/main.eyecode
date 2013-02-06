@@ -869,14 +869,14 @@ function service_eyex_messageBox($params) {
 		}
 		
 		$btnX = $myWindow->width / ($btnX + 1);
-		
 		$myButton = new Button(array(
 			'name' => $btn1_name,
 			'father' => $win_name . '_Content',
 			'signal' => $btn1_name,
 			'caption' => $btn1_capt,
-			'x' => $btnX - (15 + utf8_strlen($btn1_capt)),
-			'y' => 90
+			'x' =>$btnX/2 - (30 + utf8_strlen($btn1_capt)),
+			'y' => 80,
+			'horiz'=>1
 		));
 		$myButton->addFriend($myTextbox);
 		$myButton->show();
@@ -886,8 +886,9 @@ function service_eyex_messageBox($params) {
 				'name' => $btn2_name,
 				'father' => $win_name . '_Content',
 				'caption' => $btn2_capt,
-				'x' => (2 * $btnX) - (15 + utf8_strlen($btn2_capt)),
-				'y' => 90
+				'x' =>($btnX) - (20 + utf8_strlen($btn2_capt)),
+				'y' => 80,
+				'horiz'=>1
 			));
 			$myButton->addFriend($myTextbox);
 			$myButton->show();
@@ -898,8 +899,8 @@ function service_eyex_messageBox($params) {
 				'name' => $btn3_name,
 				'father' => $win_name . '_Content',
 				'caption' => $btn3_capt,
-				'x' => (3 * $btnX) - (15 + utf8_strlen($btn3_capt)),
-				'y' => 90
+				'x' =>($btnX*3) - (92 + utf8_strlen($btn3_capt)),
+				'y' => 80
 			));
 			$myButton->addFriend($myTextbox);
 			$myButton->show();
@@ -1779,7 +1780,25 @@ function service_eyex_resizedBrowser($params=''){
 	$_SESSION['SCREEN']['eyeApps']['height'] = $params['appHeight'];
 	$_SESSION['SCREEN']['eyeApps']['width'] = $params['appWidth'];
  	return true;
- }
+}
+
+function service_eyex_print($params='') {
+ 	if(!is_array($params) || !isset($params[0])) {
+ 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		return false;
+ 	}
+ 	
+	if(INDEX_TYPE == 'browser') {
+		global $procInfo;
+		$text = $params[0];
+		$tty = $procInfo['tty'];
+		if(empty($tty)) {
+			return false;
+		}
+		$js = 'printToTty("'.$tty.'",%s);';
+		eyeX('runjs',array('js'=>$js,'tokens'=>array($text)));
+	}
+}
  
 /**
 * Camelcases a string.

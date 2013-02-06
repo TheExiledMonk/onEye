@@ -1,20 +1,19 @@
-.eyeCalendar_day {
+.eyeCalendar_day, .eyeCalendar_hour, .eyeCalendar_part {
 	float: left;
-	height: 100%;
 	position: relative;
+}
+
+.eyeCalendar_day {
+	height: 100%;
 }
 
 .eyeCalendar_halfHour {
-	background-repeat: repeat-x;
-	background-Image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeCalendar/dotted.png);
+	border-top:1px dotted #cccccc;
 	height: 1px;
 	position: absolute;
-	width: 100%;
 }
 
-.eyeCalendar_hour {
-	float: left;
-	position: relative;
+.eyeCalendar_halfHour, .eyeCalendar_hour, .eyeCalendar_part {
 	width: 100%;
 }
 
@@ -23,9 +22,6 @@
 }
 
 .eyeCalendar_part {
-	float: left;
 	height: 25%;
-	position: relative;
-	width: 100%;
 	z-index: 2;
 }

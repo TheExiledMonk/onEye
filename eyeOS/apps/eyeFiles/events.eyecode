@@ -90,18 +90,42 @@ function eyeFiles_on_Fullscreen($params = '') {
 	}
 	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Toolbar");
 	for (var i = 0; i < e.childNodes.length; i++) {
-		if (e.childNodes[i].id == "Fullscreen_Container") {
+		if (e.childNodes[i].id == "'.$myPid.'_Fullscreen_Container") {
 			e.childNodes[i].className = "blockbarItem' . $press . '_right";
 		}
 	}'));
 }
 
 function eyeFiles_on_Back($params = '') {
-	if (utf8_strtolower(utf8_substr($GLOBALS['eyeFiles_Hidden_Path']->text,0,8)) == 'trash://') {
-		eyeFiles_on_OpenPath(array('home:///'));
-	} else {
-		eyeFiles_on_OpenPath(array($GLOBALS['eyeFiles_Hidden_Path']->text . '/..'));
+	$stack = $GLOBALS['eyeFiles_Hidden_Stack']->text;
+	$stackPosition = intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text);
+
+	if($stackPosition == 1) {
+		return true;
 	}
+
+	$stackPosition--;
+	$url = $stack[$stackPosition-1];
+
+	$GLOBALS['eyeFiles_Hidden_StackPosition']->setText($stackPosition);
+
+	eyeFiles_on_OpenPath(array($url,'stack'=>0));
+}
+
+function eyeFiles_on_Next($params = '') {
+	$stack = $GLOBALS['eyeFiles_Hidden_Stack']->text;
+	$stackPosition = intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text);
+
+	if($stackPosition == count($stack)) {
+		return true;
+	}
+
+	$stackPosition++;
+	$url = $stack[$stackPosition-1];
+
+	$GLOBALS['eyeFiles_Hidden_StackPosition']->setText($stackPosition);
+
+	eyeFiles_on_OpenPath(array($url,'stack'=>0));
 }
 
 function eyeFiles_on_Home($params = '') {
@@ -236,7 +260,7 @@ function eyeFiles_on_Icon_Clicked($params = '') {
 
 function eyeFiles_on_Icon_Dropped($params = '') {
 	if (in_array(utf8_strtolower($params['arg0'][0]),array('file','folder','link'))) {
-		proc('launch',array('moveDrag',array($params['arg1'][0],$GLOBALS['eyeFiles_Hidden_Path']->text . '/' . $params['arg2'][0])));
+		proc('launch',array('moveDrag',array($params['arg1'][0],$params['arg2'][0])));
 	}
 }
 
@@ -266,7 +290,29 @@ function eyeFiles_on_OpenPath($params = '') {
 	$show = $path[2];
 	$type = $path[1];
 	$path = $path[0];
-	
+
+	//when going back or forward, the stack of paths should not be updated
+	if(!isset($params['stack']) || $params['stack'] == 1) {
+		$stack = $GLOBALS['eyeFiles_Hidden_Stack']->text;
+		$stackPosition = $GLOBALS['eyeFiles_Hidden_StackPosition']->text;
+		if($stackPosition != count($stack)) {
+			$size = count($stack);
+			array_splice($stack,$stackPosition,$size);
+		}
+
+		if(count($stack) > 0) {
+			if($stack[count($stack)-1] != $path) {
+				$stack[] = $path;
+				$GLOBALS['eyeFiles_Hidden_Stack']->setText($stack);
+				$GLOBALS['eyeFiles_Hidden_StackPosition']->setText(intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text)+1);
+			}
+		} else {
+			$stack[] = $path;
+			$GLOBALS['eyeFiles_Hidden_Stack']->setText($stack);
+			$GLOBALS['eyeFiles_Hidden_StackPosition']->setText(intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text)+1);
+		}
+	}
+
 	if ($GLOBALS['eyeFiles_Hidden_Action']->text != '') {
 		$father = 'files';
 		if ($type == 'trash') {
@@ -297,25 +343,25 @@ function eyeFiles_on_OpenPath($params = '') {
 	if ($type == 'trash') {
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->hide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->unhide();
-		$hide = 'e.childNodes[i].id == "Upload_Container" || e.childNodes[i].id == "NewFolder_Container" || e.childNodes[i].id == "NewFile_Container"';
-		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "EmptyTrash_Container"';
+		$hide = 'e.childNodes[i].id == "'.$myPid.'_Upload_Container" || e.childNodes[i].id == "'.$myPid.'_NewFolder_Container" || e.childNodes[i].id == "'.$myPid.'_NewFile_Container"';
+		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "'.$myPid.'_EmptyTrash_Container"';
 	} elseif ($type == 'groups' && $show == '/' || $type == 'users' && substr_count($show,'/') < 2) {
 		$eyeFiles_noactions = 0;
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->hide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->hide();
-		$hide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "Upload_Container" || e.childNodes[i].id == "NewFolder_Container" || e.childNodes[i].id == "NewFile_Container" || e.childNodes[i].id == "EmptyTrash_Container"';
+		$hide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "'.$myPid.'_Upload_Container" || e.childNodes[i].id == "'.$myPid.'_NewFolder_Container" || e.childNodes[i].id == "'.$myPid.'_NewFile_Container" || e.childNodes[i].id == "'.$myPid.'_EmptyTrash_Container"';
 		$unhide = '1 == 2';
 	} else {
-		$hide = 'e.childNodes[i].id == "EmptyTrash_Container"';
-		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "Upload_Container" || e.childNodes[i].id == "NewFolder_Container" || e.childNodes[i].id == "NewFile_Container"';
+		$hide = 'e.childNodes[i].id == "'.$myPid.'_EmptyTrash_Container"';
+		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "'.$myPid.'_Upload_Container" || e.childNodes[i].id == "'.$myPid.'_NewFolder_Container" || e.childNodes[i].id == "'.$myPid.'_NewFile_Container"';
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->unhide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->hide();
 	}
 	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Toolbar");
 	for (var i = 0; i < e.childNodes.length; i++) {
-		if (e.childNodes[i].id == "' . ucfirst($type) . '_Container") {
+		if (e.childNodes[i].id == "'.$myPid.'_' . ucfirst($type) . '_Container") {
 			e.childNodes[i].className = "blockbarItemPress";
-		} else if (e.childNodes[i].id == "Home_Container" || e.childNodes[i].id == "Groups_Container" || e.childNodes[i].id == "Trash_Container" || e.childNodes[i].id == "Users_Container" || e.childNodes[i].id == "Real_Container") {
+		} else if (e.childNodes[i].id == "'.$myPid.'_Home_Container" || e.childNodes[i].id == "'.$myPid.'_Groups_Container" || e.childNodes[i].id == "'.$myPid.'_Trash_Container" || e.childNodes[i].id == "'.$myPid.'_Users_Container" || e.childNodes[i].id == "'.$myPid.'_Real_Container") {
 			e.childNodes[i].className = "blockbarItem";
 		}
 		if (' . $unhide . ') {
@@ -324,7 +370,7 @@ function eyeFiles_on_OpenPath($params = '') {
 			e.childNodes[i].style.display = "none";
 		}
 	}'));
-	
+
 	if (is_object($GLOBALS['eyeFiles_Container'])) {
 		$GLOBALS['eyeFiles_Container']->remove();
 	}
@@ -339,7 +385,7 @@ function eyeFiles_on_OpenPath($params = '') {
 	$myContainer->show();
 	$myContainer->setCss(array('display' => 'block','overflow' => 'auto','position' => 'absolute'));
 	eyeWidgets('serialize',array($myContainer));
-	
+
 	if ($GLOBALS['eyeFiles_Box_View_Radio_Details']->checked) {
 		include(EYE_ROOT . '/' . APP_DIR . '/eyeFiles/views/details' . EYE_CODE_EXTENSION);
 	} elseif ($GLOBALS['eyeFiles_Box_View_Radio_List']->checked) {
@@ -395,6 +441,20 @@ function eyeFiles_on_ChangeBox($params = array()) {
 		$myTree->show();
 		$myTree->setCss(array('overflow' => 'auto'));
 		$myTree->addItem('eyeFiles_Box_Tree_Tree','item_' . $path[1],i18n('translate',array(ucfirst($path[1]))));
+		if (!in_array($path[1],array('groups','users'))) {
+			$myWidgetDrop = new widgetDrop(array(
+				'father' => 'item_' . $path[1],
+				'name' => 'item_' . $path[1] . '_WidgetDrop'
+			));
+			$myWidgetDrop->show();
+			$myWidgetDrop->addBehaviour(array(
+				'type' => 'widgetDrop_simpleMsg',
+				'params' => array(
+					'content' => array($path[1] . '://'),
+					'pid' => $myPid,
+					'signal' => 'Icon_Dropped'
+			)));
+		}
 		$myTree->addSubList('item_' . $path[1],'list_' . $path[1]);
 		include_once(EYE_ROOT . '/' . APP_DIR . '/eyeFiles/lib' . EYE_CODE_EXTENSION);
 		if ($path[1] == 'groups') {
@@ -405,10 +465,22 @@ function eyeFiles_on_ChangeBox($params = array()) {
 				if (vfs('isdir',array($folder))) {
 					$md5 = md5(realpath($folder . '/' . FILES_GROUP_DIR . '/'));
 					$myTree->addItem('list_' . $path[1],'item_' . FILES_GROUP_DIR . '_' . $md5,utf8_basename($folder));
+					$myWidgetDrop = new widgetDrop(array(
+						'father' => 'item_' . FILES_GROUP_DIR . '_' . $md5,
+						'name' => 'item_' . FILES_GROUP_DIR . '_' . $md5 . '_WidgetDrop'
+					));
+					$myWidgetDrop->show();
+					$myWidgetDrop->addBehaviour(array(
+						'type' => 'widgetDrop_simpleMsg',
+						'params' => array(
+							'content' => array($path[1] . '://' . utf8_basename($folder)),
+							'pid' => $myPid,
+							'signal' => 'Icon_Dropped'
+					)));
 					$myTree->addSubList('item_' . FILES_GROUP_DIR . '_' . $md5,'list_' . FILES_GROUP_DIR . '_' . $md5);
 					$expand = realpath($path[0] . '/');
 					if (utf8_strpos($expand,realpath($folder)) === 0 && $expand != realpath($folder . '/')) {
-						eyeFiles_lib_CreateTree($path[1],$folder . '/' . FILES_GROUP_DIR . '/',$myTree,'list_' . FILES_GROUP_DIR . '_' . $md5,$expand);
+						eyeFiles_lib_CreateTree($path[1],$path[1] . '://' . utf8_basename($folder),$folder . '/' . FILES_GROUP_DIR . '/',$myTree,'list_' . FILES_GROUP_DIR . '_' . $md5,$expand);
 					}
 				}
 				$content[] = $folder;
@@ -427,9 +499,21 @@ function eyeFiles_on_ChangeBox($params = array()) {
 							if (vfs('isdir',array($folder))) {
 								$md5 = md5(realpath($folder . '/' . FILES_USER_DIR . '/'));
 								$myTree->addItem($tree,'item_' . FILES_USER_DIR . '_' . $md5,utf8_basename($folder));
+								$myWidgetDrop = new widgetDrop(array(
+									'father' => 'item_' . FILES_USER_DIR . '_' . $md5,
+									'name' => 'item_' . FILES_USER_DIR . '_' . $md5 . '_WidgetDrop'
+								));
+								$myWidgetDrop->show();
+								$myWidgetDrop->addBehaviour(array(
+									'type' => 'widgetDrop_simpleMsg',
+									'params' => array(
+										'content' => array($path[1] . '://' . utf8_substr($folder,utf8_strlen(EYE_ROOT . '/' . USERS_DIR . '/'))),
+										'pid' => $myPid,
+										'signal' => 'Icon_Dropped'
+								)));
 								$myTree->addSubList('item_' . FILES_USER_DIR . '_' . $md5,'list_' . FILES_USER_DIR . '_' . $md5);
 								if (utf8_strpos(realpath($path[0] . '/'),realpath($folder . '/' . FILES_USER_DIR)) === 0 && realpath($path[0] . '/') != realpath($folder . '/')) {
-									eyeFiles_lib_CreateTree($path[1],$folder . '/' . FILES_USER_DIR . '/',$myTree,'list_' . FILES_USER_DIR . '_' . $md5,realpath($path[0] . '/'));
+									eyeFiles_lib_CreateTree($path[1],$path[1] . '://' . utf8_substr($folder,utf8_strlen(EYE_ROOT . '/' . USERS_DIR . '/')),$folder . '/' . FILES_USER_DIR . '/',$myTree,'list_' . FILES_USER_DIR . '_' . $md5,realpath($path[0] . '/'));
 								}
 							}
 						}
@@ -437,7 +521,7 @@ function eyeFiles_on_ChangeBox($params = array()) {
 				}
 			}
 		} elseif ($path[1] != 'trash') {
-			eyeFiles_lib_CreateTree($path[1],$path[3],$myTree,'list_' . $path[1],realpath($path[0] . '/'));
+			eyeFiles_lib_CreateTree($path[1],$path[1] . '://',$path[3],$myTree,'list_' . $path[1],realpath($path[0] . '/'));
 		}
 		$myTree->processList();
 		if ($path[1] == 'real') {

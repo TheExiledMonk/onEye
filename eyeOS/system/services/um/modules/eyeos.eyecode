@@ -99,6 +99,10 @@ function service_um_createUser($params = null){
 	$array['email'][0] = $params['email'];
 	$array['fullname'][0] = $params['fullname'];
 	$array['createDate'][0] = time();
+	if(!isset($params['expirationDate'])) {
+		$params['expirationDate'] = 0;
+	}
+	$array['expirationDate'][0] = $params['expirationDate'];
 	if (is_array($params['groups'])) {
 		$array2['group'] = $params['groups'];
 	} elseif ($params['groups']) {
@@ -287,6 +291,9 @@ function service_um_updateUser($params = null){
 		if (isset($params['group'])) { // Because of the deprecated argument "group".
 			$params['groups'] = $params['group'];
 		}
+		if (isset($params['expirationDate'])) {
+			$array['expirationDate'][0] = $params['expirationDate'];
+		}
 		if (isset($params['groups'])) {
 			if (is_array($params['groups'])) {
 				$array2['group'] = $params['groups'];
@@ -467,8 +474,9 @@ function service_um_login($params = null) {
 		return false;
 	}	
 	$username = utf8_basename($params[0]);
-	$password = md5($params[1].md5($params[1]));
-	 
+	$password = $params[1];
+	$password = md5($password . md5($password));
+
 	global $currentUser;
 	
 	//special suid
@@ -484,6 +492,12 @@ function service_um_login($params = null) {
 	if(!is_array($info)) {
 	//user not exist
 		return false;
+	}
+	if(isset($info['eyeUser'][0]['expirationDate'])) {
+		if(intval($info['eyeUser'][0]['expirationDate'][0]) < time() && intval($info['eyeUser'][0]['expirationDate'][0]) != 0) {
+			eyeX('rawjs',array('js'=>'alert("Your account has expired.");'));
+			return false;
+		}
 	}
 	if($info['eyeUser'][0]['password'][0] == $password) {
 		//If the user is disabled, set error and return false
@@ -506,6 +520,73 @@ function service_um_login($params = null) {
 	return false;
 }
 
+/**IF YOU ARE GOING TO USE THIS KIND OF LOGIN IN YOUR APPLICATION, REMEMBER OF KEEP 
+*	RETROCOMPATIBILITY WITH THE PLAIN TEXT LOGIN, IF NOT THIRD PARTY LOGIN MODULES WOULD NOT
+*   BE ABLE TO WORK WITH YOUR APPLICATION!!
+*
+* Checks if the specified user's credentials are correct (using a hash instead plain text).
+* 
+* @param $params array(username,passwordHash)
+* @param $username String containing the name of the user.
+* @param $password String containing the password of the user (hash).
+* @return If the function succeeds, returns true. Otherwise, returns
+*	false and sets the error code depending on the error
+*	occurred.
+* @exception INCORRECT_PARAMS No username or password are specified.
+* @exception UM_USER_IS_DISABLED The user is currently disabled.
+* @date 2008/03/11
+*/
+function service_um_loginWidthHash($params = null) {
+	 
+	if($params == null || count($params) < 2){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}	
+	$username = utf8_basename($params[0]);
+	$password = $params[1];
+
+	global $currentUser;
+	
+	//special suid
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	//end of special suid
+	$info = um('retrieveUser',array($username));
+	$currentUser = $oldUser;	
+	if(!$info) {
+		return false;
+	}
+	
+	if(!is_array($info)) {
+	//user not exist
+		return false;
+	}
+	if(isset($info['eyeUser'][0]['expirationDate'])) {
+		if(intval($info['eyeUser'][0]['expirationDate'][0]) < time() && intval($info['eyeUser'][0]['expirationDate'][0]) != 0) {
+			eyeX('rawjs',array('js'=>'alert("Your account has expired.");'));
+			return false;
+		}
+	}
+	if($info['eyeUser'][0]['password'][0] == $password) {
+		//If the user is disabled, set error and return false
+		if(service_um_checkDisabled(array($info))){
+			errorCodes('setErrorCode',array(UM_USER_IS_DISABLED));
+			return false;
+		}
+		foreach($info['eyeUser'][0]['group'] as $value) {
+			$_SESSION['groups'][$value] = 1;
+		}
+		$oldUser = $currentUser;
+		$currentUser = ROOTUSER;
+		um('updateUser',array(
+			'username' => $username,
+			'lastLogin' => time()
+		));
+		$currentUser = $oldUser;
+		return true;
+	}
+	return false;
+}
 /**
 * Returns an associative array containing the groups with users logged
 * in.

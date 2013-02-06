@@ -21,8 +21,9 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeFiles_lib_CreateTree($type,$path,$myTree,$tree,$expand) {
+function eyeFiles_lib_CreateTree($type,$cleaned,$path,$myTree,$tree,$expand) {
 	global $currentUser;
+	global $myPid;
 	if ($currentUser == ROOTUSER && $type == 'real') {
 		$content = vfs('real_getDirContent',array($path));
 	} else {
@@ -34,10 +35,23 @@ function eyeFiles_lib_CreateTree($type,$path,$myTree,$tree,$expand) {
 				$folder .= FILES_USER_DIR . '/';
 			}
 			$md5 = md5(realpath($folder));
-			$myTree->addItem($tree,'item_' . utf8_basename($folder) . '_' . $md5,utf8_basename($folder));
-			$myTree->addSubList('item_' . utf8_basename($folder) . '_' . $md5,'list_'.utf8_basename($folder) . '_' . $md5);
+			$basename = utf8_basename($folder);
+			$myTree->addItem($tree,'item_' . $basename . '_' . $md5,$basename);
+			$myWidgetDrop = new widgetDrop(array(
+				'father' => 'item_' . $basename . '_' . $md5,
+				'name' => 'item_' . $basename . '_' . $md5 . '_WidgetDrop'
+			));
+			$myWidgetDrop->show();
+			$myWidgetDrop->addBehaviour(array(
+				'type' => 'widgetDrop_simpleMsg',
+				'params' => array(
+					'content' => array($cleaned . '/' . $basename),
+					'pid' => $myPid,
+					'signal' => 'Icon_Dropped'
+			)));
+			$myTree->addSubList('item_' . $basename . '_' . $md5,'list_'.$basename . '_' . $md5);
 			if (utf8_strpos($expand,realpath($path)) === 0 && $expand != realpath($path . '/')) {
-				eyeFiles_lib_CreateTree($type,$folder,$myTree,'list_' . utf8_basename($folder) . '_' . $md5,$expand);
+				eyeFiles_lib_CreateTree($type,$cleaned . '/' . $basename,$folder,$myTree,'list_' . $basename . '_' . $md5,$expand);
 			}
 		}
 	}

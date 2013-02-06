@@ -253,6 +253,10 @@ class Tab {
 			}
 		}
 	}
+	
+	function getNameBySignalParam($realName) {
+		return $this->myTabs[utf8_substr($realName,6) . '_Content'];
+	}
 }
 
 ?>

@@ -49,11 +49,6 @@ function eyeControl_on_system_system($params = '') {
 	$xml['CONFIG'][0]['DEFAULT_QUOTA'][0] = strval($quota);
 	eyeXML('setXMLFile',array($file,$xml));
 	
-	$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/sec.xml';
-	$xml = eyeXML('getXMLfile',array($file));
-	$xml['CONFIG'][0]['PROTECTED_IP_SESSIONS'][0] = $GLOBALS['eyeControl_system_system_checkbox_ipprotect']->checked;
-	eyeXML('setXMLFile',array($file,$xml));
-	
 	$xml = getConfig('eyeFiles','conf.xml');
 	$xml['eyeFiles'][0]['CreateThumbnails'][0] = $GLOBALS['eyeControl_system_system_checkbox_thumbnails']->checked;
 	setConfig('eyeFiles','conf.xml',$xml);

@@ -32,7 +32,8 @@ function ButOnClick(e,pid,checknum) {
 		hideMenu(pid);
 	} else {
 		eyeBarMenuState = 1;
-		xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10000';
+// 		xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10000';
+		xGetElementById(pid + '_eyeMenuDiv').setAttribute('class','eyeMenuButton_clicked');
 		if (!IEversion) {
 			updateOpacityOnce(0,pid + '_eyeMenu');
 		}
@@ -82,7 +83,8 @@ function hideMenu2(pid) {
 	eyeBut.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeBar/default.png';
 	fixPNG(eyeBut);
 	xGetElementById(pid + '_eyeMenu').style.visibility = 'hidden';
-	xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10';
+// 	xGetElementById(pid + '_eyeMenuDiv').style.zIndex = '10';
+	xGetElementById(pid + '_eyeMenuDiv').setAttribute('class','eyeMenuButton');
 }
 
 function init_eyeBar(pid,checknum) {

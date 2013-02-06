@@ -30,6 +30,17 @@ function service_sec_init($params = null) {
 }
 
 /**
+* Return the protected ip sessions state
+* 
+* @return returns a boolean with the state of protected ip sessions
+* @date 2009/02/24
+*/
+function service_sec_protectedIpSessions($params = null) {
+	$config = eyeXML('getXMLconfig',array('sec','conf.xml'));
+	return $config['security'][0]['PROTECTED_IP_SESSIONS'][0];
+}
+
+/**
 * Cleans a desired string, allowing the possibility to eliminate newline
 * and carriage return characters, replacing HTML special characters to
 * entities or adjusting the string to a given length.

@@ -1,150 +1,92 @@
-.eyeBoxTable {
-	border-bottom: 0;
-}
-
-.eyeClock {
-	background-image: url();
-	bottom: 0;
-	cursor: pointer;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/desktop/clock.png', sizingMethod='scale');
-	height: 22px;
+.activeWindow, .eyeWindowTitle, .inactiveWindow {
+	background: url();
+	border: 1px solid #214e79;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top.png', sizingMethod='scale');
+	height: 23px;
+	left: 0px;
 	position: absolute;
-	right: 0;
-	width: 111px;
+	right: 0px;
+	top: 0;
+	width: expression(this.parentNode.offsetWidth - 0 - 0 - 0);
 }
 
-.eyeClockText {
-	color: #ffffff;
-	font-size: 9pt;
-	margin-right: 10px;
-	margin-top: 5px;
-	text-align: right;
+.activeWindow_border_left {} 
+.activeWindow_border_right {}
+
+.eyeBarItemsText {
+	width: 155px;
+	height: 22px !important;
 }
 
-.eyeDesk_miniCalendar {
-	background-image: url();
-	bottom: 30px;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/desktop/calendar.png', sizingMethod='scale');
+.eyeBoxBottCent {
+	background-image: url(); 
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/bg_bottom_center.png', sizingMethod='scale');
+	height: 17px !important;
 }
 
-.eyeDesk_iconsOver {
-	border: 0;
-}
-
-.eyeDock_center {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/center.png', sizingMethod='scale');
-	width: expression(this.parentNode.offsetWidth - 18 - 18);
-}
-
-.eyeDock_left {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/left.png', sizingMethod='scale');
-}
-
-.eyeDock_right {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/right.png', sizingMethod='scale');
-	right: -1px;
-}
-
-.eyeDockMenuBottomCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-	bottom: -13px;
-}
-
-.eyeDockMenuBottonLeft {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/bottom_left.png', sizingMethod='scale');
-	bottom: -13px;
-}
-
-.eyeDockMenuBottonRight {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/bottom_right.png', sizingMethod='scale');
-	bottom: -13px;
-}
-
-.eyeDockMenuContent {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-}
-
-.eyeDockMenuIcon:hover {
-	background-image: url();
-	cursor: pointer;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/dockbgover.png', sizingMethod='scale');
-	left: 2px;
-	position: absolute;
+.eyeBoxSupCent {
+	background-image: url(); 
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/boxbg.png', sizingMethod='scale');
+	border-bottom: 1px solid #acacac;
+	height: 21px !important;
 	width: 100%;
 }
 
-.eyeDockMenuLeftCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
+.eyeBoxTable {}
+
+.eyeBoxText {
+	background: transparent; 
+	border: 0px;
 }
 
-.eyeDockMenuLine {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/IE/apps/eyeDock/line.png);
+.eyeButtonClass {
+	background-image: url(); 
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=2EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/buttonbg.png', sizingMethod='scale');
 }
 
-.eyeDockMenuRightCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
+.eyeClock, .minimizedApps, .minimizedAppsRight {
+	top: -2px;
 }
 
-.eyeDockMenuTopCenter {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/bg.png', sizingMethod='scale');
-	top: -13px;
-}
-
-.eyeDockMenuTopLeft {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/top_left.png', sizingMethod='scale');
-	top: -12px;
-}
-
-.eyeDockMenuTopRight {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeDock/top_right.png', sizingMethod='scale');
-	top: -12px;
-}
-
-.eyeFiles_icons {
+.eyeDesk_iconsOver, .eyeFiles_icons {
 	border: 0;
 }
 
-.eyeIcon {
-	border: 0;
+.eyeDesk_miniCalendar {
+	bottom: 29px;
 }
 
-.eyeMenu_top {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeBar/top_bub.png', sizingMethod='image');
-	height: 20px;
-	width: 180px;
+.eyeMenu {
+	bottom: 30px;
+}
+
+.eyeMenuButton {
+	bottom: 18px;
 }
 
 .eyeMenu_bot {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeBar/bottom_bub.png', sizingMethod='image');
-	height: 20px;
-	width: 180px;
+	background: #dddddd;
+	border-left: 2px groove #ffffff;
+	filter:alpha(opacity=90);
+	height: 15px;
 }
 
-.eyeMenu_cen {
-	background-image: url();
-	color: #ffffff;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeBar/center_bub.png', sizingMethod='scale');
-	font-family: Verdana;
-	font-size: 11px;
-	width: 180px;
+.eyeMessageBoxText {
+	width: 280px !important;
 }
 
-.eyeMessageBox {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/IE/desktop/messagebox.png);
+.eyeSplitter_horizontal {
+	border-top: 1px dashed #acacac;
+	margin-top: 2px;
+}
+
+.eyeSplitter_vertical {
+	border-left: 1px dashed #acacac;
+	margin-left: 2px;
+}
+
+.eyeWindowOnBar_Off, .eyeWindowOnBar_On {
+	margin-top: 1px;
 }
 
 .eyeWindowCloseButton {
@@ -153,63 +95,65 @@
 }
 
 .eyeWindowContent {
-	width: expression(this.parentNode.offsetWidth - 2);
 	height: expression(this.parentNode.offsetHeight - 24);
+	width: expression(this.parentNode.offsetWidth - 0);
 }
 
 .eyeWindowContentInvisible {
 	height: expression(this.parentNode.offsetHeight);
-	width: expression(this.parentNode.offsetWidth);
+	width: expression(this.parentNode.offsetWidth) - 2;
 }
 
 .eyeWindowMaxButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/max.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/max.png', sizingMethod='crop');
+	padding-right: 31px;
+	right: 100px;
 }
 
 .eyeWindowMinimizeButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/min.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/min.png', sizingMethod='crop');
+	padding-right: 37px;
 }
 
-.eyeWindowOnBar_On {
+.eyeWindowResizeButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/minimized/minbar_on.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/resizebutton.png', sizingMethod='crop');
 }
 
-.eyeWindowOnBar_Off {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/minimized/minbar_off.png', sizingMethod='crop');
+.eyeWindowTitle {/*look at .activeWindow*/}
+
+.eyeWindowTitle_text {
+	color: #ffffff;
+	cursor: default;
+	font-weight: 600;
+	margin-left: 10px;
+	margin-top: 4px;
+	white-space: nowrap;
+	width: 100%;
+	height: 100%;
+}
+.inactiveWindow{
+	background: url();
+	border: 1px solid #acacac;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top_x.png', sizingMethod='scale');
 }
 
-.eyeWindowTitle_border_left {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top_left.png', sizingMethod='scale');
-}
-
-.eyeWindowTitle_border_right {
-	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top_right.png', sizingMethod='scale');
-	right: 2px !important;
-}
-
-.eyeWindowTitle_center {
-	width: expression(this.parentNode.offsetWidth - 2 - 2 - 2);
-}
-
-.minimizedApps {
-	width: expression(this.parentNode.offsetWidth - 161);
-}
-
-.minimizedAppsLeft {
-	left: -1px;
-}
-
-.minimizedAppsRight {
-	right: 113px;
-}
+.inactiveWindow_border_left {}
+.inactiveWindow_border_right {}
 
 .shadowLayer {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/bg.png', sizingMethod='scale');
+}
+
+.sort-arrow.ascending {
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/upsimple.png', sizingMethod='scale');
+}
+
+.sort-arrow.descending {
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/downsimple.png', sizingMethod='scale');
 }

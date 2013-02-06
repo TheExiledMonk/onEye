@@ -65,6 +65,11 @@ function eyeFTP_emptyLocalFilesTable() {
 	$GLOBALS['eyeFTP_localPath_TXTBOX']->setText("");
 }
 
+function eyeFTP_refreshLocal() {
+	$conf = eyeFTP_getConf();
+	eyeFTP_browseLocal($conf['currentLocalDir']);
+}
+
 /**
  * @param string $path The path within the user dir ('/', '/Documents', '/Desktop', etc.) to browse
  */
@@ -117,29 +122,27 @@ function eyeFTP_browseLocal($path = '/') {
  * @param string $dir The directory to browse (e.g. './users/jn4/john/files/Documents')
  * @return array
  */
-function eyeFTP_listDir($dir) {
+function eyeFTP_listDir($dir,$addParent=true) {
 	$dir = eyeFTP_getFormatedDirPath($dir);
 	$content = vfs('getDirContent', array($dir));
 
 	$i = 1;
 	$filesData = array();
-	//add parent entry (..) only if we are not in the root directory
-	if (eyeFTP_resolvePathInUserDir($dir) != '/') {
-		$fileInfo = array(
-			'type'=>'d',
-			//'perms'=>' ',
-			//'number'=>' ',
-			'author'=>' ',
-			//'group'=>' ',
-			'size'=>' ',
-			//'month'=>' ',
-			//'day'=>' ',
-			'date'=>' ',
-			'name'=>'..',
-			'displayedName'=>'..',
-			'path'=>''
-		);
-		$filesData[$i++] = $fileInfo;
+	
+	if ($addParent) {
+		//add parent entry (..) only if we are not in the root directory
+		if (eyeFTP_resolvePathInUserDir($dir) != '/') {
+			$fileInfo = array(
+				'type'=>'d',
+				'author'=>' ',
+				'size'=>' ',
+				'date'=>' ',
+				'name'=>'..',
+				'displayedName'=>'..',
+				'path'=>''
+			);
+			$filesData[$i++] = $fileInfo;
+		}
 	}
 
 	if (is_array($content)) {
@@ -170,13 +173,8 @@ function eyeFTP_listDir($dir) {
 
 			$fileInfo = array(
 				'type'=>$type,
-				//'perms'=>' ',
-				//'number'=>' ',
 				'author'=>$author,
-				//'group'=>' ',
 				'size'=>$size,
-				//'month'=>' ',
-				//'day'=>' ',
 				'date'=>$date,
 				'name'=>$name,
 				'displayedName'=>$name,

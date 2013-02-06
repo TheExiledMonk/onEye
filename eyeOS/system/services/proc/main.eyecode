@@ -42,6 +42,7 @@ function service_proc_init() {
 	//create the process table if it hadn't been created
 	if(eyeSessions('checkVar',array(TABLENAME)) == false){		
 		eyeSessions('makeArrayVar',array(TABLENAME));
+		eyeSessions('setVar',array('next_tty',0));
 	}
 }
 
@@ -83,7 +84,6 @@ function service_proc_launch($params) {
 		return false;
 	}	
 	$appName = utf8_basename($params[0]);
-	
 	
 	//All params and needed vars.
 	global $currentUser;
@@ -290,6 +290,17 @@ function service_proc_close($params) {
 function service_proc_getProcessTable() {
 	//Get the process table from session.
 	return eyeSessions('getVar',array(TABLENAME));
+}
+
+/**
+* Returns a list of all process PIDS
+* 
+* @return Array containing all process pids.
+* @date 2009/02/18
+*/
+function service_proc_getProcessList() {
+	//Get the process table from session.
+	return array_keys(eyeSessions('getVar',array(TABLENAME)));exit;
 }
 
 /**
@@ -636,6 +647,19 @@ function service_proc_getTtyByPid($params){
 	return false;	
 }
 
+function service_proc_newTty($params=null) {
+	global $procInfo;
+	
+	$proc = proc('getProcByPid',array($procInfo['pid']));
+	$tty = eyeSessions('getVar',array('next_tty'));
+	$tty++;
+	eyeSessions('setVar',array('next_tty',$tty));
+	$proc['tty'] = $tty;
+	eyeSessions('addArrayValueByKey',array(TABLENAME,$proc,$procInfo['pid']));
+	$procInfo['tty'] = $tty;
+	return $tty;
+}
+
 //internal functions
 /***
 * 
@@ -698,7 +722,7 @@ function get_tty($father = null)
 {
 	$ret = proc('getTtyByPid',array($father));
 	if(!$ret) {
-		$ret = 1;
+		$ret = 0;
 	}
 	return $ret;
 }

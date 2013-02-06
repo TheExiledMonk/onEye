@@ -34,8 +34,8 @@ if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getCo
 }
 
 // $myTable
-$sortypes = array('String','String','String','String','Date','Date');
-$theader = array('Username','Full name','E-mail','Groups','Created on','Last login');
+$sortypes = array('String','String','String','String','Date','Date', 'Date');
+$theader = array('Username','Full name','E-mail','Groups','Created on','Last login', 'Expiration Date');
 
 $myTable = new Sortabletable(array(
 	'name' => 'eyeControl_users_sortabletable',
@@ -104,13 +104,18 @@ foreach ($allUsers as $user) {
 	if (!$lastlogin) {
 		$lastlogin = ' ';
 	}
+	($userXML['expirationDate'][0]) ? $expirationDate = date('d/m/Y',$userXML['expirationDate'][0]) : $expirationDate = 'Never';
+	if (!$expirationDate || intval($userXML['expirationDate'][0]) == 0) {
+		$expirationDate = 'Never';
+	}
 	$myTable->addRow(array(
 		$user,
 		$fullname,
 		$email,
 		$groups,
 		$createdate,
-		$lastlogin
+		$lastlogin,
+		$expirationDate
 	));
 }
 $currentUser = $oldUser;

@@ -83,14 +83,14 @@ function eyeInfo_run($params = '') {
 	));
 	$myImagebox->show();
 	
-	$team = array('Alejandro Fiestas','Anaël Ollier','Daniel Gil','Jose Carlos Norte','Lars Knickrehm','Marc Cercós','Pau Garcia-Milà','Pol Watine');
+	$team = array('Alejandro Fiestas','Anaël Ollier','Daniel Gil','Jose Carlos Norte','Lars Knickrehm','Marc Cercós','Pau Garcia-Milà','Pol Watine','Matthew Powell');
 	shuffle($team);
 	$y = 246 / (2 + count($team));
 	
 	$myLabel = new Label(array(
 		'father' => $teamTab,
 		'name' => 'eyeInfo_Label_Team',
-		'text' => 'Official eyeOS Team',
+		'text' => 'The eyeOS Crowd',
 		'x' => 10,
 		'y' => $y - 10
 	));
@@ -110,7 +110,7 @@ function eyeInfo_run($params = '') {
 		$i++;
 	}
 	
-	$supporters = array('Alexandre Mejat','David Comuñas','Edouard Daubin','Juan Lao Tebar','Juanjo Ponz','Matthew Powell','Nick McMillen');
+	$supporters = array('Alexandre Mejat','David Comuñas','Edouard Daubin','François Bocquet');
 	shuffle($supporters);
 	$y = 246 / (2 + count($supporters));
 	

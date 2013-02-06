@@ -35,7 +35,7 @@ function eyeRename_run($params = '') {
 	}
 	if ($params[0]) {
 		eyex('messageBox',array(
-			'btn1_capt' => 'Rename',
+			'btn1_capt' => 'Accept',
 			'btn1_name' => 'Do',
 			'btn2_capt' => 'Cancel',
 			'btn2_name' => 'Close',

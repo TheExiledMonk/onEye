@@ -52,7 +52,8 @@ function eyeFiles_run($params = '') {
 		'name' => 'eyeFiles_Toolbar'
 	));
 	$myToolbar->show();
-	$myToolbar->addItem('Back','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/top.png','Back');
+	$myToolbar->addItem('Back','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/previous.png','Back');
+	$myToolbar->addItem('Next','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/next.png','Next');
 	$myToolbar->addLine();
 	$myToolbar->addItem('Home','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/home.png','Home');
 	$myToolbar->addItem('Groups','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/groups.png','Groups');
@@ -66,7 +67,7 @@ function eyeFiles_run($params = '') {
 	$myToolbar->addItem('Upload','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/upload.png','Upload files');
 	$myToolbar->addItem('NewFolder','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/newfolder.png','New folder');
 	$myToolbar->addItem('NewFile','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/create.png','New file');
-	$myToolbar->addItem('EmptyTrash','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/delete.png','Empty trash');
+	$myToolbar->addItem('EmptyTrash','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/emptyTrash.png','Empty trash');
 	$myToolbar->addLine();
 	
 	$myToolbar->addItem('Help','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/help.png','Help','',1);
@@ -78,6 +79,20 @@ function eyeFiles_run($params = '') {
 		'text' => $xml['eyeFiles'][0]['Box'][0]
 	));
 	$myHiddenBox->show();
+
+	$myHiddenStack = new Hidden(array(
+		'father' => 'eyeFiles_Window_Content',
+		'name' => 'eyeFiles_Hidden_Stack',
+		'text' => array()
+	));
+	reqLib('eyeWidgets','serialize',array($myHiddenStack));
+	
+	$myHiddenStackPosition = new Hidden(array(
+		'father' => 'eyeFiles_Window_Content',
+		'name' => 'eyeFiles_Hidden_StackPosition',
+		'text' => 0
+	));
+	reqLib('eyeWidgets','serialize',array($myHiddenStackPosition));
 	
 	$myBoxTree = new Box(array(
 		'father' => 'eyeFiles_Window_Content',

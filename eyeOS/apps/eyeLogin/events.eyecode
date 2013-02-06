@@ -79,10 +79,29 @@ function eyeLogin_on_Login($params = '') {
 	global $currentUser;
 	global $myPid;
 	$GLOBALS['eyeLogin_Label_1_Disabled']->hide();
-	$user = $GLOBALS['eyeLogin_Textbox_1_User']->text;
-	$password = base64_decode($GLOBALS['eyeLogin_Textbox_1_Password']->text);
+	$user = utf8_basename($GLOBALS['eyeLogin_Textbox_1_User']->text);
+	$loginCorrect = false;
+	//If secure login is enabled, and the UM module have the needed function to login with hash, use it (SAWASC)
+	if (SECURE_LOGIN == 1 && function_exists('service_um_loginWidthHash')) {
+		$oldUser = $currentUser;
+		$currentUser = ROOTUSER;
+		$xml = um('retrieveUser',array($user));
+		$currentUser = $oldUser;
+		$password = $GLOBALS['eyeLogin_Textbox_1_Password']->text;
+		$password2 = md5($_SESSION['sawasc'] . $xml['eyeUser'][0]['password'][0]);
+		if ($password == $password2 && um('loginWidthHash',array($user,$xml['eyeUser'][0]['password'][0]))) {
+			$loginCorrect = true;
+		}
+	//If not, just use the classic plain text
+	} else {
+		$password = base64_decode($GLOBALS['eyeLogin_Textbox_1_Password']->text);
+		if (um('login',array($user,$password))) {
+			$loginCorrect = true;
+		}
+	}
 	$language = $GLOBALS['eyeLogin_Select_1_Language']->selected;
-	if (um('login',array($user,$password))) {
+	if ($loginCorrect == true) {
+		unset($_SESSION['sawasc']);
 		$currentUser = $user;
 		$xml = eyeXML('getXMLconfig',array('eyex','eyex.xml'));
 		if ($xml['changes'][0]['increase'][0]) {

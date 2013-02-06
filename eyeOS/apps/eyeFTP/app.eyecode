@@ -23,7 +23,7 @@
 
 /**
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.2.1-1
+ * @version 3.3.0
  * @updated 8-Feb-2009
  */
 
@@ -643,10 +643,10 @@ function eyeFTP_run($params=null) {
 			if ($urlsParts['user']) {
 				$usernameTextbox->setText($urlsParts['user']);
 				if ($urlsParts['pass']) {
-					$passwordTextbox->setText(base64_encode($urlsParts['pass']));
+					$passwordTextbox->setText($urlsParts['pass']);
 				}
 				else {
-					$passwordTextbox->setText(base64_encode(''));
+					$passwordTextbox->setText('');
 				}
 			}
 			if ($urlsParts['path']) $currentRemoteDir->setText($urlsParts['path']);

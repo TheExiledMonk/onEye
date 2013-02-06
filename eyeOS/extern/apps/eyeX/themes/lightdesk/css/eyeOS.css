@@ -1,4 +1,4 @@
-ul.mktree {}
+lu.mktree {}
 
 ul.mktree li {
 	cursor: pointer;
@@ -15,25 +15,23 @@ ul.mktree li .bullet {
 	padding-left: 15px;
 }
 
-ul.mktree li.liOpen .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/folder_open.png) center left no-repeat;
+ul.mktree li.liOpen .bullet, ul.mktree li.liClosed .bullet, ul.mktree li.liBullet .bullet {
 	cursor: pointer;
 	display: inline-block;
 	height: 16px;
 }
 
+ul.mktree li.liOpen .bullet {
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/folder_open.png) center left no-repeat;
+}
+
 ul.mktree li.liClosed .bullet {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/folder.png) center left no-repeat;
-	cursor: pointer;
-	display: inline-block;
-	height: 16px;
 }
 
 ul.mktree li.liBullet .bullet {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/bullet.gif) center left no-repeat;
 	cursor: default;
-	display: inline-block;
-	height: 16px;
 }
 
 ul.mktree li.liOpen ul {
@@ -44,21 +42,26 @@ ul.mktree li.liClosed ul {
 	display: none;
 }
 
-ul.mktree li {
+ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li ul li ul li{
 	font-size: 11px;
 }
 
-ul.mktree li ul li {
-	font-size: 11px;
+.activeWindow, .eyeWindowTitle, .inactiveWindow{
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top.png)repeat-x;
+	border: 1px solid #214e79;
+	height: 21px;
+	left: 0px;
+	position: absolute;
+	right: 0px;
+	top: 0;
 }
 
-ul.mktree li ul li ul li {
-	font-size: 11px;
-}
-
-ul.mktree li ul li ul li ul li {
-	font-size: 11px;
-}
+.activeWindow_border_left {}
+.activeWindow_border_right {}
 
 #background {
 	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/wallpapers/default.jpg);
@@ -72,112 +75,76 @@ ul.mktree li ul li ul li ul li {
 }
 
 .blockbar {
-	background-color: #f6f6f6;
-	border-bottom: 1px solid #808080;
-	height: 58px;
+	background-color: #eeeeee;
+	border-bottom: 2px ridge #ffffff;
+	height: 57px;
 	overflow: hidden;
 	width: 100%;
 }
 
 .blockbarImg {}
 
-.blockbarItem {
-	border: 1px #f6f6f6 solid;
+.blockbarItem,.blockbarItem_right {
+	border: 1px solid #eeeeee;
 	cursor: pointer;
-	float: left;
+	margin-top: 6px;
+	padding: 2px 7px 5px;
+	text-align: center;
+	width: auto;
+}
+
+.blockbarItem, .blockbarItem:hover, .blockbarItemPress {
 	margin-left: 5px;
-	margin-top: 3px;
-	padding: 5px;
-	text-align: center;
-	width: auto;
-}
-
-.blockbarItem:hover {
-	background-color: #ffffff;
-	border-bottom: 1px #6d9fdc solid;
-	border-left: 1px #7fa4d6 solid;
-	border-right: 1px #6d9fdc solid;
-	border-top: 1px #7fa4d6 solid;
-	cursor: pointer;
 	float: left;
-	margin-left: 5px;
-	margin-top: 3px;
-	padding: 5px;
-	text-align: center;
-	width: auto;
 }
 
-.blockbarItem_right {
-	border: 1px #f6f6f6 solid;
-	cursor: pointer;
-	float: right;
+.blockbarItem_right, .blockbarItem_right:hover, .blockbarItemPress_right {
 	margin-right: 5px;
-	margin-top: 3px;
-	padding: 5px;
-	text-align: center;
-	width: auto;
-}
-
-.blockbarItem_right:hover {
-	background-color: #ffffff;
-	border-bottom: 1px #6d9fdc solid;
-	border-left: 1px #7fa4d6 solid;
-	border-right: 1px #6d9fdc solid;
-	border-top: 1px #7fa4d6 solid;
-	cursor: pointer;
 	float: right;
-	margin-right: 5px;
-	margin-top: 3px;
-	padding: 5px;
-	text-align: center;
-	width: auto;
 }
 
-.blockbarItemPress {
-	background-color: #e0e0e0;
-	border-bottom: 1px #94b8ef solid;
-	border-left: 1px #628ed7 solid;
-	border-right: 1px #94b8ef solid;
-	border-top: 1px #628ed7 solid;
+.blockbarItem:hover, .blockbarItem_right:hover {
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	-opera-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background-color:#eeeeee;
+	border-color: #a5a6ad;
+	border-radius: 5px;
+	border-style: solid;
+	border-width: 1px;
 	cursor: pointer;
-	float: left;
-	margin-left: 6px;
-	margin-top: 4px;
-	padding: 5px;
+	font-size: 20px;
+	margin-top: 6px;
+	padding: 2px 7px 5px;
 	text-align: center;
 	width: auto;
 }
 
-.blockbarItemPress_right {
-	background-color: #e0e0e0;
-	border-bottom: 1px #94b8ef solid;
-	border-left: 1px #628ed7 solid;
-	border-right: 1px #94b8ef solid;
-	border-top: 1px #628ed7 solid;
+.blockbarItemPress, .blockbarItemPress_right {
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	-opera-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background-color: #e7e7e7;
+	border-color: #84848a #909197 #a5a6ad #909197;
+	border-radius: 5px;
+	border-style: solid;
+	border-width: 2px 2px 1px 2px;
 	cursor: pointer;
-	float: right;
-	margin-right: 6px;
-	margin-top: 4px;
-	padding: 5px;
+	font-size: 20px;
+	margin-top: 5px;
+	padding: 2px 6px 5px;
 	text-align: center;
 	width: auto;
 }
 
-.blockbarline {
+.blockbarline, .blockbarline_right {
 	border-left: 1px solid #c7c7c7;
 	float: left;
 	height: 40px;
 	margin-left: 5px;
 	margin-top: 10px;
-	width: 1px;
-}
-
-.blockbarline_right {
-	border-left: 1px solid #c7c7c7;
-	float: right;
-	margin-left: 5px;
-	margin-top: 10px;
-	height: 40px;
 	width: 1px;
 }
 
@@ -185,6 +152,86 @@ ul.mktree li ul li ul li ul li {
 	color: #333333;
 	font-size: 9px;
 	margin-top: 5px;
+}
+
+.calendar_calendarBody {
+	height: 70%;
+	left: 1px;
+	position: absolute;
+	top: 25%;
+	width: 100%;
+}
+
+.calendar_dateMiddle {
+	height: 100%;
+	left: 24%;
+	position: absolute;
+	width: 52%;
+}
+
+.calendar_dayName {
+	font-size: 1em;
+	line-height: 136%;
+	position: absolute;
+	width: 9%;
+}
+
+.calendar_rowLeft {
+	cursor: pointer;
+	left: 0;
+	height: 100%;
+	position: absolute;
+	width: 24%;
+}
+
+.calendar_rowRight {
+	cursor: pointer;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	width: 24%;
+}
+
+.calendar_rowsAndDate {
+	font-size: 9px;
+	font-weight: bold;
+	height: 12%;
+	position: absolute;
+	text-align: center;
+	top: 2%;
+	width: 100%;
+}
+
+.calendar_weekDaysNames {
+	height: 12%;
+	left: 1px;
+	position: absolute;
+	top: 15%;
+	width: 100%;
+}
+
+.calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday {
+	font-family: Verdana,Arial,sans-serif,FreeSans;
+	font-size: 10px;
+	height: 90%;
+	position: absolute;
+	text-align: center;
+	width: 9%;
+}
+
+.calendar_weekDayClicked, .calendar_weekDayToday {
+	border: 1px solid;
+}
+
+.calendar_weekMonth, .calendar_weekMonthClicked, .calendar_weekMonthToday {
+	height: 16%;
+	left: 0;
+	position: absolute;
+	width: 99%;
+}
+
+.calendar_weekMonthClicked, .calendar_weekMonthToday {
+	border: 1px solid;
 }
 
 .dynamic-slider-control {
@@ -296,20 +343,26 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeButtonClass {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/buttonbg.png);
-	border-bottom: 1px solid #858585;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-opera-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	background-color: #ffffff;
+	background: url(index.php?version=2EXTERN_CACHE_VERSION&theme=newdefault&extern=images/widgets/buttonbg.png)repeat-x top;
+	border-bottom: 1px solid #7f7f7f;
 	border-left: 1px solid #aeaeae;
-	border-right: 1px solid #aeaeae;
-	border-top: 1px solid #858585;
+	border-right: 1px solid #7f7f7f;
+	border-top: 1px solid #aeaeae;
+	cursor: pointer;
 	font-size: 11px;
-	height: 22px;
+	padding: 1px;
 }
 
 .eyeButtonClass:hover {
-	border-bottom: 1px solid #6fa1e0;
+	border-bottom: 1px solid #6a9bd8;
 	border-left: 1px solid #a1c6f3;
-	border-right: 1px solid #a1c6f3;
-	border-top: 1px solid #6fa1e0;
+	border-right: 1px solid #6a9bd8;
+	border-top: 1px solid #a1c6f3;
 }
 
 .eyeChess_b {
@@ -347,25 +400,21 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeClock {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/desktop/clock.png);
-	background-repeat: no-repeat;
-	bottom: 0;
+	top: 0;
 	cursor: pointer;
 	height: 24px;
 	position: absolute;
 	right: 0;
 	width: 90px;
-	z-index: 10000;
+	z-index: 1000;
 }
 
-.eyeClock:hover {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/desktop/clock_x.png);
-	background-repeat: no-repeat;
-}
+.eyeClock:hover {}
 
 .eyeClockText {
-	color: #ffffff;
-	font-size: 10px !important;
+	color: #333333;
+	font-size: 11px !important;
+	font-weight: bold;
 	margin-right: 3px;
 	margin-top: 6px;
 	text-align: right;
@@ -406,9 +455,13 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeDesk_miniCalendar {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/desktop/calendar.png);
-	background-repeat: no-repeat;
-	bottom: 24px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	-opera-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background-color: #dddddd;
+	border-radius: 5px;
+	top: 24px;
 	display: none;
 	height: 148px;
 	padding-top: 10px;
@@ -425,9 +478,14 @@ ul.mktree li ul li ul li ul li {
 	cursor: pointer;
 }
 
-.eyeDesk_iconsOver:hover {
-	background-color: #0a2c5e;
-	border: 1px solid #3b567e;
+.eyeDesk_iconsOver:hover, .eyeFiles_icons:hover, .eyeIcon:hover {
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	-opera-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background-color: #c7ddf8;
+	border: 1px solid #9ec8fb;
+	border-radius: 5px;
 }
 
 .eyeDock_center {
@@ -618,20 +676,10 @@ ul.mktree li ul li ul li ul li {
 	cursor: pointer;
 }
 
-.eyeFiles_icons:hover {
-	background-color: #c7ddf8;
-	border: 1px solid #9ec8fb;
-}
-
 .eyeIcon {
 	background-color: transparent;
 	border: 1px solid transparent;
 	color: #ffffff;
-}
-
-.eyeIcon:hover {
-	background-color: #c7ddf8;
-	border: 1px solid #00ff00;
 }
 
 .eyeIcon_blank {}
@@ -699,19 +747,26 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeMessageBox {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/desktop/messagebox.png);
-	background-repeat: no-repeat;
+	-icab-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-o-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	background: #ffffff;
+	border: 1px solid #214e79;
+	border-radius: 10px;
+	bottom: 40px;
+	filter: alpha(opacity=90);
 	height: 69px;
-	opacity: 0;
+	opacity: 0.9;
 	position: absolute;
 	right: 10px;
-	top: 10px;
 	width: 208px;
 	z-index: 100;
 }
 
 .eyeMessageBoxText {
-	color: #ffffff;
+	color: #000000;
 	font-size: 10pt;
 	margin-left: 20px;
 	margin-right: 20px;
@@ -750,17 +805,33 @@ ul.mktree li ul li ul li ul li {
 
 .eyeSplit {}
 
-.eyeSplitter_horizontal {
-	border-top: 1px solid #c7c7c7;
-	border-bottom: 1px solid #c7c7c7;
-}
-
-.eyeSplitter_vertical {
-	border-left: 1px solid #c7c7c7;
-	border-right: 1px solid #c7c7c7;
+.eyeSplitter_horizontal, .eyeSplitter_vertical {
+	background:url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/dimple.png)no-repeat center center;
+	margin-top:-1px;
+	padding:1px;
 }
 
 .eyeTab {}
+
+.eyeTabArrowRight {
+	position: absolute;
+	top: 0px;
+	cursor: Pointer;
+	right: 0px;
+	width: 9px;
+	height: 24px;
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/arrow_right.png);
+}
+
+.eyeTabArrowLeft {
+	position: absolute;
+	top: 0px;
+	cursor: Pointer;
+	left: 0px;
+	width: 9px;
+	height: 24px;
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/arrow_left.png);
+}
 
 .eyeTabBody {
 	left: 0;
@@ -781,44 +852,50 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeTabHeader {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/tabbg.png);
-	background-repeat: repeat-x;
+	background: #f6f6f6;
 	border-bottom: 1px solid #acacac;
 	height: 23px;
-	left: 0;
+	left: 9px;
 	position: absolute;
 	top: 0;
 }
 
 .eyeTabNotSelected {
+	border-top: 1px solid #acacac;
+	height: 19px !important;
+	margin-top: 3px;
+}
+
+.eyeTabNotSelected, .eyeTabSelected {
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
 	background-color: #ffffff;
 	border-left: 1px solid #acacac;
 	border-right: 1px solid #acacac;
-	border-top: 1px solid #acacac;
 	cursor: pointer;
-	height: 22px !important;
 	vertical-align: middle;
 }
 
 .eyeTabSelected {
-	background-color: #ffffff;
-	border-left: 1px solid #acacac;
-	border-right: 1px solid #acacac;
 	border-top: 1px solid #89d0fd;
-	cursor: pointer;
 	font-style: italic;
-	vertical-align: middle;
 }
 
 .eyeTabText {
 	color: #3e3e3e;
 	font-size: 11px;
 	margin-left: 5px;
-	margin-top: 4px;
+	margin-top: 3px;
 	vertical-align: middle;
 }
 
 .eyeTextarea {
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-opera-border-radius: 3px;
+	-webkit-border-radius: 3px;
 	background-color: #ffffff;
 	border: 1px solid #bcbcbc;
 	font-size: 11px;
@@ -831,22 +908,27 @@ ul.mktree li ul li ul li ul li {
 .eyeTextareaContainer {}
 
 .eyeTextbox {
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-opera-border-radius: 3px;
+	-webkit-border-radius: 3px;
 	background-color: #ffffff;
 	border: 1px solid #bcbcbc;
 	font-size: 11px;
 	padding-left: 2px;
 }
+
 .eyeTextbox:hover {
 	border: 1px solid #858585;
 }
 
 .eyeWindowCloseButton {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/close.png);
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/close.png) no-repeat;
 	cursor: pointer;
-	height: 17px;
+	height: 15px;
 	position: absolute;
-	top: 3px;
-	width: 17px;
+	top: 1px;
+	width: 23px;
 }
 
 .eyeWindowCloseButton:hover {
@@ -854,10 +936,14 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeWindowContent {
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 5px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 5px;
 	background-color: #ffffff;
-	border-bottom: 1px solid #424d5f;
-	border-left: 1px solid #424d5f;
-	border-right: 1px solid #424d5f;
+	border-bottom: 1px solid #acacac;
+	border-left: 1px solid #acacac;
+	border-right: 1px solid #acacac;
 	bottom: 0;
 	left: 0;
 	position: absolute;
@@ -878,19 +964,28 @@ ul.mktree li ul li ul li ul li {
 
 .eyeWindowMain {
 	color: #000000;
-	height: 200px;
+	height: 250px;
 	margin: 0;
 	overflow: hidden;
 	padding: 0;
 	position: absolute;
 	width: 200px;
+	left: 0px;
 }
 
 .eyeWindowMainDrag {
+	-moz-border-radius-bottomleft: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 6px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
 	background-color: #a1bfe6;
-	border-bottom: 1px solid #424d5f;
-	border-left: 1px solid #424d5f;
-	border-right: 1px solid #424d5f;
+	border-bottom: 1px solid #dddddd;
+	border-left: 1px solid #dddddd;
+	border-right: 1px solid #dddddd;
 	height: 200px;
 	margin: 0;
 	overflow: hidden;
@@ -900,12 +995,13 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeWindowMaxButton {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/max.png);
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/max.png) no-repeat;
 	cursor: pointer;
-	height: 17px;
+	height: 15px;
+	padding-right: 7px;
 	position: absolute;
-	top: 3px;
-	width: 17px;
+	top: 1px;
+	width: 23px;
 }
 
 .eyeWindowMaxButton:hover {
@@ -913,12 +1009,13 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeWindowMinimizeButton {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/min.png);
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/min.png) no-repeat;
 	cursor: pointer;
-	height: 17px;
+	height: 15px;
+	padding-right: 12px;
 	position: absolute;
-	top: 3px;
-	width: 17px;
+	top: 1px;
+	width: 23px;
 }
 
 .eyeWindowMinimizeButton:hover {
@@ -933,7 +1030,12 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeWindowOnBar_Off {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/minimized/minbar_off.png) top center no-repeat;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top_x.png)repeat-x;
+	border: 1px solid #acacac;
 	color: #294e82;
 	cursor: pointer;
 	font-weight: 400;
@@ -946,7 +1048,12 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeWindowOnBar_On {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/minimized/minbar_on.png) top center no-repeat;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top.png)repeat-x;
+	border: 1px solid #214e79;
 	color: #ffffff;
 	cursor: pointer;
 	font-weight: 400;
@@ -965,7 +1072,7 @@ ul.mktree li ul li ul li ul li {
 }
 
 .eyeWindowResizeButton {
-	background-color: transparent;
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/resizebutton.png);
 	bottom: 0;
 	cursor: se-resize;
 	height: 12px;
@@ -974,44 +1081,10 @@ ul.mktree li ul li ul li ul li {
 	width: 12px;
 }
 
-.eyeWindowTitle {
-	height: 23px;
-	margin: 0;
-	overflow: hidden;
-	padding: 0;
-	width: 100%;
-}
-
-.eyeWindowTitle_center {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top.png);
-	background-repeat: repeat-x;
-	border: 0;
-	height: 23px;
-	left: 2px;
-	position: absolute;
-	right: 2px;
-	top: 0;
-}
-
-.eyeWindowTitle_border_left {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top_left.png);
-	background-repeat: no-repeat;
-	position: absolute;
-	height: 23px;
-	left: 0;
-	top: 0;
-	width: 2px;
-}
-
-.eyeWindowTitle_border_right {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top_right.png);
-	background-repeat: no-repeat;
-	height: 23px;
-	position: absolute;
-	right: 0;
-	top: 0;
-	width: 2px;
-}
+.eyeWindowTitle { /*look at .activeWindow*/ }
+.eyeWindowTitle_center {}
+.eyeWindowTitle_border_left {}
+.eyeWindowTitle_border_right {}
 
 .eyeWindowTitle_text {
 	color: #ffffff;
@@ -1026,6 +1099,14 @@ ul.mktree li ul li ul li ul li {
 	height: 27px;
 	width: 200px;
 }
+
+.inactiveWindow{
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top_x.png)repeat-x;
+	border: 1px solid #acacac;
+}
+
+.inactiveWindow_border_left {}
+.inactiveWindow_border_right {}
 
 .menuBar_text {
 	cursor: pointer;

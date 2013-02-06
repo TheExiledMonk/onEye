@@ -39,6 +39,14 @@ function eyeControl_on_edituser_save($params = '') {
 	
 	$array['fullname'] = $GLOBALS['eyeControl_edituser_textbox_fullname']->text;
 	$array['email'] = $GLOBALS['eyeControl_edituser_textbox_email']->text;
+	if($GLOBALS['eyeControl_edituser_textbox_expire']->text == "Never" 
+		|| $GLOBALS['eyeControl_edituser_textbox_expire']->text == "never") {
+		$exp = 0;
+	} else {
+		$date = explode("/",$GLOBALS['eyeControl_edituser_textbox_expire']->text);
+		$exp = mktime(0,0,0,$date[1],$date[0],$date[2]);
+	}
+	$array['expirationDate'] = $exp;
 	if ($array['username'] != ROOTUSER || $currentUser == REAL_ROOTUSER && $array['username'] != REAL_ROOTUSER) {
 		$array['disabled'] = $GLOBALS['eyeControl_edituser_checkbox_block']->checked;
 	}

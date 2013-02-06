@@ -38,6 +38,14 @@ function eyeControl_on_newuser_save($params = '') {
 	$pwd_again = base64_decode($GLOBALS['eyeControl_newuser_textbox_pwd_again']->text);
 	$fullname = $GLOBALS['eyeControl_newuser_textbox_fullname']->text;
 	$email = $GLOBALS['eyeControl_newuser_textbox_email']->text;
+	$expirationDate = $GLOBALS['eyeControl_newuser_textbox_expire']->text;
+	
+	if($expirationDate == "Never" || $expirationDate == "never") {
+		$expirationDate = 0;
+	} else {
+		$date = explode("/",$expirationDate);
+		$expirationDate = mktime(0,0,0,$date[1],$date[0],$date[2]);
+	}
 	
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
@@ -73,7 +81,8 @@ function eyeControl_on_newuser_save($params = '') {
 			'groups' => $groups,
 			'maintain' => $maintain,
 			'admin' => $admin,
-			'maintainer' => $maintainer
+			'maintainer' => $maintainer,
+			'expirationDate' => $expirationDate
 		));
 		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 			$myUserXml['eyeUser'][0]['mngUser'][] = $username;

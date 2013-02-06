@@ -28,6 +28,10 @@ eyeDockMenuState = '';
 init_eyeDock($checknum);
 
 function dockActiveMenu(id,icon,but,pid){
+	//Besure that when the dock is actived, the button is also "pulsed"
+	var iconObj = xGetElementById(pid+'_'+id+'_Container');
+	iconObj.classNameBack = iconObj.className;
+	iconObj.className = iconObj.className+'_active';
 	xGetElementById(pid + '_menu_items_' + id).style.display = 'block';
 	eyeDockLastIcon = icon;
 	eyeDockLastId = id;
@@ -71,7 +75,7 @@ function dockButOnMouseOver(id,icon,pid) {
 	but.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeDock/icons/' + icon + '_x.png';
 	fixPNG(but);
 	xGetElementById(pid + '_menu_text_items_' + id).style.display = 'block';
-	if (eyeDockMenuState != '') {
+	if (eyeDockMenuState != '' && eyeDockMenuState != id) {
 		dockDesactiveMenu(pid);
 		dockActiveMenu(id,icon,but,pid);
 		if (!eyeDock_handled[id]) {
@@ -88,6 +92,8 @@ function dockCenter(id,pid) {
 }
 
 function dockDesactiveMenu(pid) {
+	var iconObj  = xGetElementById(pid+'_'+eyeDockLastId+'_Container');
+	iconObj.className = iconObj.classNameBack;
 	eyeDockLastObject.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeDock/icons/' + eyeDockLastIcon + '.png';
 	fixPNG(eyeDockLastObject);
 	xGetElementById(pid + '_menu_items_' + eyeDockLastId).style.display = 'none';
@@ -101,8 +107,16 @@ function dockMenuHeight(id,inty,pid) {
 function eyeDockClickHandler(id,pid) {
 	eyeDock_handled[id] = id;
 	addClickHandler(pid + '_' + id,'if (eyeDockMenuState == "' + id + '") { dockDesactiveMenu("' + pid + '"); }');
+ 	addFriendClick(pid + '_' + id,pid + '_' + id+'_Container');
 }
 
 function init_eyeDock(checknum) {
 	sendMsg(checknum,'Launch','');
+}
+function dockCenter2(id,pid,num){
+	var item = xGetElementById(pid+'_'+id);
+	var eyeApps = xGetElementById('eyeApps');
+	var left = item.parentNode.offsetLeft;
+	item.style.left = left+'px';
+	eyeApps.appendChild(item);
 }

@@ -26,10 +26,10 @@ function restoreTrash_run($params = '') {
 	$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/' . $file));
 	if ($params[0]) {
 		eyex('messageBox',array(
-			'btn1_capt' => 'Restore',
-			'btn1_name' => 'Do',
 			'btn2_capt' => 'Cancel',
 			'btn2_name' => 'Close',
+			'btn1_capt' => 'Accept',
+			'btn1_name' => 'Do',
 			'content' => 'Do you really want to restore "%s"?',
 			'hidden_name' => 'restoreTrash_Hidden_Path',
 			'hidden_text' => $file,

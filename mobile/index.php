@@ -21,62 +21,10 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-/*
-*This constant is only for 1.8 version and won't be compatible
-*With eyeOS 1.9 and above, so please use INDEX_TYPE INSTEAD!
-*/
-define('IS_MOBILE',1);
 define('INDEX_TYPE','mobile');
-
-//Loading basic settings for eyeOS Kernel and Services
-include_once('../settings.php');
-//change directory to EYE_ROOT
-chdir('../'.REAL_EYE_ROOT);
-
-//Loaded before kernel for kernel utf8 compatibility
-include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeString/main'.EYE_CODE_EXTENSION);
-call_user_func('lib_eyeString_start');
-//setting library loaded
-define('LIB_EYESTRING_LOADED',1);
-
-//Loading the Kernel
-include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/kernel'.EYE_CODE_EXTENSION);
-
-//Loading the service configuration from XML
-loadServiceConfig();
-
-//if allow_big_streams php will not have max_execution_time
-if(ALLOW_BIG_STREAMS == 1) {
-	@set_time_limit(0);
+if(!defined('EYE_INDEX')){
+	include_once('../index.php');
 }
-
-//Hiding warnings and notices if Debug Mode is Off
-if(EYEOS_DEBUG_MODE == 0) {
-	error_reporting(0);
-} elseif(EYEOS_DEBUG_MODE == 2) {
-	error_reporting(E_ALL);
-} elseif(EYEOS_DEBUG_MODE == 3) {
-	error_reporting(E_ALL ^ E_NOTICE);
-}else {
-	error_reporting(E_ERROR); //TODO: SUPPORT E_ALL
-}
-
-//Loading the Error Codes
-reqLib('errorCodes','loadCodes');
-//load pear library class
-reqLib('eyePear','loadPear');
-
-//Setting the Running Log check var to 0
-global $LOG_RUNNING;
-$LOG_RUNNING = 0;
-
-//Loading the Security Service (sec) if eyeOS Security is turned on (by default is On)
-if(EYEOS_SECURITY == 1) {
-	service('sec','start');
-}
-
-//set the default charset
-ini_set('default_charset', DEFAULT_CHARSET);
 
 //Check if index.php is being used to load images/files from extern directory
 if (isset($_GET['extern'])) {

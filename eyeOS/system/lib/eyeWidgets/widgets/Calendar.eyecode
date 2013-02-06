@@ -115,6 +115,7 @@ class Calendar{
 	}
 
 	function show() {
+		global $myPid;
 		$i18nMonths = array(i18n('translate',array('January')),
 							i18n('translate',array('February')),
 							i18n('translate',array('March')),
@@ -165,7 +166,8 @@ class Calendar{
 			'drawHighlight'=>$this->drawHighlight,
 			'monthNames'=>$months,
 			'weekDays'=>$weekDays,
-			'startMonday'=>$this->startMonday
+			'startMonday'=>$this->startMonday,
+			'myPid'=>$myPid
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		

@@ -135,8 +135,8 @@ function eyeManageApps_on_createGroup($params=null) {
 		'father' => 'eyeApps',
 		'removepid' => 0,
 		'title' => 'Create new Group',
-		'width' => 320,
-		'height' => 170,
+		'width' => 300,
+		'height' => 160,
 		'cent' => 1,
 		'type' => NOLIST_CLOSE_WINDOW
 	));
@@ -166,19 +166,21 @@ function eyeManageApps_on_createGroup($params=null) {
 		'name'=>'CancelWND',
 		'caption'=>'Cancel',
 		'father'=>'WND2_Content',
-		'x'=>40,
+		'x'=>110,
 		'y'=>20,
 		'horiz'=>1,
+		'width'=>70,
 		'vert'=>1
 	));
 	$myButton->show();
 	
 	$myButton1 = new Button(array(
 		'name'=>'doCreate',
-		'caption'=>'Create',
+		'caption'=>'Accept',
 		'father'=>'WND2_Content',
-		'x'=>110,
+		'x'=>24,
 		'y'=>20,
+		'width'=>70,
 		'horiz'=>1,
 		'vert'=>1
 	));
@@ -320,22 +322,22 @@ function eyeManageApps_on_addApplication($params=null) {
 	$myButton1 = new Button(array(
 		'name' => 'CancelWND',
 		'father' => 'WND2_Content',
-		'x' => 30,
+		'x' => 110,
 		'y' => 150,
 		'horiz' => 1,
-		'width' => 50,
-		'caption' => 'Close'
+		'width' => 70,
+		'caption' => 'Cancel'
 	));
 	$myButton1->show();
 		
 	$myButton2 = new Button(array(
 		'name' => 'doAdd',
 		'father' => 'WND2_Content',
-		'x' => 90,
+		'x' => 30,
 		'y' => 150, 
 		'horiz' => 1,
-		'caption' => 'Add Application',
-		'width' => 120
+		'caption' => 'Accept',
+		'width' => 70
 	));
 	$myButton2->addFriend($myTextbox1);
 	$myButton2->addFriend($mySelect);
@@ -777,24 +779,24 @@ function eyeManageApps_on_properties($params) {
 		$myButton1 = new Button(array(
 			'name' => 'CancelWND',
 			'father' => 'WND2_Content',
-			'x' => 40,
-			'y' => 15,
+			'x' => 126,
+			'y' => 24,
 			'horiz' => 1,
 			'vert' => 1,
-			'width' => 50,
-			'caption' => 'Close'
+			'width' => 70,
+			'caption' => 'Cancel'
 		));
 		$myButton1->show();
 
 		$myButton2 = new Button(array(
 			'name' => 'doUpdateApp',
 			'father' => 'WND2_Content',
-			'x' => 95,
-			'y' => 15,
+			'x' => 36,
+			'y' => 24,
 			'horiz' => 1,
 			'vert' => 1,
-			'caption' => 'Save changes',
-			'width' => 120
+			'caption' => 'Accept',
+			'width' => 70
 		));
 		$myButton2->addFriend($myTextbox1);
 		$myButton2->addFriend($mySelect);
@@ -1020,6 +1022,10 @@ function eyeManageApps_on_refreshDock($params=null) {
 	if($dock != false) {
 		proc('getTask', array($dock, array('redraw' => 1)));
 	}
+	$dock = proc('findPidByName', array('eyeDockText'));
+	if($dock != false) {
+		proc('getTask', array($dock, array('redraw' => 1)));
+	}
 }
 
 function eyeManageApps_on_CancelWND() {
@@ -1157,10 +1163,10 @@ function eyeManageApps_on_useDefaults($params = '') {
 		'win_name' => 'eyeManageApps_useDefaults_window',
 		'win_style' => TITLE + CLOSE,
 		'win_removepid' => 0,
-		'btn1_capt' => 'Yes',
-		'btn1_name' => 'useDefaults_yes',
-		'btn2_capt' => 'No',
-		'btn2_name' => 'useDefaults_no',
+		'btn2_capt' => 'Accept',
+		'btn2_name' => 'useDefaults_yes',
+		'btn1_capt' => 'Cancel',
+		'btn1_name' => 'useDefaults_no',
 		'father' => 'eyeManageAppsWND',
 		'img' => '?'
 	));

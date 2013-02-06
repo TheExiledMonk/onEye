@@ -108,25 +108,6 @@ if (is_array($openDir)) {
 	}
 }
 $ContentY += 40;
-// Protect sessions by IPs
-$myLabel = new Label(array(
-	'name' => 'eyeControl_system_system_label_ipprotect',
-	'father' => $systemTab,
-	'x' => 20,
-	'y' => $ContentY + 3,
-	'text' => 'Protect sessions by IPs'
-));
-$myLabel->show();
-$myCheckbox_ipprotect = new Checkbox(array(
-	'name' => 'eyeControl_system_system_checkbox_ipprotect',
-	'father' => $systemTab,
-	'x' => 160,
-	'y' => $ContentY,
-	'text' => ' ',
-	'checked' => PROTECTED_IP_SESSIONS
-));
-$myCheckbox_ipprotect->show();
-$ContentY += 40;
 // User quota
 $myLabel = new Label(array(
 	'name' => 'eyeControl_system_system_label_quota',

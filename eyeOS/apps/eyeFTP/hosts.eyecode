@@ -570,7 +570,7 @@ function showManageHostsDialog($params=null) {
 		'name' => 'eyeFTP_manageHosts_password_TXTBOX',
 		'father' => 'eyeFTP_manageHosts_addUpdateHostData_CTNR',
 		'x' => 296,
-		'y' => 34,
+		'y' => 22,
 		'width' => 80,
 		'password' => 1,
 		'enabled' => 1
@@ -584,7 +584,7 @@ function showManageHostsDialog($params=null) {
 		'x' => 76,
 		'y' => 41,
 		'width' => 250,
-		'text' => 'Add -a to LIST command',
+		'text' => 'Append -a to LIST commands',
 		'checked' => 1
 	));
 	$listACheckbox->show();

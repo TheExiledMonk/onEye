@@ -66,6 +66,10 @@ class Window {
 	
 	var $showed = 0;
 	
+	//Pau
+	//friends abstraction
+	var $friends="''";
+	
 	//custom widget options
 	var $title;
 	var $type;
@@ -106,6 +110,7 @@ class Window {
 	var $oldX;
 	var $oldY;
 	var $fullScreen = 0;
+	var $removeFatherPid;
 	//This var are needed for fullscreen system
 	var $originWidth;
 	var $originHeight;
@@ -140,7 +145,7 @@ class Window {
 		isset($params['savePosition']) ? $this->savePosition = $params['savePosition'] : $this->savePosition = 0;
 		
 		if ($params['forceSavePosition']) {
-			$this->savePosition = 0;
+			$this->savePosition = 1;
 		} elseif ($params['forcePosition']) {
 			$this->savePosition = 0;
 		} else {
@@ -179,6 +184,7 @@ class Window {
 			$this->height = $this->minHeight;
 		}
 		isset($params['removepid']) ? $this->removepid = $params['removepid'] : $this->removepid = 1;
+		isset($params['removeFatherPid']) ? $this->removeFatherPid = $params['removeFatherPid'] : $this->removeFatherPid = false;
 		isset($params['sendResizeMsg']) ? $this->sendResizeMsg = $params['sendResizeMsg'] : $this->sendResizeMsg = 0;
 		isset($params['background']) ? $this->background = $params['background'] : $this->background = "";
 		isset($params['sigResize']) ? $this->sigResize = $params['sigResize'] : $this->sigResize = $this->name.'_Resize';
@@ -306,6 +312,17 @@ class Window {
 		}
 		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
+	
+	//friends handler 
+	function addFriend($friend) {
+		if(method_exists($friend,'getSyncString')) {
+			if($this->friends == "''") {
+				$this->friends = $friend->getSyncString();				
+			} else {
+				$this->friends .= '+'.$friend->getSyncString();
+			}
+		}
+	}
 
 	function show() {
 		if(is_array($this->cssReplace)){
@@ -316,6 +333,7 @@ class Window {
 		
 		$this->title = i18n('translate',array($this->title));
 		$widgetsparams = array(
+			'sync' => $this->friends, //Pau
 			'height' => $this->height,
 			'width' => $this->width,
 			'minHeight' => $this->minHeight,
@@ -372,6 +390,9 @@ class Window {
 			'params' => $widgetsparams,
 			'center' => $this->cent,
 		);
+		if($this->removeFatherPid == true){
+			$myWindow['removepid'] = true;
+		}
 		$this->showed=1;
 		$this->visible=1;
 		service('eyex','createWidget',$myWindow);
@@ -469,9 +490,21 @@ class Window {
 	}
 	
 	function setTitle($title) {
-		global $myPid;
-		$this->title = $title;
-		eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '_WindowTitle_text").innerHTML = %s; xGetElementById("' . $myPid . '_' . $this->name . '_WindowOnBar").childNodes[0].innerHTML = %s;','tokens' => array($title,$title)));
+// 		global $myPid;
+// 		$this->title = $title;
+// 		$js = '';
+// 		$this->min ? $minjs='xGetElementById("' . $myPid . '_' . $this->name . '_WindowMinimizeButton").offsetWidth' : $minjs='0';
+// 		$this->max ? $maxjs='xGetElementById("' . $myPid . '_' . $this->name . '_WindowMaxButton").offsetWidth' : $maxjs='0';
+// 		$this->close ? $closejs='xGetElementById("' . $myPid . '_' . $this->name . '_WindowCloseButton").offsetWidth' : $closejs='0';
+// 		$maxlong='xGetElementById("' . $myPid . '_' . $this->name . '_WindowTitle_center").offsetWidth - '.$minjs.' - '.$maxjs.' - '.$closejs.' - 10';
+// 		$js.='xGetElementById("' . $myPid . '_' . $this->name . '_WindowTitle_text").title = "'.$title.'";';
+// 		$js.='xGetElementById("' . $myPid . '_' . $this->name . '_WindowTitle_text").innerHTML = "'.$title.'";';
+// 		$js.='Window_fixTitle("' . $myPid . '_' . $this->name . '","'.$title.'",'.$maxlong.',false);';
+// 		eyex('runjs',array('js' => 'xGetElementById("' . $myPid . '_' . $this->name . '_WindowOnBar").childNodes[0].innerHTML = %s;','tokens' => array($title)));
+// 		eyex('runjs',array('js' => $js));
+        global $myPid;
+        $this->title = $title;
+        eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '_WindowTitle_text").innerHTML = %s; xGetElementById("' . $myPid . '_' . $this->name . '_WindowOnBar").childNodes[0].innerHTML = %s;','tokens' => array($title,$title)));
 	}
 	
 	function setRawContent($myContent) {

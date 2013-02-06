@@ -26,6 +26,7 @@ function eyeDocs_run($params=null) {
 	$content = "";
 	if($params[0]) {
 		$file = $params[0];
+		$title = utf8_basename($file).' - Word Processor';
 		$info = utf8_pathinfo($file);
 		$extension = utf8_strtolower($info['extension']);
 		$tCheckNum = proc('findChecknumByName',array('eyeX'));
@@ -69,29 +70,31 @@ function eyeDocs_run($params=null) {
 
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
 		reqLib('eyeWidgets','serialize',array($myHidden));
+	} else {
+		$title = 'Word Processor';
 	}
 	$myWindow = new Window(array('name'=>'eyeDocsWND','father'=>'eyeApps',
-	'cent'=>1,'width'=>600,'height'=>500,'title'=>'Word Processor','sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>0,'savePosition' => 1,'minWidth'=>600,'minHeight'=>500));
-	$myWindow->show();
+	'cent'=>1,'width'=>780,'height'=>550,'title'=>$title,'sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>2,'savePosition' => 1,'minWidth'=>780,'minHeight'=>550));
 	if (IE && IE < 8) {
-		$restWidth = 19;
-		$restHeight = 100;
+		$restWidth = 2;
+		$restHeight = 34;
 	} else {
-		$restWidth = 18;
-		$restHeight = 100;
+		$restWidth = 2;
+		$restHeight = 34;
 	}
 	$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeDocsWND_Content',
-		'width'=>$myWindow->width-$restWidth,'height'=>$myWindow->height-$restHeight,'x'=>5,'y'=>65,'rich'=>1,'text'=>$content));
+		'width'=>$myWindow->width-$restWidth,'height'=>$myWindow->height-$restHeight,'x'=>0,'y'=>0,'rich'=>2,'text'=>$content));
+	$myWindow->addFriend($myTextArea);
+	$myWindow->show();
 	$myTextArea->show();
-	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeDocsWND_Content'));
-	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filenew.png','New');
-	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
-	$myToolbar->addItem('save','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesave.png','Save',array($myTextArea));
-	$myToolbar->addItem('saveAs','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesaveas.png','Save As',array($myTextArea));
-	$myToolbar->addLine();
-	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
+	$myTextArea->setRichStatusText('');
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');
+	$myHiddenContent = new Hidden(array(
+		'name' => 'textAreaContent',
+		'father' => 'eyeNotesWND_Content',
+		'text' => $content
+	));
+	eyeWidgets('serialize',array($myHiddenContent));
 }
 
 function eyeDocs_end($params=null) {

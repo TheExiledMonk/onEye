@@ -49,6 +49,7 @@ class Select {
 	var $option;
 	var $width;
 	var $events;
+	var $selected;
 	
 	function Select($params) {
 		global $myPid;
@@ -100,12 +101,10 @@ class Select {
 		service('eyex','createWidget',$mySelect);
 		$this->showed=1;
 		if($noserialize == 0) {
-			$mySelector = new SelectSelected(array('name'=>$this->name));
-			reqLib('eyeWidgets','serialize',array($mySelector));
+			reqLib('eyeWidgets','serialize',array($this));
 		}
 	}
 	
-		
 	//event handling
 	function addEvent($eventName,$eventFunc,$args="") {
 		global $myPid;
@@ -124,14 +123,16 @@ class Select {
 			}
 		}
 	}
-		
-//friend functions	
+
 	function getSyncString() {
 		global $myPid;
 		return "eyeParam('$this->name',document.getElementById('$myPid".'_'."$this->name').value)";
 	}
 	
-//widget-specific options
+	function setValue($newText) {
+		$this->selected = $newText;	
+	}
+
 	function addOption($text,$value,$selected=0,$tokens=0) {
 		global $myPid;
 		$text = i18n('translate',array($text,$tokens));
@@ -139,8 +140,14 @@ class Select {
 		if($selected == 0) {
 			eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.appendChild(document.createTextNode( %s ));document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOption);','tokens'=>$tokens));
 		} else {
+			$this->selected = $value;
 			eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.appendChild(document.createTextNode( %s ));myOption.selected=true;document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOption);','tokens'=>$tokens));
 		}
+	}
+	
+	function delAllOptions() {
+		global $myPid;
+		eyeX('rawjs',array('js'=>'document.getElementById("'.$myPid.'_'.$this->name.'").innerHTML = "";'));
 	}
 	
 	function setWidth($width) {
@@ -193,84 +200,6 @@ class Select {
 		global $myPid;
 		$this->enabled=1;
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
-	}
-	
-	function remove() {
-		global $myPid;
-		$name = $this->name.'_Container';
-		service('eyex','removeWidget',array('name'=>$name));
-		eyeWidgets('singleUnserialize',array($this->name));
-	}
-}
-
-class SelectSelected {
-	var $selected;
-	var $name;
-	function SelectSelected($params) {
-		$this->name = $params['name'];
-		$this->selected="";
-	}
-	function setValue($newText) {
-		$this->selected = $newText;	
-	}
-	
-	function setWidth($width) {
-		global $myPid;
-		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
-	}
-	
-	function setX($x) {
-		global $myPid;
-		$this->x = intval($x);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
-	}
-	
-	function setY($y) {
-		global $myPid;
-		$this->y = intval($y);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
-	}
-	
-	function focus() {
-		global $myPid;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
-	}
-	
-	function hide() {
-		global $myPid;
-		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
-	}
-	
-	function unhide() {
-		global $myPid;
-		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
-	}
-//set properties functions
-	function disable() {
-		global $myPid;
-		$this->enabled=0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=true'));
-	}
-	
-	function enable() {
-		global $myPid;
-		$this->enabled=1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
-	}
-	
-	function addOption($text,$value,$selected=0,$tokens=0) {
-		global $myPid;
-		$text = i18n('translate',array($text,$tokens));
-		$tokens = array($value,$text);
-		if($selected == 0) {
-			eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.appendChild(document.createTextNode( %s ));document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOption);','tokens'=>$tokens));
-		} else {
-			eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.appendChild(document.createTextNode( %s ));myOption.selected=true;document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOption);','tokens'=>$tokens));
-		}
 	}
 	
 	function remove() {

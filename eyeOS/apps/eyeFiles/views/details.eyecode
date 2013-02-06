@@ -53,7 +53,7 @@ if ($GLOBALS['eyeFiles_Box_View_Radio_ShowNot']->checked) {
 $files = eyeFiles('getDirContent',array($path,$type,$GLOBALS['eyeFiles_Box_View_Textbox_Filter']->text,$filter,$GLOBALS['eyeFiles_Box_View_Checkbox_Files']->checked,$GLOBALS['eyeFiles_Box_View_Checkbox_Links']->checked,$GLOBALS['eyeFiles_Box_View_Checkbox_Folders']->checked,$GLOBALS['eyeFiles_Box_View_Checkbox_Folders_First']->checked));
 foreach ($files as $file) {
 	$file[1] = '<img alt="" src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/' . $file[1] . '.png" style="height: 16px; width: 16px;" />';
-	$file[3] && $file != ' ' ? $file[3] = date('Y/m/d H:i:s',$file[3]) : $file[3] = ' ';
+	$file[3] && $file != ' ' ? $file[3] = date('Y/m/d H:i:s',intval($file[3])) : $file[3] = ' ';
 	$mySortabletable->addRow($file);
 }
 

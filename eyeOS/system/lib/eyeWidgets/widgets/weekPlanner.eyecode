@@ -72,10 +72,10 @@ class weekPlanner {
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 0;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 0;
-		isset($params['dayFrom']) ? $this->dayFrom = $params['dayFrom'] : $this->dayFrom = 0;
-		isset($params['dayEven']) ? $this->dayEven = $params['dayEven']+1 : $this->dayEven = 7;
-		isset($params['hourFrom']) ? $this->hourFrom = $params['hourFrom'] : $this->hourFrom = 0;
-		isset($params['hourEven']) ? $this->hourEven = $params['hourEven'] : $this->hourEven = 23;
+		isset($params['dayFrom']) ? $this->dayFrom = intval($params['dayFrom']) : $this->dayFrom = 0;
+		isset($params['dayEven']) ? $this->dayEven = intval($params['dayEven'])+1 : $this->dayEven = 7;
+		isset($params['hourFrom']) ? $this->hourFrom = intval($params['hourFrom']) : $this->hourFrom = 0;
+		isset($params['hourEven']) ? $this->hourEven = intval($params['hourEven']) : $this->hourEven = 23;
 		
 		//especific window options
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = null;
@@ -168,69 +168,71 @@ class weekPlanner {
 		
 	function addNotes($notes){
 		global $myPid;		
-		foreach($notes as $note){
-			$note = $note['note'][0];
-			$resizable = 1;
-			$title = 1;
-			$movible = 1;
-			//If the note start before hourFrom and end before hourEven
-			//only change the hourFrom
-			if($note['hourFrom'][0] < $this->hourFrom && $note['hourEven'][0] <= $this->hourEven){
-				$note['hourFrom'][0] = $this->hourFrom;
-				$note['minFrom'][0] = 0;
-				$note['minEven'][0] = 0;
-				$resizable = 0;
-				$title = 0;
-				$movible = 0;
-			}
-			//If the note end after hourEven but start before hourFrom
-			//only change the hourEven
-			if($note['hourEven'][0] > $this->hourEven+1 && $note['hourFrom'][0] >= $this->hourFrom){
-				$note['hourEven'][0] = $this->hourEven+1;
-				$note['minFrom'][0] = 0;
-				$note['minEven'][0] = 0;
-				$resizable = 0;
-				$title = 0;
-				$movible = 0;
-			}
-			//If the note start before hourFrom and after hourEven
-			//paint a full note
-			if($note['hourEven'][0] > $this->hourEven && $note['hourFrom'][0] < $this->hourFrom){
-				$note['hourEven'][0] = $this->hourEven+1;
-				$note['hourFrom'][0] = $this->hourFrom;
-				$note['minFrom'][0] = 0;
-				$note['minEven'][0] = 0;
-				$resizable = 0;
-				$title = 0;
-				$movible = 0;
-			}
-			if($note['hourFrom'][0] > $this->hourEven || $note['hourEven'][0] < $this->hourFrom){
-				continue;
-			}
-			$day = $note['wday'][0];
-			$hourFrom = $note['hourFrom'][0]; 
-			$hourEven = $note['hourEven'][0];
-			$minFrom = $note['minFrom'][0];
-			$minEven = $note['minEven'][0];
-			$calendar = $note['calendar'][0];
-			$event = base64_decode($note['title'][0]);
-			if(utf8_strlen($event) < 1){
-				$event = ' ';
-			}			
-			$index = count($this->notes);
-			$this->notes[$index] = $note['dateInt'][0];
-
-			if($this->startMonday == 1 && $this->dayFrom == 0 && $this->dayEven != $this->dayFrom+1){
-				if($day != 0 && $day != 6){
-					$day --;
-				}else if($day == 0){
-					$day = 6;
-				}else if($day == 6){
-					$day = 5;
+		if(!empty($notes)){
+			foreach($notes as $note){
+				$note = $note['note'][0];
+				$resizable = 1;
+				$title = 1;
+				$movible = 1;
+				//If the note start before hourFrom and end before hourEven
+				//only change the hourFrom
+				if($note['hourFrom'][0] < $this->hourFrom && $note['hourEven'][0] <= $this->hourEven){
+					$note['hourFrom'][0] = $this->hourFrom;
+					$note['minFrom'][0] = 0;
+					$note['minEven'][0] = 0;
+					$resizable = 0;
+					$title = 0;
+					$movible = 0;
 				}
+				//If the note end after hourEven but start before hourFrom
+				//only change the hourEven
+				if($note['hourEven'][0] > $this->hourEven+1 && $note['hourFrom'][0] >= $this->hourFrom){
+					$note['hourEven'][0] = $this->hourEven+1;
+					$note['minFrom'][0] = 0;
+					$note['minEven'][0] = 0;
+					$resizable = 0;
+					$title = 0;
+					$movible = 0;
+				}
+				//If the note start before hourFrom and after hourEven
+				//paint a full note
+				if($note['hourEven'][0] > $this->hourEven && $note['hourFrom'][0] < $this->hourFrom){
+					$note['hourEven'][0] = $this->hourEven+1;
+					$note['hourFrom'][0] = $this->hourFrom;
+					$note['minFrom'][0] = 0;
+					$note['minEven'][0] = 0;
+					$resizable = 0;
+					$title = 0;
+					$movible = 0;
+				}
+				if($note['hourFrom'][0] > $this->hourEven || $note['hourEven'][0] < $this->hourFrom){
+					continue;
+				}
+				$day = $note['wday'][0];
+				$hourFrom = $note['hourFrom'][0]; 
+				$hourEven = $note['hourEven'][0];
+				$minFrom = $note['minFrom'][0];
+				$minEven = $note['minEven'][0];
+				$calendar = $note['calendar'][0];
+				$event = base64_decode($note['title'][0]);
+				if(utf8_strlen($event) < 1){
+					$event = ' ';
+				}			
+				$index = count($this->notes);
+				$this->notes[$index] = $note['dateInt'][0];
+
+				if($this->startMonday == 1 && $this->dayFrom == 0 && $this->dayEven != $this->dayFrom+1){
+					if($day != 0 && $day != 6){
+						$day --;
+					}else if($day == 0){
+						$day = 6;
+					}else if($day == 6){
+						$day = 5;
+					}
+				}
+				$tokens = array($event,$calendar);
+				service('eyex','runjs',array('js' => 'onAddNoteCalendar('.$myPid.','.$day.','.$hourFrom.','.$hourEven.','.$minFrom.','.$minEven.','.$index.', %s , %s ,'.$resizable.','.$movible.' ,'.$title.');','tokens'=>$tokens));
 			}
-			$tokens = array($event,$calendar);
-			service('eyex','runjs',array('js' => 'onAddNoteCalendar('.$myPid.','.$day.','.$hourFrom.','.$hourEven.','.$minFrom.','.$minEven.','.$index.', %s , %s ,'.$resizable.','.$movible.' ,'.$title.');','tokens'=>$tokens));
 		}
 	}	
 	function addCalendars($myCalendars){
@@ -412,6 +414,10 @@ class weekPlanner {
 		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_daysBase");
 											removeMe.parentNode.removeChild(removeMe);'));
 		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_calendarsEntryContainer");
+											removeMe.parentNode.removeChild(removeMe);'));
+		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherDays");
+											removeMe.parentNode.removeChild(removeMe);'));
+		service('eyex','rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherNames");
 											removeMe.parentNode.removeChild(removeMe);'));
 		unset($_SESSION[WTABLE][$myPid][$this->name]);
 	}

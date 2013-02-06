@@ -25,6 +25,7 @@ function get_dynamic_content($params = '') {
 	$content = file_get_contents(EYE_ROOT . '/' . EXTERN_DIR . '/' . APP_DIR . '/eyeLogin/themes/default/eyeLogin.js');
 	$content = str_replace('$myPid',$params[0],$content);
 	$content = str_replace('$checknum',$params[1],$content);
+	$content = str_replace('$sawasc',$params[2],$content);
 	return $content;
 }
 ?>

@@ -79,6 +79,12 @@ function eyeNotes_on_Save($params=null) {
 		fwrite($fp,$GLOBALS['noteContent']->text);
 		fclose($fp);
 		service('eyex','messageBox',array('content'=>'File saved successfully.'));
+		$myHiddenContent = new Hidden(array(
+			'name' => 'textAreaContent',
+			'father' => 'eyeNotesWND_Content',
+			'text' => $GLOBALS['noteContent']->text
+		));
+		eyeWidgets('serialize',array($myHiddenContent));
 	} else {
 		service('proc','launch',array('eyeDialog',$options));
 	}
@@ -121,9 +127,15 @@ function eyeNotes_on_SelectFileSave($params=null) {
 		fclose($fp);
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
 		reqLib('eyeWidgets','serialize',array($myHidden));
-		$GLOBALS['eyeNotesWND']->setTitle(utf8_basename($file.' - '.i18n('translate',array('Text Editor'))));
 		eyeFiles('update',array(dirname($file)));
 		service('eyex','messageBox',array('content'=>'File saved successfully.'));
+		$myHiddenContent = new Hidden(array(
+			'name' => 'textAreaContent',
+			'father' => 'eyeNotesWND_Content',
+			'text' => $GLOBALS['noteContent']->text
+		));
+		eyeWidgets('serialize',array($myHiddenContent));
+		$GLOBALS['eyeNotesWND']->setTitle(utf8_basename($file.' - '.i18n('translate',array('Text Editor'))));
 	}
 }
 
@@ -176,12 +188,105 @@ function eyeNotes_on_SelectFileOpen($params=null) {
 		$content = fread($fp,$size);
 		fclose($fp);
 		$GLOBALS['noteContent']->setText($content);
+		$myHiddenContent = new Hidden(array(
+			'name' => 'textAreaContent',
+			'father' => 'eyeNotesWND_Content',
+			'text' => $content
+		));
+		eyeWidgets('serialize',array($myHiddenContent));
 	}
 }
 
-function eyeNotes_on_Close(){
+function eyeNotes_on_Close($params=null){
+
+	$taContent = $GLOBALS['textAreaContent']->text;
+	$content = $GLOBALS['noteContent']->text;
+
+	if($taContent != $content ) {
+		eyex('messageBox',array(
+			'content' => 'Do you want to save changes?',
+			'type' => 3,
+			'title' => 'Delete warning',
+			'win_name' => 'delete_warning',
+			'win_style' => TITLE + MIN + CLOSE,
+			'btn1_capt' => 'Save',
+			'btn1_name' => 'yDelete',
+			'btn2_capt' => "Don't save",
+			'btn2_name' => 'nDelete',
+			'btn3_capt' => 'Cancel',
+			'btn3_name' => 'cancel',
+			'img' => '?',
+			'win_removepid' => 0
+		));
+	} else {
+		proc('end');
+	}
+}
+
+function eyeNotes_on_cancel($params=""){
+	$GLOBALS['delete_warning']->close();
+}
+
+function eyeNotes_on_nDelete($params=""){
+	$GLOBALS['delete_warning']->close();
 	proc('end');
 }
+
+function eyeNotes_on_yDelete($params=null){
+	global $checknum;
+	$options = array(
+		EYEDIALOG_TYPE_SAVEFILE,
+		'SelectFileSaveClose',
+		$checknum,
+		'',
+		array(
+			'Text files' => '*.txt',
+			'All files' => '*.*'
+		)
+	);
+	$GLOBALS['delete_warning']->close();
+	if(is_object($GLOBALS['notePath']) && $GLOBALS['notePath']->text) {
+		$fp = service('vfs','open',array($GLOBALS['notePath']->text,'w'));
+		if(!$fp) {
+			service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+			return;
+		}
+		fwrite($fp,$GLOBALS['noteContent']->text);
+		fclose($fp);
+		service('eyex','messageBox',array('content'=>'File saved successfully.'));
+		proc('end');
+	} else {
+		service('proc','launch',array('eyeDialog',$options));
+	}
+}
+
+function eyeNotes_on_SelectFileSaveClose($params=null) {
+	$file = $params['arg'][0];
+	if($file) {
+		$posPoint = utf8_strpos($file, ".");
+		if ($posPoint === false) {
+			$file = $file.".txt";
+		}
+		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
+		if(!service('vfs','create',array($file,'eyeNotes'))) {
+			service('eyex','messageBox',array('content'=>'Unable to create file'));
+			return;
+		}
+		$fp = service('vfs','open',array($file,'w'));
+		if(!$fp) {
+			service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+			return;
+		}
+		fwrite($fp,$GLOBALS['noteContent']->text);
+		fclose($fp);
+		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
+		reqLib('eyeWidgets','serialize',array($myHidden));
+		eyeFiles('update',array(dirname($file)));
+		service('eyex','messageBox',array('content'=>'File saved successfully.'));
+	}
+	proc('end');
+}
+
 
 function eyeNotes_on_New(){
 	service('proc','launch',array('eyeNotes'));

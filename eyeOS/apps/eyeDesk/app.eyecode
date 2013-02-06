@@ -26,8 +26,6 @@ function eyeDesk_run($params = '') {
 	global $currentUser;
 	
 	eyex('runjs',array('js' => 'document.title = %s + "@" + %s;','tokens' => array($currentUser,EYEOS_HOSTNAME)));
-	eyex('createDiv',array('class' => 'eyeMessageBox','father' => 'eyeScreen','name' => 'eyeMessageBox','nopid' => 1,'removepid' => 1));
-	eyex('createDiv',array('class' => 'eyeMessageBoxText','father' => 'eyeMessageBox','name' => 'eyeMessageBoxText','nopid' => 1,'removepid' => 1));
 	eyex('createDiv',array('class' => 'minimizedApps','father' => 'eyeScreen','name' => 'minimizedApps','nopid' => 1,'removepid' => 1));
 	eyex('createDiv',array('class' => 'minimizedAppsIn','father' => 'minimizedApps','name' => 'minimizedAppsIn','nopid' => 1,'removepid' => 1));
 	eyex('createDiv',array('class' => 'minimizedAppsRight','father' => 'eyeScreen','name' => 'minimizedAppsRight','nopid' => 1,'removepid'=>1));
@@ -48,11 +46,19 @@ function eyeDesk_run($params = '') {
 	$xml = eyeXML('getXMLfile',array($userDir . $config));
 	$share = getConfig('eyeDesk','conf.xml');
 	if ($xml['eyeDesk'][0]['restoreDock'][0] != $share['eyeDesk'][0]['restoreDock'][0]) {
-		copy(EYE_ROOT . '/' . SYSTEM_DIR . '/' . CONF_USER_DIR . '/skel/' . CONF_USER_DIR . '/eyeDock/eyeDock.xml',$userDir . '/' . CONF_USER_DIR . '/eyeDock/eyeDock.xml');
-		$xml['eyeDesk'][0]['restoreDock'][0] = $share['eyeDesk'][0]['restoreDock'][0];
-		if (array_search('miniActions',$xml['eyeDesk'][0]['autolaunch']) === false){
-			$xml['eyeDesk'][0]['autolaunch'][] = 'miniActions';
+		if ($xml['eyeDesk'][0]['restoreDock'][0] == 4) {
+			$key = array_search('eyeDock',$xml['eyeDesk'][0]['autolaunch']);
+			if ($key !== false) {
+				$xml['eyeDesk'][0]['autolaunch'][$key] = 'eyeDockText';
+			}
 		}
+		if ($xml['eyeDesk'][0]['restoreDock'][0] < 4) {
+			copy(EYE_ROOT . '/' . SYSTEM_DIR . '/' . CONF_USER_DIR . '/skel/' . CONF_USER_DIR . '/eyeDock/eyeDock.xml',$userDir . '/' . CONF_USER_DIR . '/eyeDock/eyeDock.xml');
+			if (array_search('miniActions',$xml['eyeDesk'][0]['autolaunch']) === false){
+				$xml['eyeDesk'][0]['autolaunch'][] = 'miniActions';
+			}
+		}
+		$xml['eyeDesk'][0]['restoreDock'][0] = $share['eyeDesk'][0]['restoreDock'][0];
 		eyeXML('setXMLfile',array($userDir . $config,$xml));
 	}
 	

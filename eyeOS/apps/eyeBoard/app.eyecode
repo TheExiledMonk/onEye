@@ -30,7 +30,10 @@ function eyeBoard_run($params=null) {
 	$myTextBox = new Textbox(array('name'=>'MessageB','father'=>'eyeBoard_Content',
 		'x'=>5,'y'=>7,'width'=>310,'vert'=>1));
 	$myTextBox->show();
-	$myTextBox->addEnterEventMsg('addMsg');
+	//This is a workaround, I'm not sure why using focus IE8 sends a msg
+	if(IE != 8){
+		$myTextBox->addEnterEventMsg('addMsg');
+	}
 	$myTextBox->focus();
 	$myButton = new Button(array('name'=>'myButton','father'=>'eyeBoard_Content',
 		'caption'=>'Send','x'=>5,'y'=>5,'signal'=>'addMsg','horiz'=>1,'vert'=>1));

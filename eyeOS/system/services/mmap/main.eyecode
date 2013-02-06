@@ -86,17 +86,7 @@ function service_mmap_routemsg($params) {
 	$checknum = $params[0];
 	$action = $params[1];
 	$args = $params[2];
-	
-	if(!isset($_SESSION['AUTH_IP']) || empty($_SESSION['AUTH_IP'])) {
-		$_SESSION['AUTH_IP'] = $_SERVER['REMOTE_ADDR'];
-	} else {
-		if(($_SESSION['AUTH_IP'] != $_SERVER['REMOTE_ADDR']) && PROTECTED_IP_SESSIONS == 1) {
-			eyeSessions('endSession'); //delete session
-			eyeX('messageBox',array('content'=>'Your session has expired','type'=>2));
-			eyeX('rawjs',array('js'=>'location.reload();')); //refresh the page
-			return mmap('releaseBuffer');
-		}
-	}
+
 	if($args) {		
 		$args = eyeXML('xml2array',array($args));
 	}	
@@ -107,6 +97,17 @@ function service_mmap_routemsg($params) {
 	$myPid = $procInfo['pid'];
 	
 	$procInfo['checknum'] = $checknum;//Remove this? maybe 
+	
+	if(!isset($_SESSION['AUTH_IP']) || empty($_SESSION['AUTH_IP'])) {
+		$_SESSION['AUTH_IP'] = $_SERVER['REMOTE_ADDR'];
+	} else {
+		if(($_SESSION['AUTH_IP'] != $_SERVER['REMOTE_ADDR']) && sec('protectedIpSessions')) {
+			eyeSessions('endSession'); //delete session
+			eyeX('messageBox',array('content'=>'Your session has expired','type'=>2));
+			eyeX('rawjs',array('js'=>'location.reload();')); //refresh the page
+			return mmap('releaseBuffer');
+		}
+	}
 	
 	//If app does not exist...
 	if(!isset($procInfo['appName']) || empty($procInfo['appName'])) {

@@ -31,7 +31,7 @@ $myWidgetDrop->show();
 $myWidgetDrop->addBehaviour(array(
 	'type' => 'moveAndClick',
 	'params' => array(
-		'content' => array('/'),
+		'content' => array($GLOBALS['eyeFiles_Hidden_Path']->text),
 		'moveType' => 2,
 		'pid' => $myPid,
 		'signal' => 'Icon_Dropped'
@@ -126,7 +126,7 @@ foreach ($files as $file) {
 		$myWidgetDrop->addBehaviour(array(
 			'type' => 'widgetDrop_simpleMsg',
 			'params' => array(
-				'content' => array('/' . $file[0] . '/'),
+				'content' => array($GLOBALS['eyeFiles_Hidden_Path']->text . '/' . $file[0] . '/'),
 				'pid' => $myPid,
 				'signal' => 'Icon_Dropped'
 		)));

@@ -776,6 +776,10 @@ function saveCode() {
 	window.parent.sendMsg($checknum,'saveFile','<arg1>' + Base64.encode(cellsToJS()) + '</arg1>');
 }
 
+function saveCodeClose() {
+	window.parent.sendMsg($checknum,'yDelete','<arg1>' + Base64.encode(cellsToJS()) + '</arg1>');
+}
+
 function saveAs() {
 	window.parent.sendMsg($checknum,'saveAs','');
 }

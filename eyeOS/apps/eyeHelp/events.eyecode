@@ -81,7 +81,7 @@ function eyeHelp_on_goto($params=null){
 	
 		$info = eyeXML('xml2array',array($InfoContent));
 		$info = $info['eyeHelp'][0];;
-		if(filesize($myDir.$_SESSION['lang'].'.eyeHelp')>0)
+		if(file_exists($myDir.$_SESSION['lang'].'.eyeHelp') && filesize($myDir.$_SESSION['lang'].'.eyeHelp') > 0)
 			$myIndexFile = $myDir.$_SESSION['lang'].'.eyeHelp';
 			else $myIndexFile = $myDir.'index.eyeHelp';
 		$size = service('vfs','real_filesize',array($myIndexFile));

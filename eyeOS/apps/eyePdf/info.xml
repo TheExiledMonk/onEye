@@ -1,7 +1,7 @@
 <package>
 	<name>eyePdf</name>
 	<category>Office</category>
-	<version>1.8</version>
+	<version>1.8.5</version>
 	<description>Utility to open pdf files</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

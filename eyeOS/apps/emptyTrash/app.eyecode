@@ -36,10 +36,10 @@ function emptyTrash_run($params = '') {
 		$title = 'Empty trash';
 	}
 	eyex('messageBox',array(
-		'btn1_capt' => 'Yes',
-		'btn1_name' => 'Do',
-		'btn2_capt' => 'No',
+		'btn2_capt' => 'Cancel',
 		'btn2_name' => 'Close',
+		'btn1_capt' => 'Accept',
+		'btn1_name' => 'Do',
 		'content' => $content,
 		'hidden_name' => 'emptyTrash_Hidden_File',
 		'hidden_text' => $file,

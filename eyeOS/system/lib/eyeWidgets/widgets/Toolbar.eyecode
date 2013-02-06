@@ -42,7 +42,7 @@ class Toolbar {
 	
 	var $paintOnClick;
 	var $select;
-	
+	var $friends = array();
 	var $showed = 0;	
 	
 	function Toolbar($params) {	
@@ -110,6 +110,35 @@ class Toolbar {
 		service('eyex','removeWidget',array('name'=>$name));
 	}
 	
+	function addGroup($params) {
+		global $myPid;
+		global $checknum;
+		$thefriends = array();
+		$ids = mmap("array2js",array($params));
+		foreach ($params as $value) {
+			isset($friends[$value]) ? $thefriends[$myPid.'_'.$value.'_Container'] = $friends[$value] : $thefriends[$myPid.'_'.$value.'_Container'] = "";
+		}
+		$thefriends = mmap("array2js",array($thefriends));
+		$js = 'Toolbar_groups('.$ids.','.$checknum.','.$myPid.','.$thefriends.');';
+		service('eyex','rawjs',array('js' => $js));
+	}
+	
+	function pressItem($params) {
+		global $myPid;
+		foreach ($params as $value) {
+			$js = 'Toolbar_pressed("'.$myPid.'_'.$value.'_Container",true);';
+			eyeX('rawjs',array('js' => $js));
+		}
+	}
+	
+	function unpressItem($params) {
+		global $myPid;
+		foreach ($params as $value) {
+			$js = 'Toolbar_pressed("'.$myPid.'_'.$value.'_Container",false);';
+			eyeX('rawjs',array('js' => $js));
+		}
+	}
+	
 	function addLine($id = '',$right = 0) {
 		global $myPid;
 		$js = 'addLineToBar("'.$myPid.'_'.$this->name.'","' . $id . '",' . $right . ');';
@@ -119,23 +148,25 @@ class Toolbar {
 	function addItem($itemName,$img,$text,$ofriends=null,$right=0,$height = 22,$width = 22) {
 		global $myPid;
 		global $checknum;
-		$friends="''";
+		$thefriends="''";
 		if(is_array($ofriends)) {
 			foreach($ofriends as $value) {
 				if(method_exists($value,'getSyncString')) {
-					if($friends == "''") {
-						$friends = $value->getSyncString();				
+					if($thefriends == "''") {
+						$thefriends = $value->getSyncString();				
 					} else {
-						$friends .= '+'.$value->getSyncString();
+						$thefriends .= '+'.$value->getSyncString();
 					}
 				}
 			}
 		}
 		$text = i18n('translate',array($text));
-		$friends = base64_encode($friends);
+		$thefriends = base64_encode($thefriends);
+		$friends[$itemName] = $thefriends;
 		$tokens = array($itemName,$img,$text);
-		$js = 'addItemToBar("'.$myPid.'_'.$this->name.'", %s , %s , %s ,"'.$friends.'",'.$checknum.','.$height.','.$width.','.$right.');';
+		$js = 'addItemToBar("'.$myPid.'_'.$this->name.'", %s , %s , %s ,"'.$thefriends.'",'.$checknum.','.$height.','.$width.','.$right.','.$myPid.');';
 		eyex('runjs',array('js'=>$js,'tokens'=>$tokens));
+		return $itemName;
 	}
 }
 ?>

@@ -25,6 +25,7 @@ clickEvents = new Object();
 eyeDeskItems=0;
 eyeFlag=0;
 IEversion=0;
+TimeViewClock=2000;
 if (navigator.appVersion.indexOf("MSIE")!=-1){
 	NavSplit=navigator.appVersion.split("MSIE");
 	IEversion=parseFloat(NavSplit[1]);
@@ -34,6 +35,7 @@ spaceBetweenApps = 1;
 zLayers = 11;//One more than eyeApps (default and base layer for all apps)
 mouseX = 0;
 mouseY = 0;
+messageBoxDirection=0;
 
 var eyeKeyDown = 0;
 document.oncontextmenu = function(e) { if(!IEversion) { e.preventDefault(); e.cancelBubble = true; } return false; }
@@ -62,23 +64,24 @@ var isEyeCursorActivated = false;
 //== (eyeCursor) Loading cursor Section ==
 //Here is the "loading" special cursor that informs the user that a
 //request has been sent and is processed by the server
+function ViewLoading() {
+	if (navigator.appVersion.indexOf("Mac")!=-1) {
+		oCursor.style.top = mouseY-14+'px';
+		oCursor.style.left = mouseX+10+'px';
+		oCursor.style.display = 'block';
+	} else {
+		oApps.style.cursor = 'url(index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/desktop/loadingcursor/loading.cur), wait';
+	}
+	return true;
+}
 var loadingRequests = 0;
-function checkLoading() {
+function NoViewLoading() {
 	if (loadingRequests <= 0) {
 		loadingRequests = 0;
 		if (navigator.appVersion.indexOf("Mac")!=-1) {
 			oCursor.style.display = 'none';
 		} else {
 			oApps.style.cursor = 'auto';
-		}
-	}
-	else {
-		if (navigator.appVersion.indexOf("Mac")!=-1) {
-			oCursor.style.top = mouseY-14+'px';
-			oCursor.style.left = mouseX+10+'px';
-			oCursor.style.display = 'block';
-		} else {
-			oApps.style.cursor = 'url(index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/desktop/loadingcursor/loading.cur), wait';
 		}
 	}
 	return true;
@@ -88,8 +91,8 @@ function checkLoading() {
 //of loading request by one
 function notifyLoadingRequest() {
 	loadingRequests++;
-	checkLoading();
-	return true;
+	var ctime = setTimeout('ViewLoading();',TimeViewClock);
+	return ctime;
 }
 //This function is called by the localEngine() function.
 //It makes the "loading" cursor disappear if the request
@@ -97,14 +100,14 @@ function notifyLoadingRequest() {
 //request by one
 function notifyEndOfLoadingRequest() {
 	loadingRequests--;
-	checkLoading();
+	NoViewLoading();
 	return true;
 }
 //This function can be used to force the "loading" cursor to
 //reset and hide it
 function resetLoadingRequests() {
 	loadingRequests = 0;
-	checkLoading();
+	ViewLoading();
 	return true;
 }
 
@@ -168,7 +171,7 @@ function updateOpacityOnce(opacity, id) {
 function sendMsg(checknum,msg,parameters) {
 	var http_request = false;
 	var url = 'index.php';
-	if (window.XMLHttpRequest) { 
+	if (window.XMLHttpRequest) {
 		http_request = new XMLHttpRequest();
 	} else if (window.ActiveXObject) {
 		try {
@@ -195,12 +198,13 @@ function sendMsg(checknum,msg,parameters) {
                 xmlDoc=parser.parseFromString(http_request.responseText,"text/xml");
             }
             if(http_request.responseText != '<eyeMessage><action><task>pong</task></action></eyeMessage>') {
+            	clearTimeout(ctime);
             	localEngine(xmlDoc);
             }
         }
     }
     if (msg != 'ping') {
-    	notifyLoadingRequest();
+    	var ctime = notifyLoadingRequest();
     }
   	http_request.open('POST', url+'?checknum=' + checknum + '&msg=' + msg, true);
   	http_request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;');
@@ -231,7 +235,7 @@ function dhtmlLoadCSS(url,id) {
 	var oLink = document.createElement("link")
 	oLink.setAttribute("href",url);
 	oLink.setAttribute("rel","stylesheet");
-	oLink.setAttribute("type","text/css"); 
+	oLink.setAttribute("type","text/css");
 	oLink.setAttribute("id",id);
 	document.getElementsByTagName("head")[0].appendChild(oLink);
 }
@@ -241,11 +245,11 @@ function dhtmlRemoveCSS(remid) {
 	var oLink = document.getElementById(remid);
 	if(oLink) {
 		document.getElementsByTagName("head")[0].removeChild(oLink);
-	} 
+	}
 }
 
 /*
-*This functions parse the sendmsg response. 
+*This functions parse the sendmsg response.
 */
 function localEngine(msg) {
 	//message is not set, could be an empty response to a request
@@ -256,7 +260,7 @@ function localEngine(msg) {
 		for(count=0;count < mySize;count++) {
 			try {
 				task = getNodeValue(actions[count].getElementsByTagName('task')[0]);
-				if(task == 'createWidget') {						
+				if(task == 'createWidget') {
 					x = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('x')[0]);
 					y = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('y')[0]);
 					horiz = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('horiz')[0]);
@@ -270,7 +274,7 @@ function localEngine(msg) {
 					try{
 						eval (widgetname+"_show("+paramStr+",'"+name+"','"+father+"','"+x+"','"+y+"','"+horiz+"','"+vert+"','"+checknum+"','"+cent+"');");
 					}catch(err){
-						
+
 					}
 				} else if(task == 'messageBox') {
 					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
@@ -305,9 +309,9 @@ function localEngine(msg) {
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = document.getElementById(widget).value+Base64.decode(content);
 					}
-				} else if(task == 'concatDiv') {												
+				} else if(task == 'concatDiv') {
 					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);						
+					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).innerHTML = document.getElementById(widget).innerHTML+content;
 					}
@@ -357,21 +361,21 @@ function localEngine(msg) {
 					var father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
 					//We use try catch for evade the differents beteewn browsers
 					try{
-						var noIndex = getNodeValue(actions[count].getElementsByTagName('noIndex')[0]);							
+						var noIndex = getNodeValue(actions[count].getElementsByTagName('noIndex')[0]);
 						makeDrag(name,father,'','','',noIndex);
-					}catch(err){							
+					}catch(err){
 						makeDrag(name,father,'','','','');
-					}						
+					}
 				} else if(task == 'rawSendMessage') {
 					var myMsg = getNodeValue(actions[count].getElementsByTagName('msg')[0]);
-					
+
 					if(actions[count].getElementsByTagName('par')[0].firstChild){
 						var myPar = getNodeValue(actions[count].getElementsByTagName('par')[0]);
 					}else{
 						var myPar = '';
 					}
 					var myCheck = getNodeValue(actions[count].getElementsByTagName('checknum')[0]);
-					sendMsg(myCheck,myMsg,myPar);	
+					sendMsg(myCheck,myMsg,myPar);
 				} else if(task == 'addEvent') {
 					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 					var event = getNodeValue(actions[count].getElementsByTagName('event')[0]);
@@ -443,7 +447,7 @@ function checkEnterKey(e) {
 	}
 	if(characterCode == 13) {
 		return true;
-	} else { 
+	} else {
 		return false;
 	}
 }
@@ -589,13 +593,13 @@ function setWallpaper(newWllp,repeat,center) {
 	var wllp = document.getElementById('eyeWallpaper');
 
 	wllp.style.backgroundImage = "url('"+newWllp+"')";
-	
+
 	if (repeat == 1) {
 		wllp.style.backgroundRepeat = "repeat";
 	} else {
 		wllp.style.backgroundRepeat = "no-repeat";
 	}
-	
+
 	if (center == 0) {
 		wllp.style.backgroundPosition = "left top";
 	} else {
@@ -605,39 +609,60 @@ function setWallpaper(newWllp,repeat,center) {
 
 function eyeMessageBoxShow(msg) {
 	if (msg != "") {
-		box = document.getElementById("eyeMessageBoxText");
-		box.innerHTML = msg;
-		if (!IEversion) {
-			updateOpacity("eyeMessageBox", 0, 100, 1000);
-		} else {
-			document.getElementById("eyeMessageBox").style.visibility='visible';
+
+		var i = 0;
+
+		while(document.getElementById('eyeMessageBox_'+i)) {
+			i++;
 		}
-		setTimeout("eyeMessageBoxHid()",2000);
+
+		var box = document.createElement('div');
+		box.setAttribute('id','eyeMessageBox_'+i);
+		box.className = 'eyeMessageBox';
+
+		if(i > 0) {
+			var last = document.getElementById('eyeMessageBox_'+(i-1));
+			if(messageBoxDirection == 0) {
+				box.style.top = xTop(last)-xHeight(last)+20+'px';
+			} else {
+				box.style.top = xTop(last)+xHeight(last)+20+'px';
+			}
+		}
+
+		var theMsg = document.createElement('div');
+		theMsg.setAttribute('id','eyeMessageBoxText_'+i);
+		theMsg.className = 'eyeMessageBoxText';
+
+		theMsg.innerHTML = msg;
+
+		box.appendChild(theMsg);
+		document.getElementById('eyeScreen').appendChild(box);
+
+		if (!IEversion) {
+			updateOpacity("eyeMessageBox_"+i, 0, 100, 1000);
+		} else {
+			document.getElementById("eyeMessageBox_"+i).style.visibility='visible';
+		}
+		setTimeout("eyeMessageBoxHid("+i+")",2000);
 	}
 }
 
-function eyeMessageBoxHid() {
-	box = document.getElementById("eyeMessageBoxText");
-	var delayedEmptyText = 1;
+function eyeMessageBoxHid(i) {
+	box = document.getElementById("eyeMessageBoxText_"+i);
 	if (!IEversion) {
-		if (document.getElementById("eyeMessageBox").style.opacity == 1) {
-			updateOpacity("eyeMessageBox", 100, 0, 1000);
-			delayedEmptyText = 1000;
+		if (document.getElementById("eyeMessageBox_"+i).style.opacity == 1) {
+			updateOpacity("eyeMessageBox_"+i, 100, 0, 1000, 'document.getElementById("eyeScreen").removeChild(document.getElementById("eyeMessageBox_'+i+'"));');
 		} else {
-			updateOpacityOnce(0,"eyeMessageBox");
-			delayedEmptyText = false;
+			document.getElementById('eyeScreen').removeChild(document.getElementById("eyeMessageBox_"+i));
 		}
 	} else {
-		document.getElementById("eyeMessageBox").style.visibility='hidden';
-	}
-	if (delayedEmptyText) {
-		setTimeout("box.innerHTML = ''",delayedEmptyText);
+		document.getElementById('eyeScreen').removeChild(document.getElementById("eyeMessageBox_"+i));
 	}
 }
 
 function clickedScreen(e){
 	var target = (e && e.target) || (event && event.srcElement);
-	for(current in clickEvents) { 
+	for(current in clickEvents) {
 		if (target.id != current) {
 			if(clickEvents[current] != null) {
 				for(var i=0; i < clickEvents[current]['friends'].length; i++ ){
@@ -743,7 +768,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		widget.style.width = wwidth+unit;
 	}
 	if (parseInt(wheight) > 0) {
-		widget.style.height = wheight+unit;	
+		widget.style.height = wheight+unit;
 	}
 
 	if (cent == 1 && widget.style.width) {
@@ -758,10 +783,10 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 				widget.style.left = styleLeft+"px";
 				widget.style.right = styleLeft+"px";
 			} else {
-				widget.style.left = styleLeft+"px";	
+				widget.style.left = styleLeft+"px";
 			}
 		}
-		
+
 		/* Center Height */
 		var widgetheight = widget.style.height;
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
@@ -770,7 +795,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if (styleTop > 0) {
 			widget.style.top = styleTop+"px";
 		}
-		
+
 	} else if(cent == 2 && widget.style.width) {
 		/* Center Width */
 		var widgetwidth = widget.style.width;
@@ -783,10 +808,10 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 				widget.style.left = styleLeft+"px";
 				widget.style.right = styleLeft+"px";
 			} else {
-				widget.style.left = styleLeft+"px";	
+				widget.style.left = styleLeft+"px";
 			}
 		}
-		
+
 	} else if(cent == 3 && widget.style.height) {
 		/* Center Height */
 		var widgetheight = widget.style.height;
@@ -801,7 +826,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if(IEversion && IEversion < 8) {
 			widget.style.right = fatherwidth+"px";
 		} else {
-			widget.style.left = fatherwidth+"px";	
+			widget.style.left = fatherwidth+"px";
 		}
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
 		widget.style.top = fatherheight+"px";
@@ -810,19 +835,19 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if(IEversion && IEversion < 8) {
 			widget.style.right = fatherwidth+"px";
 		} else {
-			widget.style.left = fatherwidth+"px";	
+			widget.style.left = fatherwidth+"px";
 		}
 	} else if(cent == 6) {
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
 		widget.style.top = fatherheight+"px";
 	}
-	
+
 	if (wx >= 0) {
 		if (horiz == 1) {
 			if(cent == 1 || cent == 2 || cent == 4 || cent == 5) {
 				var myX = widget.style.right;
-				myX = myX.substring(0,myX.length-2);  
-				myX = parseInt(myX);  
+				myX = myX.substring(0,myX.length-2);
+				myX = parseInt(myX);
 				wx = myX + parseInt(wx);
 			}
 			if(!isNaN(wx)) {
@@ -831,8 +856,8 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		} else {
 			if(cent == 1 || cent == 2 || cent == 4 || cent == 5) {
 				myX = widget.style.left;
-				myX = myX.substring(0,myX.length-2);  
-				myX = parseInt(myX);  
+				myX = myX.substring(0,myX.length-2);
+				myX = parseInt(myX);
 				wx= myX + parseInt(wx);
 			}
 			if(!isNaN(wx)) {
@@ -840,31 +865,33 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 			}
 		}
 	}
-	
+
 	if (wy >= 0) {
 		if (vert == 1) {
 			if(cent == 1 || cent == 3 || cent == 4 || cent == 6) {
 				var myY = widget.style.bottom;
-				myY = myY.substring(0,myY.length-2);  
-				myY = parseInt(myY);  
+				myY = myY.substring(0,myY.length-2);
+				myY = parseInt(myY);
 				wy = myY + parseInt(wy);
-			} 
+			}
 			if(!isNaN(wx)) {
 				widget.style.bottom = wy+"px";
 			}
 		} else {
 			if(cent == 1 || cent == 3 || cent == 4 || cent == 6) {
-				var myY = widget.style.top;
-				myY = myY.substring(0,myY.length-2);  
-				myY = parseInt(myY);  
-				wy = myY + parseInt(wy);
-			} 
+				if(widget.style.top){
+					var myY = widget.style.top;
+					myY = myY.substring(0,myY.length-2);
+					myY = parseInt(myY);
+					wy = myY + parseInt(wy);
+				}
+			}
 			if(!isNaN(wx)) {
 				widget.style.top = wy+"px";
 			}
 		}
 	}
-		
+
 	if (isVisible == 0) {
 		widget.style.display = 'none';
 	} else {
@@ -881,7 +908,7 @@ function makeDrag (widgetid,father,afterfunction,checknum,content,noIndex) {
 	}
 	xEnableDrag(widget,savePositions,barOnDrag,callafterfunction);
 
-	widget.onmousedown = GoToTop; 
+	widget.onmousedown = GoToTop;
 	xShow(widget);
 	function GoToTop()
 	{
@@ -890,7 +917,7 @@ function makeDrag (widgetid,father,afterfunction,checknum,content,noIndex) {
 			zindex++;
 		}
 	}
-	
+
 	function barOnDrag(e, mdx, mdy)
 	{
 		var x = xLeft(widget) + mdx;
@@ -940,7 +967,7 @@ function cleanDesktop(pid) {
 function removeWidget(widgetid) {
 	var widget = document.getElementById(widgetid);
 	if (widget) {
-		widget.parentNode.removeChild(widget);	
+		widget.parentNode.removeChild(widget);
 	}
 }
 
@@ -957,7 +984,7 @@ function removeLayer(divid) {
 	var father = document.getElementById('eyeScreen');//Hardcoded because all layer are child of eyeScreen
 	var div = document.getElementById(divid);
 	if (father && div) {
-		father.removeChild(div);	
+		father.removeChild(div);
 	}
 }
 function showLayer(layerId){
@@ -998,17 +1025,28 @@ function updateCss(widgetid,prop,val) {
 	eval('document.getElementById("'+widgetid+'").style.'+prop+'="'+val+'";');
 }
 
-tinyMCE.init({
-	mode : "specific_textareas",
-	theme : "advanced",
-	plugins : "advhr,advimage,advlink,contextmenu,inlinepopups,layer,preview,print,searchreplace,style,table",
-	theme_advanced_buttons1 : "fontselect,fontsizeselect,separator,bold,italic,underline,strikethrough,separator,sub,sup,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,numlist,bullist,separator,outdent,indent",
-	theme_advanced_buttons2 : "print,preview,separator,cut,copy,paste,separator,search,replace,separator,undo,redo,separator,link,unlink,anchor,separator,charmap,advhr,image,separator,forecolor,backcolor,separator,styleprops",
-	theme_advanced_buttons3 : "tablecontrols,separator,insertlayer,moveforward,movebackward,absolute",
-	theme_advanced_toolbar_location : "top",
-	theme_advanced_toolbar_align : "left",
-	auto_reset_designmode : true
-});
+//tty stuff
+function printToTty(tty,text) {
+	var oTty = document.getElementById(tty+'_tty');
+
+	if(!oTty) {
+		return false;
+	}
+	if(oTty.tagName == 'DIV') {
+		oTty.appendChild(document.createTextNode(text));
+		oTty.appendChild(document.createElement('br'));
+	} else if(oTty.tagName == 'INPUT') {
+		oTty.value += text;
+		oTty.value += "\n";
+	}
+}
+
+//This is the entityDecode version from tinyMCE2, the new one crash some widgets :/
+tinyMCE.entityDecode = function entityDecode(s) {
+	var e = document.createElement("div");
+	e.innerHTML = s;
+	return !e.firstChild ? s : e.firstChild.nodeValue;
+}
 
 /* (x_core.js)+xParent function Compiled from X 4.17 by XC 1.06 on 10Jul07 */
 xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xCamelize(cssPropStr){var i,c,a=cssPropStr.split('-');var s=a[0];for(i=1;i<a.length;++i){c=a[i].charAt(0);s+=a[i].replace(c,c.toUpperCase());}return s;}function xGetComputedStyle(e,p,i){if(!(e=xGetElementById(e)))return null;var s,v='undefined',dv=document.defaultView;if(dv&&dv.getComputedStyle){s=dv.getComputedStyle(e,'');if(s)v=s.getPropertyValue(p);}else if(e.currentStyle){v=e.currentStyle[xCamelize(p)];}else return null;return i?(parseInt(v)||0):v;}function xGetElementById(e){if(typeof(e)=='string'){if(document.getElementById)e=document.getElementById(e);else if(document.all)e=document.all[e];else e=null;}return e;}function xGetElementsByClassName(c,p,t,f){var r=new Array();var re=new RegExp("(^|\\s)"+c+"(\\s|$)");var e=xGetElementsByTagName(t,p);for(var i=0;i<e.length;++i){if(re.test(e[i].className)){r[r.length]=e[i];if(f)f(e[i]);}}return r;}function xGetElementsByTagName(t,p){var list=null;t=t||'*';p=p||document;if(typeof p.getElementsByTagName!='undefined'){list=p.getElementsByTagName(t);if(t=='*'&&(!list||!list.length))list=p.all;}else{if(t=='*')list=p.all;else if(p.all&&p.all.tags)list=p.all.tags(t);}return list||new Array();}function xHasPoint(e,x,y,t,r,b,l){if(!xNum(t)){t=r=b=l=0;}else if(!xNum(r)){r=b=l=t;}else if(!xNum(b)){l=r;b=t;}var eX=xPageX(e),eY=xPageY(e);return(x>=eX+l&&x<=eX+xWidth(e)-r&&y>=eY+t&&y<=eY+xHeight(e)-b);}function xHeight(e,h){if(!(e=xGetElementById(e)))return 0;if(xNum(h)){if(h<0)h=0;else h=Math.round(h);}else h=-1;var css=xDef(e.style);if(e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){h=xClientHeight();}else if(css&&xDef(e.offsetHeight)&&xStr(e.style.height)){if(h>=0){var pt=0,pb=0,bt=0,bb=0;if(document.compatMode=='CSS1Compat'){var gcs=xGetComputedStyle;pt=gcs(e,'padding-top',1);if(pt!==null){pb=gcs(e,'padding-bottom',1);bt=gcs(e,'border-top-width',1);bb=gcs(e,'border-bottom-width',1);}else if(xDef(e.offsetHeight,e.style.height)){e.style.height=h+'px';pt=e.offsetHeight-h;}}h-=(pt+pb+bt+bb);if(isNaN(h)||h<0)return;else e.style.height=h+'px';}h=e.offsetHeight;}else if(css&&xDef(e.style.pixelHeight)){if(h>=0)e.style.pixelHeight=h;h=e.style.pixelHeight;}return h;}function xLeft(e,iX){if(!(e=xGetElementById(e)))return 0;var css=xDef(e.style);if(css&&xStr(e.style.left)){if(xNum(iX))e.style.left=iX+'px';else{iX=parseInt(e.style.left);if(isNaN(iX))iX=xGetComputedStyle(e,'left',1);if(isNaN(iX))iX=0;}}else if(css&&xDef(e.style.pixelLeft)){if(xNum(iX))e.style.pixelLeft=iX;else iX=e.style.pixelLeft;}return iX;}function xMoveTo(e,x,y){xLeft(e,x);xTop(e,y);}function xNum(){for(var i=0;i<arguments.length;++i){if(isNaN(arguments[i])||typeof(arguments[i])!='number')return false;}return true;}function xOpacity(e,o){var set=xDef(o);if(!(e=xGetElementById(e)))return 2;if(xStr(e.style.opacity)){if(set)e.style.opacity=o+'';else o=parseFloat(e.style.opacity);}else if(xStr(e.style.filter)){if(set)e.style.filter='alpha(opacity='+(100*o)+')';else if(e.filters&&e.filters.alpha){o=e.filters.alpha.opacity/100;}}else if(xStr(e.style.MozOpacity)){if(set)e.style.MozOpacity=o+'';else o=parseFloat(e.style.MozOpacity);}else if(xStr(e.style.KhtmlOpacity)){if(set)e.style.KhtmlOpacity=o+'';else o=parseFloat(e.style.KhtmlOpacity);}return isNaN(o)?1:o;}function xResizeTo(e,w,h){xWidth(e,w);xHeight(e,h);}function xScrollLeft(e,bWin){var offset=0;if(!xDef(e)||bWin||e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){var w=window;if(bWin&&e)w=e;if(w.document.documentElement&&w.document.documentElement.scrollLeft)offset=w.document.documentElement.scrollLeft;else if(w.document.body&&xDef(w.document.body.scrollLeft))offset=w.document.body.scrollLeft;}else{e=xGetElementById(e);if(e&&xNum(e.scrollLeft))offset=e.scrollLeft;}return offset;}function xScrollTop(e,bWin){var offset=0;if(!xDef(e)||bWin||e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){var w=window;if(bWin&&e)w=e;if(w.document.documentElement&&w.document.documentElement.scrollTop)offset=w.document.documentElement.scrollTop;else if(w.document.body&&xDef(w.document.body.scrollTop))offset=w.document.body.scrollTop;}else{e=xGetElementById(e);if(e&&xNum(e.scrollTop))offset=e.scrollTop;}return offset;}function xStr(s){for(var i=0;i<arguments.length;++i){if(typeof(arguments[i])!='string')return false;}return true;}function xStyle(sProp,sVal){var i,e;for(i=2;i<arguments.length;++i){e=xGetElementById(arguments[i]);if(e.style){try{e.style[sProp]=sVal;}catch(err){e.style[sProp]='';}}}}function xTop(e,iY){if(!(e=xGetElementById(e)))return 0;var css=xDef(e.style);if(css&&xStr(e.style.top)){if(xNum(iY))e.style.top=iY+'px';else{iY=parseInt(e.style.top);if(isNaN(iY))iY=xGetComputedStyle(e,'top',1);if(isNaN(iY))iY=0;}}else if(css&&xDef(e.style.pixelTop)){if(xNum(iY))e.style.pixelTop=iY;else iY=e.style.pixelTop;}return iY;}function xWidth(e,w){if(!(e=xGetElementById(e)))return 0;if(xNum(w)){if(w<0)w=0;else w=Math.round(w);}else w=-1;var css=xDef(e.style);if(e==document||e.tagName.toLowerCase()=='html'||e.tagName.toLowerCase()=='body'){w=xClientWidth();}else if(css&&xDef(e.offsetWidth)&&xStr(e.style.width)){if(w>=0){var pl=0,pr=0,bl=0,br=0;if(document.compatMode=='CSS1Compat'){var gcs=xGetComputedStyle;pl=gcs(e,'padding-left',1);if(pl!==null){pr=gcs(e,'padding-right',1);bl=gcs(e,'border-left-width',1);br=gcs(e,'border-right-width',1);}else if(xDef(e.offsetWidth,e.style.width)){e.style.width=w+'px';pl=e.offsetWidth-w;}}w-=(pl+pr+bl+br);if(isNaN(w)||w<0)return;else e.style.width=w+'px';}w=e.offsetWidth;}else if(css&&xDef(e.style.pixelWidth)){if(w>=0)e.style.pixelWidth=w;w=e.style.pixelWidth;}return w;}function xParent(e,bNode){if(!(e=xGetElementById(e)))return null;var p=null;if(!bNode&&xDef(e.offsetParent))p=e.offsetParent;else if(xDef(e.parentNode))p=e.parentNode;else if(xDef(e.parentElement))p=e.parentElement;return p;}
@@ -1054,7 +1092,7 @@ function xPageY(e)
   while (e) {
     if (xDef(e.offsetTop)) y += e.offsetTop;
     try{
-    	e = xDef(e.offsetParent) ? e.offsetParent : null;	
+    	e = xDef(e.offsetParent) ? e.offsetParent : null;
     }catch(err){
     	e = null;
     }
@@ -1065,11 +1103,11 @@ function xPageY(e)
 function xPageX(e)
 {
   var x = 0;
-  e = xGetElementById(e); 
+  e = xGetElementById(e);
   while (e) {
     if (xDef(e.offsetLeft)) x += e.offsetLeft;
     try{
-    	e = xDef(e.offsetParent) ? e.offsetParent : null;	
+    	e = xDef(e.offsetParent) ? e.offsetParent : null;
     }catch(err){
     	e = null;
     }
@@ -1179,6 +1217,248 @@ function xDisableDrop(id)
   }
 }
 
+/*
+ * More info at: http://kevin.vanzonneveld.net/techblog/article/phpjs_licensing/
+ *
+ * This is version: 2.21
+ * php.js is copyright 2008 Kevin van Zonneveld.
+ */
+
+function md5 ( str ) {
+    // Calculate the md5 hash of a string
+    //
+    // +    discuss at: http://kevin.vanzonneveld.net/techblog/article/javascript_equivalent_for_phps_md5/
+    // +       version: 810.112
+    // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
+    // + namespaced by: Michael White (http://getsprink.com)
+    // +    tweaked by: Jack
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // -    depends on: utf8_encode
+    // *     example 1: md5('Kevin van Zonneveld');
+    // *     returns 1: '6e658d4bfcb59cc13f96c14450ac40b9'
+
+    var RotateLeft = function(lValue, iShiftBits) {
+        return (lValue<<iShiftBits) | (lValue>>>(32-iShiftBits));
+    };
+
+    var AddUnsigned = function(lX,lY) {
+        var lX4,lY4,lX8,lY8,lResult;
+        lX8 = (lX & 0x80000000);
+        lY8 = (lY & 0x80000000);
+        lX4 = (lX & 0x40000000);
+        lY4 = (lY & 0x40000000);
+        lResult = (lX & 0x3FFFFFFF)+(lY & 0x3FFFFFFF);
+        if (lX4 & lY4) {
+            return (lResult ^ 0x80000000 ^ lX8 ^ lY8);
+        }
+        if (lX4 | lY4) {
+            if (lResult & 0x40000000) {
+                return (lResult ^ 0xC0000000 ^ lX8 ^ lY8);
+            } else {
+                return (lResult ^ 0x40000000 ^ lX8 ^ lY8);
+            }
+        } else {
+            return (lResult ^ lX8 ^ lY8);
+        }
+    };
+
+    var F = function(x,y,z) { return (x & y) | ((~x) & z); };
+    var G = function(x,y,z) { return (x & z) | (y & (~z)); };
+    var H = function(x,y,z) { return (x ^ y ^ z); };
+    var I = function(x,y,z) { return (y ^ (x | (~z))); };
+
+    var FF = function(a,b,c,d,x,s,ac) {
+        a = AddUnsigned(a, AddUnsigned(AddUnsigned(F(b, c, d), x), ac));
+        return AddUnsigned(RotateLeft(a, s), b);
+    };
+
+    var GG = function(a,b,c,d,x,s,ac) {
+        a = AddUnsigned(a, AddUnsigned(AddUnsigned(G(b, c, d), x), ac));
+        return AddUnsigned(RotateLeft(a, s), b);
+    };
+
+    var HH = function(a,b,c,d,x,s,ac) {
+        a = AddUnsigned(a, AddUnsigned(AddUnsigned(H(b, c, d), x), ac));
+        return AddUnsigned(RotateLeft(a, s), b);
+    };
+
+    var II = function(a,b,c,d,x,s,ac) {
+        a = AddUnsigned(a, AddUnsigned(AddUnsigned(I(b, c, d), x), ac));
+        return AddUnsigned(RotateLeft(a, s), b);
+    };
+
+    var ConvertToWordArray = function(str) {
+        var lWordCount;
+        var lMessageLength = str.length;
+        var lNumberOfWords_temp1=lMessageLength + 8;
+        var lNumberOfWords_temp2=(lNumberOfWords_temp1-(lNumberOfWords_temp1 % 64))/64;
+        var lNumberOfWords = (lNumberOfWords_temp2+1)*16;
+        var lWordArray=Array(lNumberOfWords-1);
+        var lBytePosition = 0;
+        var lByteCount = 0;
+        while ( lByteCount < lMessageLength ) {
+            lWordCount = (lByteCount-(lByteCount % 4))/4;
+            lBytePosition = (lByteCount % 4)*8;
+            lWordArray[lWordCount] = (lWordArray[lWordCount] | (str.charCodeAt(lByteCount)<<lBytePosition));
+            lByteCount++;
+        }
+        lWordCount = (lByteCount-(lByteCount % 4))/4;
+        lBytePosition = (lByteCount % 4)*8;
+        lWordArray[lWordCount] = lWordArray[lWordCount] | (0x80<<lBytePosition);
+        lWordArray[lNumberOfWords-2] = lMessageLength<<3;
+        lWordArray[lNumberOfWords-1] = lMessageLength>>>29;
+        return lWordArray;
+    };
+
+    var WordToHex = function(lValue) {
+        var WordToHexValue="",WordToHexValue_temp="",lByte,lCount;
+        for (lCount = 0;lCount<=3;lCount++) {
+            lByte = (lValue>>>(lCount*8)) & 255;
+            WordToHexValue_temp = "0" + lByte.toString(16);
+            WordToHexValue = WordToHexValue + WordToHexValue_temp.substr(WordToHexValue_temp.length-2,2);
+        }
+        return WordToHexValue;
+    };
+
+    var x=Array();
+    var k,AA,BB,CC,DD,a,b,c,d;
+    var S11=7, S12=12, S13=17, S14=22;
+    var S21=5, S22=9 , S23=14, S24=20;
+    var S31=4, S32=11, S33=16, S34=23;
+    var S41=6, S42=10, S43=15, S44=21;
+
+    str = utf8_encode(str);
+    x = ConvertToWordArray(str);
+    a = 0x67452301; b = 0xEFCDAB89; c = 0x98BADCFE; d = 0x10325476;
+
+    xl = x.length;
+    for (k=0;k<xl;k+=16) {
+        AA=a; BB=b; CC=c; DD=d;
+        a=FF(a,b,c,d,x[k+0], S11,0xD76AA478);
+        d=FF(d,a,b,c,x[k+1], S12,0xE8C7B756);
+        c=FF(c,d,a,b,x[k+2], S13,0x242070DB);
+        b=FF(b,c,d,a,x[k+3], S14,0xC1BDCEEE);
+        a=FF(a,b,c,d,x[k+4], S11,0xF57C0FAF);
+        d=FF(d,a,b,c,x[k+5], S12,0x4787C62A);
+        c=FF(c,d,a,b,x[k+6], S13,0xA8304613);
+        b=FF(b,c,d,a,x[k+7], S14,0xFD469501);
+        a=FF(a,b,c,d,x[k+8], S11,0x698098D8);
+        d=FF(d,a,b,c,x[k+9], S12,0x8B44F7AF);
+        c=FF(c,d,a,b,x[k+10],S13,0xFFFF5BB1);
+        b=FF(b,c,d,a,x[k+11],S14,0x895CD7BE);
+        a=FF(a,b,c,d,x[k+12],S11,0x6B901122);
+        d=FF(d,a,b,c,x[k+13],S12,0xFD987193);
+        c=FF(c,d,a,b,x[k+14],S13,0xA679438E);
+        b=FF(b,c,d,a,x[k+15],S14,0x49B40821);
+        a=GG(a,b,c,d,x[k+1], S21,0xF61E2562);
+        d=GG(d,a,b,c,x[k+6], S22,0xC040B340);
+        c=GG(c,d,a,b,x[k+11],S23,0x265E5A51);
+        b=GG(b,c,d,a,x[k+0], S24,0xE9B6C7AA);
+        a=GG(a,b,c,d,x[k+5], S21,0xD62F105D);
+        d=GG(d,a,b,c,x[k+10],S22,0x2441453);
+        c=GG(c,d,a,b,x[k+15],S23,0xD8A1E681);
+        b=GG(b,c,d,a,x[k+4], S24,0xE7D3FBC8);
+        a=GG(a,b,c,d,x[k+9], S21,0x21E1CDE6);
+        d=GG(d,a,b,c,x[k+14],S22,0xC33707D6);
+        c=GG(c,d,a,b,x[k+3], S23,0xF4D50D87);
+        b=GG(b,c,d,a,x[k+8], S24,0x455A14ED);
+        a=GG(a,b,c,d,x[k+13],S21,0xA9E3E905);
+        d=GG(d,a,b,c,x[k+2], S22,0xFCEFA3F8);
+        c=GG(c,d,a,b,x[k+7], S23,0x676F02D9);
+        b=GG(b,c,d,a,x[k+12],S24,0x8D2A4C8A);
+        a=HH(a,b,c,d,x[k+5], S31,0xFFFA3942);
+        d=HH(d,a,b,c,x[k+8], S32,0x8771F681);
+        c=HH(c,d,a,b,x[k+11],S33,0x6D9D6122);
+        b=HH(b,c,d,a,x[k+14],S34,0xFDE5380C);
+        a=HH(a,b,c,d,x[k+1], S31,0xA4BEEA44);
+        d=HH(d,a,b,c,x[k+4], S32,0x4BDECFA9);
+        c=HH(c,d,a,b,x[k+7], S33,0xF6BB4B60);
+        b=HH(b,c,d,a,x[k+10],S34,0xBEBFBC70);
+        a=HH(a,b,c,d,x[k+13],S31,0x289B7EC6);
+        d=HH(d,a,b,c,x[k+0], S32,0xEAA127FA);
+        c=HH(c,d,a,b,x[k+3], S33,0xD4EF3085);
+        b=HH(b,c,d,a,x[k+6], S34,0x4881D05);
+        a=HH(a,b,c,d,x[k+9], S31,0xD9D4D039);
+        d=HH(d,a,b,c,x[k+12],S32,0xE6DB99E5);
+        c=HH(c,d,a,b,x[k+15],S33,0x1FA27CF8);
+        b=HH(b,c,d,a,x[k+2], S34,0xC4AC5665);
+        a=II(a,b,c,d,x[k+0], S41,0xF4292244);
+        d=II(d,a,b,c,x[k+7], S42,0x432AFF97);
+        c=II(c,d,a,b,x[k+14],S43,0xAB9423A7);
+        b=II(b,c,d,a,x[k+5], S44,0xFC93A039);
+        a=II(a,b,c,d,x[k+12],S41,0x655B59C3);
+        d=II(d,a,b,c,x[k+3], S42,0x8F0CCC92);
+        c=II(c,d,a,b,x[k+10],S43,0xFFEFF47D);
+        b=II(b,c,d,a,x[k+1], S44,0x85845DD1);
+        a=II(a,b,c,d,x[k+8], S41,0x6FA87E4F);
+        d=II(d,a,b,c,x[k+15],S42,0xFE2CE6E0);
+        c=II(c,d,a,b,x[k+6], S43,0xA3014314);
+        b=II(b,c,d,a,x[k+13],S44,0x4E0811A1);
+        a=II(a,b,c,d,x[k+4], S41,0xF7537E82);
+        d=II(d,a,b,c,x[k+11],S42,0xBD3AF235);
+        c=II(c,d,a,b,x[k+2], S43,0x2AD7D2BB);
+        b=II(b,c,d,a,x[k+9], S44,0xEB86D391);
+        a=AddUnsigned(a,AA);
+        b=AddUnsigned(b,BB);
+        c=AddUnsigned(c,CC);
+        d=AddUnsigned(d,DD);
+    }
+
+    var temp = WordToHex(a)+WordToHex(b)+WordToHex(c)+WordToHex(d);
+
+    return temp.toLowerCase();
+}
+
+function utf8_encode ( string ) {
+    // Encodes an ISO-8859-1 string to UTF-8
+    //
+    // +    discuss at: http://kevin.vanzonneveld.net/techblog/article/javascript_equivalent_for_phps_utf8_encode/
+    // +       version: 811.1414
+    // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: sowberry
+    // +    tweaked by: Jack
+    // +   bugfixed by: Onno Marsman
+    // +   improved by: Yves Sucaet
+    // +   bugfixed by: Onno Marsman
+    // *     example 1: utf8_encode('Kevin van Zonneveld');
+    // *     returns 1: 'Kevin van Zonneveld'
+
+    string = (string+'').replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
+    var utftext = "";
+    var start, end;
+    var stringl = 0;
+
+    start = end = 0;
+    stringl = string.length;
+    for (var n = 0; n < stringl; n++) {
+        var c1 = string.charCodeAt(n);
+        var enc = null;
+
+        if (c1 < 128) {
+            end++;
+        } else if((c1 > 127) && (c1 < 2048)) {
+            enc = String.fromCharCode((c1 >> 6) | 192) + String.fromCharCode((c1 & 63) | 128);
+        } else {
+            enc = String.fromCharCode((c1 >> 12) | 224) + String.fromCharCode(((c1 >> 6) & 63) | 128) + String.fromCharCode((c1 & 63) | 128);
+        }
+        if (enc != null) {
+            if (end > start) {
+                utftext += string.substring(start, end);
+            }
+            utftext += enc;
+            start = end = n+1;
+        }
+    }
+
+    if (end > start) {
+        utftext += string.substring(start, string.length);
+    }
+
+    return utftext;
+}
+
 //---
 //THE NEXT CODE IS TAKEN FROM A BSD LICENSED LIBRARY ---
 //---
@@ -1252,7 +1532,7 @@ var FlashDetect = new function(){
 		return {
 			"raw":str,
 			"major":parseInt(majorMinor[0], 10),
-			"minor":parseInt(majorMinor[1], 10), 
+			"minor":parseInt(majorMinor[1], 10),
 			"revisionStr":revisionStr,
 			"revision":parseRevisionStrToInt(revisionStr)
 		};
@@ -1272,7 +1552,7 @@ var FlashDetect = new function(){
 				var versionObj = parseStandardVersion(version);
 				self.raw = versionObj.raw;
 				self.major = versionObj.major;
-				self.minor = versionObj.minor; 
+				self.minor = versionObj.minor;
 				self.revisionStr = versionObj.revisionStr;
 				self.revision = versionObj.revision;
 				self.installed = true;
@@ -1288,7 +1568,7 @@ var FlashDetect = new function(){
 						var versionObj = parseActiveXVersion(version);
 						self.raw = versionObj.raw;
 						self.major = versionObj.major;
-						self.minor = versionObj.minor; 
+						self.minor = versionObj.minor;
 						self.revision = versionObj.revision;
 						self.revisionStr = versionObj.revisionStr;
 					}

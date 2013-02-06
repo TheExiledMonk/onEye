@@ -109,7 +109,6 @@ function eyeFTP_ftpListDir($dir) {
 	$dir = eyeFTP_ftpPwd($GLOBALS['eyeFTP_ftpConnectionResource']);
 
 	$listCmdArguments = ($GLOBALS['eyeFTP_listA_HID']->text)? '-a' : '';
-
 	$contents = ftp_rawlist($GLOBALS['eyeFTP_ftpConnectionResource'],$listCmdArguments.' '.$dir);
 	if ($contents === false) {
 		eyeFTP_logConsole('Unable to list files, error occured. (Do you have sufficient permissions?)', null, EYEFTP_LOGSTYLE_ERROR);
@@ -163,163 +162,276 @@ function eyeFTP_ftpListDir($dir) {
 }
 
 /**
- * Downloads file to temporary folder and then :
- *  - updates "dummy" iframe on the interface to show a "save as" dialog box so the user can download the
- *    file from the HTTP server.(case of download to browser)
- *  - copies file's content into a new eyeOS file in the directory the user selected through the left panel
- *
- * @param string $dir The path to the directory where the file is located on the FTP server
- * @param string $filename The name of the file
- * @param array $params Special parameters ([target] => 'eyeos'/'browser', [path] => path_to_saved_file)
+ * FTP FILE => BROWSER
+ * 
+ * @param string $dir The path of the directory holding the file
+ * @param string $filename The filename
  * @return boolean TRUE if the operation is successful, FALSE otherwise
  */
-function eyeFTP_ftpGet($dir,$filename,$downloadParams="") {
-	global $myPid;
-	global $checknum;
+function eyeFTP_ftpGetToBrowser($dir,$filename) {
+	eyeFTP_prepareLongExecution();
+	global $myPid,$checknum;
 
 	if (! eyeFTP_autoConnect()) {
 		return false;
 	}
-
-	$tmpfilepath = tempnam('tmp','eye');
-	$tmpfile = fopen($tmpfilepath,'w+');
-
-	if ($tmpfile === false) {
+	
+	//create a temporay file to receive data
+	$tmpFilePath = service('um','getCurrentUserDir').TMP_USER_DIR.'/'.uniqid('eyeFTP').'.tmp';
+	$tmpFileCreation = vfs('real_create',array($tmpFilePath));
+	$tmpFile = vfs('real_open',array($tmpFilePath,'w'));
+	if (!$tmpFileCreation || $tmpFile === false) {
 		eyeFTP_logConsole('Unable to create temporary file! Download aborted.', null, EYEFTP_LOGSTYLE_ERROR);
 		return false;
 	}
-
+	
 	if (ftp_fget($GLOBALS['eyeFTP_ftpConnectionResource'],
-						$tmpfile,
+						$tmpFile,
 						eyeFTP_getFormatedDirPath($dir.'/'.$filename),
 						FTP_BINARY,
 						0) !== true) {
 		eyeFTP_logConsole('Error while downloading file! Transfer aborted.', null, EYEFTP_LOGSTYLE_ERROR);
 		return false;
 	}
+	fclose($tmpFile);
+	clearstatcache();
+	$filesize = vfs('real_filesize', array($tmpFilePath));
+		
+	//send the response back to the browser (update dummy iframe)
+	$params = array();
+	$params['tmpfilepath'] = $tmpFilePath;
+	$params['filename'] = $filename;
+	$params = urlencode(serialize($params));
+	service('eyex','rawjs',array('js' => "document.getElementById('".$myPid."_eyeFTP_download_FRM').src='index.php?checknum=$checknum&msg=eyeFTP_downloadRemote_finished&params=".$params."';"));
 
-	if (is_array($downloadParams) && $downloadParams['target'] == 'eyeos') {
-		$targetFilePath = service('um','getCurrentUserDir').FILES_USER_DIR
-																.$downloadParams['path'].'/'.$filename;
-		if(! service('vfs','create',array($targetFilePath,'eyeFTP'))) {
-			eyeFTP_logConsole('Unable to create file at the specified location.', null, EYEFTP_LOGSTYLE_ERROR);
+	eyeFTP_logConsole('Download finished successfully, %s bytes transfered.',
+		array($filesize),
+		EYEFTP_LOGSTYLE_SUCCESS
+	);
+	return true;
+}
+
+/**
+ * FTP FILE => EYEOS FILE
+ * 
+ * @param string $filePath The path of the FTP file to retrieve
+ * @param string $localDirPath The path of the target local directory
+ * @return boolean TRUE if the operation is successful, FALSE otherwise
+ */
+function eyeFTP_ftpGetToeyeOS_file($filePath,$localDirPath) {
+	eyeFTP_prepareLongExecution();
+	if (! eyeFTP_autoConnect()) {
+		return false;
+	}
+	$filePath = eyeFTP_getFormatedDirPath($filePath);
+	$filename = utf8_basename($filePath);
+	$localFilePath = eyeFTP_getFormatedDirPath($localDirPath.'/'.$filename);
+	if(service('vfs','fileExists',array($localFilePath,'eyeFTP'))) {
+		eyeFTP_logConsole('File "%s" already exists, overwriting.', array($filePath), EYEFTP_LOGSTYLE_WARNING);
+	}
+	elseif(! service('vfs','create',array($localFilePath,'eyeFTP'))) {
+		eyeFTP_logConsole('Unable to create file "%s".', array($filePath), EYEFTP_LOGSTYLE_ERROR);
+		return false;
+	}
+	$fp = service('vfs','open',array($localFilePath,'w'));
+	if(! $fp) {
+		eyeFTP_logConsole('Unable to write file, try to check permissions.', null, EYEFTP_LOGSTYLE_ERROR);
+		return false;
+	}
+	
+	if (ftp_fget($GLOBALS['eyeFTP_ftpConnectionResource'],
+						$fp,
+						$filePath,
+						FTP_BINARY,
+						0) !== true) {
+		eyeFTP_logConsole('Error while downloading file "'.$filename.'"! Transfer aborted.', null, EYEFTP_LOGSTYLE_ERROR);
+		return false;
+	}
+	fclose($fp);
+	eyeFTP_logConsole('Download of file "%s" finished.',
+		array($filePath),
+		EYEFTP_LOGSTYLE_SUCCESS
+	);
+	return true;
+}
+
+/**
+ * FTP DIR => EYEOS DIR
+ * 
+ * @param string $dirPath The path of the FTP directory to retrieve
+ * @param string $localDirPath The path of the target local directory
+ * @return boolean TRUE if the operation is successful, FALSE otherwise
+ */
+function eyeFTP_ftpGetToeyeOS_dir($dirPath,$localDirPath) {
+	eyeFTP_prepareLongExecution();
+	if (! eyeFTP_autoConnect()) {
+		return false;
+	}
+	$dirPath = eyeFTP_getFormatedDirPath($dirPath);
+	$dirname = utf8_basename($dirPath);
+	$localDirPath = eyeFTP_getFormatedDirPath($localDirPath.'/'.$dirname);
+	if (! vfs('isdir', array($localDirPath))) {
+		if (! vfs('mkdir', array($localDirPath))) {
+			eyeFTP_logConsole('Unable to create directory "%s".', array($dirname), EYEFTP_LOGSTYLE_ERROR);
 			return false;
 		}
-		$fp = service('vfs','open',array($targetFilePath,'w'));
-		if(! $fp) {
-			eyeFTP_logConsole('Unable to write file, try to check permissions.', null, EYEFTP_LOGSTYLE_ERROR);
-			return false;
+	}
+	
+	$listCmdArguments = ($GLOBALS['eyeFTP_listA_HID']->text)? '-a' : '';
+	$contents = ftp_rawlist($GLOBALS['eyeFTP_ftpConnectionResource'],$listCmdArguments.' '.$dirPath);
+	if ($contents === false) {
+		eyeFTP_logConsole('Unable to browse directory\'s content at "%s".', array($dirPath), EYEFTP_LOGSTYLE_ERROR);
+		return false;
+	}
+	$filesData = parse_rawlist($contents,false);
+	foreach($filesData as $id => $fileInfo) {
+		switch($fileInfo['type']) {
+			case 'd':
+				eyeFTP_ftpGetToeyeOS_dir($dirPath.'/'.$fileInfo['name'],$localDirPath);
+				break;
+
+			case 'l':
+				//links must be ignored
+				break;
+
+			default:
+				eyeFTP_ftpGetToeyeOS_file($dirPath.'/'.$fileInfo['name'],$localDirPath);
 		}
-		fclose($tmpfile);
-		$fileContent = file_get_contents($tmpfilepath);
-		if (fwrite($fp,$fileContent) === false) {
-			eyeFTP_logConsole('Unable to write content of file.', null, EYEFTP_LOGSTYLE_ERROR);
+	}
+	eyeFTP_logConsole('Download of directory "%s" finished.',
+		array($dirPath),
+		EYEFTP_LOGSTYLE_SUCCESS
+	);
+	return true;
+}
+
+/**
+ * BROWSER => FTP FILE
+ * 
+ * @param string $tmpLocalFilePath The path of the temporary file
+ * @param string $dirPath The target FTP directory
+ * @param string $originalFileName The original name of the file
+ * @return boolean TRUE if the operation is successful, FALSE otherwise
+ */
+function eyeFTP_ftpPutFromBrowser($tmpLocalFilePath, $dirPath, $originalFileName) {
+	eyeFTP_prepareLongExecution();
+	if (! eyeFTP_autoConnect()) {
+		return false;
+	}
+	$dirPath = eyeFTP_getFormatedDirPath($dirPath);
+	
+	$fp = fopen($tmpLocalFilePath,'r');
+	if ($fp !== false) {
+		if (ftp_fput($GLOBALS['eyeFTP_ftpConnectionResource'],
+						$dirPath.'/'.$originalFileName,$fp,
+						FTP_BINARY,
+						0) === true) {
+			eyeFTP_logConsole('Upload finished successfully, %s bytes transfered.',
+				array(filesize($tmpLocalFilePath)),
+				EYEFTP_LOGSTYLE_SUCCESS
+			);
+		}
+		else {
+			eyeFTP_logConsole('Error while uploading file! Transfer aborted. (Do you have sufficient permissions?)',
+				null,
+				EYEFTP_LOGSTYLE_ERROR
+			);
 			return false;
 		}
 		fclose($fp);
 	}
 	else {
-		$params = array();
-		$params['tmpfilepath'] = $tmpfilepath;
-		$params['filename'] = $filename;
-		$params = urlencode(serialize($params));
-		service('eyex','rawjs',array('js' => "document.getElementById('".$myPid."_eyeFTP_download_FRM').src='index.php?checknum=$checknum&msg=eyeFTP_downloadRemote_finished&params=".$params."';"));
+		eyeFTP_logConsole('Unable to read temporary file! Upload aborted.', null, EYEFTP_LOGSTYLE_ERROR);
+		return false;
 	}
-	eyeFTP_logConsole('Download finished successfully, %s bytes transfered.',
-		array(filesize($tmpfilepath)),
-		EYEFTP_LOGSTYLE_SUCCESS
-	);
-	$conf = eyeFTP_getConf();
-	if ($downloadParams['path'] == $conf['currentLocalDir'])
-		eyeFTP_on_eyeFTP_refreshLocal();
-
-	fclose($tmpfile);
 	return true;
 }
 
 /**
- * Uploads file from :
- * - temporary directory on the eyeOS server (case of upload from browser)
- * - user's directory (case of upload from eyeOS filesystem)
- * to the remote FTP server.
- *
- * @param array $uploadParams [source] => 'eyeos':
- * 								[filePath] => The eyeOS path of the file from the user's root file directory
- * 								[remotePath] => The path of the folder where the file will have to be placed
- *                            [source] => 'browser':
- * 								[tmpName] => The temporary location/name given to uploaded file as given by
- *                                           the server through the $_FILES var
- * 								[realName] => The real name of the file
- * 								[remotePath] => The path of the folder where the file will have to be placed
+ * EYEOS FILE => FTP FILE
+ * 
+ * @param string $localFilePath The path of the local file
+ * @param string $dirPath The path of the target FTP directory
  * @return boolean TRUE if the operation is successful, FALSE otherwise
  */
-function eyeFTP_ftpPut($uploadParams="") {
-	global $myPid;
-	global $checknum;
-
+function eyeFTP_ftpPutFromEyeOS_file($localFilePath,$dirPath) {
+	eyeFTP_prepareLongExecution();
 	if (! eyeFTP_autoConnect()) {
 		return false;
 	}
+	$localFilePath = eyeFTP_getFormatedDirPath($localFilePath);
+	$filename = utf8_basename($localFilePath);
+	$remoteFilePath = eyeFTP_getFormatedDirPath($dirPath.'/'.$filename);
+	$displayedLocalFilePath = eyeFTP_getFormatedDirPath(eyeFTP_resolvePathInUserDir(dirname($localFilePath)).'/'.$filename);
+	
+	$fp = service('vfs','open',array($localFilePath,'r'));
+	if(! $fp) {
+		eyeFTP_logConsole('Unable to read file "%s"', array($displayedLocalFilePath), EYEFTP_LOGSTYLE_ERROR);
+		return false;
+	}
+	
+	if (ftp_fput($GLOBALS['eyeFTP_ftpConnectionResource'],
+						$remoteFilePath,
+						$fp,
+						FTP_BINARY,
+						0) !== true) {
+		eyeFTP_logConsole('Error while uploading file "%s"! Transfer aborted.', array($displayedLocalFilePath), EYEFTP_LOGSTYLE_ERROR);
+		fclose($fp);
+		return false;
+	}
+	fclose($fp);
+	eyeFTP_logConsole('Upload of file "%s" finished.',array($displayedLocalFilePath),EYEFTP_LOGSTYLE_SUCCESS);
+	return true;
+}
 
-	if (is_array($uploadParams) && $uploadParams['source'] == 'eyeos') {
-		$filePath = $uploadParams['filePath'];
-		$realName = basename($filePath);
-		$fp = service('vfs','open',array($filePath,'r'));
-
-		if ($fp !== false) {
-			if (ftp_fput($GLOBALS['eyeFTP_ftpConnectionResource'],
-							$uploadParams['remotePath'].'/'.$realName,$fp,
-							FTP_BINARY,
-							0) === true) {
-				$filesize = service('vfs','filesize',array($filePath));
-				eyeFTP_logConsole('Upload finished successfully, %s bytes transfered.',
-					array($filesize),
-					EYEFTP_LOGSTYLE_SUCCESS
-				);
-			}
-			else {
-				eyeFTP_logConsole('Error while uploading file! Transfer aborted. (Do you have sufficient permissions?)',
-					null,
-					EYEFTP_LOGSTYLE_ERROR
-				);
-				return false;
-			}
-			fclose($fp);
-			return true;
-		}
-		else {
-			eyeFTP_logConsole('Unable to read source file! Upload aborted.', null, EYEFTP_LOGSTYLE_ERROR);
+/**
+ * EYEOS DIR => FTP DIR
+ * 
+ * @param string $localDirPath The path of the local directory
+ * @param string $dirPath The path of the target FTP directory
+ * @return boolean TRUE if the operation is successful, FALSE otherwise
+ */
+function eyeFTP_ftpPutFromEyeOS_dir($localDirPath,$dirPath) {
+	eyeFTP_prepareLongExecution();
+	if (! eyeFTP_autoConnect()) {
+		return false;
+	}
+	$dirPath = eyeFTP_getFormatedDirPath($dirPath);
+	$dirname = utf8_basename($localDirPath);
+	$currentRemoteDir = eyeFTP_ftpPwd();
+	$remoteDirPath = eyeFTP_getFormatedDirPath($dirPath.'/'.$dirname);
+	
+	//check directory's existence, create it if needed (ftp_chdir is the best way to check that)
+	if (! ftp_chdir($GLOBALS['eyeFTP_ftpConnectionResource'],$remoteDirPath)) {
+		if (!eyeFTP_ftpMkdir($dirPath,$dirname)) {
 			return false;
 		}
 	}
 	else {
-		$fp = fopen($uploadParams['tmpName'],'r');
-
-		if ($fp !== false) {
-			if (ftp_fput($GLOBALS['eyeFTP_ftpConnectionResource'],
-							$uploadParams['remotePath'].'/'.$uploadParams['realName'],$fp,
-							FTP_BINARY,
-							0) === true) {
-				eyeFTP_logConsole('Upload finished successfully, %s bytes transfered.',
-					array(filesize($uploadParams['tmpName'])),
-					EYEFTP_LOGSTYLE_SUCCESS
-				);
-			}
-			else {
-				eyeFTP_logConsole('Error while uploading file! Transfer aborted. (Do you have sufficient permissions?)',
-					null,
-					EYEFTP_LOGSTYLE_ERROR
-				);
-				return false;
-			}
-			fclose($fp);
-		}
-		else {
-			eyeFTP_logConsole('Unable to read temporary file! Upload aborted.', null, EYEFTP_LOGSTYLE_ERROR);
-			return false;
-		}
-		return true;
+		//the directory already exists, go back to previous directory
+		ftp_chdir($GLOBALS['eyeFTP_ftpConnectionResource'],$currentRemoteDir);
 	}
+	
+	$filesData = eyeFTP_listDir($localDirPath,false);
+	foreach($filesData as $id => $fileInfo) {
+		switch($fileInfo['type']) {
+			case 'd':
+				eyeFTP_ftpPutFromEyeOS_dir($localDirPath.'/'.$fileInfo['name'],$remoteDirPath);
+				break;
+				
+			case 'l':
+				//links must be ignored
+				break;
+
+			default:
+				eyeFTP_ftpPutFromEyeOS_file($localDirPath.'/'.$fileInfo['name'],$remoteDirPath);
+		}
+	}
+	eyeFTP_logConsole('Upload of directory "%s" finished.',
+		array(eyeFTP_resolvePathInUserDir($localDirPath)),
+		EYEFTP_LOGSTYLE_SUCCESS
+	);
+	return true;
 }
 
 /**
@@ -382,13 +494,26 @@ function eyeFTP_ftpRename($currentFileLocation,$newFileLocation) {
  * @param string $fileType The type of the element (the character returned by the LIST command: 'd', '-', 'l')
  * @return boolean TRUE if the operation is successful, FALSE otherwise
  */
-function eyeFTP_ftpDelete($filePath,$fileType) {
+function eyeFTP_ftpDelete($filePath,$fileType,$recursive=true) {
 	if (! eyeFTP_autoConnect()) {
 		return false;
 	}
+	$filePath = eyeFTP_getFormatedDirPath($filePath);
 
 	//FOLDER
 	if ($fileType == 'd') {
+		eyeFTP_prepareLongExecution();
+		$listCmdArguments = ($GLOBALS['eyeFTP_listA_HID']->text)? '-a' : '';
+		$contents = ftp_rawlist($GLOBALS['eyeFTP_ftpConnectionResource'],$listCmdArguments.' '.$filePath);
+		if ($contents === false) {
+			eyeFTP_logConsole('Unable to delete directory\'s content at "%s".', array($filePath), EYEFTP_LOGSTYLE_ERROR);
+			return false;
+		}
+		$filesData = parse_rawlist($contents,false);
+		foreach($filesData as $id => $fileInfo) {
+			eyeFTP_ftpDelete($filePath.'/'.$fileInfo['name'],$fileInfo['type']);
+		}
+		
 		if (ftp_rmdir($GLOBALS['eyeFTP_ftpConnectionResource'],$filePath) == false) {
 			eyeFTP_logConsole('Unable to delete folder, error occured. (Do you have sufficient permissions?)',
 				null,
@@ -397,8 +522,8 @@ function eyeFTP_ftpDelete($filePath,$fileType) {
 			return false;
 		}
 		else {
-			eyeFTP_logConsole('Folder deleted successfully', null, EYEFTP_LOGSTYLE_SUCCESS);
-		return true;
+			eyeFTP_logConsole('Folder "%s" deleted successfully', array($filePath), EYEFTP_LOGSTYLE_SUCCESS);
+			return true;
 		}
 	}
 	//FILE (OR LINK)
@@ -411,7 +536,7 @@ function eyeFTP_ftpDelete($filePath,$fileType) {
 			return false;
 		}
 		else {
-			eyeFTP_logConsole('File deleted successfully', null, EYEFTP_LOGSTYLE_SUCCESS);
+			eyeFTP_logConsole('File "%s" deleted successfully', array($filePath), EYEFTP_LOGSTYLE_SUCCESS);
 			return true;
 		}
 	}

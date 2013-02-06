@@ -27,20 +27,20 @@
 
 class Textarea {
 	//pid controller
-	
+
 	var $creatorPid;
-	
+
 	//global widgets options without default
 	var $name;
 	var $father;
-		
-	//global widget options with default	
+
+	//global widget options with default
 	var $x;
 	var $y;
 	var $horiz;
 	var $vert;
 	var $cent;
-	
+
 	var $showed = 0;
 
 	//custom widget options
@@ -53,7 +53,7 @@ class Textarea {
 	var $rows;
 	var $cols;
 	var $cssClass;
-		
+
 	function Textarea($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
@@ -67,7 +67,7 @@ class Textarea {
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 10;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 10;
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
-		
+
 		//especific button options
 		isset($params['enabled']) ? $this->enabled = $params['enabled'] : $this->enabled = 1;
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
@@ -81,23 +81,23 @@ class Textarea {
 		isset($params['cols']) ? $this->cols = $params['cols'] : $this->cols = -1;
 		isset($params['cssClass']) ? $this->cssClass = $params['cssClass'] : $this->cssClass = "";
 	}
-	
 
-	function show($noserialize=0) {		
+
+	function show($noserialize=0) {
 		$widgetsparams = array(
-			'enabled' => $this->enabled,			
-			'visible' => $this->visible,		
-			'width' => $this->width,		
+			'enabled' => $this->enabled,
+			'visible' => $this->visible,
+			'width' => $this->width,
 			'height' => $this->height,
 			'rich' => $this->rich,
 			'code' => $this->code,
 			'lang' => $this->lang,
 			'rows' => $this->rows,
 			'cols' => $this->cols,
-			'cssClass' => $this->cssClass				
+			'cssClass' => $this->cssClass
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+
 		$myTextarea = array(
 			'name' => $this->name,
 			'father' => $this->father,
@@ -107,14 +107,16 @@ class Textarea {
 			'y' => $this->y,
 			'center' => $this->cent,
 			'widgetname' => 'Textarea',
-			'params' => $widgetsparams			
+			'params' => $widgetsparams
 		);
 		service('eyex','createWidget',$myTextarea);
 		$this->showed=1;
 		if($noserialize == 0) {
 			reqLib('eyeWidgets','serialize',array($this));
 		}
-		$this->setText($this->text);
+		if(!empty($this->text)) {
+			$this->setText($this->text);
+		}
 	}
 
 	//event handling
@@ -126,7 +128,7 @@ class Textarea {
 		}
 		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
-		
+
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
@@ -135,7 +137,7 @@ class Textarea {
 			}
 		}
 	}
-	
+
 //set properties functions
 	function disable() {
 		global $myPid;
@@ -146,7 +148,7 @@ class Textarea {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=true'));
 		}
 	}
-	
+
 	function enable() {
 		global $myPid;
 		$this->enabled=1;
@@ -156,7 +158,7 @@ class Textarea {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
 		}
 	}
-	
+
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
@@ -166,7 +168,7 @@ class Textarea {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 		}
 	}
-	
+
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
@@ -176,7 +178,7 @@ class Textarea {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 		}
 	}
-		
+
 	function setText($content) {
 		global $myPid;
 		$this->text = $content;
@@ -190,12 +192,11 @@ class Textarea {
 				service('eyex','concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name));
 			}
 			if($totalContent) {
-				service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name));		
+				service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name));
 			}
 			$name = $myPid.'_'.$this->name;
-			
-			if($this->rich!=0) {
-				service('eyex','rawjs',array('js'=>"setTimeout('tinyMCE.updateContent(\\'$name\\')',500);"));
+			if($this->rich != 0) {
+				eyex('rawjs',array('js'=> "txtAreas['".$myPid.'_'.$this->name."_objTxt'].load()"));
 			}
 		} else {
 			service('eyex','rawjs',array('js' => 'cp_'.$name.'.setCode("")'));
@@ -206,58 +207,83 @@ class Textarea {
 				service('eyex','concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name.'_cp'));
 			}
 			if($totalContent) {
-				service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name.'_cp'));		
+				service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name.'_cp'));
 			}
 			$name = $myPid.'_'.$this->name;
-			
 			service('eyex','rawjs',array('js' => 'cp_'.$name.'.setCode(document.getElementById("'.$myPid.'_'.$this->name.'_cp").value)'));
 		}
 	}
-	
-	function setValue($content) {
-		$this->text=base64_decode($content);		
+
+	function setRichStatusText($text) {
+		global $myPid;
+		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_path_row").innerHTML = %s;','tokens'=>array($text)));
 	}
-	
+
+	function setValue($content) {
+		$this->text=base64_decode($content);
+	}
+
 	function focus() {
 		global $myPid;
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").focus();'));
 	}
-		
-//friend functions	
+
+//friend functions
 	function getSyncString() {
 		global $myPid;
 		$name = $myPid.'_'.$this->name;
-		if($this->rich==1) {
-			return "tinyMCE.triggerSave(0,1);eyeParam('$this->name',Base64.encode(document.getElementById('$myPid".'_'."$this->name').value))";
+		if($this->rich!=0) {
+			return "eyeParam('".$this->name."',Base64.encode(txtAreas['".$myPid.'_'.$this->name."_objTxt'].getContent()))";
 		} elseif ($this->code == 1) {
 			return "eyeParam('$this->name',Base64.encode(cp_$name.getCode()))";
 		} else {
 			return "eyeParam('$this->name',Base64.encode(document.getElementById('$myPid".'_'."$this->name').value))";
 		}
 	}
-	
-	function setWidth($width) {
+
+	function setWidth($width,$noshadow=0) {
 		global $myPid;
 		$this->width = intval($width);
 		if($this->code == 1) {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.width="'.$this->width.'px";'));
+		} elseif($this->rich != 0) {
+			$this->width += 17;
+			if($this->rich == 2 && $noshadow == 0) {
+				service('eyex','rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));			
+			}
+			service('eyex','rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));
+			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_tbl").style.width="'.$this->width.'px";'));
+			service('eyex','rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));
+			if($this->rich == 2 && $noshadow == 0) {
+				service('eyex','rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));		
+			}
 		} else {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 		}
 	}
-	
-	function setHeight($height) {
+
+	function setHeight($height,$noshadow=0) {
 		global $myPid;
 		$this->height = intval($height);
 		if($this->code == 1) {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.height="'.$this->height.'px";'));
+		} elseif($this->rich != 0) {
+			$this->height += 110;
+			if($this->rich == 2 && $noshadow == 0) {
+				service('eyex','rawjs',array('js' => 'disableEdShadow("'.$myPid.'_'.$this->name.'_ifr");'));			
+			}
+			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_tbl").style.height="'.$this->height.'px";'));
+			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_ifr").style.height="'.($this->height - 127).'px";'));
+			if($this->rich == 2 && $noshadow == 0) {
+				service('eyex','rawjs',array('js' => 'enableShadow("'.$myPid.'_'.$this->name.'_ifr");'));		
+			}
 		} else {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 		}
 	}
-	
+
 	function setX($x) {
 		global $myPid;
 		$this->x = intval($x);
@@ -267,24 +293,24 @@ class Textarea {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.left="'.$this->x.'px";'));
 		}
 	}
-	
+
 	function setY($y) {
 		global $myPid;
 		$this->y = intval($y);
 		if($this->code == 1) {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp_iframe").style.top="'.$this->y.'px";'));
-			
+
 		} else {
 			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 		}
 	}
-	
+
 	function richClean() {
 		global $myPid;
 		$name = $myPid.'_'.$this->name;
 		service('eyex','rawjs',array('js' => 'tinyMCE.execCommand("mceRemoveControl", false,"'.$name.'");'));
 	}
-	
+
 	function remove() {
 		global $myPid;
 		if($this->code == 1) {

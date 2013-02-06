@@ -182,6 +182,30 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		$myCheckbox_block->show();
 	}
 	$ContentY += 30;
+	
+	// Full name
+	$myLabel = new Label(array(
+		'name' => 'eyeControl_edituser_label_expire',
+		'father' => $eyeContainer,
+		'x' => 20,
+		'y' => $ContentY + 3,
+		'text' => 'Expiration Date'
+	));
+	$myLabel->show();
+	if(intval($UserXML['expirationDate'][0]) == 0) {
+		$exp = "Never";
+	} else {
+		$exp = date('d/m/Y',$UserXML['expirationDate'][0]);
+	}
+	$myTextbox_expire = new Textbox(array(
+		'name' => 'eyeControl_edituser_textbox_expire',
+		'father' => $eyeContainer,
+		'x' => 160,
+		'y' => $ContentY,
+		'text' => $exp
+	));
+	$myTextbox_expire->show();
+	$ContentY += 30;
 }
 // Save changes
 $myButton = new Button(array(
@@ -368,6 +392,7 @@ $myButton->addFriend($myTextbox_fullname);
 $myButton->addFriend($myTextbox_email);
 if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	$myButton->addFriend($mySelect);
+	$myButton->addFriend($myTextbox_expire);
 }
 if ($user != ROOTUSER || $currentUser == REAL_ROOTUSER && $user != REAL_ROOTUSER) {
 	$myButton->addFriend($myCheckbox_block);

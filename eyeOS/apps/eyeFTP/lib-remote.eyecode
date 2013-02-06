@@ -82,15 +82,10 @@ function eyeFTP_browseRemote($path = '/') {
 	eyeFTP_logConsole('Listing directory "%s"...',
 		array(eyeFTP_getFormatedDirPath($path))
 	);
-	if (EYEFTP_USE_REQUEST_BOUNCING) {
-		eyeFTP_bounceRequest(array(
-			'__signal' => 'eyeFTP_browseRemote_bounced',
-			'dir_b64' => base64_encode($path)
-		));
-	}
-	else {
-		eyeFTP_ftpListDir(eyeFTP_getFormatedDirPath($path));
-	}
+	eyeFTP_bounceRequest(array(
+		'__signal' => 'eyeFTP_browseRemote_bounced',
+		'dir_b64' => base64_encode($path)
+	));
 }
 
 ?>

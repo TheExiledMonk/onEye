@@ -187,6 +187,16 @@ function lib_eyeSound_play($params = '') {
 	}
 }
 
+function lib_eyeSound_simplePlay($params = '') {
+	if (!isset($params[0]) || !isset($params[1])) {
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	eyeSound('createSound',array($params[0],$params[1]));
+	eyeSound('play',array($params[0]));
+	eyeSound('onfinish',array($params[0]));
+}
+
 function lib_eyeSound_resume($params = '') {
 	global $myPid;
 	if (!isset($params[0])) {

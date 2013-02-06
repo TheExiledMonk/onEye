@@ -22,6 +22,7 @@
 */
 
 function eyeX_on_baseapp($params = '') {
+	global $procInfo;
 	eyeX_on_resizedBrowser($params);
 	$_SESSION['SCREEN']['eyeApps']['x'] = 0;
 	$_SESSION['SCREEN']['eyeApps']['y'] = 0;
@@ -32,6 +33,16 @@ function eyeX_on_baseapp($params = '') {
 	} else {
 		$_SESSION['SCREEN']['refresh']++;
 	}
+	
+	//eyeX should be the first tty, if not, get a new one, because we don't have one already.
+	if($procInfo['tty'] < 1) {
+		$tty = proc('newTty');	
+	} else {
+		$tty = $procInfo['tty'];
+	}
+
+	eyex('createDiv',array('class' => 'systemConsole','father' => 'eyeApps','name' => $tty.'_tty','nopid' => 1,'removepid' => 1));
+	eyeX('updateCss',array('name'=> $tty.'_tty','property'=>'display','value'=>'none'));
 	$pid = proc('findPidByName',array(BASE_APP));
 	if ($pid) {
 		proc('getTask',array($pid));

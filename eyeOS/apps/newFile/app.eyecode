@@ -24,10 +24,10 @@
 function newFile_run($params = '') {
 	if ($params[0]) {
 		eyex('messageBox',array(
-			'btn1_capt' => 'Create',
-			'btn1_name' => 'Do',
 			'btn2_capt' => 'Cancel',
 			'btn2_name' => 'Close',
+			'btn1_capt' => 'Accept',
+			'btn1_name' => 'Do',
 			'content' => 'Please type the name of the new file here:',
 			'hidden_name' => 'newFile_Hidden_Path',
 			'hidden_text' => $params[0],

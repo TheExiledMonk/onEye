@@ -35,13 +35,13 @@ function miniHome_run($params=null) {
 		'name' => 'miniHomeWND',
 		'father' => 'eyeApps',
 		'width' => 202,
-		'height' => 125,
+		'height' => 105,
 		'type' => WIN_IMAGE_DRAGGABLE_NOTLISTED,
 		'savePosition' => 1,
 		'background' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniHome/minihome.png'
 	));
 	$myWindow->show();
-	
+	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_miniHomeWND_Content").style.top = "0px";'));
 	$myLabel0 = new Label(array(
 		'name' => 'myQuota',
 		'father' => 'miniHomeWND_Content',

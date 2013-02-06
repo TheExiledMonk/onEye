@@ -49,7 +49,7 @@ function eyeDialog_selectFolder($folderPath) {
 	//eyeX('messageBox',array('content'=> 'Select folder OK: '.$folderPath));
 	eyeDialog_closeDialog();
 }
-function eyeDialog_saveAs($folderPath, $filename, $overwrite=false) {
+function eyeDialog_saveAs($folderPath, $filename) {
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
 	$callback = $dialogParams[1];
 	$callback_checknum = $dialogParams[2];
@@ -65,7 +65,7 @@ function eyeDialog_saveAs($folderPath, $filename, $overwrite=false) {
 	//eyeX('rawjs', array('js' => 'console.log("'.eyeDialog_resolvePath($folderPath).'/'.$filename.'")'));
 	$filenameExtension = eyeDialog_getFilenameAndExtension($filename);
 	$filenameExtension = $filenameExtension[1];
-	if (!$overwrite && vfs('fileExists', array(eyeDialog_resolvePath($folderPath).'/'.$filename))) {
+	if (vfs('fileExists', array(eyeDialog_resolvePath($folderPath).'/'.$filename))) {
 		eyeDialog_confirmFileReplace($folderPath, $filename);
 		return;
 	}

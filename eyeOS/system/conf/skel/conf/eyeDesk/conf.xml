@@ -1,6 +1,6 @@
 <eyeDesk>
 	<theme>default</theme>
-	<autolaunch>eyeDock</autolaunch>
+	<autolaunch>eyeDockText</autolaunch>
 	<autolaunch>eyeBar</autolaunch>
 	<autolaunch>eyeDesk_extras</autolaunch>
 	<autolaunch>miniActions</autolaunch>

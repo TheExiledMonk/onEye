@@ -61,7 +61,7 @@ function lib_eyeSessions_startSession($params=null){
 }
 
 /**
-* Check if there are a sessionID in the request, and if is true startSession
+* Check if there are a sessionID in the request, and if it is true startSession
 *
 * @return This function doesn't return anything
 * @date 2008/03/11
@@ -328,13 +328,9 @@ function lib_eyeSessions_saveSession(){
 	if($sessionId == ''){
 		return true;		
 	}
-	//If a script is finished along with the session, save it with ipc.
-	if (IS_MOBILE) {
-		$dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/../' . REAL_EYE_ROOT;
-	} else {
-		$dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/' . REAL_EYE_ROOT;
-	}
-	chdir($dir);	
+	//Use __FILE__ is better than use some "custom environment vars you get when eyeOS is used under some httpd
+	$dir = dirname(__FILE__) . '/../../../';
+	chdir($dir);
 	//save the session	
 	reqLib('eyeIPC','setVar',array($sessionId,$_SESSION,IPC_TYPE));
 	return true;

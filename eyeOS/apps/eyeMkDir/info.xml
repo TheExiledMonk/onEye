@@ -1,7 +1,7 @@
 <package>
 	<name>eyeMkDir</name>
 	<category>File Management</category>
-	<version>1.8</version>
+	<version>1.8.5</version>
 	<description>Utility to create new directories</description>
 	<author>eyeOS Team</author>
 	<license>AGPL</license>

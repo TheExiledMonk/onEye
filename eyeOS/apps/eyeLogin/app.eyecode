@@ -28,6 +28,9 @@ function eyeLogin_run($params = '') {
 		proc('end');
 		proc('getTask',array($pid));
 	} else {
+		//we need um module preload
+		um('getCurrentUserDir');//Kernel lacks an interface to initialize services, so I just call the first inoquos functionI thought
+
 		// Preload $langs var
 		$langs = array(array('English','en'));
 		$path = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/';
@@ -47,6 +50,9 @@ function eyeLogin_run($params = '') {
 		// Load themable eyeLogin part
 		loadConfig('eyeLogin');
 		$_SESSION['usertheme'] = LOGIN_THEME;
+		if (SECURE_LOGIN == 1 && function_exists('service_um_loginWidthHash')) {
+			$_SESSION['sawasc'] = md5(uniqid(rand()));
+		}
 		$file = EYE_ROOT . '/' . APP_DIR . '/eyeLogin/themes/' . LOGIN_THEME . '/window' . EYE_CODE_EXTENSION;
 		if (vfs('real_fileExists',array($file))) {
 			include_once($file);

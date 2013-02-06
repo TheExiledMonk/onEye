@@ -35,14 +35,14 @@ function miniMessages_run($params=null) {
 		'name' => 'miniMessagesWND',
 		'father' => 'eyeApps',
 		'width' => 382,
-		'height' => 205,
+		'height' => 180,
 		'type' => WIN_IMAGE_DRAGGABLE_NOTLISTED,
 		'savePosition' => 1,
 		'background' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniMessages/minimessages.png'
 	));
 	$myWindow->show();
 	eyeX('updateCSS', array('name' => $myPid.'_miniMessagesWND_Content', 'property' => 'overflow', 'value' => 'hidden'));
-	
+	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_miniMessagesWND_Content").style.top = "0px";'));
 	$myImage = new Imagebox(array(
 		'name' => 'imgLaunch',
 		'father' => 'miniMessagesWND_Content',

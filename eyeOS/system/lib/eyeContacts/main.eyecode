@@ -35,50 +35,7 @@ function lib_eyeContacts_create($params=null){
 	
 	$myInfo = $params[0];
 
-	$myFileContent = array(
-		'name' => array(str_replace('_',' ',$myInfo['normal']['name'])),
-		'surname' => array(str_replace('_',' ',$myInfo['normal']['surname'])),
-		'home_phone' => array($myInfo['normal']['homephone']),
-		'mobile_phone' => array($myInfo['normal']['mobilphone']),
-		'address' => array($myInfo['normal']['address']),
-		'nick' => array($myInfo['normal']['nick']),
-		'email' => array($myInfo['normal']['email']),
-		'website' => array($myInfo['normal']['website']),
-		'im' => array($myInfo['normal']['im']),
-		'voip' => array($myInfo['normal']['voip']),
-		'eyeos-user' => array($myInfo['normal']['eyeos_user']),
-		'company' => array($myInfo['company']['name']),
-		'company_phone' => array($myInfo['company']['homephone']),
-		'company_mobile_phone' => array($myInfo['company']['mobilphone']),
-		'company_fax' => array($myInfo['company']['fax']),
-		'company_address' => array($myInfo['company']['address']),
-		'notes' => array($myInfo['normal']['notes'])
-	);
-	
-	$name  = $myInfo['normal']['name'];
-	$surname = $myInfo['normal']['surname'];
-	
-	$md5 = md5(uniqid(rand()));
-	$fileToCreate = $name.'_'.$surname.'_'.$md5.'.'.EYECARD_EXT;
-	$path  = eyeContacts('getContactPath',array($name));
-	if(!vfs('real_fileExists',(array($path)))){		
-		if(!vfs('real_mkdir',(array($path)))){
-			return false;
-		}
-	}
-		
-	if(empty($name) || $name == ' '){
-		$leter = ' ';
-	}else{
-		$leter = utf8_strtolower(utf8_substr($name,0,1));	
-	}
-	$fileToCreate = $leter.'/'.$fileToCreate;
-	if(eyeXML('setXMLConfig',array('eyeContacts',$fileToCreate,$myFileContent))){
-		return $md5;
-	}else{
-		return false;
-	}
-	
+	return eyeAddressBook('create',array($myInfo));
 }
 
 function lib_eyeContacts_update($params=null){
@@ -91,34 +48,7 @@ function lib_eyeContacts_update($params=null){
 	$md5 = $params[2];
 	$myInfo = $params[3];
 	
-	$path = eyeContacts('getContactPath',array($name));
-	$path = $path.'/'.$fileToCreate = $name.'_'.$surname.'_'.$md5.'.'.EYECARD_EXT;
-
-	$myFileContent = array(
-		'name' => array($myInfo['normal']['name']),
-		'surname' => array($myInfo['normal']['surname']),
-		'home_phone' => array($myInfo['normal']['homephone']),
-		'mobile_phone' => array($myInfo['normal']['mobilphone']),
-		'address' => array($myInfo['normal']['address']),
-		'nick' => array($myInfo['normal']['nick']),
-		'email' => array($myInfo['normal']['email']),
-		'website' => array($myInfo['normal']['website']),
-		'im' => array($myInfo['normal']['im']),
-		'voip' => array($myInfo['normal']['voip']),
-		'eyeos-user' => array($myInfo['normal']['eyeos_user']),
-		'company' => array($myInfo['company']['name']),
-		'company_phone' => array($myInfo['company']['homephone']),
-		'company_mobile_phone' => array($myInfo['company']['mobilphone']),
-		'company_fax' => array($myInfo['company']['fax']),
-		'company_address' => array($myInfo['company']['address']),
-		'notes' => array($myInfo['normal']['notes'])
-	);
-	
-	if(eyeXML('setXMLfile',array($path,$myFileContent))){
-		return true;
-	}else{
-		return false;
-	}
+	return eyeAddressBook('update',array($name,$surname,$md5,$myInfo));
 }
 
 function lib_eyeContacts_delete($params=null){
@@ -129,16 +59,7 @@ function lib_eyeContacts_delete($params=null){
 	$surname = $params[1];
 	$md5 = $params[2];
 	
-	$path = eyeContacts('getContactPath',array($name));
-	$fileToCreate = $name.'_'.$surname.'_'.$md5.'.'.EYECARD_EXT;
-	
-	$path = $path.'/'.$fileToCreate;
-	
-	if(!vfs('real_delete',array($path))){
-		return false;
-	}else{
-		return true;
-	}
+	return eyeAddressBook('delete',array($name,$surname,$md5));
 }
 function lib_eyeContacts_retrive($params=null){
 	if(empty($params) || count($params) < 1){
@@ -147,31 +68,11 @@ function lib_eyeContacts_retrive($params=null){
 	$name = $params[0];
 	$surname = $params[1];
 	$md5 = $params[2];
-	
-	$path = eyeContacts('getContactPath',array($name));
-	$fileToCreate = $name.'_'.$surname.'_'.$md5.'.'.EYECARD_EXT;
-	
-	$path = $path.'/'.$fileToCreate;
-
-	$info = eyeXML('getXMLfile',array($path));
-	return $info;
+	return eyeAddressBook('retrive',array($name,$surname,$md5));
 }
 
-function lib_eyeContacts_userList($params=null){
-	 $path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/ey'.'eContacts/';
-	 $content = vfs('real_getDirContent',array($path));
-	 $myContacts = array();	 
-	 foreach($content as $dir){
-	 	if(vfs('isDir',array($dir))){	 		
-	 		$subContent = vfs('real_getDirContent',array($path.'/'.utf8_basename($dir)));	 		
-	 		foreach($subContent as $contact){
-	 			$contactInfo = eyeContacts('pathToInfo',array($contact));
-	 			$info  = eyeContacts('retrive',array($contactInfo[0],$contactInfo[1],$contactInfo[2]));
-	 			$myContacts[$contactInfo[2]] = $info;
-	 		}
-	 	}
-	 }	 
-	 return $myContacts;
+function lib_eyeContacts_userList($params=null){ 
+	 return eyeAddressBook('userList');
 }
 
 function lib_eyeContacts_pathToInfo($params=null){
@@ -447,7 +348,7 @@ function lib_eyeContacts_importFromVcard($params){
 }
 function lib_eyeContacts_checkImportType($params){
 	$path = $params[0];	
-	if(checkVcard(&$path) === true){
+	if(checkVcard($path) === true){
 		return VCARD;
 	}	
 	return false;

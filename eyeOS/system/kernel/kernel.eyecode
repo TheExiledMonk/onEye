@@ -37,7 +37,12 @@ if(strstr($ua,'MSIE 6')){
 }
 
 function service($servicename,$servicefunction=null,$params=null,$noListen=0) {	
-	$sec_servicename = utf8_basename($servicename);	
+	$sec_servicename = utf8_basename($servicename);
+	if(ACL_SUPPORT == 1) {
+		if(!checkACL($sec_servicename,$servicefunction,$params)) {
+			return false;
+		}
+	}
 	if(!checkServiceLoaded($sec_servicename)){
 		if(is_readable(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/'.$sec_servicename.'/main'.EYE_CODE_EXTENSION)) {
 			include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/'.$sec_servicename.'/main'.EYE_CODE_EXTENSION);
@@ -391,7 +396,140 @@ function _getAlias($path,$baseFunc,$noListen){
 	}
 	return $alias;
 }
+
+function checkACL($sec_servicename,$servicefunction,$params) {
+	global $ACL;
+	
+	//if there is not acls, stop.
+	if(!$ACL || !is_array($ACL)) {
+		return true;
+	}
+	
+	global $currentUser;
+	
+	//the real root user is inmune to ACL's.
+	if($currentUser == REAL_ROOTUSER) {
+		return true;
+	}
+	
+	$servname = $sec_servicename;
+	$servfunc = $servicefunction;
+	
+	foreach($ACL['GACL'][0]['ACL'] as $rule) {
+		if(preg_match('/^'.$rule['service'][0].'$/i',$servname) && 
+			preg_match('/^'.$rule['call'][0].'$/i',$servfunc)) {
+			
+			foreach($rule['target'] as $target) {
+				foreach($target['targetname'] as $targetname) {
+					if(strtolower($target['type'][0]) == 'user') {
+						$targetname = '/^'.$targetname.'$/';
+						if(preg_match($targetname,$currentUser)) {
+							if(checkACLparams($target['params'],$params)) {
+								if(strtolower($rule['action'][0]) == 'accept') {
+									return true;
+								} else {
+									return false;
+								}
+							}
+						} 
+					} elseif(strtolower($target['type'][0]) == 'group') {
+						$targetname = '/^'.$targetname.'$/';
+						$userGroups = um('getCurrentGroups');
+						foreach($userGroups as $groupName=>$value) {
+							if(checkACLparams($target['params'],$params)) {
+								if(preg_match($targetname,$groupName)) {
+									if(strtolower($rule['action'][0]) == 'accept') {
+										return true;
+									} else {
+										return false;
+									}				
+								}
+							}
+						}
+					} elseif(strtolower($target['type'][0]) == 'admin') {
+						if($currentUser == ROOTUSER) {
+							$targetname = '/^'.$targetname.'$/';
+							if(checkACLparams($target['params'],$params)) {
+								if(preg_match($targetname,$currentUser)) {
+									if(strtolower($rule['action'][0]) == 'accept') {
+										return true;
+									} else {
+										return false;
+									}							
+								}
+							}					
+						}
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
+function checkACLparams($ruleParams,$servParams) {
+	global $currentUser;
+	if(!is_array($servParams) || !is_array($ruleParams)) {
+		return true;
+	}
+	$count = 0;
+	$i = 0;
+	$udir = um('getCurrentUserDir');
+	if(empty($ruleParams[0]['param'][0])) {
+		return true;
+	}
+	foreach($ruleParams[0]['param'] as $value) {
+		if(isset($servParams[$i])) {
+			while(strstr($value,'%user')) {
+				$value = str_replace('%user',$currentUser,$value);
+			}
+			while(strstr($value,'%udir')) {
+				$value = str_replace('%udir',$udir,$value);
+			}
+			if(preg_match($value,$servParams[$i])) {
+				$count++;
+			}
+		}
+	}
+	if($count == count($ruleParams[0]['param'])) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function loadACLTables() {
+	global $ACL;
+	$ACL = array();
+	$aclpath = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ACL/';
+	$found = 0;
+	if ($handler = opendir($aclpath)) {		
+		while (false !== ($file = readdir($handler))) {			
+			if(is_file($aclpath.$file)) {
+				if ($file{0} != "." && filesize($aclpath.$file) > 1) {
+					$found = 1;
+					$myFile = fopen($aclpath.$file,'r');
+					$myContent = fread($myFile,filesize($aclpath.$file));
+					fclose($myFile);					
+					$myArray = reqLib('eyeXML','xml2array',array($myContent));
+					$ACL = array_merge($ACL,$myArray);								
+				}
+			}
+		}
+		closedir($handler);
+	}
+
+	if($found == 0) {
+		$ACL = false;
+	}
+}
+
 createFunctionAlias();
+if(ACL_SUPPORT == 1) {
+	loadACLTables();
+}
+//Loading the service configuration from XML
+loadServiceConfig();
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/compat'.EYE_CODE_EXTENSION);
 
 ?>

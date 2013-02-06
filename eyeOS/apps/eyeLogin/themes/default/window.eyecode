@@ -387,5 +387,5 @@ $myLabel = new Label(array(
 $myLabel->show();
 $myLabel->setCss(array('color' => '#ffffff'));
 
-eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeLogin/themes/default/eyeLogin' . EYE_CODE_EXTENSION . '&type=dynamic&params[]=' . $myPid . '&params[]=' . $checknum));
+eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeLogin/themes/default/eyeLogin' . EYE_CODE_EXTENSION . '&type=dynamic&params[]=' . $myPid . '&params[]=' . $checknum . '&params[]=' . $_SESSION['sawasc']));
 ?>

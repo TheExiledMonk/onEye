@@ -62,6 +62,38 @@
 	<name>only_root</name>
 	<permissions>root</permissions>
 	<content>
+		<description>Add, edit or remove your Access Control List settings</description>
+		<display>ACL</display>
+		<name>eyeACL</name>
+		<permissions>root</permissions>
+		<title>yes</title>
+		<img>index.php?theme=1&amp;extern=icons/48x48/e.png</img>
+	</content>
+	<content>
+		<description>Create an ACL rule for your eyeOS system</description>
+		<display>Create ACL</display>
+		<name>newacl</name>
+		<permissions>root</permissions>
+		<title>yes</title>
+		<show>no</show>
+	</content>
+	<content>
+		<description>Add an ACL target to your eyeOS system</description>
+		<display>Create Target</display>
+		<name>newtarget</name>
+		<permissions>root</permissions>
+		<title>yes</title>
+		<show>no</show>
+	</content>
+	<content>
+		<description>Remove temporary files and folders from your eyeOS system</description>
+		<display>Clean eyeOS</display>
+		<name>cleantemp</name>
+		<permissions>root</permissions>
+		<title>yes</title>
+		<img>index.php?theme=1&amp;extern=icons/48x48/editClean.png</img>
+	</content>
+	<content>
 		<description>Update your system's settings</description>
 		<display>System</display>
 		<name>system</name>
@@ -110,12 +142,30 @@
 		<img>index.php?theme=1&amp;extern=icons/48x48/repositories.png</img>
 	</content>
 	<content>
-		<description>Remove temporary files and folders from your eyeOS system</description>
-		<display>Clean eyeOS</display>
-		<name>cleantemp</name>
+		<description>Edit your SMTP settings</description>
+		<display>SMTP</display>
+		<name>eyeSMTP</name>
 		<permissions>root</permissions>
 		<title>yes</title>
-		<img>index.php?theme=1&amp;extern=icons/48x48/editClean.png</img>
+		<show>yes</show>
+		<img>index.php?theme=1&amp;extern=icons/48x48/eyeMail.png</img>
+	</content>
+	<content>
+		<description>Edit file associations in your system</description>
+		<display>File Types</display>
+		<name>eyeExt</name>
+		<permissions>root</permissions>
+		<title>yes</title>
+		<show>yes</show>
+		<img>index.php?theme=1&amp;extern=icons/48x48/exec.png</img>
+	</content>
+	<content>
+		<description>Edit file associations in your system</description>
+		<display>File Types</display>
+		<name>extEdit</name>
+		<permissions>root</permissions>
+		<title>yes</title>
+		<show>no</show>
 	</content>
 </category>
 <category>
@@ -145,5 +195,13 @@
 		<permissions>all</permissions>
 		<title>yes</title>
 		<img>index.php?theme=1&amp;extern=icons/48x48/webbrowser.png</img>
+	</content>
+	<content>
+		<description>Manage your security settings</description>
+		<display>Security</display>
+		<name>security</name>
+		<permissions>all</permissions>
+		<title>yes</title>
+		<img>index.php?theme=1&amp;extern=icons/48x48/public.png</img>
 	</content>
 </category>

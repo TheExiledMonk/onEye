@@ -441,7 +441,7 @@ function service_vfs_copyDir($params) {
 		reqLib('errorCodes','setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
 	}
-
+	
 	$orig_real = realpath($orig . '/');
 	$orig_dest = realpath(dirname($dest) . '/');
 	if(strpos($orig_dest,$orig_real) !== 0){
@@ -899,7 +899,7 @@ function service_vfs_checkPermissions($params) {
 	//Checking if file/dir name contains blacklisted characters.
 	$filename = "";
 	global $currentUser;
-	$userdir = service('um','getCurrentUserDir').'/'.FILES_USER_DIR.'/';
+	$userdir = service('um','getCurrentUserDir').'/';
 	if(!is_dir($file)) {
 		$filename = utf8_basename($file);
 		$file = dirname($file);
@@ -1037,25 +1037,31 @@ function service_vfs_getDirContent($params) {
 	$dirFiles = array();
 	
 	if(vfs('isGroupDir',array($dirToRead))) {
-		foreach (glob($dirToRead."/$exp") as $fileName) {
-			$info = utf8_pathinfo($fileName);
-			$ext = $info['extension'];
-			if($ext == EYEOS_INFO_EXT) {
-				$ferase = fopen($fileName,'r');
-				$myContent = fread($ferase, filesize($fileName));
-				fclose($ferase);
-				$xml = eyeXML('xml2array',array($myContent));
-				if($xml['eyeFile'][0]['filename'][0]) {
-					$dirFiles[] = $info['dirname'].'/'.$xml['eyeFile'][0]['filename'][0];
-				}
-			} elseif((is_dir($fileName) || $ext == EYEOS_LINK_EXT) && $fileName != '.') {
-				$dirFiles[] = $fileName;
-			} 
+		$files = glob($dirToRead."/$exp");
+		if($files != false && is_array($files)){
+			foreach ($files as $fileName) {
+				$info = utf8_pathinfo($fileName);
+				$ext = $info['extension'];
+				if($ext == EYEOS_INFO_EXT) {
+					$ferase = fopen($fileName,'r');
+					$myContent = fread($ferase, filesize($fileName));
+					fclose($ferase);
+					$xml = eyeXML('xml2array',array($myContent));
+					if($xml['eyeFile'][0]['filename'][0]) {
+						$dirFiles[] = $info['dirname'].'/'.$xml['eyeFile'][0]['filename'][0];
+					}
+				} elseif((is_dir($fileName) || $ext == EYEOS_LINK_EXT) && $fileName != '.') {
+					$dirFiles[] = $fileName;
+				} 
+			}
 		}
 	} else {
-			foreach (glob($dirToRead."/$exp") as $fileName) {
-				$dirFiles[] = $fileName;
-			}		
+			$files = glob($dirToRead."/$exp");
+			if($files != false && is_array($files)){
+				foreach ($files as $fileName) {
+					$dirFiles[] = $fileName;
+				}
+			}
 	}
 	return $dirFiles;
 }
@@ -1628,8 +1634,23 @@ function service_vfs_real_checkPermissions($params) {
 		$file = dirname($file);
 	}
 	
-	$userdir_path = realpath($userdir);
 	$file_path = realpath($file);
+	$group_path = realpath(GROUPS_DIR);
+	//That's about groups :)
+ 	if(strpos($file_path,$group_path) === 0){
+		$groups = service('um','getCurrentGroups');
+		foreach($groups as $key=>$value) {
+			$groupDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.CONF_GROUP_DIR;
+			$groupDir = realpath($groupDir);
+			if($groupDir) {
+				if (0 === utf8_strpos($file_path,$groupDir)) {
+					return true;
+				}
+			}
+		}
+	}
+	
+	$userdir_path = realpath($userdir);
 	if (0 === utf8_strpos ($file_path,$userdir_path)) {
 		return true;
 	} elseif ($currentUser == ROOTUSER) {
@@ -1694,9 +1715,12 @@ function service_vfs_real_getDirContent($params) {
 	
 	isset($params[1]) ? $exp = $params[1] : $exp = '*';
 	$dirFiles = array();
-	
-	foreach (glob($dirToRead."/$exp") as $fileName) {
-		$dirFiles[] = $fileName;
+
+	$files = glob($dirToRead."/$exp");
+	if($files != false && is_array($files)){
+		foreach ($files as $fileName) {
+			$dirFiles[] = $fileName;
+		}
 	}
 	return $dirFiles;
 }
@@ -1744,9 +1768,12 @@ function service_vfs_real_getDirContent_group($params) {
 	//If we don't have regular expresion param, set * as default.
 	isset($params[1]) ? $exp = $params[1] : $exp = '*';
 	$dirFiles = array();
-	
-	foreach (glob($dirToRead."/$exp") as $fileName) {
-		$dirFiles[] = $fileName;
+
+	$files = glob($dirToRead."/$exp");
+	if($files != false && is_array($files)){
+		foreach ($files as $fileName) {
+			$dirFiles[] = $fileName;
+		}
 	}
 	return $dirFiles;
 }

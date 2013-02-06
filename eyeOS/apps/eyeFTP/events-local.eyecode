@@ -28,8 +28,6 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/dialogs'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-ftp'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/hosts'.EYE_CODE_EXTENSION);
 
-define('EYEFTP_USE_REQUEST_BOUNCING',true);
-
 /*********************************************************************************************/
 /*********************************************************************************************/
 /*					FUNCTIONS TRIGGERED BY SIGNALS RAISED BY THE INTERFACE					 */

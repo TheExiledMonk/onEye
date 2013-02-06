@@ -69,8 +69,8 @@ function eyeFeeds_createSettingsDialog($params=null) {
 	$remark = new Label(array(
 		'name' => 'settings_remark_LBL',
 		'father' => 'settings_DLG_Content',
-		'x' => 10,
-		'y' => 210,
+		'x' => 20,
+		'y' => 180,
 		'text' => 'You may restart the application to apply the changes.'
 	));
 	$remark->show(0);
@@ -95,13 +95,23 @@ function eyeFeeds_createSettingsDialog($params=null) {
 	$saveButton = new Button(array(
 		'name' => 'settings_save_BTN',
 		'father' => 'settings_DLG_Content',
-		'caption' => 'Save',
+		'caption' => 'Accept',
 		'x' => 310,
 		'y' => 200,
 		'width' => 70,
 		'enabled' => 1
 	));
 	
+	$cancelButton = new Button(array(
+		'name' => 'settings_close_BTN',
+		'father' => 'settings_DLG_Content',
+		'caption' => 'Cancel',
+		'x' => 230,
+		'y' => 200,
+		'width' => 70,
+		'enabled' => 1
+	));
+	$cancelButton->show(0);
 	/**********************************************************/
 	//		INPUT ELEMENTS
 	/**********************************************************/

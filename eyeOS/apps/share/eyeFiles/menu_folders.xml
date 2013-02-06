@@ -10,6 +10,11 @@
 		<action>downZip</action>
 	</entry>
 	<entry>
+		<icon>groups</icon>
+		<text>Share with</text>
+		<action>eyeShare</action>
+	</entry>
+	<entry>
 		<icon>delete</icon>
 		<text>Delete</text>
 		<action>eyeDelete</action>

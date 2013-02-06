@@ -32,7 +32,7 @@ $myWidgetDrop->show();
 $myWidgetDrop->addBehaviour(array(
 	'type' => 'moveAndClick',
 	'params' => array(
-		'content' => array('/'),
+		'content' => array($GLOBALS['eyeFiles_Hidden_Path']->text),
 		'moveType' => 2,
 		'pid' => $myPid,
 		'signal' => 'Icon_Dropped'
@@ -64,7 +64,7 @@ $mime = getConfig('mime','mime.xml');
 if ($type == 'trash') {
 	$menu = getConfig('eyeFiles','menu_trash.xml');
 } else {
-		$menu_files = getConfig('eyeFiles','menu_files.xml');
+	$menu_files = getConfig('eyeFiles','menu_files.xml');
 	$menu_folders = getConfig('eyeFiles','menu_folders.xml');
 	if ($type != 'real') {
 		$menu_links = getConfig('eyeFiles','menu_links.xml');
@@ -146,7 +146,7 @@ foreach ($files as $file) {
 		$myWidgetDrop->addBehaviour(array(
 			'type' => 'widgetDrop_simpleMsg',
 			'params' => array(
-				'content' => array('/' . $file[0] . '/'),
+				'content' => array($GLOBALS['eyeFiles_Hidden_Path']->text . '/' . $file[0] . '/'),
 				'pid' => $myPid,
 				'signal' => 'Icon_Dropped'
 		)));

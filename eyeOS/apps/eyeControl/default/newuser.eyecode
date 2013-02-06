@@ -163,6 +163,24 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		document.getElementById("' . $myPid . '_eyeControl_newuser_window_maintain").style.display = "none";
 	}');
 	$ContentY += 30;
+	// Expire
+	$myLabel = new Label(array(
+		'name' => 'eyeControl_newuser_label_expire',
+		'father' => $eyeContainer,
+		'x' => 20,
+		'y' => $ContentY + 3,
+		'text' => 'Expiration (dd/mm/yyyy)'
+	));
+	$myLabel->show();
+	$myTextbox_expire = new Textbox(array(
+		'name' => 'eyeControl_newuser_textbox_expire',
+		'father' => $eyeContainer,
+		'x' => 160,
+		'y' => $ContentY,
+		'text' => 'Never'
+	));
+	$myTextbox_expire->show();
+	$ContentY += 30;
 }
 // Create user
 $myButton = new Button(array(
@@ -339,6 +357,7 @@ $myButton->addFriend($myTextbox_fullname);
 $myButton->addFriend($myTextbox_email);
 if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	$myButton->addFriend($mySelect);
+	$myButton->addFriend($myTextbox_expire);
 }
 $myButton->show();
 ?>

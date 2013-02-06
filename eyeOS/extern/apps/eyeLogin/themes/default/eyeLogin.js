@@ -37,10 +37,21 @@ function eyeLogin_badLogin(user,pass,checknum,pid) {
 
 function eyeLogin_1_KeyPressed(characterCode,checknum,pid) {
 	if (characterCode == 13) {
-		sendMsg(checknum,'Login',eyeParam('eyeLogin_Textbox_1_User',xGetElementById(pid + '_eyeLogin_Textbox_1_User').value) + eyeParam('eyeLogin_Textbox_1_Password',Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_1_Password').value)) + eyeParam('eyeLogin_Select_1_Language',xGetElementById(pid + '_eyeLogin_Select_1_Language').value));
+		eyeLogin_SendLogin(checknum,pid);
 		return false;
 	}
 	return true;
+}
+
+function eyeLogin_SendLogin(checknum,pid) {
+	var sawasc = '$sawasc';
+	if (sawasc) {
+		password = xGetElementById(pid + '_eyeLogin_Textbox_1_Password').value;
+		password = md5(sawasc + md5(password + md5(password)));
+	} else {
+		password = Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_1_Password').value);
+	}
+	sendMsg(checknum,'Login',eyeParam('eyeLogin_Textbox_1_User',xGetElementById(pid + '_eyeLogin_Textbox_1_User').value) + eyeParam('eyeLogin_Textbox_1_Password',password) + eyeParam('eyeLogin_Select_1_Language',xGetElementById(pid + '_eyeLogin_Select_1_Language').value));
 }
 
 function eyeLogin_2_KeyPressed(characterCode,checknum,pid) {
@@ -73,11 +84,11 @@ function eyeLogin_Start(pid,checknum) {
 	xGetElementById(pid + '_eyeLogin_1_Container').style.top = '50%';
 	
 	var obj = xGetElementById(pid + '_eyeLogin_Label_1_Enter');
-	obj.onclick = function () { sendMsg(checknum,'Login',eyeParam('eyeLogin_Textbox_1_User',xGetElementById(pid + '_eyeLogin_Textbox_1_User').value) + eyeParam('eyeLogin_Textbox_1_Password',Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_1_Password').value)) + eyeParam('eyeLogin_Select_1_Language',xGetElementById(pid + '_eyeLogin_Select_1_Language').value)); };
+	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
 	obj.style.zIndex = '10000';
 	
 	var obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_Enter_Container');
-	obj.onclick = function () { sendMsg(checknum,'Login',eyeParam('eyeLogin_Textbox_1_User',xGetElementById(pid + '_eyeLogin_Textbox_1_User').value) + eyeParam('eyeLogin_Textbox_1_Password',Base64.encode(xGetElementById(pid + '_eyeLogin_Textbox_1_Password').value)) + eyeParam('eyeLogin_Select_1_Language',xGetElementById(pid + '_eyeLogin_Select_1_Language').value)); };
+	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
 	obj.style.zIndex = '10000';
 	
 	var obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_New_Container');

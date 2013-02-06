@@ -48,14 +48,19 @@ function lib_eyeCalendar_getDayNotes($params){
 	foreach($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo){
 		$calendarName = $calendarInfo['name'][0];
 		$calendarNum = $calendarInfo['num'][0];
-		
-		$dir = $calDir.$calendarName.$noteDir;			
-		$noteDirs[] = $dir;
+		if($calendarInfo['remote'][0]){
+			if($params['remoteType'][0] = 'group'){
+				$calDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$calendarName.'/'.CONF_GROUP_DIR.'/eyeCalendar/calendars/';	
+			}
+		}
+		$dir = $calDir.$calendarName.$noteDir;
 		$notes = vfs('real_getDirContent',array($dir,'*.'.EYENOTE_EXT));
-		foreach($notes as $note){			
-			$xml = eyeXML('getXMLfile',array($note));
-			$xml['note'][0]['calendar'][0] = $calendarNum;
-			$returnNotes[] = $xml;
+		if(!empty($notes)){
+			foreach($notes as $note){			
+				$xml = eyeXML('getXMLfile',array($note));
+				$xml['note'][0]['calendar'][0] = $calendarNum;
+				$returnNotes[] = $xml;
+			}
 		}
 	}	
 	
@@ -84,8 +89,14 @@ function lib_eyeCalendar_saveNote($params)
 	//Getting calendar folder
 			
 	$calendar = reqLib('eyeCalendar','getCalendarName',array($params['calendar'][0]));
-	
-	$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar;
+	if(eyeCalendar('getCalendarRemote',array($params['calendar'][0]))){
+		$type = eyeCalendar('getCalendarRemoteType',array($params['calendar'][0]));
+		if($type = 'group'){
+			$noteDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$calendar.'/'.CONF_GROUP_DIR.'/eyeCalendar/calendars/'.$calendar;	
+		}
+	}else{
+		$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar;
+	}
 	
 	if(!service('vfs','fileExists',array($noteDir)))
 	{
@@ -143,18 +154,26 @@ function lib_eyeCalendar_retriveNote($params){
 	$dateInt = $params['dateInt'];	
 	$calendar = $params['calendar'];
 	$calendar = reqLib('eyeCalendar','getCalendarName',array($calendar));
-		
 	if(!is_numeric($dateInt))
 	{
 		service('eyex','messageBox',array('content' => 'Error %s','tokens' => array($dateInt)));
 		return;
 	}
 	
+	if(eyeCalendar('getCalendarRemote',array($params['calendar']))){
+		$type = eyeCalendar('getCalendarRemoteType',array($params['calendar']));
+		if($type = 'group'){
+			$noteDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$calendar.'/'.CONF_GROUP_DIR.'/eyeCalendar/calendars/'.$calendar;	
+		}
+	}else{
+		$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar;
+	}
+	
 	$myDate = getdate($dateInt);
 	$myYear = $myDate['year'];
 	$myMonth = $myDate['mon'];
 	$myDay = $myDate['mday'];
-	$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar.'/'.$myYear;	
+	$noteDir .= '/'.$myYear;	
 	$noteDir .= '/'.$myMonth;	
 	$noteDir .= '/'.$myDay;
 	$noteDir .= '/'.$dateInt.'.'.EYENOTE_EXT;	
@@ -171,16 +190,16 @@ function lib_eyeCalendar_updateNote($params){
 	$id = $info['note'][0]['dateInt'][0]; 
 	$calendar = $params['calendar'];
 	$calendar = reqLib('eyeCalendar','getCalendarName',array($calendar));
-	
-	$dir = getDirTime($oldId,$calendar);
+	$remoteType = eyeCalendar('getCalendarRemoteType',array($params['calendar']));
+	$dir = getDirTime($oldId,$calendar,$remoteType);
 	$file = $dir.'/'.$oldId.'.'.EYENOTE_EXT;
 		
 	eyeXml('setXMLfile',array($file,$info));
 	
 	if($id != $oldId){
-		$dir = getDirTime($id,$calendar);
+		$dir = getDirTime($id,$calendar,$remoteType);
 		$newFile = $dir.'/'.$id.'.'.EYENOTE_EXT;	
-		mkDirTime($id,$calendar);		
+		mkDirTime($id,$calendar,$remoteType);
 		vfs('real_move',array($file,$newFile));
 	}	
 	return true;			
@@ -190,7 +209,8 @@ function lib_eyeCalendar_deleteNote($params)
 	$dateInt = $params['dateInt'];	
 	$calendar = $params['calendar'];
 	$calendar = reqLib('eyeCalendar','getCalendarName',array($calendar));
-	$noteDir = getDirTime($dateInt,$calendar);	
+	$remoteType = eyeCalendar('getCalendarRemoteType',array($params['calendar']));
+	$noteDir = getDirTime($dateInt,$calendar,$remoteType);	
 	$noteDir .= '/'.$dateInt.'.'.EYENOTE_EXT;
 	service('vfs','real_delete',array($noteDir));
 }
@@ -199,9 +219,7 @@ function lib_eyeCalendar_deleteNote($params)
 function lib_eyeCalendar_getCalendarsInfo(){
 	$calendarsInfo = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.CALENDARSINFO;
 	if(!vfs('real_fileExists',array($calendarsInfo))){
-		if(!reqLib('eyeCalendar','makeCalendarInfo')){
-			return false;
-		}
+		return false;
 	}
 	$calendarsInfo = eyeXml('getXMLfile',array($calendarsInfo));
 	return $calendarsInfo;
@@ -285,32 +303,62 @@ function lib_eyeCalendar_getCalendarName($params){
 		}
 	}
 }
-
-function lib_eyeCalendar_createCalendar($params){
-	$name = $params[0];
+function lib_eyeCalendar_getCalendarRemote($params){
+	$num = $params[0];
 	$myCalendars = reqLib('eyeCalendar','getCalendarsInfo');
-
-	//Checking if calendars already exists
-	foreach($myCalendars['calendars'][0]['calendarInfo'] as $calInfo){
-		if($calInfo['name'][0] == $name){
-			return false;
+	foreach($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo){
+		if($calendarInfo['num'][0] == $num){
+			return $calendarInfo['remote'][0];
 		}
 	}
-	$count = count($myCalendars['calendars'][0]['calendarInfo']);
-	
-	for($x=0;$x < $count;$x++){
-			$nums[] = $myCalendars['calendars'][0]['calendarInfo'][$x]['num'][0];
-	}	
-	
-	//Getting the number
-	$num = 1;
-	while(array_search($num,$nums) !== false){
-		$num++;	
+}
+function lib_eyeCalendar_getCalendarRemoteType($params){
+	$num = $params[0];
+	$myCalendars = reqLib('eyeCalendar','getCalendarsInfo');
+	foreach($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo){
+		if($calendarInfo['num'][0] == $num){
+			return $calendarInfo['remoteType'][0];
+		}
 	}
-	
+}
+function lib_eyeCalendar_createCalendar($params){
+	$name = $params[0];
+	$nums = array();
+	$myCalendars = reqLib('eyeCalendar','getCalendarsInfo');
+
+	//If there are no calednars, evade all "caching"
+	if($myCalendars != false){
+		foreach($myCalendars['calendars'][0]['calendarInfo'] as $calInfo){
+			if(is_array($calInfo) && $calInfo['name'][0] == $name){
+				return false;
+			}
+		}
+		$count = count($myCalendars['calendars'][0]['calendarInfo']);
+		for($x=0;$x < $count;$x++){
+			if(isset($myCalendars['calendars'][0]['calendarInfo'][$x]['num']) && is_array($myCalendars['calendars'][0]['calendarInfo'][$x]['num'])){
+				$nums[] = $myCalendars['calendars'][0]['calendarInfo'][$x]['num'][0];
+			}
+		}	
+		
+		//Getting the number
+		$num = 1;
+		while(array_search($num,$nums) !== false){
+			$num++;	
+		}
+	}else{
+		//There are no calendars! creating the skel
+		$myCalendars = array('calendars'=>array(array('calendarInfo'=>array(array()))));//That's ugly but well xD ok for now
+		$count = 0;
+		$num = 1;//1 is the minimum
+	}
 	$myCalendars['calendars'][0]['calendarInfo'][$count]['name'][0] = $name;
 	$myCalendars['calendars'][0]['calendarInfo'][$count]['num'][0] = $num;	
 	$myCalendars['calendars'][0]['calendarInfo'][$count]['show'][0] = 1;
+	if($params['extraParams']){
+		foreach($params['extraParams'] as $key=>$value){
+			$myCalendars['calendars'][0]['calendarInfo'][$count][$key][0] = $value;
+		}
+	}
 	
 	//Making dir if it don't exists
 	$file = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$name;
@@ -362,15 +410,22 @@ function lib_eyeCalendar_calendarInfoExists(){
 	}
 }
 
-
 //Indexation tools
+function lib_eyeCalendar_indexGroups(){
+	print_r("GROUPS DSACTIVATED UNTIL 1.9!!");exit;
+// 	global $currentUser;
+// 	$groups = service('um','getCurrentGroups');
+// 	foreach($groups as $group=>$trash) {
+// 		$params = array($group,'extraParams'=>array('remote'=>'1','remoteType'=>'group'));
+// 		lib_eyeCalendar_createCalendar($params);
+// 	}
+}
 function lib_eyeCalendar_indexCalendarInfo($params){
 	if($params[0]){
 		$first = true;
 	}	
 	$calendarsPath = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/';	
 	$subfolder = vfs('real_getDirContent',array($calendarsPath,'*'));	
-	
 	$selected = 0;
 	foreach($subfolder as $key=>$calendar){
 		$calendarName = utf8_basename($calendar);
@@ -401,7 +456,7 @@ function lib_eyeCalendar_indexCalendarInfo($params){
 function lib_eyeCalendar_getCurrentCalendar(){
 	$myCalendars = reqLib('eyeCalendar','getCalendarsInfo');
 	foreach($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo){
-		if($calendarInfo['selected'][0] == 1){
+		if(is_array($calendarInfo) && isset($calendarInfo['selected']) && $calendarInfo['selected'][0] == 1){
 			return $calendarInfo['num'][0];			
 		}		
 	}
@@ -461,16 +516,26 @@ function lib_eyeCalendar_geti10n(){
 }
 
 //Tools
-function getDirTime($time,$calendar){
-	$myDate = getDate($time);		
-	$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar.'/'.$myDate['year'];	
+function getDirTime($time,$calendar,$remoteType=null){
+	$myDate = getDate($time);
+	$noteDir = '';
+	if($remoteType != null){
+		$noteDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$calendar.'/'.CONF_GROUP_DIR.'/eyeCalendar/calendars/'.$calendar.'/';
+	}else{
+		$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar.'/';
+	}
+	$noteDir .= $myDate['year'];	
 	$noteDir .= '/'.$myDate['mon'];	
 	$noteDir .= '/'.$myDate['mday'];
 	return $noteDir;
 }
-function mkDirTime($time,$calendar){
-	$myDate = getDate($time);	
-	$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar;	
+function mkDirTime($time,$calendar,$remoteType){
+	$myDate = getDate($time);
+	if($remoteType != null){
+		$noteDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$calendar.'/'.CONF_GROUP_DIR.'/eyeCalendar/calendars/'.$calendar.'/';
+	}else{
+		$noteDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/'.$calendar.'/';
+	}
 	
 	if(!service('vfs','fileExists',array($noteDir)))
 	{
@@ -494,5 +559,4 @@ function mkDirTime($time,$calendar){
 	}
 	return true;
 }
-
 ?>

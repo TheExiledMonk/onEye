@@ -20,9 +20,14 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-//global var for all eyeOS when eyeCalendar instance is loaded.
+//Global array where the weekPlanner instances are saved.
 weekPlanner_instances = [];
-//Widget show Function
+
+/*
+*Function that close a weekPlaner instance
+*Removing the instance from weekPlanner_instances array
+*and deleting other possible resources like timeouts.
+*/
 function weekPlanner_close(pid){
 	if(weekPlanner_instances[pid]){
 		//Deleting timeouts
@@ -38,79 +43,107 @@ function weekPlanner_close(pid){
 	}
 	return false;
 }
+
+/*
+*Standar show function to instance the weekPlanner as normal widget
+*/
 function weekPlanner_show(params,name,father,x,y,horiz,vert,checknum,cent){
 	var pid = params['pid'];
 	weekPlanner_instances[pid] = new weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent);
 }
 
+/*
+*Main class that with the most improtant constructor, that initialize all the weekPlanner
+*also, this constructor initialize the other 3 important clases
+*/
 function weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent){
 	//Global Class propierties
 	this.pid = params['pid'];
 	this.checknum = checknum;
-	this.dayFrom = parseInt(params['dayFrom']);
-	this.dayEven = parseInt(params['dayEven']);
-	this.hourFrom = parseInt(params['hourFrom']);
-	this.hourEven = parseInt(params['hourEven']);
-	this.hourRowWidth = parseInt(params['hourWidth']);
-	this.dayRowWidth = parseInt(params['width']);
-	this.rowHeight = parseInt(params['rowHeight']);
-	this.parts = parseInt(params['parts']);
+	this.dayFrom = params['dayFrom'];
+	this.dayEven = params['dayEven'];
+	this.hourFrom = params['hourFrom'];
+	this.hourEven = params['hourEven'];
+	this.hourRowWidth = params['hourWidth'];
+	this.dayRowWidth = params['width'];
+	this.rowHeight = params['rowHeight'];
+	this.parts = params['parts'];
 	this.weekDays = getArrayArg(params['weekDays']);
 	this.startMonday = params['startMonday'];
 	this.selectedCalendar = params['selectedCalendar'];
 	this.defaultEvenText = params['defaultEvenText'];
 	this.calendarsText = params['calendarsText'];
 	this.father = xGetElementById(father);		//Father is usualy a simplebox or window
+	//The xWidth must be replaced for something, or at least a alternative to evade it
 	this.plannerWidth = xWidth(this.father);	//planner always have the same width thahis father
-	this.numDays = (this.dayEven-this.dayFrom);	//Simply for not recalcule it
+	//Calculating numDays once, save cpu in front of memory
+	this.numDays = (this.dayEven-this.dayFrom);	
+
+	//Check if the total height is enough to fill all the days father height, if not, increate it
+	var fatherHeight = xHeight(this.father);
+	var numOfHours = (this.hourEven-this.hourFrom)+1;
+	var totalPixels = this.rowHeight*numOfHours;
+	if(totalPixels < fatherHeight){
+		this.rowHeight = fatherHeight/numOfHours;
+	}
+
+	//In theory weekPlanner should be able to work with custom Height for hours
+	//so we've to calculate how many pixels big are each part (by default each hour are divided in 4 parts).
 	if(IEversion == 7){
 		this.pixelPart = (this.rowHeight-1) / this.parts;
 	}else{
 		this.pixelPart = (this.rowHeight+1) / this.parts;
 	}
-	
+
+	//TODO: NAME HARDCODED! this must be unhardcoded in 1.9!!
 	this.calendarsFather = xGetElementById(this.pid+'_calendarsContainer_Container');
+
+	//Same as Father xWidth, xWidth is not a performance friendly function...
 	this.calendarsFatherWidth = xWidth(this.calendarsFather);
+	
+	//Some IE and other browsers tricks...
 	if(IEversion == 6){
 		this.rowHeight += 2;
 	}else if(IEversion == 7){
 		this.rowHeight -= 2;
 	}
-	this.noteHeaderColors = new Array();
-		this.noteHeaderColors[0] = '#AB3F19';
-		this.noteHeaderColors[1] = '#136DBB';
-		this.noteHeaderColors[2] = '#2E8200';
-		this.noteHeaderColors[3] = '#504A76';
-		this.noteHeaderColors[4] = '#AB3F19';
-		this.noteHeaderColors[5] = '#7F405C';
-	this.noteBodyColors = new Array();
-		this.noteBodyColors[0] = '#E46F46';
-		this.noteBodyColors[1] = '#37A3FF';
-		this.noteBodyColors[2] = '#6FBA32';
-		this.noteBodyColors[3] = '#8074C9';
-		this.noteBodyColors[4] = '#F19A2A';
-		this.noteBodyColors[5] = '#E26299';	
-	this.calendarSelectColors = new Array();
-		this.calendarSelectColors[0] = '#E46F46';
-		this.calendarSelectColors[1] = '#37A3FF';
-		this.calendarSelectColors[2] = '#6FBA32';
-		this.calendarSelectColors[3] = '#8074C9';
-		this.calendarSelectColors[4] = '#F19A2A';
-		this.calendarSelectColors[5] = '#E26299';
+	
+//Until we've a choose color, the colors are defined by marc@eyeos.org (designer)
+	//The noteHeader colors are used for the title, where the hour is showed
+	this.noteHeaderColors = new Array('#AB3F19','#136DBB','#2E8200','#504A76','#AB3F19','#7F405C');
+	//NoteBodyColors used to paint the body of the notes
+	this.noteBodyColors = new Array('#E46F46','#37A3FF','#6FBA32','#8074C9','#F19A2A','#E26299');	
+	//calednarSelectColor defines the color to paint the calendar selector
+	this.calendarSelectColors = new Array('#E46F46','#37A3FF','#6FBA32','#8074C9','#F19A2A','#E26299');
 		
-	//TODO: Decrypt it.
+	/*
+	*This calculate the content height, to do it I do:
+	*	Get the number of hours (this include the plus one) ::: (this.hourEven-this.hourFrom)+1
+	*	Multiply by rowHeight to get the space required by the content of each hour
+	*	Plus 25 1 for each hour, maybe this need a fix, and must be 1pixel for each hour, and not 25 directly.
+	*	TODO: check +25, maybe 1*totalHours?
+	**/
 	this.contentHeight = (this.rowHeight*((this.hourEven-this.hourFrom)+1))+25;
-	var rest = parseInt(this.numDays-1)+0.2;
+	var rest = this.numDays-1+0.2;//0.2 is because of borders, no problem here
+	//Calculatin  the width to evade calculate it again
 	this.rowWidth = (this.dayRowWidth-rest)/this.numDays;
 		
-	this.notes = new weekPlanner_notes(this);
-	this.events = new weekPlanner_events(this);
-	this.base = new weekPlanner_base(this);
+	//The calendar class is the top left calendar chooser
 	this.calendars = new weekPlanner_calendars(this);
+	//Instancing the handling event layer
+	this.events = new weekPlanner_events(this);
+	//This mainly paint everything
+	this.base = new weekPlanner_base(this);
+	//Handle and paint notes
+	this.notes = new weekPlanner_notes(this);
+
+	//Drawing calendars on top left
 	this.calendars.draw();
+	//Drw the base, days hours etc
 	this.base.draw();
 	
 	//php function 
+	//TODO: Check if this is deprecated :(
 	this.resizeDays = resizeDays;
 }
 
@@ -311,7 +344,12 @@ function weekPlanner_calendars(weekPlanner){
 			pixel.style.top = '0px';
 			contentName.appendChild(pixel);
 			
-			contentName.style.backgroundColor = this.father.calendarSelectColors[num];
+			if(num > 5){
+				calendarNum = num%5;
+			}else{
+				calendarNum = num;
+			}
+			contentName.style.backgroundColor = this.father.calendarSelectColors[calendarNum];
 				var textContainer = document.createElement('div');
 				textContainer.setAttribute('id','textContainer');//Yes hardcoded! but we don't need it
 				textContainer.style.cssFloat = 'left';
@@ -360,7 +398,7 @@ function weekPlanner_calendars(weekPlanner){
 			
 			this.infoContainer = document.createElement('div');
 			this.infoContainer.style.position = 'absolute';
-			this.infoContainer.style.left = '10px'
+			this.infoContainer.style.left = '3px'
 			this.infoContainer.style.top = '26px'
 			this.infoContainer.style.width = this.father.calendarsFatherWidth-14+'px';//9 is for margins
 			this.infoContainer.style.height = 'auto';
@@ -436,6 +474,142 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 		}
 	}
 	this.draw_bodyDays = function draw_bodyDays(){
+		var orderNotes = function orderNotes(){
+//  			//console.log("Ordening notes "+this.id);
+// 			//console.log("\t"+this.notes.length);
+// 			//console.log(this.notes);
+			//console.log(this.notes);
+			for(var x=0;x < this.notes.length;x++){
+				//Special case
+				var numOfLevels = this.notes[x].startPartObj.numOfLevels();
+				this.notes[x]
+				if(this.notes[x].level == 0 || numOfLevels == 1){
+					//0 is a special case to be showed correctly
+					this.notes[x].style.width = 50+'%';
+					this.notes[x].style.left = 0+'px';
+					this.notes[x].level = 0;
+				}else{
+					var divi = 90/numOfLevels;
+					var left = divi*this.notes[x].level
+					var width = 90-left;
+					this.notes[x].style.width = width+'%';
+					this.notes[x].style.left = left+'%';
+					this.notes[x].style.zIndex = 10+this.notes[x].level;
+ 					//console.log("Number: "+x+' cid'+this.notes[x].cid+' level: '+this.notes[x].level);
+				}
+			}
+		}
+		var addDayNote = function addDayNote(note){
+			//console.log('Add Day Note: '+note.cid);
+			//Adding the note to the start element
+			//This is where the tittle is located, so is who matter
+			var cid = note.cid;
+			this.notes[cid] = note;
+			var level = note.startPartObj.addNote(note);
+			note.level = level;
+			//console.log("Level: ["+note.cid+"]: "+level);
+			//Now, we've to foreach all the parts, to see if there are some
+			//conflict, and if there are, we've to move the conflicted note
+			var fromParts = note.startPart;
+			fromParts += note.parts;
+			fromParts--;
+			var toPart = note.fromParts;
+			var secondPart = note.startPart +1;
+;
+			//console.log("Foreach from: "+secondPart+" to "+toPart);
+			for(var y=secondPart;y < toPart;y++){
+				//comprobar que en ese lugar, no hay notas, si es así la pusheo
+ 				xGetElementById(note.day+'_part_'+y).addNoteToLevel(note,level);
+			}
+		}
+		var delDayNote = function delDayNote(note){
+			//console.log('Del Day Note: '+note.cid);
+			//Adding the note to the start element
+			//This is where the tittle is located, so is who matter
+			var cid = note.cid;
+			delete this.notes[cid];
+			this.notes.sort();//Place the demoved note at final
+			this.notes.pop();//Remove it
+			note.startPartObj.delNote(note);
+			//Now, we've to foreach all the parts, to see if there are some
+			//conflict, and if there are, we've to move the conflicted note
+			var fromParts = note.startPart;
+			fromParts += note.parts;
+			fromParts--;
+			var toPart = note.fromParts;
+			var secondPart = note.startPart +1;
+;
+			//console.log("Foreach from: "+secondPart+" to "+toPart);
+			for(var y=secondPart;y < toPart;y++){
+				//comprobar que en ese lugar, no hay notas, si es así la pusheo
+ 				xGetElementById(note.day+'_part_'+y).delNoteToLevel(note,note.level);
+			}
+		}
+		var addPartToLevel = function addPartToLevel(note,level){
+			//If the note is not in that level, add it.
+			//console.log("AddPartToLevel: "+note.cid+'--'+level);
+			if(!this.notesLevel[level]){
+				//console.log("El nivel está vacio, añadiendo nota");
+				this.notesLevel[level] = note;
+			}else{//If there are something in this level, we've to move it because title role...
+				//Moving the note....
+				//console.log("El nivel No está vacio, moviendo nota");
+				this.notesLevel[level].moveLevel(level);
+				//Setting the new note as owner of this level
+				this.notesLevel[level] = note;
+			}
+		}
+		var delPartToLevel = function delPartToLevel(note,level){
+			//If the note is not in that level, add it.
+			//console.log("DelPartToLevel: "+note.cid+'--'+level);
+			if(this.notesLevel[level]){
+				delete this.notesLevel[level];
+			}
+		}
+		var addPartNote = function addPartNote(note){
+			//If the part has neved had a note
+			//console.log("Add Part Note: "+note.cid);
+// 			if(this.notesLevel.length > 0){
+				for(var x=0; x <= this.notesLevel.length;x++){
+					if(typeof(this.notesLevel[x]) == "undefined"){
+						this.notesLevel[x] = note;
+						//console.log("El valor "+x+" está vacio, añadiendo nota");
+						return x;
+					}else{
+// 						//console.log('FAIL  '+x);
+// 						//console.log(this.notesLevel[x]);
+// 						//console.log(this.notesLevel);
+// 						return false;
+					}
+				}
+				//If there are no empty spaces
+ 				var key = this.notesLevel.push(note);
+				key--;//Keys start from 0
+				//console.log("Added new key: "+key);
+				return key;
+// 			}
+		}
+		var delPartNote = function delPartNote(note){
+			//If the part has neved had a note
+			//console.log("Del Part Note: "+note.cid);
+			for(var x=0; x <= this.notesLevel.length;x++){
+				if(this.notesLevel[x].cid == note.cid){
+					delete this.notesLevel[x];
+					this.notesLevel.sort();
+					this.notesLevel.pop();
+				}
+			}
+			//console.log(this.notesLevel);
+		}
+		var numOfLevels = function numOfLevels(){
+			var num = 0;
+			for(var x=0; x <= this.notesLevel.length;x++){
+					if(this.notesLevel[x]){
+						num++;
+					}
+			}
+			return num;
+		}
 		//Foreach days...
 		var weekDay = document.createElement('div');
 		var d = this.father.dayFrom;
@@ -443,7 +617,10 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 		//css
 		weekDay.className = 'eyeCalendar_day';
 		weekDay.style.width = this.father.rowWidth+'px';
-		
+		weekDay.notes = new Array();
+		weekDay.orderNotes = orderNotes;
+		weekDay.addNote = addDayNote;
+		weekDay.delNote = delDayNote;
 		//Creating the hours fields.
 		var paintHour = 0; //This hour is only for the painter
 		for(h=this.father.hourFrom;h<=this.father.hourEven;h++)
@@ -467,6 +644,12 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 				part.day = d;
 				part.hour = h;
 				part.num = l;
+				part.addNote = addPartNote;
+				part.addNoteToLevel = addPartToLevel;
+				part.delNote = delPartNote;
+				part.delNoteToLevel = delPartToLevel;
+				part.notesLevel = new Array();
+				part.numOfLevels = numOfLevels;
 				hour.appendChild(part);
 			}
 			//The top border is painted by the container
@@ -489,6 +672,10 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			weekDay = weekDay.cloneNode(true);
 			weekDay.setAttribute('id',this.father.pid+'_day_'+d);
 			weekDay.style.borderLeft = '1px #C1C1C1 solid';
+			weekDay.notes = new Array();
+			weekDay.orderNotes = orderNotes;
+			weekDay.addNote = addDayNote;
+			weekDay.delNote = delDayNote;
 			//Setting the right hour/parts info and id's
 			var hours = weekDay.childNodes;
 			var paintHour = 0;
@@ -507,6 +694,12 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 					parts[x].hour = h;
 					parts[x].evenType ='default';
 					parts[x].pid =this.father.pid;
+					parts[x].addNote = addPartNote;
+					parts[x].notesLevel = new Array();
+					parts[x].addNoteToLevel = addPartToLevel;
+					parts[x].delNote = delPartNote;
+					parts[x].delNoteToLevel = delPartToLevel;
+					parts[x].numOfLevels = numOfLevels;
 					l++;
 				}
 				paintHour++;
@@ -556,6 +749,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 					part.hour = h;
 					part.num = l;
 					part.style.zIndex = '1';
+					part.notesInPart = new Array();
 					if(l == endNum -1){
 						part.style.borderBottom = '1px #C1C1C1 solid';
 					}
@@ -607,7 +801,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 		if(!this.father.firstTop){
 			this.father.firstTop = xTop(this.hourLine);
 		}
-		this.father.father.scrollTop = this.father.firstTop;
+		this.fatherDays.scrollTop = this.father.firstTop;
 	}
 	this.drawCurrentHour = function drawCurrentHour(){
 		//Calculate hour and mins
@@ -684,18 +878,37 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.hoursBase.setAttribute('id',this.father.pid+'_hoursBase');
 			this.hoursBase.style.position = 'absolute';
 			this.hoursBase.style.left = '0px';
-			if(IEversion){
-				this.hoursBase.onselectstart = function(){
-					return false;
-				}
+			this.hoursBase.onselectstart = function(){
+				return false;
 			}
 			if (IEversion && IEversion < 7) {
-				this.hoursBase.style.top = '43px';
+				this.hoursBase.style.top = '6px';
 			} else {
-				this.hoursBase.style.top = '42px';
+				this.hoursBase.style.top = '5px';
 			}
 			this.hoursBase.style.width = this.father.hourRowWidth+'px';
 			this.hoursBase.style.height = '100%';
+		
+		//container for names/todos
+		this.fatherNames = document.createElement('dif');
+			this.fatherNames.setAttribute('id',this.father.pid+'_fatherNames');
+			this.fatherNames.style.position = 'absolute';
+			this.fatherNames.style.left = this.father.hourRowWidth+'px';
+			this.fatherNames.style.top = '0px';
+			this.fatherNames.style.width = 'auto';
+			this.fatherNames.style.height = 'auto';
+
+		//container for names/todos
+		this.fatherDays = document.createElement('dif');
+			this.fatherDays.setAttribute('id',this.father.pid+'_fatherDays');
+			this.fatherDays.style.position = 'absolute';
+			this.fatherDays.style.left = '0px';
+			this.fatherDays.style.top = '40px';
+// 			this.fatherDays.style.width = (this.father.hourRowWidth+this.father.dayRowWidth+20)+'px';//PLus 20 because of scroll
+			this.fatherDays.style.width = '100%';
+			this.fatherDays.style.height = xHeight(this.father.father)+'px';
+			this.fatherDays.style.overflowX = 'hidden';
+			this.fatherDays.style.overflowY = 'auto';
 		
 		//Container for all objects related with week days
 		this.daysBase = document.createElement('div');
@@ -716,7 +929,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.dayNames.style.position = 'relative';
 			this.dayNames.style.cssFloat = 'left';
 			this.dayNames.style.styleFloat = 'left';
-			this.dayNames.style.width = '100%';
+			this.dayNames.style.width = 'auto';
 			this.dayNames.style.height = '20px';
 			if(IEversion){
 				this.dayNames.onselectstart = function(){
@@ -729,7 +942,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.dayTodo.style.position = 'relative';
 			this.dayTodo.style.cssFloat = 'left';
 			this.dayTodo.style.styleFloat = 'left';
-			this.dayTodo.style.width = '100%';
+			this.dayTodo.style.width = 'auto';
 			this.dayTodo.style.height = '15px';
 			this.dayTodo.style.border = '1px #999 solid';
 			if(IEversion){
@@ -760,13 +973,15 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			//Adding events with cross-browser of course
 			xAddEventListener(this.daysContainer,'mousedown',mouseDown);
 			xAddEventListener(this.daysContainer,'mouseup',mouseUp);
-		this.father.father.appendChild(this.hoursBase);
-			this.draw_dayHours();
-		this.father.father.appendChild(this.daysBase);
-			this.daysBase.appendChild(this.dayNames);
+		this.father.father.appendChild(this.fatherNames);
+		this.father.father.appendChild(this.fatherDays);
+		this.fatherNames.appendChild(this.dayNames);
 				this.draw_dayNames();
-			this.daysBase.appendChild(this.dayTodo);
+			this.fatherNames.appendChild(this.dayTodo);
 				this.draw_todos();
+		this.fatherDays.appendChild(this.daysBase);
+		this.fatherDays.appendChild(this.hoursBase);
+			this.draw_dayHours();
 			this.daysBase.appendChild(this.daysContainer);
 			this.drawCurrentHour();
 				if(IEversion && IEversion < 8){
@@ -814,7 +1029,7 @@ function weekPlanner_notes(weekPlanner){
 		note.fromParts = target.num;
 		note.startPart = target.num;
 		note.day = target.day;
-		
+		note.startPartObj = xGetElementById(target.day+'_part_'+target.num);
 		//Drawing title
 		this.draw_title(note);
 		this.draw_event(note,this.father.defaultEvenText);
@@ -832,8 +1047,7 @@ function weekPlanner_notes(weekPlanner){
 		this.notes.push(note);
 		note.cid = cid;
 		note.calendar = calendar;
-		//Adding contextual menu
-		this.draw_contextualMenu(note);
+		note.newFather = newFather;
 		//Changing event type
 		this.father.evenType = 'resizeNote2';
 		//Changing the events
@@ -852,6 +1066,8 @@ function weekPlanner_notes(weekPlanner){
 	}
 	this.jsEvent_deleteNote = function jsEvent_deleteNote(e){
 		var note = e.target.parentNode;
+		note.newFather.delNote(note);
+// 		note.newFather.orderNotes();
 		 sendMsgParam = eyeParam('id',note.cid);
 		 sendMsgParam = sendMsgParam + eyeParam('calendar',note.calendar);
 		sendMsg(this.father.checknum,'delNote',sendMsgParam);
@@ -898,17 +1114,46 @@ function weekPlanner_notes(weekPlanner){
 		this.father.father.parentNode.appendChild(popupDiv);
 		popupDiv.inputText.focus();
 		popupDiv.inputText.select();
-	}	
+	}
+	this.jsEvent_addNoteToPart = function jsEvent_addNoteToPart(note){
+		var from = note.startPart;
+		var plus = note.parts;
+		var to = from+plus;
+		var day = note.day;
+// 		//console.log(from+'--'+plus+'--'+to+'--'+day);
+		var tempElement;
+		var finalWidth = 0;//In fact, this is 1 but if the part already have 1, it means 2, bit hard to explain
+		for(var x=from;x < to;x++){
+			tempElement = xGetElementById(day+'_part_'+x);
+			//console.log(tempElement.notesInPart.length);
+ 			tempElement.notesInPart.push(note);
+			//console.log(tempElement.notesInPart.length);
+ 			if(tempElement.notesInPart.length > finalWidth){
+ 				finalWidth = tempElement.notesInPart.length;
+ 			}
+		}
+		//console.log('Final '+finalWidth);
+		//console.log(note);
+		note.style.width = 90/finalWidth+'%';
+		
+// 		note.style.left = 100/finalWidth+'%';
+	}
 	this.jsEvent_noteCreated = function jsEvent_noteCreated(e){
 		//Getting note info.
 		var note = this.father.tmpNote;
-		 sendMsgParam = eyeParam('hourFrom',note.hourFrom);
-		 sendMsgParam = sendMsgParam + eyeParam('minFrom',note.minFrom);
-		 sendMsgParam = sendMsgParam + eyeParam('hourEven',note.hourEven);
-		 sendMsgParam = sendMsgParam + eyeParam('minEven',note.minEven);
-		 sendMsgParam = sendMsgParam + eyeParam('day',note.day);
-		 sendMsgParam = sendMsgParam + eyeParam('id',note.cid);
-		 sendMsgParam = sendMsgParam + eyeParam('calendar',note.calendar);
+		//Adding contextual menu
+		this.draw_contextualMenu(note);
+// 		note.style.width = "90%";
+		note.newFather.addNote(note);
+// 		note.newFather.orderNotes();
+// 		this.jsEvent_addNoteToPart(note);
+		sendMsgParam = eyeParam('hourFrom',note.hourFrom);
+		sendMsgParam = sendMsgParam + eyeParam('minFrom',note.minFrom);
+		sendMsgParam = sendMsgParam + eyeParam('hourEven',note.hourEven);
+		sendMsgParam = sendMsgParam + eyeParam('minEven',note.minEven);
+		sendMsgParam = sendMsgParam + eyeParam('day',note.day);
+		sendMsgParam = sendMsgParam + eyeParam('id',note.cid);
+		sendMsgParam = sendMsgParam + eyeParam('calendar',note.calendar);
 		sendMsg(this.father.checknum,'addNote',sendMsgParam);
 		
 		//Removing the events
@@ -1128,6 +1373,7 @@ function weekPlanner_notes(weekPlanner){
 		note.parts = parts;
 		note.fromParts = fromPart;
 		note.startPart = totalPartStart;
+		note.startPartObj = xGetElementById(day+'_part_'+totalPartStart);
 		note.day = day;
 		note.cid = cid;
 		note.calendar = calendar;
@@ -1141,9 +1387,13 @@ function weekPlanner_notes(weekPlanner){
 		this.draw_event(note,event);
 		var newFather = document.getElementById(this.father.pid+'_day_'+day);
 		newFather.appendChild(note);
+		note.newFather = newFather;
 		//Adding contextual menu
 		this.draw_contextualMenu(note);
 		this.notes.push(note);
+// 		note.style.width = "90%";
+		newFather.addNote(note);
+// 		newFather.orderNotes();
 	}	
 	this.phpEvent_cleanNotes = function phpEvent_cleanNotes(){
 		//Cleaning all notes
@@ -1182,10 +1432,9 @@ function weekPlanner_notes(weekPlanner){
 		var hourFrom = parseInt(hourFromFloat);
 		//If the hourFrom doesn't is 0
 		if(this.father.hourFrom != 0){
-			hourFrom = this.father.hourFrom + hourFrom;
+			hourFrom = parseInt(this.father.hourFrom) + hourFrom;
 			hourFromFloat = hourFromFloat + parseFloat(this.father.hourFrom);
 		}
-		
 		var minFromFloat = hourFromFloat - hourFrom;
 		var minFrom = minFromFloat*60;
 		
@@ -1265,12 +1514,22 @@ function weekPlanner_notes(weekPlanner){
 		var top = part*hTop;
 		var bodyHeight = height -this.father.pixelPart-2;//TODO: define bottom height
 		var note  = document.createElement('div');
-		var bodyColor = this.father.noteBodyColors[calendar];
-		var headColor = this.father.noteHeaderColors[calendar];
+		if(calendar > 5){
+			calendarNum = calendar%5;
+		}else{
+			calendarNum = calendar;
+		}
+		var bodyColor = this.father.noteBodyColors[calendarNum];
+		var headColor = this.father.noteHeaderColors[calendarNum];
 
 		//Check if this note is the first in the table
 		if(!this.father.firstTop || this.father.firstTop > top){
-			this.father.firstTop = top;
+			var toRestNow = 0;
+// 			if(part > 7){
+			//TODO: check if negative scrollTop breaks something in IE and other crapsBrowsers
+				toRestNow = this.father.pixelPart*7;
+// 			}
+			this.father.firstTop = top-toRestNow;
 		}
 		note.setAttribute('id',this.father.pid+'_note_'+cid);
 		note.style.position = 'absolute';
@@ -1395,18 +1654,18 @@ function weekPlanner_notes(weekPlanner){
 		popupDiv.style.position = 'absolute';
 		popupDiv.style.top = top+'px';
 		popupDiv.style.left = left+'px';
-		popupDiv.style.height = '90px';
+		popupDiv.style.height = '110px';
 		popupDiv.style.width = '250px';
 		popupDiv.style.backgroundColor = 'white';
 		popupDiv.style.border = '1px solid gray';
 		popupDiv.style.zIndex = '999';
-			var inputText1 = document.createElement('div');
+		var inputText1 = document.createElement('div');
 			inputText1.setAttribute('id','inputText');
 			inputText1.style.marginLeft = '15px';
 			inputText1.style.marginTop = '10px';
 			inputText1.innerHTML = "$lang:Text for this event:";
 			
-			var inputEvent = document.createElement('input');
+		var inputEvent = document.createElement('input');
 			inputEvent.setAttribute('id',id+'_inputEvent');
 			inputEvent.type = 'text';
 			if(text){
@@ -1423,14 +1682,14 @@ function weekPlanner_notes(weekPlanner){
 		popupDiv.appendChild(inputText1);
 		popupDiv.appendChild(inputEvent);
 		popupDiv.inputText = inputEvent;
-			var buttonEvent = document.createElement('button');
+		var buttonEvent = document.createElement('button');
 			buttonEvent.setAttribute('id','buttonEvent');
 			buttonEvent.className = 'eyeButtonClass';
 			buttonEvent.style.position = 'absolute';
-			buttonEvent.style.width = '100px';
-			buttonEvent.style.bottom = '0px';
-			buttonEvent.style.left = '0px';
-			buttonEvent.innerHTML = '$lang:Set event text';
+			buttonEvent.style.width = '70px';
+			buttonEvent.style.bottom = '15px';
+			buttonEvent.style.right = '15px';
+			buttonEvent.innerHTML = '$lang:Accept';
 			buttonEvent.pid = this.father.pid;
 			buttonEvent.evenType = 'changeEvent';
 			xAddEventListener(buttonEvent,'click',mouseClick);
@@ -1440,9 +1699,9 @@ function weekPlanner_notes(weekPlanner){
 			buttonEvent.setAttribute('id','buttonEvent');
 			buttonEvent.className = 'eyeButtonClass';
 			buttonEvent.style.position = 'absolute';
-			buttonEvent.style.width = '100px';
-			buttonEvent.style.bottom = '0px';
-			buttonEvent.style.right = '0px';
+			buttonEvent.style.width = '70px';
+			buttonEvent.style.bottom = '15px';
+			buttonEvent.style.right = '100px';
 			buttonEvent.innerHTML = '$lang:Cancel';
 			buttonEvent.pid = this.father.pid;
 			buttonEvent.evenType = 'cancelEvent';
@@ -1740,11 +1999,14 @@ function resizeDays(){
 	{
 		day = xGetElementById(this.pid+'_dayTodo_'+h);
 		day.style.width = this.rowWidth+'px';
-		day = xGetElementById(this.pid+'_dayName_'+h);
-		day.style.width = this.rowWidth+'px';
-		day = xGetElementById(this.pid+'_day_'+h);
-		day.style.width = this.rowWidth+'px';
+ 		day = xGetElementById(this.pid+'_dayName_'+h);
+ 		day.style.width = this.rowWidth+'px';
+ 		day = xGetElementById(this.pid+'_day_'+h);
+ 		day.style.width = this.rowWidth+'px';
 	}
+	var fatherDays = xGetElementById(this.pid+'_fatherDays');
+	var fatherDaysHeight = fatherDays.parentNode.style.height;
+	fatherDays.style.height = fatherDaysHeight;
 }
 function onResizeEyeCalendar(pid){
 		weekPlanner_instances[pid].resizeDays();

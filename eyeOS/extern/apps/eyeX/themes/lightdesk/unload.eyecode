@@ -23,17 +23,11 @@
 
 function theme_lightdesk_unload() {
 	$xml = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
-	$autolaunch = $xml['eyeDesk'][0]['autolaunch'];
-	unset($xml['eyeDesk'][0]['autolaunch']);
-	foreach ($autolaunch as $autorun) {
-		if (!in_array($autorun,array('eyeLightDesk','eyeBar','eyeDesk_extras','eyeDock','miniActions'))) {
-			$xml['eyeDesk'][0]['autolaunch'][] = $autorun;
+	foreach ($xml['eyeDesk'][0]['autolaunch'] as $key=>$value) {
+		if($value == 'eyeLightDesk'){
+			unset($xml['eyeDesk'][0]['autolaunch'][$key]);
 		}
 	}
-	$xml['eyeDesk'][0]['autolaunch'][] = 'eyeBar';
-	$xml['eyeDesk'][0]['autolaunch'][] = 'eyeDesk_extras';
-	$xml['eyeDesk'][0]['autolaunch'][] = 'eyeDock';
-	$xml['eyeDesk'][0]['autolaunch'][] = 'miniActions';
 	eyeXML('setXMLconfig',array('eyeDesk','conf.xml',$xml));
 }
 ?>

@@ -163,11 +163,11 @@ function lib_eyeMessages_deleteMessage($params) {
 		$dir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/'.$folder.'/'.$hash;
 		$trashDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/trash/';
 
-		if($folder == "sent") {
-			vfs('real_delete', array($dir.'.msgSwap'));
-		} else {
+// 		if($folder == "sent") {
+// 			vfs('real_delete', array($dir.'.msgSwap'));
+// 		} else {
 			_move_message($dir, $trashDir);
-		}
+// 		}
 	}
 	return true;
 }

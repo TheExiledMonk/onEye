@@ -22,136 +22,197 @@
 */
 
 /*
-*This constant is only for 1.8 version and won't be compatible
-*With eyeOS 1.9 and above, so please use INDEX_TYPE INSTEAD!
+*This define is so useful to check if the client has accesed
+*eyeOS from the right way (this file).
 */
-define('IS_MOBILE',0);
-define('INDEX_TYPE','browser');
+define('EYE_INDEX',1);
 
-//Loading basic settings for eyeOS Kernel and Services
-include_once('settings.php');
+/*
+*Includes needed before do anything, in theory only settings.php
+*should be here
+*/
+require_once('settings.php');
 
-//change directory to EYE_ROOT
-chdir('./'.REAL_EYE_ROOT);
+/*
+*Chaning the current work directory to EYE_ROOT
+*/
+changeCWD();
 
-//Loaded before kernel for kernel utf8 compatibility
-include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeString/main'.EYE_CODE_EXTENSION);
-call_user_func('lib_eyeString_start');
-//setting library loaded
-define('LIB_EYESTRING_LOADED',1);
+/*
+*Loading utf8 support for php, this library must be
+*Loaded manually because kernel also needs utf8
+*/
+loadStringLibrary();
 
-//Loading the Kernel
+//Including kernel file, this file also "execs" some initialitation stuff
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/kernel'.EYE_CODE_EXTENSION);
 
-//Loading the service configuration from XML
-loadServiceConfig();
+/*
+*Setting the php debug (error_reporting) depending the eyeOS config
+*stored in system/conf/system.xml
+*/
+setPhpInitDebug();
 
-//if allow_big_streams php will not have max_execution_time
-if(ALLOW_BIG_STREAMS == 1) {
-	@set_time_limit(0);
+/*
+*Changing some php init parameters, the chagnes are not always
+*the same, may change depending of eyeOS configuration.
+*/
+setPhpInitValues();
+
+//Calling to some libraries functiosn needed by index.php
+libraryLoading();
+
+//Calling some service functions needed by index.php
+serviceLoading();
+
+/*
+*Checking what kind of client is accesing to choose
+*the right kernel
+*/
+$index = indexRequested();
+if($index !== false){
+	loadIndex($index);
+}elseif(clientIsMobile()){
+	loadIndex('mobile');
+}else{
+	loadIndex('browser');
 }
 
-//Hiding warnings and notices if Debug Mode is Off
-if(EYEOS_DEBUG_MODE == 0) {
-	error_reporting(0);
-} elseif(EYEOS_DEBUG_MODE == 2) {
-	error_reporting(E_ALL);
-} elseif(EYEOS_DEBUG_MODE == 3) {
-	error_reporting(E_ALL ^ E_NOTICE);
-}else {
-	error_reporting(E_ERROR); //TODO: SUPPORT E_ALL
-}
 
-//Loading the Error Codes
-reqLib('errorCodes','loadCodes');
-//load pear library class
-reqLib('eyePear','loadPear');
-
-//Setting the Running Log check var to 0
-global $LOG_RUNNING;
-$LOG_RUNNING = 0;
-
-//Loading the Security Service (sec) if eyeOS Security is turned on (by default is On)
-if(EYEOS_SECURITY == 1) {
-	service('sec','start');
-}
-
-//set the default charset
-ini_set('default_charset', DEFAULT_CHARSET);
-
-//Check if index.php is being used to load images/files from extern directory
-if (isset($_GET['extern'])) {
-		$myExtern = $_GET['extern'];
-		//get the type for the header content-type
-		if(isset($_GET['type'])) {
-			$type = $_GET['type'];
-		} else {
-			$type = "";
-		}
-		//call to extern to throw the file
-		//Only start session if we already have a session (keep in mind that extern doesn't have session)
-		reqLib('eyeSessions','checkAndSstartSession');
-		service('extern','getFile',array($myExtern,$type),1);
-} elseif(isset($_GET['api'])) {
-	require_once(EYE_ROOT.'/xml-rpc/server.eyecode');
-	xmlrpc_parseRequest();
-} else {
-	//Loading eyeWidgets definitions
-	reqLib('eyeWidgets','loadWidgets');
-
-	//Starting a simple session
-	reqLib('eyeSessions','startSession');
-
-	//If widget table does not exist, create it
-	reqLib('eyeWidgets','checkTable');
-
-	//if there are a shorturl in the url, like index.php/file
-	if(isset($_SERVER['PATH_INFO'])) {
-		$myInfo = $_SERVER['PATH_INFO'];
-		if($myInfo{0} == '/') {
-			$myInfo = substr($myInfo,1,strlen($myInfo));
-		}
-	} else {
-		$myInfo="";
+function loadIndex($index){
+	//If some index has been loaded, return false because indexes can't be mixed
+	if(defined('INDEX_TYPE')){
+		return false;
 	}
-	//if a shorturl is present
-	if(!empty($myInfo)) {
-		//check if the shorturl exists, and get the msg and checknum associated to it
-		if(is_array($_SESSION['shortUrls'][$myInfo])) {
-			$msg = $_SESSION['shortUrls'][$myInfo]['msg'];
-			$checknum = $_SESSION['shortUrls'][$myInfo]['checknum'];
-			$_GET['msg'] = $msg;
-			$_REQUEST['msg'] = $msg;
-			$_GET['checknum'] = $checknum;
-			$_REQUEST['checknum'] = $checknum;
-		}
+	//Include the file with the __FILE__ secure
+	$myPath = dirname(realpath(__FILE__)).'/';
+	$rPath = realpath($myPath.'/'.$index.'/index.php');
+ 	if(is_readable($rPath)){
+ 		require_once($rPath);
+		return true;
+ 	}
+	return false;
+}
+function indexRequested(){
+	if(isset($_REQUEST['index']) && !empty($_REQUEST['index'])){
+		return utf8_basename($_REQUEST['index']);
 	}
-	//Checking if checknum and message are set
-	if(isset($_GET['checknum']) && !empty($_GET['checknum'])) {
-		if(isset($_REQUEST['params']) && $_REQUEST['params'] != null) {
-			$params = $_REQUEST['params'];
-		} else {
-			$params = null;
+	return false;
+}
+
+/*
+*Check if the client is a cell phone without special support (like iphone).
+*/
+function clientIsMobile(){
+	if(CHECK_MOBILE == 1) {
+		$mobileClients = array(
+			"midp",
+			"240x320",
+			"blackberry",
+			"netfront",
+			"nokia",
+			"panasonic",
+			"portalmmm",
+			"sharp",
+			"sie-",
+			"sonyericsson",
+			"symbian",
+			"windows ce",
+			"benq",
+			"mda",
+			"mot-",
+			"opera mini",
+			"philips",
+			"pocket pc",
+			"sagem",
+			"samsung",
+			"sda",
+			"sgh-",
+			"vodafone",
+			"xda",
+			"iphone"
+		);
+		$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+		foreach($mobileClients as $mobileClient) {
+			if (strstr($userAgent, $mobileClient)) {
+				return true;
+			}
 		}
-		if(isset($_GET['msg'])) {
-			$msg = $_GET['msg'];
-		} else {
-			$msg = null;
-		}
-		$array_msg = array($_GET['checknum'],$msg,$params);
-		echo service('mmap','routemsg',$array_msg);
-	} else {
-		//if a ping response is received
-		if(isset($_GET['msg']) && $_GET['msg'] == 'ping') {
-			//throw a pong!
-			header("Content-type:text/xml");//override header type
-			echo "<eyeMessage><action><task>pong</task></action></eyeMessage>";
-			$_SESSION['ping'] = time();
-			exit;
-		}
-		//Loading the default application (usually Login App)
-		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/init'.EYE_CODE_EXTENSION);
+		return false;
 	}
 }
 
+/*
+*Load the utf8 support loading eyeString and making a fake
+*load because kernel needs it (utf8 support).
+*/
+function loadStringLibrary(){
+	include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeString/main'.EYE_CODE_EXTENSION);
+	call_user_func('lib_eyeString_start');
+	//setting library loaded
+	define('LIB_EYESTRING_LOADED',1);
+}
+
+/*
+*Set the eyeOS debuggin, at the moment only changes
+*the error_reporting, but may change more things in the future.
+*/
+function setPhpInitDebug(){
+	//Hiding warnings and notices if Debug Mode is Off
+	if(EYEOS_DEBUG_MODE == 0) {
+		error_reporting(0);
+	} elseif(EYEOS_DEBUG_MODE == 2) {
+		error_reporting(E_ALL);
+	} elseif(EYEOS_DEBUG_MODE == 3) {
+		error_reporting(E_ALL ^ E_NOTICE);
+	}else {
+		error_reporting(E_ERROR); //TODO: SUPPORT E_ALL
+	}
+}
+
+/*
+*Load the basics libraries needed by the kernel/core
+*/
+function libraryLoading(){
+	//Loading the Error Codes
+	reqLib('errorCodes','loadCodes');
+	//load pear library class
+	reqLib('eyePear','loadPear');
+}
+
+/*
+*Load the basic services needed by the kernel/core
+*/
+function serviceLoading(){
+	//Loading the Security Service (sec) if eyeOS Security is turned on (by default is On)
+	if(EYEOS_SECURITY == 1) {
+		service('sec','start');
+	}
+	//Setting the Running Log check var to 0
+	global $LOG_RUNNING;
+	$LOG_RUNNING = 0;
+}
+
+/*
+*Set some php init values depending of eyeOS configs
+*/
+function setPhpInitValues(){
+	//if allow_big_streams php will not have max_execution_time
+	if(ALLOW_BIG_STREAMS == 1) {
+		@set_time_limit(0);
+	}
+	//set the default charset
+	ini_set('default_charset', DEFAULT_CHARSET);
+}
+
+/*
+*Changes the current work directory to EYE_ROOT
+*/
+function changeCWD(){
+	//since index.php is always below eyeROOT, we can do this instead to be inclusable from third party code
+	$basedir = dirname(__FILE__).'/';
+	//change directory to EYE_ROOT
+	chdir($basedir.REAL_EYE_ROOT);
+	//Loaded before kernel for kernel utf8 compatibility
+}
 ?>

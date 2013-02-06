@@ -245,3 +245,16 @@ function flock_file_put_contents($file,$content){
 	@fwrite($fd,$content);
 	@fclose($fd);
 }
+
+function getExternUrl($path, $theme = 0, $cache = 1) {
+	$url = 'index.php?extern='.$path;
+	if ($theme == 1) {
+		$url = $url.'&theme=1';
+	}
+	if ($cache == 1) {
+		$url = $url.'&version='.EXTERN_CACHE_VERSION;
+	}
+	return $url;
+}
+
+?>
