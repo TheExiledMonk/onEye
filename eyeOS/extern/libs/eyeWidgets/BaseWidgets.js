@@ -1,14 +1,36 @@
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
+
+                     Web Operating System
+                           eyeOS.org
+
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License (GPL)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+
+*/
 function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = params["height"];
 	var mywidth = params["width"];
 	var title = params["title"];
-			
+	var titleCss = params["titleCss"];
 	var theText = document.createTextNode(title);
 	
 	var oTable = document.createElement("TABLE");
 	var oTBody = document.createElement("TBODY");
 	var myTitle = document.createElement("DIV");
-	myTitle.className = 'eyeBoxText';
+	myTitle.className = titleCss;
 	myTitle.setAttribute('id',name+'supText');
 	myTitle.appendChild(theText);
 	
@@ -51,6 +73,61 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	createWidget(name+'_Container',father,oTable,horiz,vert,x,y,-1,-1,"eyeBoxContainer",cent);
 }
+function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var mywidth = params['width'];
+	var myheight = params['height'];
+	var visible = params['visible'];
+	
+	var myLine = document.createElement('div');
+	myLine.setAttribute('id',name);
+	myLine.style.width = mywidth+'px';
+	myLine.style.height = myheight+'px';
+	myLine.style.backgroundColor = '#dddddd';
+	createWidget(name+'_Container',father,myLine,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent);
+}
+function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var callback = params['callback'];
+	var filename = params['filename'];
+	var visible = params['visible'];
+	var multiple = params['multiple'];
+	var pid = params['pid'];
+	var myIframe = document.createElement('iframe');
+	
+	if(multiple == 1){
+		var withs = '300px';
+		var height = '350px';
+	}else{
+		var withs = '250px';
+		var height = '90px';
+	}
+			
+	myIframe.setAttribute('id',name);	
+	myIframe.style.width = withs;
+	myIframe.style.height = height;
+	myIframe.style.border='none';
+	myIframe.frameBorder='no';
+	if(multiple == 1){
+		myIframe.setAttribute('src','index.php?extern=libs/eyeWidgets/getMultipleFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
+	}else{
+		myIframe.setAttribute('src','index.php?extern=libs/eyeWidgets/getFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
+	}	
+	createWidget(name+'_Container',father,myIframe,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent);
+}
+function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var myheight = params["height"];
+	var mywidth = params["width"];
+	
+	var divBox = document.createElement('div');		
+	divBox.setAttribute('id',name);
+	divBox.style.width = mywidth+'px';
+	divBox.style.height = myheight+'px';
+
+	if(params["border"] == 1){
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent);
+	}else{
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent);
+	}
+}
 function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var caption = params["caption"];
 	var enabled = params["enabled"];
@@ -63,6 +140,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myImg = params["img"];
 	var myTop = params["imgY"];
 	var myLeft = parseInt(params["imgX"]);
+	var forceMsg = params["forceMsg"];
 	myLeft = myLeft + 5;
 
 	var myContainer = document.createElement('div');
@@ -76,6 +154,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myContent.style.position = 'absolute';
 	} else {
 		var myButton = document.createElement('button');
+		caption = tinyMCE.entityDecode(caption);
 		theText=document.createTextNode(caption);
 		myButton.appendChild(theText);
 	}
@@ -112,7 +191,12 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myButton.style.visibility = 'hidden';
 	}
 	if(dis == 0) {
-		myContainer.onclick = function(){sendMsg(checknum,sig,eval(sync))};
+		if(forceMsg == 0){
+			myContainer.onclick = function(){sendMsg(checknum,sig,eval(sync))};				
+		}else{
+			var myParam = eyeParam(sig,forceMsg);
+			myContainer.onclick = function(){sendMsg(checknum,sig,myParam)};				
+		}
 	}
 	myButton.setAttribute('id',name);
 	myContainer.appendChild(myButton);
@@ -121,7 +205,6 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent);
 }
-
 function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 {
 	var myWidth = params['width'];
@@ -218,9 +301,9 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			leftCorner.style.background = 'no-repeat';			
 			if(IEversion == 6){
 				leftCorner.style.backgroundImage = '';
-				leftCorner.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=/apps/eyeX/themes/default/images/widgets/calendar_rowLeft.png', sizingMethod='scale');"
+				leftCorner.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowLeft.png', sizingMethod='scale');"
 			}else{			
-				leftCorner.style.backgroundImage ='url(index.php?extern=/apps/eyeX/themes/default/images/widgets/calendar_rowLeft.png)' ;		
+				leftCorner.style.backgroundImage ='url(index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowLeft.png)' ;		
 			}
 	
 			var dayNameContent = document.createElement('div');
@@ -260,10 +343,10 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			rightCorner.style.background = 'no-repeat';
 			if(IEversion == 6){
 				rightCorner.style.backgroundImage = '';
-				rightCorner.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=/apps/eyeX/themes/default/images/widgets/calendar_rowRight.png', sizingMethod='scale');"
+				rightCorner.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowRight.png', sizingMethod='scale');"
 				dayNameContent.style.backgroundColor = '#53A0E1';	
 			}else{			
-				rightCorner.style.backgroundImage='url(index.php?extern=/apps/eyeX/themes/default/images/widgets/calendar_rowRight.png)'
+				rightCorner.style.backgroundImage='url(index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowRight.png)'
 			}
 		weekDaysNames.appendChild(leftCorner);
 		weekDaysNames.appendChild(dayNameContent);
@@ -457,7 +540,6 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var checked = params["checked"];
 	var enabled = params["enabled"];
 	var visible = params["visible"];
-	
 	var myCheckbox = document.createElement('input');
 	myCheckbox.setAttribute('type', 'checkbox');
 	var myContainer = document.createElement('div');
@@ -473,12 +555,15 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(visible == 0) {
 		myCheckbox.style.visibility = 'hidden';
 		myContainer.style.visibility = 'hidden';
-	}	
+	}
+	
 	myCheckbox.setAttribute('id',name);
+	myCheckbox.className = 'eyeCheckbox';
 	myContainer.appendChild(myCheckbox);
+	myContainer.className='eyeCheckboxText';
 	theText=document.createTextNode(text);
 	myContainer.appendChild(theText);
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckbox",cent);
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckboxContainer",cent);
 }
 function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = parseInt(params["height"]);
@@ -502,27 +587,36 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
 	var flashParamsNames = getArrayArg(params["flashParamsNames"]);
 	var flashParamsValues = getArrayArg(params["flashParamsValues"]);
-	var myFlash = document.createElement("object");
 	
-	myFlash.setAttribute('width',width);
-	myFlash.setAttribute('height',height);
-	myFlash.setAttribute('data',src);
-	myFlash.setAttribute('type','application/x-shockwave-flash');
-	myFlash.setAttribute('id', name);
-	
-	
-/*		var myTempParam = document.createElement('param');
-		myTempParam.setAttribute('name','flashvars');
-		myTempParam.setAttribute('value','src=http://127.0.0.1/eyeOS/sound.mp33&autostart=no&loop=no&jscontrol=true');
-		myFlash.appendChild(myTempParam);*/
-	for(key in flashParamsNames){
-		var myTempParam = document.createElement('param');
-		myTempParam.setAttribute('name',flashParamsNames[key]);
-		myTempParam.setAttribute('value',flashParamsValues[key]);
-		myFlash.appendChild(myTempParam);
-	}
-	if( visible == 0) {
-	    myFlash.style.visibility = 'hidden';
+	if (IEversion == 0) {
+		var myFlash = document.createElement("object");
+		myFlash.setAttribute('width',width);
+		myFlash.setAttribute('height',height);
+		myFlash.setAttribute('data',src);
+		myFlash.setAttribute('type','application/x-shockwave-flash');
+		myFlash.setAttribute('id', name);
+		
+		for(key in flashParamsNames){
+			var myTempParam = document.createElement('param');
+			myTempParam.setAttribute('name',flashParamsNames[key]);
+			myTempParam.setAttribute('value',flashParamsValues[key]);
+			myFlash.appendChild(myTempParam);
+		}
+		if( visible == 0) {
+		    myFlash.style.visibility = 'hidden';
+		}
+	} else {
+		var myFlash = document.createElement("div");
+		myFlash.setAttribute('id', name);
+		myFlash.setAttribute('width',width);
+		myFlash.setAttribute('height',height);
+		myFlash.innerHTML = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="'+width+'" height="'+height+'" data="'+src+'" type="application/x-shockwave-flash">';
+		myFlash.innerHTML += '<param name="movie" value ="'+src+'">';	
+		for(key in flashParamsNames){
+			myFlash.innerHTML += '<param name="'+flashParamsNames[key]+'" value="'+flashParamsValues[key]+'">';
+		}	
+		myFlash.innerHTML += '<embed src="'+src+'" quality="high" width="'+width+'" height="'+height+'" type="application/x-shockwave-flash" style="position: absolute; top: 0; right: 0;"></embed>';
+		myFlash.innerHTML += '</object>';
 	}
 	createWidget(name+'_Container',father,myFlash,horiz,vert,x,y,width,height,"eyeFlash",cent);
 }
@@ -545,37 +639,42 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	var text = params["text"];
 	var image = params["image"];
 	var draggable = params["draggable"];
+	var onclick = params["onclick"];
 	var content = params["content"];
 	var myWidth = params["width"];
 	var myHeight = params["height"];
 	var myOnLoad = params["myonload"];
-	var tooltip = params["tooltip"];
+	var realname = params["realname"];
+	var overBorder = params["overBorder"];
 	
 	var myGlobalContainer = document.createElement('div');
+	myGlobalContainer.style.width='65px';
 	myGlobalContainer.setAttribute('id',name+'_globalContainer');
 	
 	var myImage = document.createElement('img');
-	myImage.setAttribute('title',tooltip);
-	myImage.setAttribute('alt',tooltip);
 	if(myOnLoad != "") {
 		myImage.onload=function(){eval(myOnLoad);};
 	}
 	myImage.src = image;
 	myImage.setAttribute('id','img_'+name);
-		
+	myImage.className = 'eyeIcon_Image';
+	
 	if(myWidth > 0) {
 		myImage.setAttribute('width',myWidth);
 	}
 	if(myHeight > 0) {
 		myImage.setAttribute('height',myHeight);
 	}
-
+	
 	var myIconText = document.createElement('div');
 	myIconText.className = 'eyeIcon_Text';
 	myIconText.setAttribute('align','center');
 	myIconText.setAttribute('id',name+'_text');
+	myIconText.style.width = '65px';
 	
-	myIconText.innerHTML = text;
+	text = tinyMCE.entityDecode(text);
+	var theText = document.createTextNode(text);
+	myIconText.appendChild(theText);
 	
 	myGlobalContainer.appendChild(myImage);
 	myGlobalContainer.appendChild(myIconText);
@@ -586,11 +685,35 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	myContent.value = content;
 	
 	myGlobalContainer.appendChild(myContent);
+	realname = tinyMCE.entityDecode(realname);
+	if(overBorder != 0) {
+		myGlobalContainer.onmouseover = function() {
+			myGlobalContainer.style.border = '1px solid #dddddd';
+			myIconText.innerHTML = "";
+			myIconText.appendChild(document.createTextNode(realname));
+		}
+		
+		myGlobalContainer.onmouseout = function() {
+			myGlobalContainer.style.border = '1px solid #ffffff';
+			myIconText.innerHTML = "";
+			myIconText.appendChild(document.createTextNode(text));
+		}
+		myGlobalContainer.style.border = '1px solid #ffffff';
+	}
 	
 	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0);
-
 	if (draggable==1) {
 		makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
+	}	
+	if(onclick==1){
+		myGlobalContainer.onclick = function(){
+			var myContent = getArrayArg(content); 
+			var result = '';
+			for (var i in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
+			}
+			sendMsg(checknum,'Icon_Clicked',result);
+		}
 	}
 }
 function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
@@ -600,12 +723,12 @@ function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
 
 	var result="";
 	for (var i in myContent) {
-		result += eyeParam('arg'+i,myContent[i]);
+		result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
 	}
 	if (movedX < 1 && movedX > (-1) && movedY < 1 && movedY > (-1)) {
 		sendMsg(checknum,'Icon_Clicked',result);
 	} else {
-		var sendxml = eyeParam('eyeArg',eyeParam('content',content)+eyeParam('newX',newX)+eyeParam('newY',newY));
+		var sendxml = eyeParam('eyeArg',eyeParam('content',content)+eyeParam('newX',newX)+eyeParam('newY',newY),1);
 		sendMsg(checknum,'Icon_Moved',sendxml);
 	}
 }
@@ -681,8 +804,7 @@ function Label_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myLabel.onclick = function() {sendMsg(checknum,sig,eyeParam(name,text)+eval(sync))};
 	}
 	text = tinyMCE.entityDecode(text);
-	var theText = document.createTextNode(text);
-	myLabel.appendChild(theText);
+	myLabel.appendChild(document.createTextNode(text));
 	createWidget(name+'_Container',father,myLabel,horiz,vert,x,y,-1,-1,"eyeLabel",cent);
 }
 function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -702,10 +824,10 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myRadio.setAttribute('type','radio');
 		myRadio.setAttribute('value',currentValue[0]);
 		myRadio.textContent = currentValue[1];
-		alert(myRadio.textContent);
+
 		myDiv.appendChild(myRadio);
 	}
-	//TODO make it run right
+
 	if(checked && checked < content.length) {
 		myRadio = document.getElementById(name+'_'+checked);
 
@@ -726,19 +848,8 @@ function SDI_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
 	var mywidth = params["width"];
-	var optionlist = getArrayArg(params["optionlist"]);
 	var enabled = params["params"];
 	var mySelect = document.createElement("select");
-	var myOption;
-	var currentOption;
-	
-	for(i=0; i < optionlist.length; i++) {
-		myOption = document.createElement("option");
-		currentOption = getArrayArg(optionlist[i]);
-		myOption.setAttribute('value',currentOption[1]);
-		myOption.textContent = currentOption[0];
-		mySelect.appendChild(myOption);
-	}
 	
 	if(enabled == 0) {
 		mySelect.disabled = 1;
@@ -751,9 +862,7 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(mywidth > 0) {
 		mySelect.style.width = mywidth+'px';	
 	}
-	
 	mySelect.setAttribute('id',name);
-
 	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"eyeSelect",cent);
 }
 function Slider_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -779,7 +888,6 @@ function Range() {
 
 	this._isChanging = false;
 }
-
 Range.prototype.setValue = function (value) {
 	value = Math.round(parseFloat(value));
 	if (isNaN(value)) return;
@@ -798,7 +906,6 @@ Range.prototype.setValue = function (value) {
 Range.prototype.getValue = function () {
 	return this._value;
 };
-
 Range.prototype.setExtent = function (extent) {
 	if (this._extent != extent) {
 		if (extent < 0)
@@ -1414,21 +1521,6 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	oTHead.appendChild(oRow);
 	oTable.appendChild(oTHead);
-	
-	/**
-	for(i=0;i<myTbody.length;i++) {
-		myRows = getArrayArg(myTbody[i]);
-		oRow = document.createElement("TR");
-		for(j=0;j<myRows.length;j++) {
-			oCell = document.createElement("TD");
-			oCell.innerHTML = myRows[j];
-			if(myHiddens[j] == 1) {
-				oCell.style.display = 'none';
-			}
-			oRow.appendChild(oCell);
-		}
-		oTBody.appendChild(oRow);
-	}**/
 	oTBody.setAttribute('id',name+'_Body');
 	oTable.appendChild(oTBody);
 	oTable.style.width=width+sizeUnit;
@@ -1518,16 +1610,30 @@ SortableTable.prototype.addEntry = function(entry) {
 	var oCell=0;
 	var sortypes = this.normalSort;
 	var myHiddens = new Array();
+	var myHtml = new Array();
 	for(keyVar in sortypes) {
 		if(sortypes[keyVar] == 'Hidden') {
 			myHiddens[keyVar] = 1;
 		} else {
 			myHiddens[keyVar] = 0;
 		}
+		if(sortypes[keyVar] == 'Html') {
+			myHtml[keyVar] = 1;
+		} else if(sortypes[keyVar] == 'HtmlButNoSort') {
+			myHtml[keyVar] = 1;
+		} else {
+			myHtml[keyVar] = 0;
+		}
 	}
 	for(i=0;i<myEntry.length;i++) {
 		oCell = document.createElement("TD");
-		oCell.innerHTML = myEntry[i];
+		myEntry[i] = tinyMCE.entityDecode(myEntry[i]);
+		if(myHtml[i] == 1) {
+			oCell.innerHTML = myEntry[i];
+		} else {
+			oCell.appendChild(document.createTextNode(myEntry[i]));
+		}
+		
 		if(myHiddens[i] == 1) {
 			oCell.style.display = 'none';
 		}
@@ -1583,7 +1689,7 @@ SortableTable.prototype.initHeader = function (oSortTypes) {
 	var img, c;
 	for (var i = 0; i < l; i++) {
 		c = cells[i];
-		if (this.sortTypes[i] != null && this.sortTypes[i] != "None") {
+		if (this.sortTypes[i] != null && this.sortTypes[i] != "None" && this.sortTypes[i] != "HtmlButNoSort") {
 			img = doc.createElement("IMG");
 			img.src = "index.php?extern=apps/eyeX/themes/default/images/widgets/blank.png";
 			c.appendChild(img);
@@ -1599,7 +1705,11 @@ SortableTable.prototype.initHeader = function (oSortTypes) {
 		else
 		{
 			c.setAttribute( "_sortType", oSortTypes[i] );
-			c._sortType = "None";
+			if (this.sortTypes[i] != null) {
+				c._sortType = "None";
+			} else {
+				c._sortType = this.sortTypes[i];
+			}
 		}
 	}
 	this.updateHeaderArrows();
@@ -1613,7 +1723,7 @@ SortableTable.prototype.uninitHeader = function () {
 	var c;
 	for (var i = 0; i < l; i++) {
 		c = cells[i];
-		if (c._sortType != null && c._sortType != "None") {
+		if (c._sortType != null && c._sortType != "None" && c._sortType != "HtmlButNoSort") {
 			c.removeChild(c.lastChild);
 			if (typeof c.removeEventListener != "undefined")
 				c.removeEventListener("click", this._headerOnclick, false);
@@ -1631,7 +1741,7 @@ SortableTable.prototype.updateHeaderArrows = function () {
 	var l = cells.length;
 	var img;
 	for (var i = 0; i < l; i++) {
-		if (cells[i]._sortType != null && cells[i]._sortType != "None") {
+		if (cells[i]._sortType != null && cells[i]._sortType != "None" && cells[i]._sortType != "HtmlButNoSort") {
 			img = cells[i].lastChild;
 			if (i == this.sortColumn)
 				img.className = "sort-arrow " + (this.descending ? "descending" : "ascending");
@@ -1644,7 +1754,9 @@ SortableTable.prototype.updateHeaderArrows = function () {
 SortableTable.prototype.getSelectValue = function(i) {
 	if(this.lastClick) {
 		return this.lastClick.childNodes.item(i).innerHTML;
-	} 
+	} else {
+		return "";
+	}
 };
 
 SortableTable.prototype.bodyOnclick = function(e) {
@@ -1694,8 +1806,8 @@ SortableTable.prototype.sort = function (nColumn, bDescending, sSortType) {
 	if (sSortType == null)
 		sSortType = this.getSortType(nColumn);
 
-	// exit if None
-	if (sSortType == "None")
+	// exit if None or HtmlButNoSort
+	if (sSortType == "None" || sSortType == "HtmlButNoSort")
 		return;
 
 	if (bDescending == null) {
@@ -2069,6 +2181,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	var myTextarea = document.createElement('textarea');
 	myTextarea.setAttribute('id',name);
+	myTextarea.setAttribute('name',name);
 	if (rows) {
 		myTextarea.setAttribute('rows',rows);
 	}
@@ -2099,7 +2212,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		tinyMCE.execCommand('mceAddControl', false, name);
 	}
 }function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var text = params["text"];
+	var text = tinyMCE.entityDecode(params["text"]);
 	var enabled = params["enabled"];
 	var visible = params["visible"];
 	var myPassword = params["password"];
@@ -2151,6 +2264,16 @@ thirdButtonPosition = 38;
 function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var title = params["title"];
 	var type = params["type"];
+		var showtitle = params["showtitle"];
+		var listed = params["listed"];
+		var max = params["max"];
+			var max_pos = params["max_pos"];
+		var min = params["min"];
+			var min_pos = params["min_pos"];
+		var close = params["close"];
+			var close_pos = params["close_pos"];
+		var resize = params["resize"];
+		var nodrag = params["nodrag"];
 	var width = params["width"];
 	var height = params["height"];
 	var sendCloseMsg = params["sendCloseMsg"];
@@ -2159,88 +2282,19 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var sigResize = params["sigResize"];
 	var removeWin = parseInt(params["removeWin"]);
 	var savePosition = params["savePosition"];
-	var xChecknum = params["xChecknum"];
-	
+	var saveFunc = params["saveFunc"];
+	var xChecknum = params["xChecknum"];	
 	var theText = document.createTextNode('');
 	createWidget(name,father,theText,horiz,vert,x,y,width,height,"eyeWindowMain",cent);
-
+	
 	//createWidget (widgetid,father,content,horiz,vert,wx,wy,wwidth,wheight,wclass)
-	//TYPES:
-	/*
-	NORMAL_WINDOW 1
-	NOCLOSE_WINDOW 2
-	NORESIZE_WINDOW 3
-	FIXED_WINDOW 4
-	NOLIST_WINDOW 5
-	NOLIST_CLOSE_WINDOW 6
-	LIST_CLOSE_WINDOW 7
-	NOBORDER_WINDOW 100
-	WIN_IMAGE_DRAGGABLE 101
-	*/
-	if (type < 100) {
-		/* CreateWidgets for Title Bar */
-		createWidget(name+"_WindowTitle",name,theText,0,0,-1,-1,-1,-1,"eyeWindowTitle",0);
-		createWidget(name+"_WindowTitle_border_right",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_border_right",0);
-		createWidget(name+"_WindowTitle_border_left",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_border_left",0);	
-		createWidget(name+"_WindowTitle_center",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_center",0);	
-		createWidget(name+"_WindowTitle_text",name+"_WindowTitle",document.createTextNode(title),0,0,-1,-1,-1,-1,"eyeWindowTitle_text",0);	
 	
-		/* CreateWidgets for Window Bottom */
-		createWidget(name+"_WindowBottom_center",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_center",0);	
-		createWidget(name+"_WindowBottom_right",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_right",0);	
-		createWidget(name+"_WindowBottom_left",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_left",0);	
-		
-		/* Left */
-		createWidget(name+"_WindowLeft",name,theText,0,0,-1,-1,-1,-1,"eyeWindowLeft",0);	
+	title = tinyMCE.entityDecode(title);
 	
-		/* Right */
-		createWidget(name+"_WindowRight",name,theText,0,0,-1,-1,-1,-1,"eyeWindowRight",0);	
-			
-		/* CreateWidgets for Window Content */
-		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContent",0);
-	}
-	
-	if (type == 1) {
-		createWidget(name+"_WindowMinimizeButton",name,theText,1,0,thirdButtonPosition,-1,-1,-1,"eyeWindowMinimizeButton",0);
-		createWidget(name+"_WindowMaxButton",name,theText,1,0,secondButtonPosition,-1,-1,-1,"eyeWindowMaxButton",0);
-		createWidget(name+"_WindowCloseButton",name,theText,1,0,firstButtonPosition,-1,-1,-1,"eyeWindowCloseButton",0);
-		createWidget(name+"_WindowResizeButton",name,theText,0,0,-1,-1,-1,-1,"eyeWindowResizeButton",0);		
-		makeWindow(name, title, father, "", checknum, name+"_WindowMaxButton",name+"_WindowResizeButton",name+"_WindowTitle",name+"_WindowCloseButton",name+"_WindowMinimizeButton",0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	
-	else if (type == 2) {
-		createWidget(name+"_WindowMinimizeButton",name,theText,1,0,secondButtonPosition,-1,-1,-1,"eyeWindowMinimizeButton",0);
-		createWidget(name+"_WindowMaxButton",name,theText,1,0,firstButtonPosition,-1,-1,-1,"eyeWindowMaxButton",0);
-		createWidget(name+"_WindowResizeButton",name,theText,0,0,-1,-1,-1,-1,"eyeWindowResizeButton",0);		
-		makeWindow(name, title, father, "", checknum, name+"_WindowMaxButton",name+"_WindowResizeButton",name+"_WindowTitle",null,name+"_WindowMinimizeButton",0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	
-	else if (type == 3) {
-		createWidget(name+"_WindowMinimizeButton",name,theText,1,0,secondButtonPosition,-1,-1,-1,"eyeWindowMinimizeButton",0);
-		createWidget(name+"_WindowCloseButton",name,theText,1,0,firstButtonPosition,-1,-1,-1,"eyeWindowCloseButton",0);		
-		makeWindow(name, title, father, "", checknum, null,null,name+"_WindowTitle",name+"_WindowCloseButton",name+"_WindowMinimizeButton",0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	
-	else if (type == 4) {
-		makeWindow(name, title, father, "", checknum, null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	
-	else if (type == 5) {
-		makeWindow(name, title, father, "", checknum, null,null,name+"_WindowTitle",null,null,1,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	else if (type == 6) {
-		createWidget(name+"_WindowCloseButton",name,theText,1,0,firstButtonPosition,-1,-1,-1,"eyeWindowCloseButton",0);	
-		makeWindow(name, title, father, "", checknum, null,null,name+"_WindowTitle",name+"_WindowCloseButton",null,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	else if (type == 7) {
-		createWidget(name+"_WindowCloseButton",name,theText,1,0,firstButtonPosition,-1,-1,-1,"eyeWindowCloseButton",0);	
-		makeWindow(name, title, father, "", checknum, null,null,name+"_WindowTitle",name+"_WindowCloseButton",null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	else if (type == 100) {	
+	if (type == 2) {
 		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
-		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-	}
-	else if (type == 101 && background != "") {	
+		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum);
+	} else if (type == 3 && background != "") {
 		var myImage = document.createElement('img');
 		myImage.setAttribute('id',name+'_background');
 		myImage.src=background;
@@ -2248,15 +2302,100 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myDiv.style.overflow = "hidden";
 		myDiv.appendChild(myImage);
 		createWidget(name+"_Content",name,myDiv,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
-		makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum);
-		if(IEversion!=0) {
+		makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum);
+		if (IEversion != 0) {
 			fixPNG(myImage.id);
 		}
+	} else {
+		/* CreateWidgets for Title Bar */
+		createWidget(name+"_WindowTitle",name,theText,0,0,-1,-1,-1,-1,"eyeWindowTitle",0);
+		createWidget(name+"_WindowTitle_border_right",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_border_right",0);
+		createWidget(name+"_WindowTitle_border_left",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_border_left",0);
+		createWidget(name+"_WindowTitle_center",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_center",0);
+		createWidget(name+"_WindowTitle_text",name+"_WindowTitle",document.createTextNode(title),0,0,-1,-1,-1,-1,"eyeWindowTitle_text",0);
+		/* CreateWidgets for Window Bottom */
+		createWidget(name+"_WindowBottom_center",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_center",0);
+		createWidget(name+"_WindowBottom_right",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_right",0);
+		createWidget(name+"_WindowBottom_left",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_left",0);
+		/* Left */
+		createWidget(name+"_WindowLeft",name,theText,0,0,-1,-1,-1,-1,"eyeWindowLeft",0);
+		/* Right */
+		createWidget(name+"_WindowRight",name,theText,0,0,-1,-1,-1,-1,"eyeWindowRight",0);
+		/* CreateWidgets for Window Content */
+		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContent",0);
+		
+		if (showtitle == 0) {
+			showtitle = null;
+		} else {
+			showtitle = name+"_WindowTitle";
+		}
+		
+		if (listed == 0) {
+			listed = 1;
+		} else {
+			listed = 0;
+		}
+		
+		if (min == 0) {
+			min = null;
+		} else {
+			if (min_pos == 1) {
+				min_pos = firstButtonPosition;
+			} else if (min_pos == 2) {
+				min_pos = secondButtonPosition;
+			} else if (min_pos == 3) {
+				min_pos = thirdButtonPosition;
+			}
+			createWidget(name+"_WindowMinimizeButton",name,theText,1,0,min_pos,-1,-1,-1,"eyeWindowMinimizeButton",0);
+			min = name+"_WindowMinimizeButton";
+		}
+		
+		if (max == 0) {
+			max = null;
+		} else {
+			if (max_pos == 1) {
+				max_pos = firstButtonPosition;
+			} else if (max_pos == 2) {
+				max_pos = secondButtonPosition;
+			} else if (max_pos == 3) {
+				max_pos = thirdButtonPosition;
+			}
+			createWidget(name+"_WindowMaxButton",name,theText,1,0,max_pos,-1,-1,-1,"eyeWindowMaxButton",0);
+			max = name+"_WindowMaxButton";
+		}
+		
+		if (close == 0) {
+			close = null;
+		} else {
+			if (close_pos == 1) {
+				close_pos = firstButtonPosition;
+			} else if (close_pos == 2) {
+				close_pos = secondButtonPosition;
+			} else if (close_pos == 3) {
+				close_pos = thirdButtonPosition;
+			}
+			createWidget(name+"_WindowCloseButton",name,theText,1,0,close_pos,-1,-1,-1,"eyeWindowCloseButton",0);
+			close = name+"_WindowCloseButton";
+		}
+		
+		if (resize == 0) {
+			resize = null;
+		} else {
+			createWidget(name+"_WindowResizeButton",name,theText,0,0,-1,-1,-1,-1,"eyeWindowResizeButton",0);		
+			resize = name+"_WindowResizeButton";
+		}
+		
+		if (nodrag == 1) {
+			nodrag = 1;
+		} else {
+			nodrag = 0;
+		}
+		
+		makeWindow(name,title,father,"",checknum,max,resize,showtitle,close,min,listed,nodrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum);
 	}
-
 }
 
-function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,xChecknum) {
+function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum) {	
 	var widget = xGetElementById(widgetid);
 	if (!widget) {
 		return;
@@ -2302,7 +2441,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			var minIconRight = document.getElementById("minIconRight");
 			var myImgRight = document.createElement('img');
 			myImgRight.setAttribute('id','minIconRight_img');
-			myImgRight.setAttribute('src','index.php?extern=apps/eyeX/themes/default/images/desktop/right.png');
+			myImgRight.setAttribute('src','index.php?extern=apps/eyeX/themes/'+eyeTheme+'/images/desktop/right.png');
 			myImgRight.onclick = function(e) {
 				minArrowRight();
 			}
@@ -2310,7 +2449,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			
 			var myImgLeft = document.createElement('img');
 			myImgLeft.setAttribute('id','minIconLeft_img');
-			myImgLeft.setAttribute('src','index.php?extern=apps/eyeX/themes/default/images/desktop/left.png');
+			myImgLeft.setAttribute('src','index.php?extern=apps/eyeX/themes/'+eyeTheme+'/images/desktop/left.png');
 			myImgLeft.onclick = function(e) {
 				minArrowLeft();
 			}
@@ -2385,6 +2524,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			}
 		}
 		mBtn.onclick = maxOnClick;
+		xGetElementById(widgetid+"_WindowTitle").ondblclick = maxOnClick;
 	}
 	
 	if (cBtn) {
@@ -2446,31 +2586,41 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 		var y = xTop(widget) + mdy;
 		var xright = xWidth(father) - xWidth(widget) - rightBorder;
 		var ybottom = xHeight(father) - xHeight(widget);
-		if (x < leftBorder) x = leftBorder;
-		if (y < barX_height) y = barX_height;
-		if (x > xright) x = xright;
-		if (y > ybottom - barWin_height) y = ybottom - barWin_height;
+		
+		if(document.getElementById(widgetid).parentNode.id == "eyeApps") {
+			if (x < leftBorder - xWidth(widget) + 75) x = leftBorder - xWidth(widget) + 75;
+			if (x > xright + xWidth(widget) - 75) x = xright + xWidth(widget) - 75;
+			if (y < 0) y = 0;
+			if (y > ybottom + xHeight(widget) - 50) y = ybottom + xHeight(widget) - 50;
+		} else {
+			if (x < 0) x = 0;
+			if (x > xright - 2) x = xright - 2;
+			if (y < 0) y = 0;
+			if (y > ybottom - 1) y = ybottom - 1;
+		}
+		
 		xMoveTo(widget, x, y);
 	}
 	
 	function callafterfunction()
 	{
-		//document.getElementById(widgetid+'_Content').style.display = 'block';
-		/*if (afterfunction) {
-			eval (afterfunction+'(\''+widgetid+'\','+xLeft(widget)+','+xTop(widget)+',\''+checknum+'\');');
-		}*/	
-		
-		//If window have a savePosition set, send a sendMsg to eyeX savePosition event.		
 		if(savePosition == 1){
-			//Getting vars here because at the moment, callafterfunction only to anything if savePosition are setted
-			var top = xTop(widget);//Getting the top.
-			var left = xLeft(widget);//Getting the left
-		
-			sendMsgParam = eyeParam('top',top);
-			sendMsgParam = sendMsgParam + eyeParam('left',left);
-			sendMsgParam = sendMsgParam + eyeParam('winName',widget.id);
-			sendMsgParam = sendMsgParam + eyeParam('appChecknum',checknum);
-			sendMsg(xChecknum,'saveWinPosition',sendMsgParam);
+			if(saveFunc != ''){
+				try{
+					eval(saveFunc);
+				}catch(err){
+					//alert(err);
+				}
+			}else{
+				//Getting vars here because at the moment, callafterfunction only to anything if savePosition are setted
+				var top = xTop(widget);//Getting the top.
+				var left = xLeft(widget);//Getting the left			
+				sendMsgParam = eyeParam('top',top);
+				sendMsgParam = sendMsgParam + eyeParam('left',left);
+				sendMsgParam = sendMsgParam + eyeParam('winName',widget.id);
+				sendMsgParam = sendMsgParam + eyeParam('appChecknum',checknum);
+				sendMsg(xChecknum,'saveWinPosition',sendMsgParam);
+			}
 		}					
 	}	
 	widget.onmousedown = GoToTop; 
@@ -2496,12 +2646,13 @@ function slideClose(fatherid,widgetid) {
  	{
  		var minLeft = xLeft(barWin);
  		var reduceWidth = xWidth(barWin);
+ 		
 		for (var i = 0; i < openWindows.length; i++) 
 		{
 			var actWin = openWindows[i]+"_WindowOnBar";
 			if (xLeft(actWin) > minLeft) {
-				xMoveTo(actWin,xLeft(actWin),-xHeight(actWin));
-				xSlideTo(actWin,xLeft(actWin)-reduceWidth,-xHeight(actWin),1000);
+				xMoveTo(actWin,xLeft(actWin),xTop(actWin));
+				xSlideTo(actWin,xLeft(actWin)-reduceWidth,xTop(actWin),1000);
 			}
 		}
 	}
@@ -2540,5 +2691,303 @@ function minArrowLeft() {
 function minArrowRight() {
 	if(minArrows == 1){
 		xSlideTo("minimizedAppsIn",xLeft("minimizedAppsIn")-125,0,1000);
+	}
+}
+
+function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var visible = params["visible"];
+	var mywidth = params["width"];
+	var pogress = params['progress'];
+
+	var myProgress = document.createElement('div');
+	
+	if(mywidth != "") {
+		myProgress.style.width = mywidth+'px';
+	}
+	if(visible == 0) {
+		myProgress.style.visibility = 'hidden';
+	}
+	
+	myProgress.setAttribute('id',name);
+	myProgress.className = 'eyeProgress';
+	
+	var myProgressBar = document.createElement('div');
+	myProgressBar.setAttribute('id',name+'_bar');
+	myProgressBar.className = 'eyeProgressBar';
+	myProgressBar.style.height = '100%';
+	myProgressBar.style.width = pogress+'%';	
+	
+	var myProgressText = document.createElement('div');
+	myProgressText.setAttribute('id',name+'_txt');
+	myProgressText.className = 'eyeProgressText';
+	myProgressText.innerHTML = pogress+"%";
+	var myProgressC = document.createElement('center');
+	myProgressC.style.position='absolute';
+	myProgressC.style.top='2px';
+	myProgressC.style.width = mywidth+'%';	
+	myProgressC.appendChild(myProgressText);
+	myProgress.appendChild(myProgressBar);
+	myProgress.appendChild(myProgressC);
+	
+	createWidget(name+'_Container',father,myProgress,horiz,vert,x,y,-1,-1,"eyeProgressContainer",cent);
+}
+
+function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var obj = document.getElementById(father);
+	if(!obj) {
+		return;
+	}
+	var myBar = document.createElement('div');
+	myBar.setAttribute('id',name);
+	myBar.className = 'blockbar';
+	obj.appendChild(myBar);
+}
+
+function addItemToBar(mibarra,itemName,itemImg,itemText,sync,checknum) {
+	var obj = document.getElementById(mibarra);
+	var container = document.createElement('div');
+	var myFriends = Base64.decode(sync);
+	container.setAttribute('id',itemName+'_Container');
+	container.className = 'blockbarItem';
+	
+	var myImg = document.createElement('img');
+	myImg.setAttribute('id',itemName+'_img');
+	myImg.className = 'blockbarImg';
+	myImg.setAttribute('src',itemImg);
+	container.appendChild(myImg);
+	
+	var myText = document.createElement('div');
+	myText.setAttribute('id',itemName+'_txt');
+	myText.className = 'blockbarText';
+	myText.innerHTML = itemText;
+	container.appendChild(myText);
+	container.onclick = function(){sendMsg(checknum,itemName,eval(myFriends))};
+	obj.appendChild(container);
+}
+
+function Tree_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var myWidth = params["width"];
+	var myHeight = params["height"];
+	var signal = params["signal"];
+	var clickTree = params["clickTree"];
+	var sync = params["sync"];
+	eval('tree_'+name+' = new Tree("'+father+'","'+signal+'","'+checknum+'","'+name+'",'+myHeight+','+myWidth+','+x+','+y+',"'+clickTree+'","'+sync+'");');
+}
+
+treeClass="mktree";
+nodeClosedClass="liClosed";
+nodeOpenClass="liOpen";
+nodeBulletClass="liBullet";
+nodeLinkClass="bullet";
+preProcessTrees=true;
+
+function Tree(padre, signal, checknum, nombre, alto, ancho, x, y, clickTree,sync) {
+	this.father = padre;
+	this.name = nombre;
+	this.myHeight = alto;
+	this.myWidth = ancho;
+	this.h = x;
+	this.v = y;
+	this.mySignal = signal;
+	this.myChecknum = checknum;
+	this.myClickTree = clickTree;
+	this.mySync = sync;
+	
+	var oThis = this;
+
+	this._listOnClick = function (e) {
+		oThis.listOnClick(e);
+	}
+
+	var oFather = document.getElementById(this.father);
+	if(!oFather) {
+		return;
+	}
+
+	var tree = document.createElement('ul');
+	tree.setAttribute('id',this.name);
+	tree.className = "mktree";
+	tree.style.position = 'absolute';
+	tree.style.top = this.v+'px';
+	tree.style.left = this.h+'px';
+	tree.style.height = this.myHeight+'px';
+	tree.style.width = this.myWidth+'px';
+	oFather.appendChild(tree);
+	this.setLBody(tree);
+}
+
+
+Tree.prototype.setLBody = function (oLBody) {
+	this.lBody = oLBody;
+	var c = oLBody;
+	if (typeof c.addEventListener != "undefined")
+		c.addEventListener("click", this._listOnClick, false);
+	else if (typeof c.attachEvent != "undefined")
+		c.attachEvent("onclick", this._listOnClick);
+	else
+		c.onclick = this._listOnClick;
+};
+
+Tree.prototype.getValue = function(e) {
+	if(this.lastClick) {
+		var obj = this.lastClick;
+		if(obj.tagName != 'SPAN') { 
+			var str=obj.innerHTML;
+			str = str.replace(/^<[^>]+>[^>]+>/i,"");
+			var content = str;
+		} else {
+			var content = "";
+		}
+		obj = obj.parentNode;
+		var tmpContent="";
+		while(obj.tagName == 'UL' || obj.tagName == 'LI' || obj.tagName == 'SPAN') { //si aun queda lista
+			if(obj.tagName == 'LI') { //subimos hasta el siguiente li
+				if(obj.childNodes.item(0).innerHTML) { //y bajamos un span
+					tmpContent = obj.childNodes.item(0).innerHTML;
+					tmpContent = tmpContent.substring(6,tmpContent.length);
+					content = tmpContent+'/'+content;
+				}
+			}
+			obj = obj.parentNode;
+		}
+		return content;
+	}
+	return false;
+}
+
+Tree.prototype.listOnClick = function(e) {
+	var el = e.target || e.srcElement;
+	if(el.tagName != "LI" && el.tagName != 'SPAN') {
+		return true;
+	}
+	if(el.parentNode.className == 'liBullet') {
+		el = el.parentNode;
+	}
+	if(this.lastClick) {
+		this.lastClick.style.backgroundColor = '';
+	}
+	this.lastClick = el;
+	el.style.backgroundColor = '#99CCFF';
+	var myValue = this.getValue();
+	if(this.myClickTree == 1) {
+		sendMsg(this.myChecknum,this.mySignal,eval(this.mySync));	
+	}
+}
+
+function addSubList(list,name) {
+	var father = document.getElementById(list);
+	var item = document.createElement('ul');
+	item.setAttribute('id',name);
+	father.appendChild(item);
+}
+
+function addItem(list, name, content) {
+	var father = document.getElementById(list);
+	var item = document.createElement('li');
+	item.setAttribute('id',name);
+	item.innerHTML = content;
+	father.appendChild(item);
+}
+// Full expands a tree with a given ID
+function expandTree(treeId) {
+	var ul = document.getElementById(treeId);
+	if (ul == null) { return false; }
+	expandCollapseList(ul,nodeOpenClass);
+}
+
+// Fully collapses a tree with a given ID
+function collapseTree(treeId) {
+	var ul = document.getElementById(treeId);
+	if (ul == null) { return false; }
+	expandCollapseList(ul,nodeClosedClass);
+}
+
+// Expands enough nodes to expose an LI with a given ID
+function expandToItem(treeId,itemId) {
+	var ul = document.getElementById(treeId);
+	if (ul == null) { return false; }
+	var ret = expandCollapseList(ul,nodeOpenClass,itemId);
+	if (ret) {
+		var o = document.getElementById(itemId);
+		if (o.scrollIntoView) {
+			o.scrollIntoView(false);
+		}
+	}
+}
+
+// Performs 3 functions:
+// a) Expand all nodes
+// b) Collapse all nodes
+// c) Expand all nodes to reach a certain ID
+function expandCollapseList(ul,cName,itemId) {
+	if (!ul.childNodes || ul.childNodes.length==0) { return false; }
+	// Iterate LIs
+	for (var itemi=0;itemi<ul.childNodes.length;itemi++) {
+		var item = ul.childNodes[itemi];
+		if (itemId!=null && item.id==itemId) { return true; }
+		if (item.nodeName == "LI") {
+			// Iterate things in this LI
+			var subLists = false;
+			for (var sitemi=0;sitemi<item.childNodes.length;sitemi++) {
+				var sitem = item.childNodes[sitemi];
+				if (sitem.nodeName=="UL") {
+					subLists = true;
+					var ret = expandCollapseList(sitem,cName,itemId);
+					if (itemId!=null && ret) {
+						item.className=cName;
+						return true;
+					}
+				}
+			}
+			if (subLists && itemId==null) {
+				item.className = cName;
+			}
+		}
+	}
+}
+
+
+// A esta funcion se le pasa un objeto UL y lo convierte a arbol
+function processList(ul) {
+	if (!ul.childNodes || ul.childNodes.length==0) { return; }
+	// Iterate LIs
+	for (var itemi=0;itemi<ul.childNodes.length;itemi++) {
+		var item = ul.childNodes[itemi];
+		if (item.nodeName == "LI") {
+			// Iterate things in this LI
+			var subLists = false;
+			for (var sitemi=0;sitemi<item.childNodes.length;sitemi++) {
+				var sitem = item.childNodes[sitemi];
+				if (sitem.nodeName=="UL") {
+					subLists = true;
+					processList(sitem);
+				}
+			}
+			var s= document.createElement("SPAN");
+			var t= '\u00A0'; // &nbsp;
+			s.className = nodeLinkClass;
+			if (subLists) {
+				// This LI has UL's in it, so it's a +/- node
+				if (item.className==null || item.className=="") {
+					item.className = nodeClosedClass;
+				}
+				// If it's just text, make the text work as the link also
+				if (item.firstChild.nodeName=="#text") {
+					t = t+item.firstChild.nodeValue;
+					item.removeChild(item.firstChild);
+				}
+				s.onclick = function () {
+					this.parentNode.className = (this.parentNode.className==nodeOpenClass) ? nodeClosedClass : nodeOpenClass;
+					return false;
+				}
+			}
+			else {
+				// No sublists, so it's just a bullet node
+				item.className = nodeBulletClass;
+				s.onclick = function () { return false; }
+			}
+			s.appendChild(document.createTextNode(t));
+			item.insertBefore(s,item.firstChild);
+		}
 	}
 }

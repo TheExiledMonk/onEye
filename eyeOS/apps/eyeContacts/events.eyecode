@@ -1,20 +1,24 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeContacts_on_Message($params="") {
@@ -22,8 +26,7 @@ function eyeContacts_on_Message($params="") {
 }
 
 function eyeContacts_on_Close(){
-	global $myPid;
-	service('proc','close',array($myPid));
+	proc('end');
 }
 
 function eyeContacts_on_Delete() {
@@ -38,7 +41,7 @@ function eyeContacts_on_Delete() {
 		if (service('vfs', 'real_fileExists', array($myFile))) {
 			service('vfs','real_delete',array($myFile));
 			$GLOBALS['eyeContacts_Contacts']->delRow($mySelect);
-			service('eyex','messageBox',array('content'=>'Contact deleted successfully'));	
+			service('eyex','messageBox',array('content'=>'Contact deleted successfully.'));	
 		}
 	}
 }
@@ -143,10 +146,13 @@ function eyeContacts_on_Create() {
 		$GLOBALS['eyeContacts_txtb_15']->setText("");
 		$GLOBALS['eyeContacts_txtb_16']->setText("");
 		
+		$name = $txt_name;
+		$surname = $txt_surname;
+		$phone = $txt_homeph;
 		$GLOBALS['eyeContacts_Contacts']->addRow(array(
-			$txt_name,
-			$txt_surname,
-			$txt_homeph,
+			$name,
+			$surname,
+			$phone,
 			md5($txt_surname."_".$txt_name)
 		));
 		
@@ -227,8 +233,255 @@ function eyeContacts_on_Update() {
 		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeContacts/list_contacts_form'.EYE_CODE_EXTENSION);
 		
 	service('eyex','messageBox',array('content'=>'Contact updated successfully.'));
-	$GLOBALS['eyeContacts_TabGRP']->selectByName('Contacts');
+	$GLOBALS['eyeContacts_TabGRP']->selectByName('Contacts');	
+}
+
+function eyeContacts_on_ImportvCard($params=""){
+	global $checknum;
+	//Load js script for upload callback.
+	service('eyex','loadScript',array('url'=>'index.php?extern=apps/eyeContacts/js/eyeContacts.js&type=text'));
+	$tmpPath = service('um', 'getCurrentUserdir').FILES_USER_DIR.'/tmpDir/';
+	if(!service('vfs','fileExists',array($tmpPath))){
+		service('vfs','mkDir',array($tmpPath));
+	}
+	$callback = "uploaded_importvCard_signal($checknum);";
+	$params = array($tmpPath,$callback,'',true);
+	service('proc','launch',array('eyeUpload',$params));
+}
+function eyeContacts_on_importVCardUploaded($params = ""){
+	//get the vCard file from conf dir.
+	$confPath = service('um', 'getCurrentUserdir').FILES_USER_DIR.'/tmpDir/';
+	$vCard = service('vfs','real_getDirContent',array($confPath,'*.vcf*.eyeFile'));
+	if(count($vCard) > 1){
+		service('eyex','messageBox',array('content'=>'Please, delete the tmpDir from your home first'));
+		return -1;
+	}
+	//Open vCard File
+	$fp = service('vfs','real_open',array($vCard[0],'r'));
+	if(!$fp){
+		service('eyex','messageBox',array('content'=>'Error importing vCard file'));
+		return -1;
+	}
+	//TODO: put vfs filesize here
+	$vCardContent = fread($fp,filesize($vCard[0]));
+	fclose($fp);	
 	
+	//Parsing the vCard file
+	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeContacts/lib_vCard.eyecode');
+	 // instantiate a parser object
+     $parse = new Contact_Vcard_Parse();     
+     $cardInfo = $parse->fromText($vCardContent);
+     //TODO: import save file etc
+     foreach($cardInfo as $card){
+     	$eyeCard = array();
+     	foreach($card as $name=>$comp){			
+			switch($name){
+				case 'N':
+					if(isset($comp[0]['value'][0][0])){
+						$eyeCard['surname'][0] = $comp[0]['value'][0][0];
+					}
+					if(isset($comp[0]['value'][1][0])){
+						$eyeCard['name'][0] = $comp[0]['value'][1][0];
+					}else{
+						$eyeCard['name'][0] = 'none';
+					}
+					//TODO: make support for other  name components	
+				break;
+											
+				case 'EMAIL':
+					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
+						$eyeCard['email'][0] = $comp[0]['value'][0][0];
+					}				
+				break;
+					
+				case 'ORG':
+					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
+						$eyeCard['company'][0] = $comp[0]['value'][0][0];
+					}					
+				break;
+				
+				case 'NOTE':
+					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
+						$eyeCard['notes'][0] = $comp[0]['value'][0][0];
+					}				
+				break;
+				
+				case 'TEL':
+					
+					//If value are correct...
+					foreach($comp as $component){
+																							
+						if(isset($component['value'][0][0]) && $component['value'][0][0] != ''){
+								$tel = $component['value'][0][0];
+						}					
+						$preType = array();
+						//Getting types
+						foreach($component['param']['TYPE'] as $type){     					
+							$preType[] = strtoupper(strval($type));						
+						}				
+						
+						if(count($preType) < 2){		
+							//Setting component in eyeCard array
+							if($preType[0] == 'WORK'){
+								$eyeCard['company_phone'][0] = $tel;
+							}elseif($preType[0] == 'HOME'){
+								$eyeCard['home_phone'][0] = $tel;							
+							}elseif($preType[0] == 'CELL'){
+								$eyeCard['mobile_phone'][0] = $tel;
+							}
+						}else{
+							//At the moment, multiple type support in TEL is only for WORK:CELL.
+							if($preType[0] == 'CELL' || $preType[1] == 'CELL')
+							{
+								$eyeCard['company_mobile'][0] = $tel;
+							}
+							if($preType[0] == 'FAX' || $preType[1] == 'FAX')
+							{
+								$eyeCard['company_fax'][0] = $tel;
+							}
+						}
+					}		
+				break;
+				
+				case 'ADR':
+					//TODO: support vCard format			
+					//ALERT this is provisional fix for older eyeOS 0.9 format.
+					foreach($comp as $component){
+						foreach($component['value'] as $splitAddress){
+							if(isset($splitAddress[0]) && $splitAddress[0][0] != ''){
+								$address .= $splitAddress[0];
+								$address .= " ";//Adding space
+							}
+						}
+						//Getting type
+						if(isset($component['param']['TYPE'][0])){     					
+							$preType = strtoupper(strval($component['param']['TYPE'][0]));						
+						}else{
+							$preType = 'HOME';
+						}										
+						//Setting component in eyeCard array
+						if($preType == 'WORK'){
+							$eyeCard['company_address'][0] = $address;
+						}else{
+							$eyeCard['address'][0] = $address;
+						}		
+					}								
+				break;
+				
+				case 'NICKNAME':					
+					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
+						$eyeCard['nick'][0] = $comp[0]['value'][0][0];
+					}				
+				break;
+				
+				case 'X-KADDRESSBOOK-X-IMADDRESS':
+					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
+						$eyeCard['im'][0] = $comp[0]['value'][0][0];
+					}
+				break;
+				case 'URL':
+					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
+						$eyeCard['website'][0] = $comp[0]['value'][0][0];
+					}
+				break;
+				default:
+					//Not supported?
+				break;				
+			}     	
+     	}
+     	//Writing the new contact to files
+     	$filename = md5($eyeCard['surname'][0]."_".$eyeCard['name'][0]).".xml";
+     	$myPath = service('um', 'getCurrentUserdir').CONF_USER_DIR."/eyeContacts/";
+		$myContactFile = $myPath.$filename;
+		if(service('vfs', 'real_fileExists', array($myContactFile))) {
+			//TODO: revise lang
+			service('eyex','messageBox',array('content'=>'Sorry, the contact %s %s does exist.','tokens' => array($eyeCard['name'][0],$eyeCard['surname'][0])));
+		} else {
+			$myFileContent = reqLib('eyeXML','array2xml',array($eyeCard));
+			service('vfs','real_create',array($myContactFile,'eyeContacts'));
+			$fp = service('vfs','real_open',array($myContactFile,'w'));
+			if(!$fp) {
+				service('eyex','messageBox',array('content'=>'Error writing file'));
+				return;
+			}
+			fwrite($fp,$myFileContent);
+			fclose($fp);
+			service('eyex','messageBox',array('content'=>'File Imported'));
+     	}
+     }
+//removing the tmpFIle
+	//Getting vName		
+	$vName = basename($vCard[0]);
+	$vDir = dirname($vCard[0]);
+	$pos = strrpos($vName,'_');
+	$vName = substr($vName,0,$pos);
 	
+	$vPath = $vDir.'/'.$vName;	
+	service('vfs','delete',array($vPath));
+	service('vfs','rmdir',array($vDir));	
+}
+
+function eyeContacts_on_ExportvCard($params=""){
+	global $checknum;
+	//Get eyeCard files
+		$confPath = service('um', 'getCurrentUserdir').CONF_USER_DIR."/eyeContacts/";
+		$vCards = service('vfs','real_getDirContent',array($confPath,'*.xml'));
+	//Getting eyeCard content itering on $vCard array files.
+		$vCardsText = '';//E_ALL require it.
+		foreach($vCards as $vCard){
+			$fp = service('vfs','real_open',array($vCard,'r'));
+			if(!$fp){
+				service('eyex','messageBox',array('content'=>'Error exporting eyeCard files'));
+				return -1;
+			}
+			$vCardXmlContent = fread($fp,filesize($vCard));
+			fclose($fp);
+			$vCardContent = reqLib('eyeXML','xml2array',array($vCardXmlContent));
+			
+			include_once(EYE_ROOT.'/'.APP_DIR.'/eyeContacts/lib_vCard.eyecode');			
+		//Build eyeCard to vfc
+			$vcard = new Contact_Vcard_Build();
+			$vcard->setFormattedName($vCardContent['surname'][0].' '.$vCardContent['name'][0]);
+			$vcard->setName($vCardContent['name'][0],$vCardContent['surname'][0]);
+			$vcard->addTelephone($vCardContent['home_phone'][0]);
+			$vcard->addParam('TYPE','HOME');
+			$vcard->addTelephone($vCardContent['mobile_phone'][0]);
+			$vcard->addParam('TYPE','CELL');
+			$vcard->addEmail($vCardContent['email'][0]);
+			$vcard->addParam('TYPE','HOME');
+			$vcard->setURL($vCardContent['website'][0]);
+			$vcard->setNote($vCardContent['notes'][0]);
+			$vcard->addAddress(' ',' ',$vCardContent['address'][0],' ',' ',' ',' ');
+			//work
+			$vcard->addOrganization($vCardContent['company'][0]);
+			$vcard->addTelephone($vCardContent['company_phone'][0]);
+			$vcard->addParam('TYPE','WORK');
+			$vcard->addTelephone($vCardContent['company_mobile'][0]);
+			$vcard->addParam('TYPE','WORK');
+			$vcard->addParam('TYPE','CELL');
+			$vcard->addTelephone($vCardContent['company_fax'][0]);
+			$vcard->addParam('TYPE','WORK');
+			$vcard->addParam('TYPE','FAX');
+			$vcard->addAddress(' ',' ',$vCardContent['company_address'][0],' ',' ',' ',' ');
+			$vcard->addParam('TYPE','WORK');
+			$params = array($vCard);
+			
+			$vCardsText .= $vcard->fetch();
+			$vCardsText .= "\r\n";
+		}
+		//Writing the vCard result for download it.
+		$path = service('um', 'getCurrentUserdir').FILES_USER_DIR.'/eyeContactsExported.vcf';
+		
+		if(!service('vfs','fileExists',array($path))){
+			service('vfs','create',array($path));	
+		}
+		$fp = service('vfs','open',array($path,'w+'));
+		fwrite($fp,$vCardsText);
+		fclose($fp);
+		
+		//Download it disabled :p
+		//service('proc','launch',array('eyeDownload',array($path)));
+		//TODO: lang revision
+		service('eyex','messageBox',array('content'=>'All contacts have been exported into your Home successfully'));
 }
 ?>

@@ -7,14 +7,14 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.0
+                      |___/              1.2
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License (GPL)
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
@@ -67,8 +67,8 @@ function service_mmap_releaseBuffer() {
 	global $outputBuffer;
 	
 	//Making the xml response.
-	$temp = reqLib('eyeXML','append',array('eyeMessage',$outputBuffer));
-	$temp = reqLib('eyeXML','getXmlHeader').$temp;
+	$temp = eyeXML('append',array('eyeMessage',$outputBuffer));
+	$temp = eyeXML('getXmlHeader').$temp;
 	return $temp;
 }
 
@@ -102,18 +102,18 @@ function service_mmap_routemsg($params) {
 		$_SESSION['AUTH_IP'] = $_SERVER['REMOTE_ADDR'];
 	} else {
 		if($_SESSION['AUTH_IP'] != $_SERVER['REMOTE_ADDR']) {
-			reqLib('eyeSessions','endSession'); //delete session
-			service('eyex','messageBox',array('content'=>'Your session has expired','type'=>2));
-			service('eyex','rawjs',array('js'=>'location.reload(true);')); //refresh the page
-			return service('mmap','releaseBuffer');
+			eyeSessions('endSession'); //delete session
+			eyeX('messageBox',array('content'=>'Your session has expired','type'=>2));
+			eyeX('rawjs',array('js'=>'location.reload(true);')); //refresh the page
+			return mmap('releaseBuffer');
 		}
 	}
 	if($args) {
-		$args = reqLib('eyeXML','xml2array',array($args));
+		$args = eyeXML('xml2array',array($args));
 	}
 	
 	global $procInfo;
-	$procInfo = service('proc','getProcByChecknum',array($checknum));
+	$procInfo = proc('getProcByChecknum',array($checknum));
 	
 	
 	
@@ -123,20 +123,21 @@ function service_mmap_routemsg($params) {
 	$procInfo['checknum'] = $checknum;//Remove this? maybe 
 	
 	//If app don't exists...
-	if(!$procInfo['appName']) {
+	if(!isset($procInfo['appName']) || empty($procInfo['appName'])) {
 		exit;
 	} 
-	//unset($messageTable);
+	unset($messageTable);
 	//If events.eyecode can't be include, include it, else exit.
 	if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/'.'events'.EYE_CODE_EXTENSION)) {
 		include_once(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/'.'events'.EYE_CODE_EXTENSION);
 	} else {
+	
 		exit;
 	}
 	
 	global $outputBuffer;
 	$outputBuffer = "";
-	
+	i18n('loadLang',array($procInfo['appName']));
 	//First call on_Message event if it exists (for example for friends).
 	if(function_exists($procInfo['appName'].'_on_Message')) {
 		call_user_func($procInfo['appName'].'_on_Message',$args);
@@ -153,7 +154,7 @@ function service_mmap_routemsg($params) {
 		}
 	}
 
-	return service('mmap','releaseBuffer');
+	return mmap('releaseBuffer');
 }
 
 /***
@@ -172,7 +173,7 @@ function service_mmap_routemsg($params) {
 function service_mmap_array2js($params) {
 	$arrayinphp = $params[0];
 	if(!$arrayinphp) {
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	$code = "{";
@@ -189,19 +190,19 @@ function service_mmap_array2js($params) {
 function service_mmap_array2jsArg($params) {
 	$arrayinphp = $params[0];
 	if(!is_array($arrayinphp)) {
-		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	$code = '';
-	$loops=0;
-	foreach ($arrayinphp as $v) {
-		$value = str_replace("\\","\\\\",$value);
-		$value = str_replace('"','\\"',$v);
-		$value = str_replace("'","\\'",$value);
-		$code .= $value.'""';
-		$loops++;
+	foreach ($arrayinphp as $value) {
+		if($value) {
+			$value = str_replace("\\","\\\\",$value);
+			$value = str_replace('"','\\"',$value);
+			$value = str_replace("'","\\'",$value);
+			$code .= $value.'""';
+		}
 	}
-	$code = substr($code,0,-2);
+	$code = substr($code,0,strlen($code)-2);
 	return $code;
 }
 ?>

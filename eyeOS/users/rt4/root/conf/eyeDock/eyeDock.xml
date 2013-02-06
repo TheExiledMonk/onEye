@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <eyeDock>
+	<ShowDesc>1</ShowDesc>
+	<Group>
+		<name>Favorites</name>
+		<icon>favorites.png</icon> 
+		<items>
+			<item>
+				<name>eyeFiles</name>
+				<desc>File Manager</desc>
+				<icon>home.png</icon>
+				<exec>eyeFiles</exec>
+			</item>
+			<item>
+				<name>eyeDocs</name>
+				<desc>Word Processor</desc>
+				<icon>eyeDocs.png</icon>
+				<exec>eyeDocs</exec>
+			</item>
+			<item>
+				<name>eyeMail</name>
+				<desc>Mail Client</desc>
+				<icon>eyeMail.png</icon>
+				<exec>eyeMail</exec>
+			</item>
+		</items>
+	</Group>
 	<Group>
 		<name>Office</name>
 		<icon>office.png</icon> 
@@ -9,7 +34,7 @@
 				<desc>File Manager</desc>
 				<icon>home.png</icon>
 				<exec>eyeFiles</exec>
-			</item>		
+			</item>
 			<item>
 				<name>eyeDocs</name>
 				<desc>Word Processor</desc>
@@ -39,6 +64,18 @@
 				<desc>Bulletin Board</desc>
 				<icon>eyeBoard.png</icon>
 				<exec>eyeBoard</exec>
+			</item>
+			<item>
+				<name>eyeFTP</name>
+				<desc>FTP Client</desc>
+				<icon>eyeFTP.png</icon>
+				<exec>eyeFTP</exec>
+			</item>
+			<item>
+				<name>eyeMail</name>
+				<desc>Mail Client</desc>
+				<icon>eyeMail.png</icon>
+				<exec>eyeMail</exec>
 			</item>
 			<item>
 				<name>eyeNav</name>

@@ -1,20 +1,24 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
 class Flash {
@@ -63,7 +67,6 @@ class Flash {
 		
 		if(isset($params['flashParamsNames']) || isset($params['flashParamsValues'])){
 			//Every value need name
-			//service('eyex','messageBox',array('content'=>'kakakakaka','type'=>2));
 			if(count($params['flashParamsNames']) != count($params['flashParamsValues'])){
 				$this->flashParamsNames = "";
 				$this->flashParamsValues = "";
@@ -134,17 +137,16 @@ class Flash {
 	}
 	
 	//set properties functions.
-	
 	function hide() {
 		global $myPid;
 		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=visible'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
 	
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=hidden'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
 	
 	function setSrc($newUrl) {
@@ -183,6 +185,13 @@ class Flash {
 		global $myPid;
 		$this->y = intval($y);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+	}
+
+	function remove() {
+		global $myPid;
+		$name = $this->name.'_Container';
+		service('eyex','removeWidget',array('name'=>$name));
+		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }
 

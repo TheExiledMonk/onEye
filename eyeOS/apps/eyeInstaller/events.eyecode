@@ -1,40 +1,41 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeInstaller_on_Message($params="") {
 	global $currentUser;
 	if($currentUser != ROOTUSER) {
-		global $myPid;
-		service('proc','close',array($myPid));
+		proc('end');
 		return;
 	}
 	reqLib('eyeWidgets','updateContent',$params);
 }
 
 function eyeInstaller_on_Cancel($params=null) {
-	global $myPid;
-	service('proc','close',array($myPid));
+	proc('end');
 }
 
 function eyeInstaller_on_Accept($params=null) {
 	$rfile = $GLOBALS['rfile']->text;
-	$rfile.='.'.EYEOS_FILE_EXT;
 	$path = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/swap/'.uniqid().'.eyepackage';
 	copy($rfile,$path);
 	include(EYE_ROOT.'/'.APP_DIR.'/eyeSoft/libCompress'.EYE_CODE_EXTENSION);
@@ -42,13 +43,12 @@ function eyeInstaller_on_Accept($params=null) {
 	unlink($path);
 	$GLOBALS['Installing']->clear();
 	$myLabel1 = new Label(array('name'=>'Label1','father'=>'Installing_Content',
-		'text'=>"Application installed successful!",'y'=>25,'x'=>20));
+		'text'=>"Package installed successfully!",'y'=>25,'x'=>20));
 	$myLabel1->show();
 }
 
 function eyeInstaller_on_Close(){
-	global $myPid;
-	service('proc','close',array($myPid));
+	proc('end');
 }
 
 ?>

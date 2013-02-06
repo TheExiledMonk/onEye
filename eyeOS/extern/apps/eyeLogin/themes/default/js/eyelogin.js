@@ -1,3 +1,24 @@
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
+
+                     Web Operating System
+                           eyeOS.org
+
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+*/
 newUserOpen = 0;
 init_login($myPid,$checknum);
 
@@ -76,8 +97,10 @@ function init_login(pid,checknum) {
 	if(tmpObj) {
 		tmpObj.style.display='block';
 	}
+	
 	var objUsr = document.getElementById(pid+'_eyeLogin_Username');
 	var objImg = document.getElementById(pid+'_eyeLogin_image_new1_Container');
+	var objPwd = document.getElementById(pid+'_eyeLogin_Password');
 	if(objImg) {
 		objImg.onclick = function () {launch_newuserwnd(pid);};
 		objImg.className = "cPointer";
@@ -87,40 +110,42 @@ function init_login(pid,checknum) {
 		objTxt.className = "cPointer";
 		objTxt.style.zIndex = '10000';
 	}
-	
-
-	
-	objUsr.onkeypress=function(e){
+	if(objUsr) {
+		objUsr.onkeypress=function(e){
+			var event = new xEvent(e);
+			var ch = event.keyCode;
+			eyeLogin_keyPressed(ch,checknum,pid);
+		};
+		objUsr.onfocus=function() {makeLight(pid+'_eyeLogin_Username');};
+		objUsr.onblur=function() {removeLight(pid+'_eyeLogin_Username');};
+	}
+	if (objPwd) {
+		objPwd.onkeypress=function(e){
 		var event = new xEvent(e);
 		var ch = event.keyCode;
 		eyeLogin_keyPressed(ch,checknum,pid);
-	};
-	var objPwd = document.getElementById(pid+'_eyeLogin_Password');
-	objPwd.onkeypress=function(e){
-		var event = new xEvent(e);
-		var ch = event.keyCode;
-		eyeLogin_keyPressed(ch,checknum,pid);
-	};
+		};
+		objPwd.onfocus=function() {makeLight(pid+'_eyeLogin_Password');};
+		objPwd.onblur=function() {removeLight(pid+'_eyeLogin_Password');};
+	}
 	
 	var objUsr2 = document.getElementById(pid+'_eyeLogin_Label4');
 	var objImg2 = document.getElementById(pid+'_eyeLogin_image_enter_Container');
-	objUsr2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
-	objImg2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
-
 	
-	objUsr.onfocus=function() {makeLight(pid+'_eyeLogin_Username');};
-	objUsr.onblur=function() {removeLight(pid+'_eyeLogin_Username');};
-	objPwd.onfocus=function() {makeLight(pid+'_eyeLogin_Password');};
-	objPwd.onblur=function() {removeLight(pid+'_eyeLogin_Password');};
+	if (objUsr2 && objImg2) {
+		objUsr2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
+		objImg2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
+	}
 }
 
 function eyeLogin_newuser_keyPressed(characterCode,checknum,pid)
 {
-	if(characterCode == 13) {
+	if(characterCode == 13) {		
 		sendMsg(checknum,'doCreateUser',
 				eyeParam('eyeLogin_newUser',document.getElementById(pid+'_eyeLogin_newUser').value)
 				+eyeParam('eyeLogin_Pass1',document.getElementById(pid+'_eyeLogin_Pass1').value)
-				+eyeParam('eyeLogin_Pass2',document.getElementById(pid+'_eyeLogin_Pass2').value));
+				+eyeParam('eyeLogin_Pass2',document.getElementById(pid+'_eyeLogin_Pass2').value)
+				+eyeParam('eyeLogin_selectLang',document.getElementById(pid+'_eyeLogin_selectLang').value));				
 		return false;
 	} else {
 		return true;
@@ -134,8 +159,8 @@ function launch_newuserwnd(pid) {
 	var objUsr3 = document.getElementById(pid+'_eyeLogin_LabelCreate');
 	var objImg3 = document.getElementById(pid+'_eyeLogin_image_create_Container');
 	if(objUsr3) {
-		objUsr3.onclick = function () {sendMsg(checknum,'doCreateUser',eyeParam('eyeLogin_newUser',document.getElementById(pid+'_eyeLogin_newUser').value)+eyeParam('eyeLogin_Pass1',document.getElementById(pid+'_eyeLogin_Pass1').value)+eyeParam('eyeLogin_Pass2',document.getElementById(pid+'_eyeLogin_Pass2').value));};
-		objImg3.onclick = function () {sendMsg(checknum,'doCreateUser',eyeParam('eyeLogin_newUser',document.getElementById(pid+'_eyeLogin_newUser').value)+eyeParam('eyeLogin_Pass1',document.getElementById(pid+'_eyeLogin_Pass1').value)+eyeParam('eyeLogin_Pass2',document.getElementById(pid+'_eyeLogin_Pass2').value));};
+		objUsr3.onclick = function () {sendMsg(checknum,'doCreateUser',eyeParam('eyeLogin_newUser',document.getElementById(pid+'_eyeLogin_newUser').value)+eyeParam('eyeLogin_Pass1',document.getElementById(pid+'_eyeLogin_Pass1').value)+eyeParam('eyeLogin_Pass2',document.getElementById(pid+'_eyeLogin_Pass2').value)+eyeParam('eyeLogin_selectLang',document.getElementById(pid+'_eyeLogin_selectLang').value));};
+		objImg3.onclick = function () {sendMsg(checknum,'doCreateUser',eyeParam('eyeLogin_newUser',document.getElementById(pid+'_eyeLogin_newUser').value)+eyeParam('eyeLogin_Pass1',document.getElementById(pid+'_eyeLogin_Pass1').value)+eyeParam('eyeLogin_Pass2',document.getElementById(pid+'_eyeLogin_Pass2').value)+eyeParam('eyeLogin_selectLang',document.getElementById(pid+'_eyeLogin_selectLang').value));};
 	}
 	
 	
@@ -231,4 +256,12 @@ function eyeLoginCleanWindow(pid) {
 	if(obj) {
 		obj.style.display = 'none';
 	}
+	obj = document.getElementById(pid+'_eyeLogin_selectLang');
+	if(obj) {
+		obj.style.display = 'none';
+	}
+	obj = document.getElementById(pid+'_eyeLogin_NewUser_Label4');
+	if(obj) {
+		obj.style.display = 'none';
+	}	
 }

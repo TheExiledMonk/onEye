@@ -7,14 +7,14 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.0
+                      |___/              1.2
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License (GPL)
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
@@ -147,14 +147,14 @@ class Textarea {
 	
 	function hide() {
 		global $myPid;
-		$this->visible=0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=visible'));
+		$this->visible = 0;
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
 	}
 	
 	function unhide() {
 		global $myPid;
-		$this->visible=1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.visibility=hidden'));
+		$this->visible = 1;
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
 		
 	function setText($content) {
@@ -162,9 +162,6 @@ class Textarea {
 		$this->text = $content;
 		$content = base64_encode($content);
 		$totalContent = $content;
-		if($this->rich!=0) {
-			service('eyex','rawjs',array('js' => 'tinyMCE.execCommand("mceRemoveControl", false,"'.$myPid.'_'.$this->name.'")'));
-		}
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").value=""'));
 		while(strlen($totalContent) > 2000) {
 			$subContent = substr($totalContent,0,2000);
@@ -174,10 +171,10 @@ class Textarea {
 		if($totalContent) {
 			service('eyex','concatValueB64',array('value' => $totalContent,'name'=>$myPid.'_'.$this->name));		
 		}
+		$name = $myPid.'_'.$this->name;
 		if($this->rich!=0) {
-			service('eyex','rawjs',array('js' => 'tinyMCE.execCommand("mceAddControl", false,"'.$myPid.'_'.$this->name.'")'));
+			service('eyex','rawjs',array('js'=>"setTimeout('tinyMCE.updateContent(\\'$name\\')',500);"));
 		}
-
 	}
 	
 	function setValue($content) {
@@ -229,6 +226,13 @@ class Textarea {
 		global $myPid;
 		$name = $myPid.'_'.$this->name;
 		service('eyex','rawjs',array('js' => 'tinyMCE.execCommand("mceRemoveControl", false,"'.$name.'");'));
+	}
+	
+	function remove() {
+		global $myPid;
+		$name = $this->name.'_Container';
+		service('eyex','removeWidget',array('name'=>$name));
+		eyeWidgets('singleUnserialize',array($this->name));
 	}
 }
 ?>

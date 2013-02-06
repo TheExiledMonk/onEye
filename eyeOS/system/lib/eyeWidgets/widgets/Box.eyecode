@@ -7,14 +7,14 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.0
+                      |___/              1.2
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License (GPL)
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
@@ -47,6 +47,7 @@ class Box {
 	var $width;
 	var $height;
 	var $fixed;
+	var $titleCss;
 	
 	function Box($params) {	
 		global $myPid;
@@ -66,6 +67,7 @@ class Box {
 		isset($params['title']) ? $this->title = $params['title'] : $this->title = 0;
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
+		isset($params['titleCss']) ? $this->titleCss = $params['titleCss'] : $this->titleCss = 'eyeBoxText';
 	}
 	
 	//event handling
@@ -79,11 +81,15 @@ class Box {
 	}
 
 	function show() {
+		if($this->title) {
+			$this->title = i18n('translate',array($this->title));
+		}
 		$widgetsparams = array(
 			'height' => $this->height,
 			'width' => $this->width,
 			'title' => $this->title,
-			'fixed' => $this->fixed
+			'fixed' => $this->fixed,
+			'titleCss' => $this->titleCss
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		
@@ -111,6 +117,18 @@ class Box {
 			}
 		}
 	}
+	
+	function hide() {
+		global $myPid;
+		$this->visible = 0;
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+	}
+	
+	function unhide() {
+		global $myPid;
+		$this->visible = 1;
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+	}
 
 	function setWidth($width) {
 		global $myPid;
@@ -136,6 +154,13 @@ class Box {
 		global $myPid;
 		$this->y = intval($y);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
+	}
+	
+	function remove() {
+		global $myPid;
+		$name = $this->name.'_Container';
+		service('eyex','removeWidget',array('name'=>$name));
+		eyeWidgets('singleUnserialize',array($this->name));
 	}
 	
 }

@@ -1,21 +1,24 @@
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 Eyeos Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in DOCS/gpl-license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2006 Eyeos Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://sourceforge.net/donate/index.php?group_id=145027         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
-
 //Widget show Function
 function  weekPlanner_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	

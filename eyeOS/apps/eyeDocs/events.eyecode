@@ -1,20 +1,24 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDocs_on_Message($params="") {
@@ -26,7 +30,7 @@ function eyeDocs_on_Open($params=null) {
 	$options = array(
 		0,
 		'SelectFileOpen',
-		$checknum
+		$checknum,
 	);
 	service('proc','launch',array('eyeDialog',$options));
 }
@@ -38,7 +42,7 @@ function eyeDocs_on_Resize($params=null) {
 	$width = intval($width);
 	$height = intval($height);
 	$width = $width - 19;
-	$height = $height - 60;
+	$height = $height - 100;
 	service('eyex','rawjs',array('js'=>'TinyMCE_AdvancedTheme._resizeTo(tinyMCE.getInstanceById("'.$myPid.'_noteContent"),'.$width.','.$height.',true)'));
 }
 
@@ -47,16 +51,25 @@ function eyeDocs_on_Save($params=null) {
 	$options = array(
 		1,
 		'SelectFileSave',
-		$checknum
+		$checknum,
 	);
 	if(is_object($GLOBALS['notePath']) && $GLOBALS['notePath']->text) {
-		$fp = service('vfs','open',array($GLOBALS['notePath']->text,'w'));
-		if(!$fp) {
-			service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
-			return;
+		$info = pathinfo($GLOBALS['notePath']->text);
+		if(strtolower($info['extension'] == 'doc')) {
+			include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDocs/html_to_doc'.EYE_CODE_EXTENSION);
+			$htmltodoc= new HTML_TO_DOC();
+			$myContent = $GLOBALS['noteContent']->text;
+			$htmltodoc->createDoc($myContent,$GLOBALS['notePath']->text);
+			service('eyex','messageBox',array('content'=>'Document saved successfully.'));
+		} else {
+			$fp = service('vfs','open',array($GLOBALS['notePath']->text,'w'));
+			if(!$fp) {
+				service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+				return;
+			}
+			fwrite($fp,$GLOBALS['noteContent']->text);
+			fclose($fp);	
 		}
-		fwrite($fp,$GLOBALS['noteContent']->text);
-		fclose($fp);
 		service('eyex','messageBox',array('content'=>'Document saved successfully.'));
 	} else {
 		service('proc','launch',array('eyeDialog',$options));
@@ -68,7 +81,7 @@ function eyeDocs_on_SaveAs($params=null) {
 	$options = array(
 		1,
 		'SelectFileSave',
-		$checknum
+		$checknum,
 	);
 	service('proc','launch',array('eyeDialog',$options));
 }
@@ -77,7 +90,7 @@ function eyeDocs_on_SaveAs($params=null) {
 function eyeDocs_on_SelectFileSave($params=null) {
 	$file = $params['arg'][0];
 	if($file) {
-		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
+		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		if (substr($file,-4) == ".doc") {
 			include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDocs/html_to_doc'.EYE_CODE_EXTENSION);
 			$htmltodoc= new HTML_TO_DOC();
@@ -108,29 +121,36 @@ function eyeDocs_on_SelectFileSave($params=null) {
 
 function eyeDocs_on_SelectFileOpen($params=null) {
 	$file = $params['arg'][0];
-	if($file) {
-		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
-		$fp = service('vfs','open',array($file,'r'));
-		if(!$fp) {
-			service('eyex','messageBox',array('content'=>'Error opening file'));
-			return;
-		}
-		$size = service('vfs','filesize',array($file));
-		if ($size > 0) {
+	if($file) {		
+		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
+		$info = pathinfo($file);
+		if(strtolower($info['extension']) == 'doc') {
+			$myContent = eyeWv('convert',array($file));
+		} else {
 			$fp = service('vfs','open',array($file,'r'));
-			$myContent = fread($fp,$size);
-			fclose($fp);
-			$GLOBALS['noteContent']->setText($myContent);
-			$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeDocsWND','text'=>$file));
-			reqLib('eyeWidgets','serialize',array($myHidden));
+			if(!$fp) {
+				service('eyex','messageBox',array('content'=>'Error opening file'));
+				return;
+			}
+			$size = service('vfs','filesize',array($file));
+			if ($size > 0) {
+				$fp = service('vfs','open',array($file,'r'));
+				$myContent = fread($fp,$size);
+				fclose($fp);
+			}
 		}
+		$GLOBALS['noteContent']->setText($myContent);
+		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeDocsWND','text'=>$file));
+		reqLib('eyeWidgets','serialize',array($myHidden));
 	}
 }
 
 function eyeDocs_on_Close(){
-	global $myPid;
-	$GLOBALS['noteContent']->richClean();
-	service('proc','close',array($myPid));
+	if(!IE) {
+		$GLOBALS['noteContent']->richClean();
+	}
+	vfs('cleanTemp');
+	proc('end');
 }
 
 function eyeDocs_on_New(){

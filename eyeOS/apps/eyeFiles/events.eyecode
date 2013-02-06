@@ -1,23 +1,27 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
-define('EYEFILES_ICON_SIZE','60x60');
+define('EYEFILES_ICON_SIZE','48x48');
 define('EYEFILES_ICON_SEPARATION',30);
 define('EYEFILES_TOP_MARGIN',10);
 define('EYEFILES_ICON_START',10);
@@ -41,84 +45,126 @@ function eyeFiles_on_openFile($params=null) {
 	$myUserDir = service('um','getCurrentUserDir');
 	$file = $myUserDir.'/'.FILES_USER_DIR.'/'.$params['file'];
 	
-	$userTheme = 'default'; //hardcoded
+	$userTheme = eyeSessions('getVar',array('usertheme'));
+	
 	//TODO: hardcoded
 	$windowWidth = intval($params['size']);
+	
+	//
+	$myHidden = new Hidden(array('name'=>'fPath','father'=>'eyeApps','text'=>$file));
+	reqLib('eyeWidgets','serialize',array($myHidden));
+	//
 
-	if(is_dir($file)) {
-		service('eyex','rawjs',array('js'=>"document.getElementById('".$myPid."_WND_2_Content').innerHTML='';"));
-		$content = service('vfs','getDirContent',array($file));
-		$mime = getConfig('mime','mime.xml');
-		if(isset($GLOBALS['eyeFilesText']) && is_object($GLOBALS['eyeFilesText'])) {
-			$myText = $GLOBALS['eyeFilesText'];
-			$myText->setText(str_replace('//','/',$fileToShow));
-		}
-		if($content) {
-			if(is_array($content)) {
-				$counter = 0;
-				$x = EYEFILES_ICON_START;
-				$y = EYEFILES_TOP_MARGIN;
-				foreach($content as $current) {		
-					$fileName = false;
-					if(is_dir($current)) {
-						$icon = 'folder';
-						$fileName = basename($current);
-						$realFileName = str_replace($myUserDir.'/files/','',$current);
-					}elseif(ltrim(strrchr($current,'.'),'.') == EYEOS_INFO_EXT) {
-						$icon = 'unknown';
-						$fp = service('vfs','real_open',array($current,'r'));
-						if($fp && filesize($current) > 0) {
-							$xml = fread($fp,filesize($current));
-							fclose($fp);
-							$myArray = reqLib('eyeXML','xml2array',array($xml));
-							$myArray = $myArray['eyeFile'][0];
-							$fileName = $myArray['filename'][0];
-							$realFileName = str_replace($myUserDir.'/files/','',$current);
-							$tmpName = basename($realFileName);
-							$realFileName = substr($realFileName,0,strlen($realFileName)-strlen($tmpName));
-							$realFileName .= $fileName;
-							$info = pathinfo($realFileName);
-							$extension = strtolower($info['extension']);
-							foreach($mime['mimeTypes'][0]['mime'] as $value) {
-								if($value['extension'][0] == $extension) {
-									$icon = $value['type'][0];
-								}
-							} 
-						}
-						//TODO: HANDLE ICONS
-					}elseif(ltrim(strrchr($current,'.'),'.') == EYEOS_LINK_EXT) {
-						$icon = 'link';
-						$fileName = basename($current);
-						$realFileName = str_replace($myUserDir.'/files/','',$current);
-						//TODO: HANDLE ICONS
-					} 
-					if($fileName) {
-						//create new icon using a folder icon.
-						$myName = "eyeFiles_icon_$counter";	
-						//get icon size using eyeGraphics
-						$info = getimagesize(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png');
-						$myWidth = $info[0];
-						$myHeight = $info[1];
-						
-						$myIcon = new Icon(array('name'=>$myName,'text'=>$fileName,'father'=>'WND_2_Content',
-						'image'=>'index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
-						'realname'=>EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
-						'content'=>array($realFileName,$windowWidth),'x'=>$x,'y'=>$y));	        			
-						$myIcon->show();
-						$counter++;
-						$x += $myHeight+EYEFILES_ICON_SEPARATION;
-						if($x > $windowWidth-$myHeight) {
-							$x = EYEFILES_ICON_START;
-							$y += $myWidth+EYEFILES_ICON_SEPARATION;
-						}
-						$myIcon->setCssText(array('color'=>'black','font-weight'=>'normal'));
-						$myIcon->setCss(array('z-index'=>'1'));
+	service('eyex','rawjs',array('js'=>"document.getElementById('".$myPid."_WND_2_Content').innerHTML='';"));
+	$content = service('vfs','getDirContent',array($file));
+	$mime = getConfig('mime','mime.xml');
+	if(isset($GLOBALS['eyeFilesText']) && is_object($GLOBALS['eyeFilesText'])) {
+		$myText = $GLOBALS['eyeFilesText'];
+		$myText->setText(str_replace('//','/',$fileToShow));
+	}
+	if($content) {
+		if(is_array($content)) {
+			$counter = 0;
+			$x = EYEFILES_ICON_START;
+			$y = EYEFILES_TOP_MARGIN;
+			foreach($content as $current) {		
+				$fileName = false;
+				if(is_dir($current)) {
+					$icon = 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/folder.png';
+					$fileName = basename($current);
+					$realFileName = str_replace($myUserDir.'/files/','',$current);
+				} elseif(ltrim(strrchr($current,'.'),'.') == EYEOS_LINK_EXT) {
+					$icon = 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/link.png';
+					$fileName = basename($current);
+					$realFileName = str_replace($myUserDir.'/files/','',$current);
+					//TODO: HANDLE ICONS
+				} else {
+					$icon = 'unknown';
+					$fileName = basename($current);
+					$realFileName = str_replace($myUserDir.'/files/','',$current);
+					$tmpName = basename($realFileName);
+					$realFileName = substr($realFileName,0,strlen($realFileName)-strlen($tmpName));
+					$realFileName .= $fileName;
+					$info = pathinfo($realFileName);
+					$extension = strtolower($info['extension']);
+					if(($extension == 'jpeg' || $extension == 'gif' || $extension == 'png' || $extension == 'jpg') && function_exists("gd_info")) {
+						$icon = 'index.php?checknum='.$checknum.'&msg=getTh&params=<arg>'.$realFileName.'</arg>';	
+					} else {
+						foreach($mime['mimeTypes'][0]['mime'] as $value) {
+							if($value['extension'][0] == $extension) {
+								$icon = $value['type'][0];
+							}
+						} 
+						$icon = 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png';
 					}
 				}
-			} 
-		}
+				if($fileName) {
+					//create new icon using a folder icon.
+					$myName = "eyeFiles_icon_$counter";	
+					//get icon size using eyeGraphics
+					$myWidth = 60;
+					$myHeight = 60;
+					$myIcon = new Icon(array('name'=>$myName,'text'=>$fileName,'father'=>'WND_2_Content',
+					'image'=>$icon,
+					'content'=>array($realFileName,$windowWidth),'x'=>$x,'y'=>$y,'overBorder'=>1));	        			
+					$myIcon->show();
+					$counter++;
+					$x += $myHeight+EYEFILES_ICON_SEPARATION;
+					if($x > $windowWidth-$myHeight) {
+						$x = EYEFILES_ICON_START;
+						$y += $myWidth+EYEFILES_ICON_SEPARATION;
+					}
+					$myIcon->setCssText(array('color'=>'black','font-weight'=>'normal'));
+					$myIcon->setCss(array('z-index'=>'1'));
+				}
+			}
+		} 
 	}
 }
+
+function eyeFiles_on_getTh($params=null) {
+	$img = $params['arg'][0];	
+	thumbimg($img,60);
+}
+
+function thumbimg($image,$max) {	
+	$myUserDir = service('um','getCurrentUserDir');
+	$myUserDir .= '/'.FILES_USER_DIR.'/'.$image;
+	if(!vfs('checkPermissions',array($myUserDir))) {		
+		return;
+	}
+	$info = pathinfo($image);
+	$extension = strtolower($info['extension']);
+	$name = vfs('getRealName',array($myUserDir));
+	if($extension == 'jpeg' || $extension == 'jpg') {
+		$img = @imagecreatefromjpeg($name);
+	} elseif($extension == 'png') {
+		$img = @imagecreatefrompng($name);
+	} elseif ($extension == 'gif') {
+		$img = @imagecreatefromgif($name);
+	} else {
+		return;
+	}
+	$info = getimagesize($name);
+	if($info[0] > $info[1]) {
+		$porc = $max * 100 / $info[0];
+	} else {
+		$porc = $max * 100 / $info[1];
+	}
+	$width = $info[0] / 100 * $porc;
+	$height = $info[1] / 100 * $porc;
+	$thumb = imagecreatetruecolor($width,$height);
+	imagecopyresized ($thumb, $img, 0, 0, 0, 0, $width, $height, $info[0], $info[1]);
+	header('Content-type: '.$info['mime']);
+	if($extension == 'jpeg' || $extension == 'jpg') {
+		imagejpeg($thumb);
+	} elseif($extension == 'png') {
+		imagepng($thumb);
+	} elseif ($extension == 'gif') {
+		imagegif($thumb);
+	}
+	exit;
+}  
 
 function eyeFiles_on_Icon_Clicked($params=null) {
 
@@ -128,7 +174,7 @@ function eyeFiles_on_Icon_Clicked($params=null) {
 		$callback = "eyeFiles_reloadFiles($myPid,$checknum);";
 		$app = $GLOBALS['execApp']->text;
 		if(!empty($app)) {
-			service('proc','launch',array($app,array($params['arg0'][0],$callback,0)));
+			service('proc','launch',array($app,array(service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$params['arg0'][0],$callback)));
 			$myHidden = new Hidden(array('name'=>'execApp','father'=>'WND_1','text'=>''));
 			reqLib('eyeWidgets','serialize',array($myHidden));
 			service('eyex','rawjs',array('js'=>"eyeFiles_clean($myPid);"));
@@ -137,11 +183,12 @@ function eyeFiles_on_Icon_Clicked($params=null) {
 		$file = $params['arg0'][0];
 		$myUserDir = service('um','getCurrentUserDir');
 		$realfile = $myUserDir.'/'.FILES_USER_DIR.'/'.$file;
-		if(is_dir($realfile)) {
+		if(service('vfs','isdir',array($realfile))) {
 			eyeFiles_on_openFile(array('file'=>$file,'size'=>$params['arg1'][0]));
+		} elseif(ltrim(strrchr($realfile,'.'),'.') == EYEOS_LINK_EXT){
+			service('proc','launch',array('editLink',$realfile));
 		} else {
-			$info = pathinfo($realfile);
-			$extension = strtolower($info['extension']);
+			$extension = vfs('real_getExtension',array($realfile));	
 			$asoc = getConfig('filetypes',$extension.'.xml');
 			if(is_array($asoc)) {
 				$execApp = $asoc['fileType'][0]['app'][0];
@@ -158,7 +205,7 @@ function eyeFiles_on_actionExecute($params=null) {
 	service('eyex','rawjs',array('js'=>"eyeFiles_clean($myPid);"));
 	foreach($params as $key=>$value) {
 		if(strstr($key,'action_hid_')) {
-			service('proc','launch',array($value[0],array($GLOBALS['eyeFilesText']->text,$callback,0)));
+			service('proc','launch',array($value[0],array(service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$GLOBALS['eyeFilesText']->text,$callback)));
 			return;
 		}
 	}
@@ -203,7 +250,9 @@ function eyeFiles_on_goTop($params=null) {
 	$myHidden = new Hidden(array('name'=>'execApp','father'=>'WND_1','text'=>''));
 	service('eyex','rawjs',array('js'=>"eyeFiles_clean($myPid);"));
 	reqLib('eyeWidgets','serialize',array($myHidden));
-	service('eyex','rawjs',array('js'=>"eyeFiles_reloadFiles($myPid,$checknum,'".$info['dirname']."');"));
+	$where = $info['dirname'];
+	$where = str_replace('\\','/',$where);
+	service('eyex','rawjs',array('js'=>"eyeFiles_reloadFiles($myPid,$checknum,'".$where."');"));
 }
 
 function eyeFiles_on_goToPath($params=null) {
@@ -226,8 +275,7 @@ function eyeFiles_on_EnterBar($params=null) {
 }
 
 function eyeFiles_on_Close(){
-	global $myPid;
-	service('proc','close',array($myPid));
+	proc('end');
 }
 
 ?>

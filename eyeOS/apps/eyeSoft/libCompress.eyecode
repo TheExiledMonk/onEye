@@ -28,7 +28,7 @@ function lib_eyeCompress_extractFile($params){
 	$fileToExtract = $params[1];
     /* Init. ArchiveExtractor Object */
 	$archExtractor=new ArchiveExtractor();
-	$hola = $archExtractor->extractArchive($fileToExtract,$dirToExtract);
+	$debug = $archExtractor->extractArchive($fileToExtract,$dirToExtract);
 }
 
 

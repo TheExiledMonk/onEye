@@ -1,3 +1,24 @@
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
+
+                     Web Operating System
+                           eyeOS.org
+
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+*/
 // Import external list url javascript
 var url = tinyMCE.getParam("template_external_list_url");
 if (url != null) {
@@ -59,7 +80,7 @@ var TPU = { //Template Popup Utils
 		this.currentTemplateHTML = this.plugin._replaceValues(this.getFileContents(o.value));
 
 		// Force complete document
-		if (!/<body/gi.test(this.currentTemplateHTML)) {
+/*		if (!/<body/gi.test(this.currentTemplateHTML)) {
 			this.currentTemplateHTML = '<html xmlns="http://www.w3.org/1999/xhtml">' + 
 				'<head>' + 
 					'<title>blank_page</title>' + 
@@ -69,7 +90,7 @@ var TPU = { //Template Popup Utils
 				this.currentTemplateHTML + 
 				'</body>' + 
 				'</html>';
-		}
+		}*/
 
 		// Write HTML to preview iframe
 		d.body.innerHTML = this.currentTemplateHTML;

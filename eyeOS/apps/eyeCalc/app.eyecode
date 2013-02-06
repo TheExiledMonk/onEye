@@ -1,30 +1,61 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
-
+ 
 function eyeCalc_run($params=null) {
 	global $myPid;
 	global $checknum;
-	
-	$myWindow = new Window(array('name'=>'calcWND','father'=>'eyeApps','type'=>WIN_IMAGE_DRAGGABLE,'cent'=>1,
-	'title'=>'eyeCalc','background'=>'index.php?extern=apps/eyeCalc/img/back.png','width'=>173,'height'=>250));
-	$myWindow->show();
+	if($params[0]) {
+		$father = $params[0];
+		//If it is widget		
+		if($father == 'dashBoardLayer') {
+			global $newWidgetPid;			
+			$newWidgetPid = $myPid;
+			$dashPid = service('proc','findChecknumByName',array('eyeDashBoard'));
+			$function = "var top = xTop(widget);var left = xLeft(widget);sendMsgParam = eyeParam('top',top);sendMsgParam = sendMsgParam + eyeParam('left',left);sendMsgParam = sendMsgParam + eyeParam('winName',widget.id);sendMsgParam = sendMsgParam + eyeParam('widgetPid',".$myPid.");sendMsg(".$dashPid.",'saveWinPosition',sendMsgParam);";
+			if(is_array($params[1])) {			
+				$positions = $params[1];
+				$x = $positions['left'];
+				$y = $positions['top'];
+			}else{
+				$x = 20;
+				$y = 20;
+			}
+		}
+	} else {
+		$father = 'eyeApps';
+		$function = '';
+		$x = '';
+		$y = '';
+	}
+
+	if($father != 'eyeApps') {
+		$myWindow = new Window(array('name'=>'calcWND','father'=>$father,'type'=>WIN_IMAGE_DRAGGABLE,'cent'=>0,'title'=>'eyeCalc','background'=>'index.php?extern=apps/eyeCalc/img/back.png','width'=>173,'height'=>250,'savePosition'=>1,'saveFunc'=>$function,'x'=>$x,'y'=>$y,'forcePosition'=>1));
+		$myWindow->show();
+	}else {
+		$myWindow = new Window(array('name'=>'calcWND','father'=>$father,'type'=>WIN_IMAGE_DRAGGABLE,'cent'=>0,'title'=>'eyeCalc','background'=>'index.php?extern=apps/eyeCalc/img/back.png','width'=>173,'height'=>250,'savePosition'=>1));
+		$myWindow->show();	
+	}
 	
 	
 	$myBut_Number_1 = new Imagebox(array('name'=>'but_number_1','father'=>'calcWND',
@@ -84,7 +115,7 @@ function eyeCalc_run($params=null) {
 
 	$myDisplay_Div = new Imagebox(array('name'=>'but_display','father'=>'calcWND',
 		'x'=>25,'y'=>43,'url'=>'index.php?extern=apps/eyeCalc/img/display.png'));
-	$myDisplay_Div->show();	
+	$myDisplay_Div->show();
 	
 	$myDisplay = new Textbox(array('name'=>'display','father'=>'calcWND','x'=>29,'y'=>48,'noborder'=>1));
 	$myDisplay->show();

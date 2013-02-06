@@ -1,20 +1,24 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeSoft_run($params=null) {
@@ -22,7 +26,7 @@ function eyeSoft_run($params=null) {
 	global $myPid;
 	if($currentUser != ROOTUSER) {
 		service('eyex','messageBox',array('content'=>'Only root can install eyeApps'));
-		service('proc','close',array($myPid));
+		proc('end');
 		return;
 	}
 	$config = reqLib('eyeXML','getXMLfile',array(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports.xml'));
@@ -48,20 +52,25 @@ function eyeSoft_run($params=null) {
 		'height'=>331,'title'=>'Categories'));
 	$myBox->show();
 	
-	$myHeader = array('App Name','Version');
-	$sortypes = array("String","Number");
+	$myHeader = array('App Name','Version','Installed');
+	$sortypes = array("String","Number","String");
 	
 	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeSoftHidden_Content',
 		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>5,'y'=>0,'width'=>415,'height'=>330));
 	$myTable->show();
 	
 	$myButton = new Button(array('name'=>'Install','father'=>'eyeSoft_Content','signal'=>'Install',
-	'caption'=>'Install','x'=>18,'y'=>15,'img'=>'index.php?extern=apps/eyeSoft/gfx/install.png'));
+	'caption'=>'Install','x'=>20,'y'=>15,'img'=>'index.php?extern=apps/eyeSoft/gfx/install.png'));
 	$myButton->addFriend($myTable);
 	$myButton->show();
 	
 	$myButton = new Button(array('name'=>'Update','father'=>'eyeSoft_Content','signal'=>'Update',
-	'caption'=>'Update','x'=>122,'y'=>15,'img'=>'index.php?extern=apps/eyeSoft/gfx/refresh.png'));
+	'caption'=>'Update','x'=>120,'y'=>15,'img'=>'index.php?extern=apps/eyeSoft/gfx/refresh.png'));
+	$myButton->show();
+	
+	$myButton = new Button(array('name'=>'Uninstall','father'=>'eyeSoft_Content','signal'=>'Uninstall',
+	'caption'=>'Uninstall','x'=>210,'y'=>15,'img'=>'index.php?extern=apps/eyeFiles/gfx/delete.png'));
+	$myButton->addFriend($myTable);
 	$myButton->show();
 	
 	$myTextArea = new Textarea(array('name'=>'description','father'=>'eyeSoft_Content',

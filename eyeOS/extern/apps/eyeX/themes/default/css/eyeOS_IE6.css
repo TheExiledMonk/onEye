@@ -33,7 +33,7 @@
 	text-align: right;
 	margin-top: 5px;
 	margin-right: 10px;
-	color: #1e5682;
+	color: #fff;
 }
 .eyeDesk_miniCalendar {
 	bottom: 30px;
@@ -101,6 +101,20 @@
 .eyeMessageBox {
 	background-image: url("index.php?extern=apps/eyeX/themes/default/images/IE/desktop/messagebox.png");
 }
+.minimizedApps {
+  background-image: url();
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/minimized/minbar_bg.png', sizingMethod='scale');
+}
+.minimizedAppsLeft {
+	left:  -1px;
+  background-image: url();
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/minimized/minbar_left.png', sizingMethod='scale');
+}
+.minimizedAppsRight {
+	right:  112px;
+  background-image: url();
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/minimized/minbar_right.png', sizingMethod='scale');
+}
 .eyeWindowOnBar_On {
   background-image: url();
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/IE/minimized/minbar_on.png', sizingMethod='scale');
@@ -138,4 +152,13 @@
 .eyeWindowContentInvisible {
 	width: expression(this.parentNode.offsetWidth);
 	height: expression(this.parentNode.offsetHeight);
+}
+.eyeDockMenuIcon:hover {
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/dockbgover.png',sizingMethod='scale');
+	position: absolute;
+	left: 2px;
+	width: 100%;
+	cursor:pointer;
+	
 }

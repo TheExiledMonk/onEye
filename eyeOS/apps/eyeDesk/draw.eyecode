@@ -1,38 +1,43 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
 define('EYEDESK_ICON_SEPARATION',30);
 define('EYEDESK_MINLEN_LINK',39); //minimun lenght of a link pointing to 'a'
-define('EYEDESK_ICON_SIZE','60x60');
+define('EYEDESK_ICON_SIZE','48x48');
 
 function drawDesktop() {
 	global $myPid;
 	global $checknum;
-	$userTheme = 'default'; //hardcoded
+	$userTheme = eyeSessions('getVar',array('usertheme'));
 	//load user icons from the Desktop dir, begining from the top + 20 and left + 20
 	$counter = 0;
 	$x = 25;
 	$y = 70;
-	$scrHeight = $_SESSION['SCREEN']['height'];
+	$scrHeight = eyeSessions('getArrayValueByKey',array('SCREEN','height'));
+	
 	//open desktop directory
 	$myUserDir = service('um','getCurrentUserDir');
-	$listFile = service('vfs','getDirContent',array($myUserDir.'files/Desktop'));
+	$listFile = service('vfs','real_getDirContent',array($myUserDir.'files/Desktop'));
 	$mime = getConfig('mime','mime.xml');
 	service('eyex','rawjs',array('js'=>'cleanDesktop('.$myPid.');'));
 	$store = service('um','getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeDesk/icons.xml';
@@ -67,7 +72,7 @@ function drawDesktop() {
 					$my = $y;
 				}
            		$myIcon = new Icon(array('name'=>$myName,'text'=>$fileName,'father'=>'eyeApps',
-           		'image'=>'index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/folder.png',
+           		'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/folder.png',
            		'content'=>$fileName,'father'=>'eyeApps','x'=>$mx,'y'=>$my));	        			
 	           	$myIcon->show();
 	           	$found=true;
@@ -113,7 +118,7 @@ function drawDesktop() {
 					$my = $y;
 				}
            		$myIcon = new Icon(array('name'=>$myName,'text'=>$fileName,'father'=>'eyeApps',
-           		'image'=>'index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/filetypes/'.$icon.'.png',
+           		'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/filetypes/'.$icon.'.png',
            		'content'=>$realFileName,'father'=>'eyeApps','x'=>$mx,'y'=>$my));	        			
 	           	$myIcon->show();
 	           	$found = true;	
@@ -133,7 +138,7 @@ function drawDesktop() {
 							if($xml['eyeLink'][0]) {
 								if($xml['eyeLink'][0]['content'][0]) {
 									$linkContent = service('sec','cleanOutPutString',array('var'=>$xml['eyeLink'][0]['content'][0],'nohtml' => 1));
-									if(is_array($xml['eyeLink'][0]['args'])) {
+									if(isset($xml['eyeLink'][0]['args']) && is_array($xml['eyeLink'][0]['args'])) {
 										$args = $xml['eyeLink'][0]['args'][0];
 									} else {
 										$args = "";
@@ -146,8 +151,12 @@ function drawDesktop() {
 							
 							$publicName = substr($fileName,0,strlen($fileName)-strlen(EYEOS_LINK_EXT)-1);
 							$myName = "eyeDesk_icon_$counter";
-							
-							$info = getimagesize(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png');
+							if(file_exists(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png')) {
+								$info = getimagesize(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png');
+							} else {
+								$info[0] = 0;
+								$info[1] = 1;
+							}
 							$myWidth = $info[0];
 							$myHeight = $info[1];
 							$my = false;
@@ -166,7 +175,7 @@ function drawDesktop() {
 								$my = $y;
 							}
 							$myLinkIcon = new Icon(array('name'=>$myName,'text'=>$publicName,'father'=>'eyeApps',
-									'image'=>'index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png',
+									'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png',
 		           					'realname'=>EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png',
 		           					'content'=>array($linkContent,$args),'father'=>'eyeApps','x'=>$mx,'y'=>$my));	  
 		           			$myLinkIcon->show();

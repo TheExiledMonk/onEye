@@ -1,9 +1,6 @@
 <eyePorts>
 	<mirrors>
-		<mirror>
-			<address>soft.eyeos.org</address>
-			<path>/ports.xml</path>
-		</mirror>
+		<mirror>http://soft.eyeos.org/ports.xml</mirror>
 	</mirrors>
 	<categories>
 		<category>All</category>
@@ -14,7 +11,7 @@
 		<category>Networking</category>
 		<category>Games</category>
 		<category>Desktop</category>
-		<category>extras</category>
+		<category>Extras</category>
 		<category>File Management</category>
 		<category>System</category>
 	</categories>

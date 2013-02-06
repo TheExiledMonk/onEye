@@ -1,20 +1,24 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 /*
 	if you are looking for an example of app, don't read this, but if you are looking for an example
@@ -29,7 +33,6 @@ service('eyex','rawjs',array('js'=>"document.title='Welcome to ".EYEOS_HOSTNAME.
 
 $myBackground = new Imagebox(array('name' => 'wnd1','father' => 'eyeApps',
 		'url' => 'index.php?extern=apps/eyeLogin/themes/default/gfx/bg_login.png',
-		'realname' => EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeLogin/themes/default/gfx/bg_login.png',
 		'alt' => 'eyeLogin window','cent'=>1,'x'=>0,'y'=>0,'cssClass'=>'eyeLoginWindow','width'=>301,'height'=>174));
 $myBackground->show();
 
@@ -74,9 +77,10 @@ $myCssText = array(
 );
 
 $myCssTitle = array(
-	'color' => '#C8D2DE',
-	'font-family'=>'Arial',
+	'color' => '#FFF',
+	'font-family'=>'Verdana',
 	'font-size'=>'11px',
+	'font-weight'=>'700',
 	'cursor'=>'pointer'
 );
 
@@ -138,16 +142,51 @@ if(ALLOW_USER_REGISTER == 1) {
 	$myBackgroundNewUser->show();
 	
 	$myTextBox1NewUser = new Textbox( array('name' => 'eyeLogin_newUser','father' => 'wnd2_Container','x' => 42,
-		'y' => 39,'width' => 214, 'height'=>24));
+		'y' => 54,'width' => 214, 'height'=>24));
 	$myTextBox1NewUser->show();
 	
 	$myTextBox2NewUser = new Textbox(array('name' => 'eyeLogin_Pass1','father' => 'wnd2_Container','x' => 42,
-		'y' => 84,'width' => 214, 'height'=>24,'password' => 1));
+		'y' => 99,'width' => 214, 'height'=>24,'password' => 1));
 	$myTextBox2NewUser->show();
 	
 	$myTextBox3NewUser = new Textbox(array('name' => 'eyeLogin_Pass2','father' => 'wnd2_Container','x' => 42,
-		'y' => 130,'width' => 214, 'height'=>24,'password' => 1));
+		'y' => 145,'width' => 214, 'height'=>24,'password' => 1));
 	$myTextBox3NewUser->show();
+	
+	//Language selection
+	$mySelect = new Select(array(
+		'name' => 'eyeLogin_selectLang',
+		'father' => 'wnd2_Container',
+		'width' => 214,
+		'x' => 42,
+		'y' => 192
+	));
+	$mySelect->show();
+		
+	//default lang
+	$langs[0] = array('English','en');
+	//Adding current languages
+	$dir = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/';
+	if(vfs('isdir',array($dir))){
+		global $currentUser;	
+		$oldUser = $currentUser;	
+		$currentUser = ROOTUSER;
+		$langFiles = vfs('real_getDirContent',array($dir,'*.xml'));		
+			
+		foreach($langFiles as $file){
+			$fileLang = basename($file,'.xml');
+			$data = eyeXML('getXMLfile',array($file));
+			$langs[] = array($data['lang'][0]['name'][0],$fileLang);
+		}
+		$currentUser = $oldUser;
+	}
+	
+	//$mySelect->addOption('English','en');
+	foreach($langs as $lang){
+		$mySelect->addOption($lang[0],$lang[1]);
+	}
+	$_SESSION['tmpLangs'] = $langs;
+	unset($langs);	
 	//This script use eyeLogin_Password and eyeLogin_Username.
 	if (!IE) {
 		$myCssNewUser = array(
@@ -175,25 +214,30 @@ if(ALLOW_USER_REGISTER == 1) {
 	}
 	
 	$myLabel1NewUser = new Label(array ('name' => "eyeLogin_NewUser_Label1",'father' => 'wnd2_Container',
-		'text' =>"New User",'x' => 43,'y' => 26));
+		'text' =>"New User",'x' => 43,'y' => 41));
 	$myLabel1NewUser->show();
 	$myLabel1NewUser->setCss($myCssText);
 	
 	$myLabel2NewUser = new Label(array ('name' => "eyeLogin_NewUser_Label2",'father' => 'wnd2_Container',
-		'text' =>"Password",'x' => 43,'y' => 72));
+		'text' =>"Password",'x' => 43,'y' => 87));
 	$myLabel2NewUser->show();
 	$myLabel2NewUser->setCss($myCssText);
 	
 	$myLabel3NewUser = new Label(array ('name' => "eyeLogin_NewUser_Label3",'father' => 'wnd2_Container',
-		'text' =>"Retype pass",'x' => 43,'y' => 118));
+		'text' =>"Retype pass",'x' => 43,'y' => 133));
 	$myLabel3NewUser->show();
 	$myLabel3NewUser->setCss($myCssText);
 	
+	$myLabel4NewUser = new Label(array ('name' => "eyeLogin_NewUser_Label4",'father' => 'wnd2_Container',
+		'text' =>"Language",'x' => 43,'y' => 179));
+	$myLabel4NewUser->show();
+	$myLabel4NewUser->setCss($myCssText);
+	
 	$myHiddenLabelNewUser = new Label(array('name' =>"eyeLogin_HiddenLabel",'father' =>'wnd2_Container',
-		'text' =>'', 'x' =>20,'y' =>190));
+		'text' =>'', 'x' =>20,'y' =>220));
 		
 	$myHiddenLabelNewUser2 = new Label(array('name' =>"eyeLogin_HiddenLabel2",'father' =>'wnd2_Container',
-		'text' =>'', 'x' =>20,'y' =>190));
+		'text' =>'', 'x' =>20,'y' =>220));
 			
 	$labelCssNewUser = array(
 		'color' => '#FF0000',
@@ -209,14 +253,15 @@ if(ALLOW_USER_REGISTER == 1) {
 	$myHiddenLabelNewUser2->show(0);
 	$myHiddenLabelNewUser->setCss($labelCssNewUser);
 	$myHiddenLabelNewUser2->setCss($labelCssNewUser2);
+	
 	$myImage5 = new Imagebox(array('name' => 'eyeLogin_image_create','father' => 'wnd2_Container',
 	'url' => 'index.php?extern=apps/eyeLogin/themes/default/gfx/enter.png',
 	'realname' => EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeLogin/themes/default/gfx/enter.png',
-	'alt' => 'eyeLogin','x' => 40,'y' => 2, 'horiz'=>1,'vert'=>1,'cssClass'=>'cPointer'));
+	'alt' => 'eyeLogin','x' => 48,'y' => 19,'vert'=>1,'horiz'=>1,'cssClass'=>'cPointer'));
 	$myImage5->show();
 	
 	$myLabel4 = new Label(array ('name' => "eyeLogin_LabelCreate",'father' => 'wnd2_Container',
-		'text' =>"Create",'x' => 66,'y' => 6, 'horiz'=>1,'vert'=>1,'signal'=>'doCreateUser'));
+		'text' =>"Create account",'x' => 75,'y' => 22,'vert'=>1,'horiz'=>1,'signal'=>'doCreateUser'));
 	$myLabel4->show();
 	$myLabel4->setCss($myCssTitle);
 

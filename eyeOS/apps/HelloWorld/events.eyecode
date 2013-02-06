@@ -1,4 +1,26 @@
 <?php
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
+
+                     Web Operating System
+                           eyeOS.org
+
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+*/
+
 // We create the NAMEOFAPP_on_NAMEOFBUTTON function.
 // In this case, the app is HelloWorld and the button 
 // is HelloWorld_BTN:
@@ -19,7 +41,7 @@ function HelloWorld_on_HelloWorld_BTN($params="") {
 // It's an automatic function, so you can just copy it over
 // your apps that use messages by simply changing the app's name:
 function HelloWorld_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+	eyeWidgets('updateContent',$params);
 }
 
 // Finally, the NAMEOFAPP_on_Close() function will be executed when
@@ -28,7 +50,6 @@ function HelloWorld_on_Message($params="") {
 // (can be grab trought $myPid), so the app will be removed from the 
 // processes table:
 function HelloWorld_on_Close(){
-	global $myPid;
-	service('proc','close',array($myPid));
+	proc('end');
 }
 ?>

@@ -5,6 +5,10 @@
 	</mime>
 	<mime>
 		<type>video</type>
+		<extension>divx</extension>
+	</mime>
+	<mime>
+		<type>video</type>
 		<extension>mpg</extension>
 	</mime>
 	<mime>
@@ -16,8 +20,28 @@
 		<extension>wmv</extension>
 	</mime>
 	<mime>
+		<type>video</type>
+		<extension>flv</extension>
+	</mime>
+	<mime>
 		<type>text</type>
 		<extension>txt</extension>
+	</mime>
+	<mime>
+		<type>text</type>
+		<extension>pl</extension>
+	</mime>
+	<mime>
+		<type>text</type>
+		<extension>c</extension>
+	</mime>
+	<mime>
+		<type>text</type>
+		<extension>cc</extension>
+	</mime>
+	<mime>
+		<type>text</type>
+		<extension>py</extension>
 	</mime>
 	<mime>
 		<type>document</type>
@@ -73,6 +97,10 @@
 	</mime>
 	<mime>
 		<type>tar</type>
+		<extension>tgz</extension>
+	</mime>
+	<mime>
+		<type>tar</type>
 		<extension>tar</extension>
 	</mime>
 	<mime>
@@ -80,11 +108,15 @@
 		<extension>gz</extension>
 	</mime>
 	<mime>
-		<type>archive</type>
+		<type>tar</type>
+		<extension>tbz</extension>
+	</mime>
+	<mime>
+		<type>tar</type>
 		<extension>bz</extension>
 	</mime>
 	<mime>
-		<type>archive</type>
+		<type>tar</type>
 		<extension>bz2</extension>
 	</mime>
 	<mime>
@@ -92,7 +124,7 @@
 		<extension>eyepackage</extension>
 	</mime>
 	<mime>
-		<type>archive</type>
+		<type>tar</type>
 		<extension>7z</extension>
 	</mime>
 	<mime>

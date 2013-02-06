@@ -1,20 +1,24 @@
 <?php
-/*                            eyeOS project
-                     Internet Based Operating System
-                               Version 1.0
-                     www.eyeOS.org - www.eyeOS.info
-       -----------------------------------------------------------------
-                                 eyeOS Team
-                        http://www.eyeos.org/whoarewe
-       -----------------------------------------------------------------
-          eyeOS is released under the GNU General Public License - GPL
-               provided with this release in license.txt
-                   or via web at www.gnu.org/licenses/gpl.txt
+/*
+                                  ____   _____ 
+                                 / __ \ / ____|
+                  ___ _   _  ___| |  | | (___  
+                 / _ \ | | |/ _ \ |  | |\___ \ 
+                |  __/ |_| |  __/ |__| |____) |
+                 \___|\__, |\___|\____/|_____/ 
+                       __/ |                   
+                      |___/              1.2
 
-                Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+                     Web Operating System
+                           eyeOS.org
 
-          To help continued development please consider a donation at
-            http://www.eyeos.org/donations         
+             eyeOS Engineering Team - eyeOS.org/whoarewe
+
+     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+            provided with this release in license.txt
+             or via web at gnu.org/licenses/gpl.txt
+
+        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeBoard_on_Message($params="") {
@@ -24,7 +28,7 @@ function eyeBoard_on_Message($params="") {
 function eyeBoard_on_getMessages($params=null) {
 	$msg = getConfig('eyeBoard','conf.xml');
 	echo "<script>setTimeout('location.reload();',5000);</script>";
-	if(is_array($msg['messages'][0]['message'])) {
+	if(isset($msg['messages'][0]['message']) && is_array($msg['messages'][0]['message'])) {
 		foreach($msg['messages'][0]['message'] as $value) {
 			$author = htmlspecialchars($value['author'][0]);
 			$content = $value['content'][0];
@@ -33,7 +37,7 @@ function eyeBoard_on_getMessages($params=null) {
 			<div style='font-family: sans-serif, Verdana; text-align: justify; line-height: 1.7; font-size: 11px; color:#000; margin: 0; margin-top: 10px; border-bottom: 1px solid #bbd6f7;'>
 				$content  
 				<div style='font-family: sans-serif, Verdana; color: #3967a4; text-align: right; font-size: 9px; margin-bottom: 4px; margin-top: 4px;'>
-					By <strong>$author</strong> at <strong>".date('d/m/Y H:m',$time)."</strong>
+					<strong>$author</strong> | <strong>".date('d/m/Y H:i:s',$time)."</strong>
 				</div>
 			</div>";
 		}
@@ -57,7 +61,7 @@ function eyeBoard_on_addMsg($params=null) {
 	$myMessage = array('author'=>array($currentUser),'content'=>array($content),'time'=>array($time));
 	$msg = getConfig('eyeBoard','conf.xml');
 
-	if(is_array($msg['messages'][0]['message'])) {
+	if(isset($msg['messages'][0]['message']) && is_array($msg['messages'][0]['message'])) {
 		array_unshift($msg['messages'][0]['message'],$myMessage);
 	} else {
 		$msg['messages'][0] = array('message'=>array($myMessage));
@@ -85,8 +89,7 @@ function eyeBoard_on_clear($params=null){
 }
 
 function eyeBoard_on_Close(){
-	global $myPid;
-	service('proc','close',array($myPid));
+	proc('end');
 }
 
 ?>

@@ -53,7 +53,7 @@
 		function getHeader()
 		{
 			$return  = <<<EOH
-			 <html xmlns:v="urn:schemas-microsoft-com:vml"
+<html xmlns:v="urn:schemas-microsoft-com:vml"
 			xmlns:o="urn:schemas-microsoft-com:office:office"
 			xmlns:w="urn:schemas-microsoft-com:office:word"
 			xmlns="http://www.w3.org/TR/REC-html40">

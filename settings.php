@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.0
+                      |___/              1.2
 
                      Web Operating System
                            eyeOS.org
@@ -28,7 +28,8 @@
 */
 
 //Paths
-define('EYE_ROOT','eyeOS');
+define('EYE_ROOT','.');
+define('REAL_EYE_ROOT','eyeOS');
 define('SYSTEM_DIR','system');
 define('KERNEL_DIR','kernel');
 define('SERVICE_DIR','services');
@@ -54,8 +55,14 @@ define('EYEOS_LINK_EXT','eyeLink');
 define('EYE_CODE_EXTENSION','.eyecode');
 define('EYEOS_TRASH_EXT','eyeTrash');
 
+//vfs module to use
+define('VFS_MODULE','virtual');
+
+//um module to use
+define('UM_MODULE','eyeos');
+
 //Extras
 define('ROOTUSER','root');
-define('EYEOS_VERSION','1.0.3');
+define('EYEOS_VERSION','1.2.0.0');
 
 ?>
