@@ -72,7 +72,7 @@ function eyePresentation_on_fullscreen($params=null) {
 		$myWindow1 = new Window(array('title'=>'eyePresentation','name'=>'eyePresentationWNDFull','father' => 'eyeApps',
 		'y'=>35,'type'=>NOLIST_CLOSE_WINDOW,'x'=>0,'cent'=>2,'width'=>$windowWidth,'height'=>$windowHeight));
 		$myWindow1->show();
-		$myToolbar = new Toolbar(array('name'=>'myToolbar','father'=>'eyePresentationWNDFull_Content'));
+		$myToolbar = new Toolbar(array('name'=>'myToolbar2','father'=>'eyePresentationWNDFull_Content'));
 		$myToolbar->show();
 		$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
 		$myToolbar->addLine();

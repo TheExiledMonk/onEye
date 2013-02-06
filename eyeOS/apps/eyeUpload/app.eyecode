@@ -68,7 +68,7 @@ function eyeUpload_run($params=null) {
 	if (WEB_UPLOAD) {
 		$webTab = $myTab->addTab('Web',1);
 		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeUpload/tabs/web.eyecode');
-		if ($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] > 8) {
+		if ($flashTab) {
 			$myTab->selectByName('Advanced');
 		} else {
 			$myTab->selectByName('Simple');

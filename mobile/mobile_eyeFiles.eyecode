@@ -23,8 +23,7 @@
 */
 //Exit when requested
 if(isset($_REQUEST['exit'])) {
-	session_destroy();
-	session_start();
+	reqLib('eyeSessions','endSession');
 }
 
 //Check for logged user

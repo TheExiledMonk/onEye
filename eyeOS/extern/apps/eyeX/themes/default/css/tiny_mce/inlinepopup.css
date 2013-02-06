@@ -9,7 +9,7 @@
 
 .mceWindowHead {
 	background-color: #799fd3;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/bg_top.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png);
 	background-repeat: repeat-x;
 	cursor: move;
 	height: 23px;

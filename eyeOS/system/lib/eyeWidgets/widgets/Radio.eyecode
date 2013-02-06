@@ -68,6 +68,7 @@ class Radio {
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
 		isset($params['checked']) ? $this->checked = $params['checked'] : $this->checked = 0;
 		isset($params['content']) ? $this->content = $params['content'] : $this->content = "";			
+		isset($params['vertAlign']) ? $this->vertAlign = $params['vertAlign'] : $this->vertAlign = false;
 	}
 	
 
@@ -81,6 +82,8 @@ class Radio {
 		}
 		if(is_array($this->content)) {
 			foreach($this->content as $s) {
+				$s[1] = i18n('translate',array($s[1],$s[2]));
+				unset($s[2]);
 				$myContent .= service('mmap','array2jsArg', array(array(service('mmap','array2jsArg', array($s))))).'""';
 			}
 		}
@@ -89,7 +92,8 @@ class Radio {
 			'enabled' => $this->enabled,			
 			'visible' => $this->visible,
 			'checked' => $this->checked,
-			'content' => $myContent
+			'content' => $myContent,
+			'vertAlign'=>$this->vertAlign
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		

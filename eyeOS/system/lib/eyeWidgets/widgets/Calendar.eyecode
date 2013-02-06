@@ -64,6 +64,7 @@ class Calendar{
 	var $drawOnClick;
 	var $drawServerDate;
 	var $drawHighlight;
+	var $startMonday;
 	function Calendar($params) {	
 		global $myPid;
 		$this->creatorPid = $myPid;
@@ -100,6 +101,7 @@ class Calendar{
 		isset($params['drawServerDate']) ? $this->drawServerDate = $params['drawServerDate'] : $this->drawServerDate = '';
 		isset($params['drawHighlight']) ? $this->drawHighlight = $params['drawHighlight'] : $this->drawHighlight = 0;		
 		isset($params['forceDate']) ? $this->forceDate = $params['forceDate'] : $this->forceDate = '';
+		isset($params['startMonday']) ? $this->startMonday = $params['startMonday'] : $this->startMonday = 0;
 	}
 	
 	//event handling
@@ -133,6 +135,11 @@ class Calendar{
 							i18n('translate',array('TH')),
 							i18n('translate',array('F')),
 							i18n('translate',array('SA')));
+		if($this->startMonday == 1){
+			$sun = $i18nWeekDays[0];
+			array_shift($i18nWeekDays);	
+			$i18nWeekDays[] = $sun;
+		}
 		$weekDays = service('mmap','array2jsArg',array($i18nWeekDays,1));
 		$widgetsparams = array(
 			'height' => $this->height,
@@ -157,7 +164,8 @@ class Calendar{
 			'drawServerDate'=>$this->drawServerDate,
 			'drawHighlight'=>$this->drawHighlight,
 			'monthNames'=>$months,
-			'weekDays'=>$weekDays
+			'weekDays'=>$weekDays,
+			'startMonday'=>$this->startMonday
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		

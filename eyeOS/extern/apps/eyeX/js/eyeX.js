@@ -265,8 +265,14 @@ function localEngine(msg) {
 					father = actions[count].getElementsByTagName('father')[0].firstChild.nodeValue;
 					widgetname = actions[count].getElementsByTagName('widgetname')[0].firstChild.nodeValue;
 					cent = actions[count].getElementsByTagName('cent')[0].firstChild.nodeValue;
+					paramStr = '';
+					var paramsT = actions[count].getElementsByTagName('params');
+					for(var h=0;h<paramsT.length;h++){
+						paramStr += paramsT[h].firstChild.nodeValue;
+					}
+					
 					try{
-						eval (widgetname+"_show("+actions[count].getElementsByTagName('params')[0].firstChild.nodeValue+",'"+name+"','"+father+"','"+x+"','"+y+"','"+horiz+"','"+vert+"','"+checknum+"','"+cent+"');");
+						eval (widgetname+"_show("+paramStr+",'"+name+"','"+father+"','"+x+"','"+y+"','"+horiz+"','"+vert+"','"+checknum+"','"+cent+"');");
 					}catch(err){
 						
 					}

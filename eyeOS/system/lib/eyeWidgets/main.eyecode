@@ -129,17 +129,18 @@ function lib_eyeWidgets_serialize($params) {
 function lib_eyeWidgets_unserialize() {
 	global $myPid;
 	if(isset($_SESSION[WTABLE][$myPid]) && is_array($_SESSION[WTABLE][$myPid])) {
-		foreach ($_SESSION[WTABLE][$myPid] as $value) {
+		foreach ($_SESSION[WTABLE][$myPid] as $name=>$value) {
 			if(utf8_strcasecmp(get_class($value),'window')==0) {
 				service('eyex','rawjs',array('js'=>"if(document.getElementById('".$myPid."_".$value->name."'))slideClose(document.getElementById('".$myPid."_".$value->name."').parentNode.id,'".$myPid."_".$value->name."')"));
 				service('eyex','rawjs',array('js'=>"if(document.getElementById('".$myPid."_".$value->name."'))document.getElementById('".$myPid."_".$value->name."').parentNode.removeChild(document.getElementById('".$myPid."_".$value->name."'))"));
 			}
+			unset($GLOBALS[$name]);
 		}
+		if(method_exists($value,'unserialize')){
+			$value->unserialize();
+		}
+		unset($_SESSION[WTABLE][$myPid]);
 	}
-	foreach($_SESSION[WTABLE][$myPid] as $name=>$value){
-		unset($GLOBALS[$name]);
-	}	
-	unset($_SESSION[WTABLE][$myPid]);
 }
 
 /**

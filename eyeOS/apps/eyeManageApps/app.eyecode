@@ -49,7 +49,9 @@ function eyeManageApps_run($params=null) {
 	$myToolbar->addLine();
 	$myToolbar->addItem('clickMoveUp', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/up.png', 'Move Up');
 	$myToolbar->addItem('clickMoveDown', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/down.png', 'Move Down');
-	
+	$myToolbar->addLine();
+	$myToolbar->addItem('useDefaults', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/edit-undo.png', 'Reset to defaults');
+
 	$myContainer = new Container(array(
 		'name' => 'appsContainer',
 		'father' => 'eyeManageAppsWND_Content',

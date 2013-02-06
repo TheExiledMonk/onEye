@@ -40,7 +40,17 @@ function eyeDock_run($params=null) {
 }
 
 function eyeDock_end($params=null) {
+	global $myPid;
 	eyeWidgets('unserialize');
+	$currentUserDir = service('um','getCurrentUserDir');
+	$myArray = eyeXML('getXMLfile',array($currentUserDir.'/conf/eyeDock/eyeDock.xml'));
+	foreach($myArray['eyeDock'][0]['Group'] as $value) {
+		$key = $value['name'][0];
+		$divId = $myPid.'_menu_items_'.$key;
+		$divText = $myPid.'_menu_text_items_'.$key;
+		eyex('rawjs',array('js'=>"xGetElementById('eyeApps').removeChild(xGetElementById('".$divId."'));"));
+		eyex('rawjs',array('js'=>"xGetElementById('eyeApps').removeChild(xGetElementById('".$divText."'));"));
+	}
 }
 
 ?>

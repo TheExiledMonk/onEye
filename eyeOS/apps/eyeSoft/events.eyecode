@@ -258,6 +258,11 @@ function eyeSoft_on_stepInstall($params=null) {
 	lib_eyeCompress_extractFile(array(EYE_ROOT,$fpath));
 	unlink($fpath);
 	$xml = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/ports/status.xml'));
+	foreach ($xml['eyeSoft'][0]['package'] as $key => $value) {
+		if ($value['name'][0] == $info['name'][0]) {
+			unset($xml['eyeSoft'][0]['package'][$key]);
+		}
+	}
 	$array['name'][0] = $info['name'][0];
 	$array['version'][0] = $info['version'][0];
 	$xml['eyeSoft'][0]['package'][] = $array;

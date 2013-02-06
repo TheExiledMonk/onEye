@@ -34,7 +34,6 @@ function eyeControl_on_theme_change($params = '') {
 		call_user_func('theme_' . $newTheme . '_load');
 	}
 	//reload the ThemeXML var, because the xml file may change
-	unset($ThemeXML);
 	$ThemeXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 	$ThemeXML['eyeDesk'][0]['theme'][0] = $newTheme;
 	eyeControl_lib_setXMLconfig(array('eyeDesk','conf.xml',$ThemeXML));

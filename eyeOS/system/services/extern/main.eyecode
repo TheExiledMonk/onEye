@@ -164,13 +164,56 @@ function service_extern_getFile($params) {
 				header("Last-Modified: $date");
 				$date = gmdate('D, d M Y H:i:s',2147483647).' GMT';
 				header("Expires: $date");
-
-				if($cacheReplace == true && EXTERN_CACHE_MANUAL == 0){
+				
+				//If the file needs be replaced, and any of the auto modes are enabled...
+				if($cacheReplace == true && EXTERN_CACHE_AUTO > 0){
+					//needed by all ways
 					$contents = file_get_contents($myFile);
-					$search = 'version=EXTERN_CACHE_VERSION';
-					if(strpos($contents,$search)){
+					$path = EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/eyeX/eyex.xml';
+					$eyexConfig = eyeXML('getXMLfile',array($path));
+					isset($_SESSION['usertheme']) ? $usertheme = $_SESSION['usertheme'] : $usertheme = 'oldCache';
+					
+					//Full auto mode
+					if(EXTERN_CACHE_AUTO == 1){
+						//If the server never has use the SEMI-AUTO mode
+						if(!$eyexConfig || !is_array($eyexConfig)){
+							$search = 'version=EXTERN_CACHE_VERSION';
+						}else if($eyexConfig['config'][0][$usertheme][0] == CACHE_VERSION){//If the server already used the semi-auto 
+							$search = 'version='.CACHE_VERSION;
+						}else if($eyexConfig['config'][0][$usertheme][0] != CACHE_VERSION){//If a semi-auto update is reaming...
+							$search = 'version='.$eyexConfig['config'][0][$usertheme][0];
+						}
+						//In the full auto mode doesn't matter with what cache version you replace
+						//Because it'll be replaced again and again
 						$replace = 'version='.EXTERN_CACHE_VERSION;
 						$contents = str_replace($search,$replace,$contents);
+					//SEMI-AUTO method, ths patch the files only 1 time per theme/file
+					}else if(EXTERN_CACHE_AUTO == 2){
+						if(!$eyexConfig || !is_array($eyexConfig)){
+							$eyexConfig = array('config'=>array(array($usertheme=>array(CACHE_VERSION))));
+							eyeXML('setXMLfile',array($path,$eyexConfig));
+							$search = 'version=EXTERN_CACHE_VERSION';
+							$replace = 'version='.CACHE_VERSION;
+							$contents = str_replace($search,$replace,$contents);
+							file_put_contents($myFile,$contents);
+						}else if($eyexConfig['config'][0][$usertheme][0] != CACHE_VERSION){
+							$search = 'version='.$eyexConfig['config'][0][$usertheme][0];
+							$replace = 'version='.CACHE_VERSION;
+							$contents = str_replace($search,$replace,$contents);
+							//Saving the new cache.
+							$eyexConfig['config'][0][$usertheme][0] = CACHE_VERSION;
+							file_put_contents($myFile,$contents);
+							eyeXML('setXMLfile',array($path,$eyexConfig));
+						}else if(!isset($eyexConfig['config'][0][$usertheme])){
+							$search = 'version=EXTERN_CACHE_VERSION';
+							$replace = 'version='.CACHE_VERSION;
+							$contents = str_replace($search,$replace,$contents);
+							//Saving the new cache.
+							file_put_contents($myFile,$contents);
+							//add currenttheme to the hash
+ 							$eyexConfig['config'][0][$usertheme][0] = 1;
+							eyeXML('setXMLfile',array($path,$eyexConfig));
+						}
 					}
 					//I don't like to put this return here, but css is the only exception...
 					echo $contents;

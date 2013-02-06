@@ -80,7 +80,8 @@ if (isset($_GET['extern'])) {
 			$type = "";
 		}
 		//call to extern to throw the file
-		reqLib('eyeSessions','startSession');
+		//Only start session if we already have a session (keep in mind that extern doesn't have session)
+		reqLib('eyeSessions','checkAndSstartSession');
 		service('extern','getFile',array($myExtern,$type),1);
 } elseif(isset($_GET['api'])) {
 	require_once(EYE_ROOT.'/xml-rpc/server.eyecode');

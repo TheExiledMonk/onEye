@@ -70,6 +70,20 @@ function eyeControl_on_system_permissions($params = '') {
 	eyex('messageBox',array('content' => 'Changes successfully saved.'));
 }
 
+function eyeControl_on_system_cache_label($params = ''){
+	proc('launch',array('eyeNav',array('http://wiki.eyeos.org/Development:Cache_System_Documentation')));
+}
+
+function eyeControl_on_system_cache_save($params = ''){
+	$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
+	$xml = eyeXML('getXMLfile',array($file));
+	$xml['CONFIG'][0]['EXTERN_CACHE'][0] = $GLOBALS['eyeControl_system_cache_checkbox_cache']->checked;
+	$xml['CONFIG'][0]['CACHE_VERSION'][0] = $GLOBALS['eyeControl_system_cache_textbox_version']->text;
+	$xml['CONFIG'][0]['EXTERN_CACHE_AUTO'][0] = intval($GLOBALS['eyeControl_system_cache_radio_cache']->selected) - 1;
+	eyeXML('setXMLFile',array($file,$xml));
+	eyex('messageBox',array('content' => 'Changes successfully saved.'));
+}
+
 function eyeControl_on_system_office($params = '') {
 	if (strpos(realpath(EYE_ROOT . '/'),'\\')) {
 		$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
@@ -119,13 +133,12 @@ function eyeControl_on_system_uninstall_yes($params = '') {
 		eyeWidgets('unserialize');
 		eyex('messageBox',array('content' => 'Your eyeOS system was successfully deleted.'));
 		eyex('rawjs',array('js' => 'window.setTimeout("home()",2000);'));
-		foreach (vfs('real_getDirContent',array(EYE_ROOT . '/../')) as $path) {
-			if (vfs('isdir',array($path))) {
-				vfs('real_rmdir',array($path));
-			} else {
-				vfs('real_delete',array($path));
-			}
-		}
+		vfs('real_rmdir',array(EYE_ROOT . '/'));
+		vfs('real_rmdir',array(EYE_ROOT . '/../mobile/'));
+		vfs('real_delete',array(EYE_ROOT . '/../index.php'));
+		vfs('real_delete',array(EYE_ROOT . '/../license.txt'));
+		vfs('real_delete',array(EYE_ROOT . '/../README.txt'));
+		vfs('real_delete',array(EYE_ROOT . '/../settings.php'));
 	}
 }
 

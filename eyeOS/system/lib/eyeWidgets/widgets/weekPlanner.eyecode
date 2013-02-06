@@ -340,13 +340,13 @@ class weekPlanner {
 				$month++;
 			}
 		}else if($monthDay < 1){
-			$monthDay = $monthDay + $monthMaxDay[$month];
 			if($month-1 < 1){
 				$year--;
 				$month = 12;
 			}else{
 				$month--;
 			}
+			$monthDay = $monthDay + $monthMaxDay[$month];
 		}
 		
 		$diff = $this->dayEven - $this->dayFrom;

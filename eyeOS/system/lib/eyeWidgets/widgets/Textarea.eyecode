@@ -295,5 +295,10 @@ class Textarea {
 		service('eyex','removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
+	function unserialize(){
+	    if($this->rich == 1){
+		eyex('rawjs',array('js' => 'tinyMCE.idCounter = 0'));
+	    }
+	}
 }
 ?>

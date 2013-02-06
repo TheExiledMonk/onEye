@@ -130,20 +130,6 @@ function service_um_createUser($params = null){
 		$array['mngUser'] = rmDoubleUserArrays($array2['mngUser']);
 	}
 	
-	// We need a fix for this before it can be used productive!
-	/*// Add the user to the groups
-	$oldUser = $currentUser;
-	$currentUser = ROOTUSER;
-	foreach ($array['group'] as $group) {
-		$xml = eyeXML('getXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml'));
-		if (!is_array($xml['group'][0])) {
-			$xml['group'][0] = array();
-		}
-		$xml['group'][0]['user'][] = $username;
-		eyeXML('setXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml',$xml));
-	}
-	$currentUser = $oldUser;*/
-	
 // Create users xml file
 	$data['eyeUser'][0] = $array;
 	$xml = eyeXML('array2xml',array($data,1));
@@ -330,40 +316,6 @@ function service_um_updateUser($params = null){
 		$array['mngUser'] = rmDoubleUserArrays($array2['mngUser']);
 	}
 	
-	// We need a fix for this before it can be used productive!
-	/*// Add the user to the groups
-	$oldUser = $currentUser;
-	$currentUser = ROOTUSER;
-	foreach ($array['group'] as $group) {
-		if (!in_array($group,$userInfo['eyeUser'][0]['group'])) {
-			$xml = eyeXML('getXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml'));
-			if (!is_array($xml['group'][0])) {
-				$xml['group'][0] = array();
-			}
-			$xml['group'][0]['user'][] = $params['username'];
-			eyeXML('setXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml',$xml));
-		}
-	}
-	
-	// Remove the user from the groups lists
-	foreach ($userInfo['eyeUser'][0]['group'] as $group) {
-		if (!in_array($group,$array['group'])) {
-			$xml = eyeXML('getXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml'));
-			if (!is_array($xml['group'][0])) {
-				$xml['group'][0] = array();
-			}
-			$temp_array = $xml['group'][0]['user'];
-			unset($xml['group'][0]['user']);
-			foreach ($temp_array as $user) {
-				if ($user != $params['username']) {
-					$xml['group'][0]['user'][] = $user;
-				}
-			}
-			eyeXML('setXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml',$xml));
-		}
-	}
-	$currentUser = $oldUser;*/
-	
 	$userInfo['eyeUser'][0] = $array;
 	$xml = eyeXML('array2xml',array($userInfo,1));
 	//TODO: WARNING: SECURITY RISK WITH USERNAME IN XML? 
@@ -406,27 +358,6 @@ function service_um_deleteUser($params = null){
 	if ($currentUser != $username && $currentUser != ROOTUSER) {
 		return false;
 	}
-	
-	// We need a fix for this before it can be used productive!
-	/*// Remove the user from the groups lists
-	$xmlUser = um('retrieveUser',array($username));
-	$oldUser = $currentUser;
-	$currentUser = ROOTUSER;
-	foreach ($xmlUser['eyeUser'][0]['group'] as $group) {
-		$xml = eyeXML('getXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml'));
-		if (!is_array($xml['group'][0])) {
-			$xml['group'][0] = array();
-		}
-		$temp_array = $xml['group'][0]['user'];
-		unset($xml['group'][0]['user']);
-		foreach ($temp_array as $user) {
-			if ($user != $username) {
-				$xml['group'][0]['user'][] = $user;
-			}
-		}
-		eyeXML('setXMLfile',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/' . CONF_GROUP_DIR . '/users.xml',$xml));
-	}
-	$currentUser = $oldUser;*/
 	
 	// Delete the accounts user dir
 	$MyDir = um('getUserDir',array($username));
@@ -574,13 +505,13 @@ function service_um_getAllUsersBy($params = '') {
 	foreach ($acronyms as $acronymUrl) {
 		if (is_dir($acronymUrl)) {
 			$acronym = utf8_basename($acronymUrl);
-			if (!isset($beginning) && !isset($after) || isset($beginning) && utf8_strtolower($acronym{0}) == $beginning{0} || isset($after) && utf8_strtolower($acronym{1}) == utf8_substr($after,-1)) {
+			if (!isset($beginning) && !isset($after) || isset($beginning) && isset($after) && utf8_strtolower($acronym{0}) == $beginning{0} && utf8_strtolower($acronym{1}) == utf8_substr($after,-1) || isset($beginning) && !isset($after) && utf8_strtolower($acronym{0}) == $beginning{0} || !isset($beginning) && isset($after) && utf8_strtolower($acronym{1}) == utf8_substr($after,-1)) {
 				$users = vfs('real_getDirContent',array($acronymUrl,'*.xml',2));
 				foreach ($users as $userUrl) {
 					$user = utf8_basename($userUrl,'.xml');
 					if (isset($count) && $count <= $counted) {
 						return $allUsers;
-					} elseif (!isset($beginning) && !isset($after) || isset($beginning) && utf8_strtolower(utf8_substr($user,0,strlen($beginning))) == $beginning || isset($after) && utf8_strtolower(utf8_substr($user,- strlen($after))) == $after) {
+					} elseif (!isset($beginning) && !isset($after) || isset($beginning) && !isset($after) && utf8_strtolower(utf8_substr($user,0,strlen($beginning))) == $beginning && utf8_strtolower(utf8_substr($user,- strlen($after))) == $after || isset($beginning) && !isset($after) && utf8_strtolower(utf8_substr($user,0,strlen($beginning))) == $beginning || !isset($beginning) && isset($after) && utf8_strtolower(utf8_substr($user,- strlen($after))) == $after) {
 						$allUsers[] = $user;
 						$counted++;
 					}

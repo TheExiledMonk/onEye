@@ -242,6 +242,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	var globalYear = globalDate.getFullYear();
 	var monthNames = getArrayArg(params['monthNames']);
 	var weekDays = getArrayArg(params['weekDays']);
+	var startMonday = params['startMonday'];
 	var calendarBase = document.createElement('div');
 	var lastSelect = false;
 	
@@ -365,7 +366,11 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		var dayNums = new Array(0);//I will use push ,metoth
 		var dayColors = new Array(0);
 		var monthDay = new Array(0);
-		for(x=dayOfWeek-1;x>=0;x--)
+		var discount = 1;
+		if(startMonday == 1){
+			discount = 2;
+		}
+		for(x=dayOfWeek-discount;x>=0;x--)
 		{
 			dayNums.push(preMonthLenght-x);
 			
@@ -1245,10 +1250,17 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var checked = params["checked"];
 	var enabled = params["enabled"];
 	var visible = params["visible"];
+	var vertAlign = params["vertAlign"];
 	var content = getArrayArg(params["content"]);
 	var myDiv = document.createElement("div");
+	myDiv.setAttribute('id',name);
+	myDiv.value = '';
 	var myRadio;
 	var currentValue;
+	
+	//Usually the people start to count from 1
+	if(checked > 0)
+		checked--;
 	
 	for(i=0;i<content.length;i++) {
 		currentValue = getArrayArg(content[i]);
@@ -1257,19 +1269,36 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myRadio.setAttribute('id', name+'_'+i);
 		myRadio.setAttribute('type','radio');
 		myRadio.setAttribute('value',currentValue[0]);
-		myRadio.innerHTML = currentValue[1];
-	
-		myDiv.appendChild(myRadio);
-	}
-	
-	if(checked && checked < content.length) {
-		myRadio = document.getElementById(name+'_'+checked);
-	
-		if(myRadio) {
+		myRadio.setAttribute('onClick','Radio_onClick("' + name + '","' + currentValue[0] + '","' + String(i) + '","' + String(content.length) + '");');
+		//this would be better outside the loop, but input radio seems to be outside dom tree :s (firefox)
+		if(checked == i){
 			myRadio.setAttribute('checked','checked');
+			myRadio.setAttribute('defaultChecked','true');
+			myDiv.value = currentValue[0];
+		}
+
+		myDiv.appendChild(myRadio);
+		myDiv.innerHTML += currentValue[1];
+		if(vertAlign == true){
+			myDiv.innerHTML += "<br />";
 		}
 	}
+	
 	createWidget(name+'_Container',father,myDiv,horiz,vert,x,y,-1,-1,"eyeRadio",cent,'px',visible);
+}
+function Radio_onClick(father,value,thisRadio,allRadio){
+	if (IEversion) {
+		for (i = 0;i < allRadio;i++) {
+			if (i == thisRadio) {
+				xGetElementById(father + '_' + i).checked = true;
+			} else {
+				xGetElementById(father + '_' + i).checked = false;
+			}
+		}
+	}
+	var parent = xGetElementById(father);
+	if(parent && value)
+		parent.value = value;
 }
 function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
@@ -2747,21 +2776,22 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight
 	var obj = document.getElementById(myToolbar);
 	var paintClick = obj.paintClick;
 	var select = obj.select;
-	
+
 	var container = document.createElement('div');
 	var myFriends = Base64.decode(sync);
 	container.setAttribute('id',itemName+'_Container');
 	container.className = 'blockbarItem';
-	
+
 	if(paintClick == 1){
 		container.onmousedown = function(){
 			container.className = 'blockbarItemPress';
 		}
 		container.onmouseup = function(){
 			container.className = 'blockbarItem';
+			sendMsg(checknum,itemName,eval(myFriends));
 		}
 	}
-	
+
 	var myImg = document.createElement('img');
 	myImg.setAttribute('id',itemName+'_img');
 	myImg.className = 'blockbarImg';
@@ -2773,13 +2803,12 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight
 		myImg.style.width = myWidth + 'px';
 	}
 	container.appendChild(myImg);
-	
+
 	var myText = document.createElement('div');
 	myText.setAttribute('id',itemName+'_txt');
 	myText.className = 'blockbarText';
 	myText.innerHTML = itemText;
 	container.appendChild(myText);
-	container.onclick = function(){sendMsg(checknum,itemName,eval(myFriends))};
 	obj.appendChild(container);
 	fixPNG(itemName + '_img');
 }
@@ -3165,6 +3194,7 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			var e = new xEvent(e);
 			if (e.target.id == father || ((e.target.parentNode.id == father) && (sFather == 1))) {
 				showContextMenu(e,name,rFather,myFather);
+				eyeKeyDown = 0;
 				return false;
 			}
 		}

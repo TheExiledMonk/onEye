@@ -57,10 +57,8 @@ function eyeLaunch_on_doLaunch($params="") {
 			$currentUser = $user;
 			if(!service('proc','launch',array($myApp,$arguments))) {
 				$currentUser = $oldUser;
-				if(reqLib('errorCodes','getErrorCode') == PROC_APP_NOT_FOUND) {
-					service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
-					return false;
-				}
+				service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
+				return false;
 			}
 			$currentUser = $oldUser;
 		} else {
@@ -69,10 +67,8 @@ function eyeLaunch_on_doLaunch($params="") {
 		}
 	} else {
 		if(!service('proc','launch',array($myApp,$arguments))) {
-			if(reqLib('errorCodes','getErrorCode') == PROC_APP_NOT_FOUND) {
-				service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
-				return false;
-			}
+			service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
+			return false;
 		} 
 	}
 	

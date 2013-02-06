@@ -31,7 +31,7 @@ function eyeVideo_on_playerLoaded($params=null) {
 	addShortUrl($myPid."_video",'getVideo');
 	$shortUrl = "index.php/".$myPid."_video";	
 	$wndname = $myPid.'_win1_Content';
-	$js = 'var fo = new SWFObject("index.php?version=".EXTERN_CACHE_VERSION."&extern=apps/eyeVideo/FlowPlayer.swf", "FlowPlayer", "468", "350", "7", "#ffffff", true);';
+	$js = 'var fo = new SWFObject("index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/FlowPlayer.swf", "FlowPlayer", "468", "350", "7", "#ffffff", true);';
 	$js .= 'fo.addVariable("config", "{ showPlayListButtons: true, playList: [ {overlayId: \'play\' }, { url: \''.$shortUrl.'\' } ], initialScale: \'fit\' }");';
 	$js .= 'fo.write("'.$wndname.'");';
 	eyeX('rawjs',array('js'=>$js));

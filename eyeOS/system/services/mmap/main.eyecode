@@ -93,7 +93,7 @@ function service_mmap_routemsg($params) {
 		if(($_SESSION['AUTH_IP'] != $_SERVER['REMOTE_ADDR']) && PROTECTED_IP_SESSIONS == 1) {
 			eyeSessions('endSession'); //delete session
 			eyeX('messageBox',array('content'=>'Your session has expired','type'=>2));
-			eyeX('rawjs',array('js'=>'location.reload(true);')); //refresh the page
+			eyeX('rawjs',array('js'=>'location.reload();')); //refresh the page
 			return mmap('releaseBuffer');
 		}
 	}

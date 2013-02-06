@@ -3,7 +3,7 @@
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/wallpapers/lightwallpaper.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/wallpapers/lightwallpaper.png);
 	background-position: bottom right;
 	background-repeat: no-repeat;
 	background-color: white;
@@ -48,18 +48,18 @@
 .eyeMenu_top {
 	height: 20px;
 	width: 180px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/apps/eyeBar/top_bub.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeBar/top_bub.png);
 	background-repeat: no-repeat;
 }
 .eyeMenu_bot {
 	height: 20px;
 	width: 180px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/apps/eyeBar/bottom_bub.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeBar/bottom_bub.png);
 	background-repeat: no-repeat;
 }
 .eyeMenu_cen {
 	width: 180px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/apps/eyeBar/center_bub.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/apps/eyeBar/center_bub.png);
 	background-repeat: repeat-y;
 }
 .eyeMenu_content {
@@ -78,12 +78,8 @@
 	visibility: hidden;
 	display: none;
 }
-.eyeMenuButton_Img {
-	cursor: pointer;
-}
 .menuBar_text {
 	cursor: pointer;
-	color: #FFFFFF;
 	font-size: 11px;
 	/*font-family: Verdana;*/
 }
@@ -95,16 +91,19 @@
 	z-index: 200;
 	color: #dddddd;
 }
+.eyeBarItemsText:hover {
+	color: #ffffff;
+}
 
 /* eyeBox */
 .eyeBoxSupCent {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/bg_sup_center.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/bg_sup_center.png);
 	height: 23px;
 	width: 100%;
 	background-repeat: repeat-x;
 }
 .eyeBoxBottCent {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/bg_bottom_center.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/bg_bottom_center.png);
 	height: 17px;
 	background-repeat: repeat-x;
 }
@@ -130,7 +129,7 @@
 	/*font-family: Verdana;*/
 	font-size: 11px;
 	height: 22px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/buttonbg.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/buttonbg.png);
 }
 .eyeButtonClass:hover {
 	border-top: 1px solid #6fa1e0;
@@ -262,7 +261,7 @@
 	top: 0px;
 	left: 0px;
 	height: 23px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/tabbg.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/tabbg.png);
 	background-repeat: repeat-x;
 }
 .eyeTabBody {
@@ -305,7 +304,7 @@
 	color: #7f7f7f;
 	width: 8px;
 	height: 6px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/cross.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/cross.png);
 	cursor: Pointer;
 }
 
@@ -362,7 +361,7 @@
 	opacity: 0;
 	width: 208px;
 	height: 69px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/messagebox.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/desktop/messagebox.png);
 	background-repeat: no-repeat;
 	z-index: 100;
 }
@@ -410,14 +409,14 @@
 .dynamic-slider-control.horizontal .handle {
 	width: 31px;
 	height: 14px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/handle.horizontal.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/handle.horizontal.png);
 }
 .dynamic-slider-control.horizontal .handle div {}
 .dynamic-slider-control.horizontal .handle.hover {}
 .dynamic-slider-control.vertical .handle {
 	width: 15px;
 	height: 31px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/handle.vertical.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/handle.vertical.png);
 }
 .dynamic-slider-control.vertical .handle.hover {}
 .dynamic-slider-control .line {
@@ -489,11 +488,11 @@
 	margin: 0 2px;
 }
 .sort-arrow.descending {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/downsimple.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/downsimple.png);
 
 }
 .sort-arrow.ascending {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/upsimple.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/upsimple.png);
 }
 
 /* Window */
@@ -512,10 +511,10 @@
 	width: 17px;
 	height: 17px;
 	cursor: pointer;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/min.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/min.png);
 }
 .eyeWindowMinimizeButton:hover {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/min_x.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/min_x.png);
 }
 .eyeWindowMaxButton {
 	position: absolute;
@@ -523,10 +522,10 @@
 	width: 17px;
 	height: 17px;
 	cursor: pointer;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/max.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/max.png);
 }
 .eyeWindowMaxButton:hover {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/max_x.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/max_x.png);
 }
 .eyeWindowCloseButton {
 	position: absolute;
@@ -534,10 +533,10 @@
 	width: 17px;
 	height: 17px;
 	cursor: pointer;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/close.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/close.png);
 }
 .eyeWindowCloseButton:hover {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/close_x.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/close_x.png);
 }
 .eyeWindowResizeButton {
 	position: absolute;
@@ -570,7 +569,7 @@
 	top: 0;
 	border: 0;
 	height: 23px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/bg_top.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top.png);
 	background-repeat: repeat-x;
 	border-right: 1px solid #424d5f;
 	border-left: 1px solid #424d5f;
@@ -640,7 +639,7 @@
 	z-index: 20;
 	cursor: pointer;
 	font-weight: 400;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/minimized/minbar_on.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/minimized/minbar_on.png);
 	background-repeat: no-repeat;
 	background-position: top center;
 	color:#fff;
@@ -654,7 +653,7 @@
 	z-index: 20;
 	cursor: pointer;
 	font-weight: 400;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/minimized/minbar_off.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/minimized/minbar_off.png);
 	background-repeat: no-repeat;
 	background-position: top center;
 	color: #294e82;
@@ -777,19 +776,19 @@ ul.mktree li .bullet {
 }
 ul.mktree li.liOpen .bullet {
 	cursor: pointer;
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/folder_open.png) center left no-repeat;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/folder_open.png) center left no-repeat;
 	display: inline-block;
 	height: 16px;
 }
 ul.mktree li.liClosed .bullet {
 	cursor: pointer;
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/folder.png) center left no-repeat;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/folder.png) center left no-repeat;
 	display: inline-block;
 	height: 16px;
 }
 ul.mktree li.liBullet .bullet {
 	cursor: default;
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/bullet.gif) center left no-repeat;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/bullet.gif) center left no-repeat;
 	display: inline-block;
 	height: 16px;
 }
@@ -845,5 +844,5 @@ ul.mktree li ul li ul li ul li {
 	top: 0px;
 	height: 18px;
 	width: 18px;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&extern=images/desktop/loadingcursor/loading.png&theme=1);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&extern=images/desktop/loadingcursor/loading.png&theme=lightdesk);
 }

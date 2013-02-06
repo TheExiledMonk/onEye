@@ -75,7 +75,7 @@ class Imagebox {
 		//especific button options
 		isset($params['url']) ? $this->url = $params['url'] : $this->url = 0; //TODO: PUT A DEFAULT IMAGE
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
-		isset($params['alt']) ? $this->alt = $params['alt'] : $this->alt = ' ';
+		isset($params['alt']) ? $this->alt = $params['alt'] : $this->alt = '';
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = -1;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = -1;
 		isset($params['cssClass']) ? $this->myClass = $params['cssClass'] : $this->myClass = '';

@@ -66,6 +66,6 @@ define('UM_MODULE','eyeos');
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
 define('REAL_ROOTUSER','root');
-define('EYEOS_VERSION','1.7.0.0');
+define('EYEOS_VERSION','1.7.0.1-2');
 
 ?>

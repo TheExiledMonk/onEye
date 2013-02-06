@@ -36,6 +36,7 @@ $myTab->show();
 
 $systemTab = $myTab->addTab('System',1);
 $permissionsTab = $myTab->addTab('Permissions',1);
+$cacheTab = $myTab->addTab('Cache System',1);
 $officeTab = $myTab->addTab('Office Support',1);
 if ($currentUser == REAL_ROOTUSER) {
 	$uninstallTab = $myTab->addTab('Uninstall',1);
@@ -277,6 +278,107 @@ $myButton = new Button(array(
 $myButton->addFriend($myCheckbox_registration);
 $myButton->addFriend($myCheckbox_publicdirs);
 $myButton->addFriend($myCheckbox_webupload);
+$myButton->show();
+
+// cacheTab
+
+$ContentY = 20;
+// Enable cache system
+$myLabel = new Label(array(
+	'name' => 'eyeControl_system_cache_label_cache',
+	'father' => $cacheTab,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'Enable cache system'
+));
+$myLabel->show();
+$myCheckbox_cache = new Checkbox(array(
+	'name' => 'eyeControl_system_cache_checkbox_cache',
+	'father' => $cacheTab,
+	'x' => 160,
+	'y' => $ContentY,
+	'text' => ' ',
+	'checked' => EXTERN_CACHE
+));
+$myCheckbox_cache->show();
+$ContentY += 40;
+// Current cache version
+$myLabel = new Label(array(
+	'name' => 'eyeControl_system_cache_label_version',
+	'father' => $cacheTab,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'Current cache version'
+));
+$myLabel->show();
+$myTextbox_version = new Textbox(array(
+	'name' => 'eyeControl_system_cache_textbox_version',
+	'father' => $cacheTab,
+	'x' => 160,
+	'y' => $ContentY + 2,
+	'width' => '60',
+	'text' => CACHE_VERSION
+));
+$myTextbox_version->show();
+$ContentY += 40;
+// Patch CSS files
+$myLabel = new Label(array(
+	'name' => 'eyeControl_system_cache_label_method',
+	'father' => $cacheTab,
+	'x' => 20,
+	'y' => $ContentY,
+	'text' => 'Patch CSS files'
+));
+$myLabel->show();
+$myRadio_cache = new Radio(array(
+	'name' => 'eyeControl_system_cache_radio_cache',
+	'father' => $cacheTab,
+	'x' => 160,
+	'y' => $ContentY,
+	'checked' => intval(EXTERN_CACHE_AUTO) + 1,
+	'vertAlign' => 1,
+	'content' => array(
+		array('1','Manual: No automatic patch'),
+		array('2','Automatic: Patch on every request'),
+		array('3','Semi-automatic: Patch on every cache version change')
+		
+	)
+));
+$myRadio_cache->show();
+$ContentY += 80;
+$myContainer = new Simplebox(array(
+	'name' => 'eyeControl_system_cache_box_warning',
+	'father' => $cacheTab,
+	'x' => 20,
+	'y' => $ContentY,
+	'width' => 520,
+	'height' => 30,
+));
+$myContainer->show();
+$myContainer->setCSS(array('cursor' => 'pointer'));
+$myContainer->addEvent('onclick','sendMsgParam = sendMsg(' . $checknum . ',"system_cache_label");');
+eyex('rawjs',array('js' => 'xGetElementById("' . $myPid . '_eyeControl_system_cache_box_warning_Container").style.borderColor = "#ffffff";'));
+$myLabel = new Label(array(
+	'name' => 'eyeControl_system_cache_label_warning',
+	'father' => 'eyeControl_system_cache_box_warning',
+	'x' => 0,
+	'y' => 0,
+	'text' => 'Please do not modify anything if you are not sure about what you are going to change. If you have any doubt you can click this warning to see the documentation.'
+));
+$myLabel->show();
+$myLabel->setCSS(array('color' => 'red'));
+$ContentY += 60;
+$myButton = new Button(array(
+	'name' => 'eyeControl_system_cache_button_save',
+	'father' => $cacheTab,
+	'x' => 40,
+	'y' => $ContentY,
+	'caption' => 'Save changes',
+	'signal' => 'system_cache_save'
+));
+$myButton->addFriend($myCheckbox_cache);
+$myButton->addFriend($myTextbox_version);
+$myButton->addFriend($myRadio_cache);
 $myButton->show();
 
 // officeTab

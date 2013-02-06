@@ -80,14 +80,13 @@ if (isset($_GET['extern'])) {
 			$type = "";
 		}
 		//call to extern to throw the file¡
-		session_start();
 		service('extern','getFile',array($myExtern,$type),1);
 } else {
 	//Loading eyeWidgets definitions
 	reqLib('eyeWidgets','loadWidgets');
 	
 	//Starting a simple session
-	session_start();
+	reqLib('eyeSessions','startSession');
 	
 	//If widget table does not exist, create it 
 	reqLib('eyeWidgets','checkTable');

@@ -119,16 +119,12 @@ function hideIEmenu(pid) {
 function updateMenuStateOn(menu) {
 	var imgmenu = document.getElementById(menu + "_miniIcon");
 	var imgpath = 'index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/apps/eyeBar/icons/';
-	var textmenu = document.getElementById(menu + "_textId");
-	textmenu.style.color = '#ffffff';
 	imgmenu.src = imgpath+imgmenu.alt+'_on.png';
 	fixPNG(menu + "_miniIcon");
 }
 function updateMenuStateOff(menu) {
 	var imgmenu = document.getElementById(menu + "_miniIcon");
 	var imgpath = 'index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/apps/eyeBar/icons/';
-	var textmenu = document.getElementById(menu + "_textId");
-	textmenu.style.color = '#dddddd';
 	imgmenu.src = imgpath + imgmenu.alt + '.png';
 	fixPNG(menu + "_miniIcon");
 }
