@@ -74,6 +74,7 @@ function eyeUpload_on_uploadComplete($params=null) {
 	$filename = utf8_basename($_FILES['Filedata']['name']);
 	$myUserDir = $path.'/'.$filename;
 	if (is_uploaded_file($_FILES['Filedata']['tmp_name'])) {
+		$permissionsOk = false;
 		if(!vfs('checkPermissions',array($myUserDir))) {
 			$xmlResponse['eyeUploadX'][0] = array(
 				'status' => array('failed'),
@@ -87,13 +88,20 @@ function eyeUpload_on_uploadComplete($params=null) {
 			);
 		}
 		else {
-			$xmlResponse['eyeUploadX'][0] = array(
-				'status' => array('success'),
-				'message' => array(i18n('translate',array('File '.$filename.' has been successfully uploaded')))
-			);
+			move_uploaded_file($_FILES['Filedata']['tmp_name'],$myUserDir);
+			if (vfs('realToVirtual',array($myUserDir))) {
+				$xmlResponse['eyeUploadX'][0] = array(
+					'status' => array('success'),
+					'message' => array(i18n('translate',array('File %s has been successfully uploaded', array($filename))))
+				);
+			}
+			else {
+				$xmlResponse['eyeUploadX'][0] = array(
+					'status' => array('success'),
+					'message' => array(i18n('translate',array('Error occured during upload process')))
+				);
+			}
 		}
-		move_uploaded_file($_FILES['Filedata']['tmp_name'],$myUserDir);
-		vfs('realToVirtual',array($myUserDir));
 	}
 	echo eyeXML('array2xml', array($xmlResponse));
 	exit;
@@ -102,16 +110,6 @@ function eyeUpload_on_uploadComplete($params=null) {
 function eyeUpload_on_initFlash() {
 	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeUpload/conf.xml';
 	$conf = eyeXML('getXMLfile', array($path));
-	
-	if (is_array($conf)
-		&& is_array($conf['eyeUpload'])
-		&& is_array($conf['eyeUpload'][0])
-		&& is_array($conf['eyeUpload'][0]['forceFlash'])) {
-		$forceFlash = $conf['eyeUpload'][0]['forceFlash'][0];
-	}
-	else {
-		$forceFlash = 0;
-	}
 	
 	header('Content-type: text/xml; charset="utf-8"');
 	echo '

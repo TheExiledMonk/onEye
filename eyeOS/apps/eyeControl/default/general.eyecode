@@ -27,6 +27,7 @@ $myTab = new Tab(array(
 	'father' => $eyeContainer,
 	'width' => 565,
 	'height' => 410,
+	'tabwidth' => 100,
 	'x' => 0,
 	'y' => 0
 ));

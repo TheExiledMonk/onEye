@@ -70,10 +70,14 @@ class ProgressBar {
 	}
 	
 	function show() {
+		$progress = round($this->progress * 100 / $this->max);
+		if ($progress > 100) {
+			$progress = 100;
+		}
 		$widgetsparams = array(
 			'visible' => $this->visible,
 			'width' => $this->width,
-			'progress'=>$this->progress
+			'progress' => $progress
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		
@@ -127,6 +131,9 @@ class ProgressBar {
 		global $myPid;
 		$this->progress = intval($newProgress);
 		$fill = round($this->progress * 100 / $this->max);
+		if ($fill > 100) {
+			$fill = 100;
+		}
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_bar").style.width="'.$fill.'%"'));
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_txt").innerHTML="'.$fill.'%"'));
 	}

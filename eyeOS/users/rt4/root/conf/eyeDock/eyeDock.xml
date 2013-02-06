@@ -22,14 +22,14 @@
 			<item>
 				<name>eyeMessages</name>
 				<desc>Internal Messaging</desc>
-				<text>Send private messages with attachments to the system users</text>
+				<text>Send private messages with attachments to the other eyeOS users</text>
 				<icon>eyeMessages.png</icon>
 				<exec>eyeMessages</exec>
 			</item>
 			<item>
 				<name>eyeFeeds</name>
 				<desc>RSS Feed Reader</desc>
-				<text>Stay tuned to the latest news from your favorite blogs</text>
+				<text>Stay tuned to the latest news from your favorite sources</text>
 				<icon>RSS.png</icon>
 				<exec>eyeFeeds</exec>
 			</item>

@@ -27,14 +27,14 @@ define('VGROUP_INFO_FILE','info.xml');
 define('VMEMBERS_INFO_EXTENSION','xInfo');
 
 //Create a group inside app config folder or in vFolder
-function lib_vGroups_createGroup($params=null) {			
+function lib_vGroups_createGroup($params=null) {
 		if($params == null || !isset($params['name']) || empty($params['name'])){
 			//TODO: set error code
 			return false;
 		}
 		
-		$groupName = $params['name'];		
-		$desc = $params['desc'];		
+		$groupName = $params['name'];
+		$desc = $params['desc'];
 		if(vGroups('groupExists',array($groupName))){
 			return false;
 		}
@@ -46,7 +46,7 @@ function lib_vGroups_createGroup($params=null) {
 		$groupInfo = Array(
 			'info' => array(
 				array(
-					'desc' => array($desc),					
+					'desc' => array($desc),
 				)
 			)
 		);
@@ -104,7 +104,7 @@ function lib_vGroups_groupExists($params=null){
 		return false;
 	}
 	$groupName = $params[0];	
-	$path = vGroups('groupInfoPath',array($groupName));				
+	$path = vGroups('groupInfoPath',array($groupName));
 	//If already exists a group with name "groupName", return false;
 	if(!vfs('real_fileExists',array($path))){
 		return false;
@@ -150,7 +150,7 @@ function lib_vGroups_addMember($params=null) {
 	
 	$name = $params['name'];
 	$group = $params['group'];
-	$note = $params['note'];		
+	$note = $params['note'];
 
 	if(!um('userExist',array($name))){
 		//TODO: set error code
@@ -168,7 +168,7 @@ function lib_vGroups_addMember($params=null) {
 	$memberInfo = Array(
 		'info' => array(
 			array(
-				'note' => array($note),					
+				'note' => array($note),
 			)
 		)
 	);
@@ -248,5 +248,15 @@ function lib_vGroups_listMembers($params=null) {
 		$basenames[] = utf8_basename($member,'.'.VMEMBERS_INFO_EXTENSION);
 	}
 	return $basenames;
+}
+//Create the initial path for old users
+function lib_vGroups_initVgroups($params=null){
+	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/'.VGROUPS_DIR.'/';
+	if(!vfs('real_fileExists',array($path))){
+		if(!vfs('real_mkDir',array($path))){
+			return false;
+		}
+	}
+	return true;
 }
 ?>

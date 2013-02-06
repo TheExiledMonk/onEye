@@ -21,31 +21,29 @@
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
-$tempDir = get_tmp_dir();
-$ContentY = 20;
+$folder = vfs('real_getDirContent',array(EYE_ROOT . '/' . EYEOS_TMP_DIR . '/'));
 
-if ($tmpDir == EYE_ROOT . '/' . EYEOS_TMP_DIR) {
+if ($folder != array()) {
 	$myLabel = new Label(array(
 		'name' => 'eyeControl_cleantemp_label',
 		'father' => $eyeContainer,
 		'x' => 20,
-		'y' => $ContentY,
+		'y' => 20,
 		'text' => 'Remove temporary files and folders'
 	));
 	$myLabel->show();
 	$myLabel->setCss(array(
 		'font-weight' => 'bold'
 	));
-	$ContentY = $ContentY + 30;
 	
 	$myButton = new Button(array(
 		'name' => 'eyeControl_cleantemp_button',
 		'father' => $eyeContainer,
 		'width' => 100,
 		'x' => 60,
-		'y' => $ContentY,
+		'y' => 50,
 		'caption' => 'Remove now!',
-		'signal' => 'cleaneyeos_do',
+		'signal' => 'cleantemp_do',
 		'img' => eyex('getThemeImage',array('icons/16x16/delete.png',1))
 	));
 	$myButton->show();
@@ -55,8 +53,8 @@ if ($tmpDir == EYE_ROOT . '/' . EYEOS_TMP_DIR) {
 		'name' => 'eyeControl_cleantemp_label',
 		'father' => $eyeContainer,
 		'x' => 20,
-		'y' => $ContentY,
-		'text' => 'Your eyeOS server does not need to be cleaned.'
+		'y' => 20,
+		'text' => 'Your eyeOS server does not need cleaning!'
 	));
 	$myLabel->show();
 	$myLabel->setCss(array(

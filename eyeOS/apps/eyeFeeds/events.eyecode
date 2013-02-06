@@ -24,6 +24,7 @@
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/app'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/func'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/dialogs'.EYE_CODE_EXTENSION);
+include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/settings'.EYE_CODE_EXTENSION);
 
 //<eyeFeeds>
 //	<base>
@@ -89,16 +90,48 @@ function eyeFeeds_on_delFeedFolder_ITM($params=null) {
 	if ($selectedFeed)
 		eyeFeeds_createConfirmDeleteDialog($selectedFeed);
 }
-function eyeFeeds_on_refreshFeed_ITM($params=null) {
-	$feeds = eyeFeeds_getSavedFeeds();
-	$selectedFeed = eyeFeeds_getFeedFromId($feeds['feed'], $GLOBALS['selectedFeedId_HID']->text);
-	if (!$selectedFeed)
+function eyeFeeds_on_import_ITM($params=null) {
+	eyeFeeds_createImportFeedsDialog();
+}
+function eyeFeeds_on_export_ITM($params=null) {
+	global $checknum;
+	$options = array(
+		1,
+		'doExport',
+		$checknum,
+	);
+	service('proc','launch',array('eyeDialog',$options));
+}
+function eyeFeeds_on_doExport($params=null) {
+	if (! is_array($params['arg']) || !$params['arg'][0]) {
 		return;
+	}
+	eyeFeeds_exportFeeds($params['arg'][0]);
+}
+function eyeFeeds_on_refreshFeed_ITM($params=null) {
+	if (isFromBouncedRequest($params)) {
+		$feeds = eyeFeeds_getSavedFeeds();
+		$selectedFeed = eyeFeeds_getFeedFromId($feeds['feed'], $GLOBALS['selectedFeedId_HID']->text);
+		if (!$selectedFeed)
+			return;
+		
+		eyeFeeds_displayFeedItems($selectedFeed, true);
+		return;
+	}
 	
 	eyeFeeds_clearFeedItems();
-	eyeFeeds_displayFeedItems($selectedFeed, true);
+	eyeFeeds_clearItemContent();
+	$GLOBALS['loading_LBL']->unhide();
+	
+	$bouncedRequestParams = array(
+		'__signal' => 'refreshFeed_ITM'
+	);
+	bounceRequest($bouncedRequestParams);
 }
-
+function eyeFeeds_on_settings_ITM($params="") {
+	//eyeX('messageBox',array('content'=> 'Not Implemented Yet'));
+	eyeFeeds_createSettingsDialog();
+}
 function eyeFeeds_on_help_ITM($params="") {
 	service('proc','launch',array('eyeNav','http://wiki.eyeos.org/EyeFeeds'));
 }
@@ -167,6 +200,10 @@ function eyeFeeds_on_feeds_CMN_del_ENT($params=null) {
 function eyeFeeds_on_feedItemClick($params=null) {
 	$item = eyeFeeds_getSelectedFeedItem();
 	eyeFeeds_displayItemContent($item);
+	
+	global $myPid;
+	$itemId = md5($item['id']);
+	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_titleIcon_'.$itemId.'").src="'.EYEFEEDS_FEEDITEM_ICONURL_READ.'";'));
 }
 
 function eyeFeeds_on_feedItemDblClick($params=null) {

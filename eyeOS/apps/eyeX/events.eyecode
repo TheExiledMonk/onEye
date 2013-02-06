@@ -33,6 +33,11 @@ function eyeX_on_baseapp($params=null){
 	$_SESSION['SCREEN']['height'] = $height;
 	$_SESSION['SCREEN']['flash'] = $flash;
 	$_SESSION['SCREEN']['flash_version'] = $flash_version;
+	if(!isset($_SESSION['SCREEN']['refresh'])){
+		$_SESSION['SCREEN']['refresh'] = 0;
+	}else{
+		$_SESSION['SCREEN']['refresh']++;
+	}	
 	$pid = service('proc','findPidByName',array(BASE_APP));
 	
 	if(!$pid) {

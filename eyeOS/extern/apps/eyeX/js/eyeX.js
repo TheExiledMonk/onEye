@@ -32,8 +32,10 @@ if (navigator.appVersion.indexOf("MSIE")!=-1){
 minArrows = 0;
 spaceBetweenApps = 1;
 zLayers = 11;//One more than eyeApps (default and base layer for all apps)
+mouseX = 0;
+mouseY = 0;
 
-document.oncontextmenu = function() { return false; }
+document.oncontextmenu = function(e) { if(IEversion == 0) {e.preventDefault();e.cancelBubble = true;}return false; }
 //For fix Internet explorer <6 png24 no alpha.
 function fixPNG(img){
 	if (IEversion > 0 && IEversion < 7)
@@ -45,6 +47,77 @@ function fixPNG(img){
 		}
 	}
 }
+
+//== eyeCursor Section ==
+var isEyeCursorActivated = false;
+
+//== (eyeCursor) Loading cursor Section ==
+//Here is the "loading" special cursor that informs the user that a
+//request has been sent and is processed by the server
+var loadingRequests = 0;
+function checkLoading() {
+	if (loadingRequests <= 0) {
+		loadingRequests = 0;
+		if (navigator.appVersion.indexOf("Mac")!=-1) {
+			oCursor.style.display = 'none';
+		} else {
+			oApps.style.cursor = 'auto';
+		}
+	}
+	else {
+		if (navigator.appVersion.indexOf("Mac")!=-1) {
+			oCursor.style.top = mouseY-14+'px';
+			oCursor.style.left = mouseX+10+'px';
+			oCursor.style.display = 'block';
+		} else {
+			oApps.style.cursor = 'url(index.php?theme=1&extern=images/desktop/loadingcursor/loading.cur), wait';
+		}
+	}
+	return true;
+}
+//This function is called by the sendMsg() function.
+//It makes the "loading" cursor appear and increase the number
+//of loading request by one
+function notifyLoadingRequest() {
+	loadingRequests++;
+	checkLoading();
+	return true;
+}
+//This function is called by the localEngine() function.
+//It makes the "loading" cursor disappear if the request
+//was the last one waiting and decreases the number of loading
+//request by one
+function notifyEndOfLoadingRequest() {
+	loadingRequests--;
+	checkLoading();
+	return true;
+}
+//This function can be used to force the "loading" cursor to
+//reset and hide it
+function resetLoadingRequests() {
+	loadingRequests = 0;
+	checkLoading();
+	return true;
+}
+
+if (navigator.appVersion.indexOf("Mac")!=-1) {
+	document.onmousemove = function (e) {
+		if (IEversion == 0) {
+		  mouseX = e.pageX;
+		  mouseY = e.pageY;
+		}
+		if (IEversion > 0) {
+		  mouseX = event.clientX + document.body.scrollLeft;
+		  mouseY = event.clientY + document.body.scrollTop;
+		}
+		if(typeof('oCursor')!='undefined' && loadingRequests > 0) {
+			oCursor.style.left = mouseX+10+'px';
+			oCursor.style.top = mouseY-14+'px';
+		}
+	}
+}
+//== (eyeCursor) End of Loading cursor Section ==
+//== End of eyeCursor Section ==
 
 //change the opacity with callbacks 0 -100 for exmaple
 function updateOpacity(id, init, end, time, callback) {
@@ -82,10 +155,7 @@ function updateOpacityOnce(opacity, id) {
  			object.style.display = "block";
  		}
  	}
-} 
-
-//envoriment store the apps checknums and pids.
-envoriment = new Object();
+}
 
 //sendMsg is a ajax wrapper, send request to index.php with App checknum mgs and params (optional)
 function sendMsg(checknum,msg,parameters) {
@@ -110,6 +180,9 @@ function sendMsg(checknum,msg,parameters) {
         if (http_request.readyState == 4) {
             localEngine(http_request.responseXML);
         }
+    }
+    if (msg != 'ping') {
+    	notifyLoadingRequest();
     }
   	http_request.open('POST', url+'?checknum=' + checknum + '&msg=' + msg, true);
   	http_request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;');
@@ -157,13 +230,22 @@ function dhtmlRemoveCSS(remid) {
 *This functions parse the sendmsg response. 
 */
 function localEngine(msg) {
-	if(msg) {
+	//message is not set, could be an empty response to a request
+	if(!msg) {
+		notifyEndOfLoadingRequest();
+	}
+	else {
 		if(msg.hasChildNodes()) {
-			var actions = msg.getElementsByTagName("action");
+			var actions = msg.getElementsByTagName('action');
 			var mySize = actions.length;
 			for(count=0;count < mySize;count++) {
 				try {
 					task = actions[count].getElementsByTagName('task')[0].firstChild.nodeValue;
+					//incoming message is the pong response, ignore for loading requests counter
+					if (count == 0 && task != 'pong') {
+						notifyEndOfLoadingRequest();
+					}
+					
 					if(task == 'createWidget') {						
 						x = actions[count].getElementsByTagName('position')[0].getElementsByTagName('x')[0].firstChild.nodeValue;
 						y = actions[count].getElementsByTagName('position')[0].getElementsByTagName('y')[0].firstChild.nodeValue;
@@ -177,7 +259,7 @@ function localEngine(msg) {
 						try{
 							eval (widgetname+"_show("+actions[count].getElementsByTagName('params')[0].firstChild.nodeValue+",'"+name+"','"+father+"','"+x+"','"+y+"','"+horiz+"','"+vert+"','"+checknum+"','"+cent+"');");
 						}catch(err){
-							alert(err);
+							
 						}
 					} else if(task == 'messageBox') {
 						content = actions[count].getElementsByTagName('content')[0].firstChild.nodeValue;
@@ -582,7 +664,7 @@ function getArrayArg(arg) {
 }
 zindex = 100;
 
-function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight,wclass,cent,sizeUnit)
+function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight,wclass,cent,sizeUnit,isVisible)
 {
 	var father = document.getElementById(fatherid);
 	if (!father) {
@@ -593,6 +675,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 	} else {
 		var unit = sizeUnit;
 	}
+
 	var widget = document.createElement('div');
 	widget.setAttribute("id", widgetid);
 	widget.style.display = 'none';
@@ -611,7 +694,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 	if (parseInt(wheight) > 0) {
 		widget.style.height = wheight+unit;	
 	}
-	
+
 	if (cent == 1 && widget.style.width) {
 		/* Center Width */
 		var widgetwidth = widget.style.width;
@@ -620,9 +703,12 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		widgetwidth = parseInt(widgetwidth.substr(0,widgetwidth.length - 2)) / 2;
 		var styleLeft = fatherwidth - widgetwidth;
 		if (styleLeft > 0) {
-			widget.style.left = styleLeft+"px";	
+			if(IEversion > 0) {
+				widget.style.right = styleLeft+"px";
+			} else {
+				widget.style.left = styleLeft+"px";	
+			}
 		}
-
 		
 		/* Center Height */
 		var widgetheight = widget.style.height;
@@ -641,7 +727,11 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		widgetwidth = widgetwidth.substr(0,widgetwidth.length - 2) / 2;
 		var styleLeft = fatherwidth - widgetwidth;
 		if (styleLeft > 0) {
-			widget.style.left = styleLeft+"px";	
+			if(IEversion > 0) {
+				widget.style.right = styleLeft+"px";
+			} else {
+				widget.style.left = styleLeft+"px";	
+			}
 		}
 		
 	} else if(cent == 3 && widget.style.height) {
@@ -655,12 +745,20 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		}
 	} else if(cent == 4) {
 		var fatherwidth = xWidth(xGetElementById(fatherid)) / 2;
-		widget.style.left = fatherwidth+"px";
+		if(IEversion > 0) {
+			widget.style.right = fatherwidth+"px";
+		} else {
+			widget.style.left = fatherwidth+"px";	
+		}
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
 		widget.style.top = fatherheight+"px";
 	} else if(cent == 5) {
 		var fatherwidth = xWidth(xGetElementById(fatherid)) / 2;
-		widget.style.left = fatherwidth+"px";
+		if(IEversion > 0) {
+			widget.style.right = fatherwidth+"px";
+		} else {
+			widget.style.left = fatherwidth+"px";	
+		}
 	} else if(cent == 6) {
 		var fatherheight = xHeight(xGetElementById(fatherid)) / 2;
 		widget.style.top = fatherheight+"px";
@@ -713,7 +811,12 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 			}
 		}
 	}
-	widget.style.display = 'block';
+		
+	if (isVisible == 0) {
+		widget.style.display = 'none';
+	} else {
+		widget.style.display = 'block';
+	}
 	return widget;
 }
 
@@ -769,13 +872,14 @@ function makeDrag (widgetid,father,afterfunction,checknum,content,noIndex) {
 //REMOVE DESKTOP ICONS
 
 function cleanDesktop(pid) {
-	var name = pid+'_eyeDesk_icon_';
-	var i = 0;
-	var obj = document.getElementById(name+i+'_Container');
-	while(obj) {
-		obj.parentNode.removeChild(obj);
-		i++;
-		obj = document.getElementById(name+i+'_Container');
+	var prefix = pid+'_eyeDesk_icon_';
+	var eyeapps = document.getElementById('eyeApps');
+	var obj;
+	for (var i=0 ; i < eyeapps.childNodes.length ; i++) {
+		obj = eyeapps.childNodes[i];
+		if (obj.id.indexOf(prefix) == 0 && obj.className == 'eyeIcon') {
+			eyeapps.removeChild(obj);
+		}
 	}
 }
 

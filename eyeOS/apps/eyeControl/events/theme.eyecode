@@ -48,7 +48,7 @@ function eyeControl_on_theme_change($params = '') {
 		$eyelogin['CONFIG'][0]['LOGIN_THEME'][0] = $params['eyeControl_theme_select'][0];
 		setConfig('eyeLogin','conf.xml',$eyelogin);
 	}
-	eyex('messageBox',array('content' => 'Theme changed. Please restart your desktop now.'));
+	eyex('messageBox',array('content' => 'Theme changed. You must restart your desktop for the changes to become active.'));
 }
 
 function eyeControl_on_theme_select($params = '') {

@@ -1,10 +1,10 @@
 <package>
 	<name>eyeFTP</name>
 	<category>Utilities</category>
-	<version>3.0.2</version>
+	<version>3.1.0</version>
 	<description>FTP client for eyeOS.</description>
 	<author>Nanawel [nanawel@eyeos.org]</author>
 	<license>GPL</license>
 	<type>Application</type>
-	<icon>index.php?extern=apps/eyeX/themes/default/icons/48x48/eyeFTP.png</icon>
+	<icon>index.php?extern=icons/48x48/eyeFTP.png&amp;theme=1</icon>
 </package>

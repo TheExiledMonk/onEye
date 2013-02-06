@@ -257,10 +257,16 @@ class SelectSelected {
 		$this->enabled=1;
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").disabled=false'));
 	}
-	function addOption($text,$value,$selected=0) {
+	
+	function addOption($text,$value,$selected=0,$tokens=0) {
 		global $myPid;
+		$text = i18n('translate',array($text,$tokens));
 		$tokens = array($value,$text);
-		eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.textContent =  %s ;document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOption);','tokens'=>$tokens));
+		if($selected == 0) {
+			eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.appendChild(document.createTextNode( %s ));document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOption);','tokens'=>$tokens));
+		} else {
+			eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.appendChild(document.createTextNode( %s ));myOption.selected=true;document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOption);','tokens'=>$tokens));
+		}
 	}
 	
 	function remove() {

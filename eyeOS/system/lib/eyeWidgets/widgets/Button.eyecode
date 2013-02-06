@@ -212,7 +212,7 @@ class Button {
 		global $myPid;
 		$this->caption = i18n('translate',array($newCaption,$newTokens));
 		$tokens[] = $this->caption;
-		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").innerHTML= %s ;','tokens'=>$this->caption));
+		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").innerHTML= %s ;','tokens'=>$tokens));
 	}
 	
 	function focus() {

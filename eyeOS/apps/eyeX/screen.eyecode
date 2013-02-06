@@ -89,23 +89,26 @@ echo '
 	<script type="text/javascript" src="index.php?extern=libs/eyeWidgets/codepress/codepress.js"></script>
 	<script type="text/javascript" src="index.php?extern=libs/eyeWidgets/tiny_mce/tiny_mce.js&type=text"></script>
 	<script type="text/javascript" src="index.php?extern=apps/eyeX/js/eyeX.js&type=text"></script>
-	<link rel="icon" href="index.php?extern=apps/eyeX/themes/default/images/favicon/favicon.ico" type="image/x-icon"/>
+	<link rel="icon" href="index.php?extern=images/favicon/favicon.ico&theme=1" type="image/x-icon"/>
 ';
 
 //The checknum variable is getted on top of this file (global) 
 echo '
 </head>
 
-<body onload=\'document.getElementById("error").style.display="none";setInterval("sendMsg(\\"\\",\\"ping\\",\\"\\");",120000);sendMsg("'.$checknum.'","baseapp",eyeParam("flashmajor",FlashDetect.major)+eyeParam("flash",FlashDetect.installed)+eyeParam("width",xClientWidth())+eyeParam("height",xClientHeight()));\'>
+<body onload=\'oCursor=document.getElementById("eyecursor");oApps=document.getElementById("eyeScreen");setInterval("sendMsg(\\"\\",\\"ping\\",\\"\\");",120000);sendMsg("'.$checknum.'","baseapp",eyeParam("flashmajor",FlashDetect.major)+eyeParam("flash",FlashDetect.installed)+eyeParam("width",xClientWidth())+eyeParam("height",xClientHeight()));\'>
 	<div id="background">
 		<div id="eyeScreen">
+			<div id="eyecursor" class="eyecursor"></div>
 			<div id="eyeWallpaper"></div>
 			<div id="eyeApps"></div>
 			<div id="error">
-				<center>
-					<p>Sorry, but you need to activate JavaScript in order to get your eyeOS System working. Please visit www.eyeOS.org for more information.</p>
-					<p>Powered by the eyeOS System.</p>
-				</center>
+				<noscript>
+					<center>
+						<p>Sorry, but you need to activate JavaScript in order to get your eyeOS System working. Please visit www.eyeOS.org for more information.</p>
+						<p>Powered by the eyeOS System.</p>
+					</center>
+				</noscript>
 			</div>
 		</div>
 	</div>

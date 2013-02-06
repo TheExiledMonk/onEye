@@ -24,8 +24,8 @@
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.2
- * @updated 22-Apr-2008
+ * @version 3.1.0
+ * @updated 23-May-2008
  */
 
 /*********************************************************************************************/
@@ -51,9 +51,9 @@ function eyeFTP_emptyRemoteFilesTable() {
 		'y' => 24,
 		'width' => ($GLOBALS['eyeFTP_WND']->width / 2) - 25,
 		'height' => $GLOBALS['eyeFTP_WND']->height - 225,
-		'sortypes' => array('Hidden','Html','String','String','String','String','String'),
-		'master' => 0,
-		'theader' => array('id',' ','Filename','Filesize','Date','Permissions','Owner'),
+		'sortypes' => array('Html','String','Number','String','String','String','Hidden'),
+		'master' => 6,
+		'theader' => array(' ','Filename','Filesize (B)','Date','Permissions','Owner','id'),
 		'signal' => 'eyeFTP_remoteFilesClick',
 		'dblsignal' => 'eyeFTP_remoteFilesDblClick'
 	));
@@ -86,7 +86,9 @@ function eyeFTP_browseRemote($path = '/') {
 		return;
 	}
 	
-	eyeFTP_logConsole('Listing directory \''.eyeFTP_getFormatedDirPath($path).'\'...');
+	eyeFTP_logConsole('Listing directory \'%s\'...',
+		array(eyeFTP_getFormatedDirPath($path))
+	);
 	if (EYEFTP_USE_REQUEST_BOUNCING) {
 		eyeFTP_bounceRequest(array(
 			'__signal' => 'eyeFTP_browseRemote_bounced',

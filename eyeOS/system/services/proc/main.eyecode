@@ -109,6 +109,7 @@ function service_proc_launch($params) {
 	$procInfo['currentUser'] = $currentUser;//Provided by global var.
 	$procInfo['pid'] = $myPid;
 	$procInfo['tty'] = get_tty($oldPid);
+	$procInfo['exec'] = 'launch';
 						
 	//Try running app.
 	if(!is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/app'.EYE_CODE_EXTENSION)) {
@@ -200,9 +201,10 @@ function service_proc_getTask($params) {
 	
 	$oldchecknum = $checknum;
 	$checknum = $procInfo['checknum'];
-	if(function_exists($procInfo['appName'].'_run')){				
+	if(function_exists($procInfo['appName'].'_run')){
 		i18n('loadLang',array($procInfo['appName']));
-		//Calling the run function and returning the result		
+		//Calling the run function and returning the result
+		$procInfo['exec'] = 'task';
 		$return = call_user_func($procInfo['appName'].'_run',array($appArgs));
 		$myPid = $oldPid;
 		$checknum = $oldchecknum;

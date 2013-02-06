@@ -127,7 +127,7 @@ function eyeControl_on_eyesoft_edit_save($params = '') {
 			eyex('messageBox',array('content' => 'Mirror successfully saved.'));
 			eyeControl_lib_loadContent('only_root','eyesoft');
 		} else {
-			eyex('messageBox',array('content' => 'The mirror does not exist, yet.'));
+			eyex('messageBox',array('content' => 'Mirror does not exist!'));
 		}
 	} elseif ($mirror == 'http://soft.eyeos.org/ports.xml') {
 		eyex('messageBox',array('content' => 'You cannot save a mirror as the default mirror!'));
@@ -193,7 +193,7 @@ function eyeControl_on_eyesoft_delete_yes($params = '') {
 		$x = $x[0];
 		unset($mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'][$x]);
 		eyeXML('setXMLFile',array($file,$mirrorXML));
-		eyex('messageBox',array('content' => 'The mirror was successfully deleted.'));
+		eyex('messageBox',array('content' => 'Mirror successfully deleted.'));
 		eyeControl_lib_loadContent('only_root','eyesoft');
 	}
 }

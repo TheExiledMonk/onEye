@@ -51,17 +51,17 @@ function eyeControl_on_newuser_save($params = '') {
 		eyex('messageBox',array('content' => 'User successfully created.'));
 		eyeControl_lib_loadContent('only_root','users');
 	} elseif (!$username || !$password || !$pwd_again) {
-		eyex('messageBox',array('content' => 'Please fill in all needed fields.'));
+		eyex('messageBox',array('content' => 'Please fill in all necessary fields!'));
 	} elseif (!preg_match("/^[-_a-zA-Z0-9]+$/",$username)) {
-		eyex('messageBox',array('content' => 'The username is not supported. Please type another one.'));
+		eyex('messageBox',array('content' => 'Username contains invalid characters, please try another!'));
 	} elseif (um('userExists',array($username))) {
-		eyex('messageBox',array('content' => 'The chosen user already exist.'));
+		eyex('messageBox',array('content' => 'The selected user already exists!'));
 	} elseif ($password != $pwd_again) {
-		eyex('messageBox',array('content' => 'The passwords do not match.'));
+		eyex('messageBox',array('content' => 'Passwords do not match!'));
 	} elseif (utf8_strlen($username) < 2) {
-		eyex('messageBox',array('content' => 'The chosen username is too small.'));
+		eyex('messageBox',array('content' => 'The selected username is too small!'));
 	} elseif (utf8_strlen($username) > MAX_USERNAME_LEN) {
-		eyex('messageBox',array('content' => 'The chosen username is too long.'));
+		eyex('messageBox',array('content' => 'The selected username is too long!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please correct your typed settings.'));
 	}

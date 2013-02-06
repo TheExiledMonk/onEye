@@ -48,9 +48,9 @@ function eyeControl_on_groups_create($params = '') {
 		vfs('real_mkdir',array($dir . 'files/'));
 		eyeControl_lib_loadContent('only_root','groups');
 	} elseif (vfs('fileExists',array($dir))) {
-		eyex('messageBox',array('content' => 'The chosen group already exist.'));
+		eyex('messageBox',array('content' => 'The selected group already exists!'));
 	} else {
-		eyex('messageBox',array('content' => 'Please type a correct group name.'));
+		eyex('messageBox',array('content' => 'Please type a correct group name!'));
 	}
 }
 
@@ -62,7 +62,7 @@ function eyeControl_on_groups_edit($params = '') {
 	$group = $GLOBALS['eyeControl_groups_sortabletable']->selected;
 	if ($group) {
 		eyex('messageBox',array(
-			'content' => 'Type the new group name:',
+			'content' => 'Type the new group\'s name:',
 			'type' => 3,
 			'title' => 'Rename group',
 			'win_name' => 'eyeControl_groups_rename_window',
@@ -99,9 +99,9 @@ function eyeControl_on_groups_rename($params = '') {
 		}
 		eyeControl_lib_loadContent('only_root','groups');
 	} elseif (vfs('fileExists',array($dir))) {
-		eyex('messageBox',array('content' => 'The chosen group already exist.'));
+		eyex('messageBox',array('content' => 'The selected group already exists!'));
 	} else {
-		eyex('messageBox',array('content' => 'Please type a correct group name.'));
+		eyex('messageBox',array('content' => 'Please type a correct group name!'));
 	}
 }
 
@@ -116,7 +116,7 @@ function eyeControl_on_groups_default($params = '') {
 		$XML = eyeXML('getXMLfile',array($File));
 		$XML['CONFIG'][0]['DEFAULT_GROUP'][0] = $group;
 		eyeXML('setXMLFile',array($File,$XML));
-		eyex('messageBox',array('content' => 'Default group successfully saved. You need to start a new session now.'));
+		eyex('messageBox',array('content' => 'Default group successfully saved. You need to restart your session now.'));
 	} elseif ($group == DEFAULT_GROUP) {
 		eyex('messageBox',array('content' => 'The chosen group is already the default group!'));
 	} else {
@@ -154,7 +154,7 @@ function eyeControl_on_groups_delete_yes($params = '') {
 	$group = $GLOBALS['groups_delete_hidden']->text;
 	if ($group && $group != DEFAULT_GROUP) {
 		if (vfs('real_rmdir',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/'))) {
-			eyex('messageBox',array('content' => 'The group was successfully deleted.'));
+			eyex('messageBox',array('content' => 'Group successfully deleted.'));
 			eyeControl_lib_loadContent('only_root','groups');
 		} else {
 			eyex('messageBox',array('content' => 'There was a problem while deleting the group.'));

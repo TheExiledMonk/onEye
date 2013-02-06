@@ -57,7 +57,7 @@ function eyeControl_on_desktop_select_now($params=null) {
 		} elseif (!in_array(utf8_strtolower(utf8_substr($file,-4)),array('.jpg','.gif','.bmp','.png','.tif'))) {
 			eyex('messageBox',array('content' => 'Sorry, this file is not allowed to be a wallpaper.'));
 		} else {
-			eyex('messageBox',array('content' => 'Sorry, but the file does not exist.'));
+			eyex('messageBox',array('content' => 'Sorry, but that file does not exist.'));
 		}
 	}
 }
@@ -71,10 +71,10 @@ function eyeControl_on_desktop_save($params=null) {
 		if (vfs('filesize',array($file)) > 0 && in_array(utf8_strtolower(utf8_substr($file,-4)),array('.jpg','.gif','.bmp','.png','.tif'))) {
 			$config['eyeDesk'][0]['wallpaper'][0] = $file;
 		} elseif (!in_array(utf8_strtolower(utf8_substr($file,-4)),array('.jpg','.gif','.bmp','.png','.tif'))) {
-			eyex('messageBox',array('content' => 'Sorry, the file is not allowed to be a wallpaper.'));
+			eyex('messageBox',array('content' => 'Sorry, this file is not allowed to be a wallpaper.'));
 			return;
 		} else {
-			eyex('messageBox',array('content' => 'Sorry, but the file does not exist.'));
+			eyex('messageBox',array('content' => 'Sorry, but that file does not exist.'));
 			return;
 		}
 	} else {

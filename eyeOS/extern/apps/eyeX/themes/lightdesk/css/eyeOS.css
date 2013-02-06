@@ -761,12 +761,12 @@
 }
 
 .blockbarline {
-	background-color:#c7c7c7;
+	border-left:1px solid #c7c7c7;
 	height:40px;
 	float:left;
 	width:1px;
 	margin-top:10px;
-	margin-left:5px;	
+	margin-left:10px;
 }
 
 ul.mktree { }

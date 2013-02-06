@@ -104,18 +104,6 @@ class Toolbar {
 		}
 	}
 	
-	function hide() {
-		global $myPid;
-		$this->visible = 0;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
-	}
-	
-	function unhide() {
-		global $myPid;
-		$this->visible = 1;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
-	}
-	
 	function remove() {
 		global $myPid;
 		$name = $this->name.'_Container';

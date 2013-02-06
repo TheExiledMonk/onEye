@@ -39,6 +39,7 @@ class Icon {
 	var $horiz;
 	var $vert;
 	var $cent;
+	var $visible;
 	
 	var $showed = 0;
 	
@@ -77,6 +78,7 @@ class Icon {
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 40;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 40;
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
+		isset($params['visible'])? $this->visible = $params['visible'] : $this->visible = 1;
 		
 		isset($params['text']) ? $this->text = $params['text'] : $this->text = $this->name;
 		isset($params['textColor']) ? $this->textColor = $params['textColor'] : $this->textColor = '#FFF';
@@ -138,6 +140,7 @@ class Icon {
 			'onclick' => $this->onclick,
 			'width' => $this->width,
 			'height' => $this->height,
+			'visible' => $this->visible,
 			'myonload' => $this->myOnLoad,
 			'realname' => $realname,
 			'overBorder' => $this->overBorder,

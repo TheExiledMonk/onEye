@@ -57,7 +57,7 @@ function eyeControl_on_eyenav_bookmarks_import_now($params = '') {
 	$url = eyeControl_lib_getConfigUserPath() . '/' . FILES_USER_DIR . '/' . $params['arg'][0];
 	$xml = eyeXML('getXMLfile',array(vfs('getRealName',array($url))));
 	if (!$xml['eyeNav'][0]['bookmarks'][0] || !is_array($xml['eyeNav'][0]['bookmarks'][0])) {
-		eyex('messageBox',array('content' => 'The chosen file is not a correct eyeNav bookmarks file.'));
+		eyex('messageBox',array('content' => 'The selected file is not an eyeNav bookmarks file.'));
 	} else {
 		$old = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
 		$old['eyeNav'][0]['bookmarks'][0] = $xml['eyeNav'][0]['bookmarks'][0];
@@ -68,7 +68,7 @@ function eyeControl_on_eyenav_bookmarks_import_now($params = '') {
 
 function eyeControl_on_eyenav_bookmarks_default($params = '') {
 	eyex('messageBox',array(
-		'content' => 'Do you really want to use the default eyeNav bookmarks?',
+		'content' => 'Do you really want to restore the default eyeNav bookmarks?',
 		'type' => 3,
 		'title' => 'Use defaults',
 		'win_name' => 'eyeControl_eyenav_window_bookmarks_default',
@@ -109,7 +109,7 @@ function eyeControl_on_eyenav_search_import_now($params = '') {
 	$url = eyeControl_lib_getConfigUserPath() . '/' . FILES_USER_DIR . '/' . $params['arg'][0];
 	$xml = eyeXML('getXMLfile',array(vfs('getRealName',array($url))));
 	if (!$xml['eyeNav'][0]['searches'][0] || !is_array($xml['eyeNav'][0]['searches'][0])) {
-		eyex('messageBox',array('content' => 'The chosen file is no correct eyeNav search engines file.'));
+		eyex('messageBox',array('content' => 'The selected file is not an eyeNav search engine file.'));
 	} else {
 		$old = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
 		$old['eyeNav'][0]['searches'][0] = $xml['eyeNav'][0]['searches'][0];
@@ -120,7 +120,7 @@ function eyeControl_on_eyenav_search_import_now($params = '') {
 
 function eyeControl_on_eyenav_search_default($params = '') {
 	eyex('messageBox',array(
-		'content' => 'Do you really want to use the default eyeNav search?',
+		'content' => 'Do you really want to restore the default eyeNav search?',
 		'type' => 3,
 		'title' => 'Use defaults',
 		'win_name' => 'eyeControl_eyenav_window_search_default',

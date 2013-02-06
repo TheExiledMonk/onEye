@@ -21,7 +21,7 @@
 
 /* Login Window */
 .eyeLoginWindow {
-	margin-top: -50px;
+	margin-top: -100px;
 }
 
 /* System Bar */ 
@@ -892,12 +892,12 @@
 }
 
 .blockbarline {
-	background-color:#c7c7c7;
+	border-left:1px solid #c7c7c7;
 	height:40px;
 	float:left;
 	width:1px;
 	margin-top:10px;
-	margin-left:5px;	
+	margin-left:10px;
 }
 
 ul.mktree { }
@@ -933,4 +933,15 @@ ul.mktree  li ul li ul li ul li { font-size: 11px; /*font-family:Verdana,Tahoma;
 	padding-right:5px;
 	padding-bottom:5px;
 	color:black;
+}
+
+.eyecursor {
+	z-index: 50000;
+	position: absolute;
+	display: none;
+	left:0px;
+	top: 0px;
+	height: 18px;
+	width: 18px;
+	background-image:url(index.php?extern=images/desktop/loadingcursor/loading.png&theme=1);
 }

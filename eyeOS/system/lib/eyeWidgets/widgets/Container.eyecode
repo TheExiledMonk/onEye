@@ -38,6 +38,7 @@ class Container {
 	var $horiz;
 	var $vert;
 	var $cent;
+	var $visible;
 	
 	var $showed = 0;
 	
@@ -59,6 +60,7 @@ class Container {
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
+		isset($params['visible'])? $this->visible = $params['visible'] : $this->visible = 1;
 		
 		//especific window options
 		isset($params['unit']) ? $this->unit = $params['unit'] : $this->unit = 'px';
@@ -80,6 +82,7 @@ class Container {
 		$widgetsparams = array(
 			'height' => $this->height,
 			'width' => $this->width,
+			'visible' => $this->visible,
 			'unit' => $this->unit,
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));

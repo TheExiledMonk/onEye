@@ -45,10 +45,12 @@ function eyeFiles_run($params=null) {
 		'width'=>$myWindow->width-($myWindow3->width+18),'height'=>$myWindow->height-60,
 		'x'=>$myWindow3->width+10,'y'=>32));
 	$myWindow2->show();
-	eyex('rawjs',array('js'=>'var winContent = xGetElementById("'.$myPid.'_WND_2_Content");
-							  winContent.style.backgroundImage="url(index.php?extern=apps/eyeFiles/gfx/eyefilesbg.png)";
-							  winContent.style.backgroundPosition="bottom right";
-							  winContent.style.backgroundRepeat="no-repeat";'));	
+	if(IE != 6) {
+		eyex('rawjs',array('js'=>'var winContent = xGetElementById("'.$myPid.'_WND_2_Content");
+								  winContent.style.backgroundImage="url(index.php?extern=apps/eyeFiles/gfx/eyefilesbg.png)";
+								  winContent.style.backgroundPosition="bottom right";
+								  winContent.style.backgroundRepeat="no-repeat";'));
+	}
 	service('eyex','rawjs',array('js'=>'document.getElementById("'.$myPid.'_WND_2").onmousedown="";'));
 	
 	//places box

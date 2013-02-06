@@ -31,9 +31,29 @@ global $checknum;
 $tokens[] = EYEOS_HOSTNAME;
 service('eyex','runjs',array('js'=>"document.title = 'Welcome to ' + %s;",'tokens'=>$tokens));
 
+
+//default lang
+$langs[0] = array('English','en');
+//Adding current languages
+$dir = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/';
+if(vfs('isdir',array($dir))){
+	global $currentUser;	
+	$oldUser = $currentUser;	
+	$currentUser = ROOTUSER;
+	$langFiles = vfs('real_getDirContent',array($dir,'*.xml'));		
+		
+	foreach($langFiles as $file){
+		$fileLang = utf8_basename($file,'.xml');
+		$data = eyeXML('getXMLfile',array($file));
+		$langs[] = array($data['lang'][0]['name'][0],$fileLang);
+	}
+	$currentUser = $oldUser;
+}
+
+
 $myBackground = new Imagebox(array('name' => 'wnd1','father' => 'eyeApps',
-		'url' => 'index.php?extern=apps/eyeLogin/themes/default/gfx/bg_login.png',
-		'alt' => 'eyeLogin window','cent'=>1,'x'=>0,'y'=>0,'cssClass'=>'eyeLoginWindow','width'=>301,'height'=>174));
+		'url' => 'index.php?extern=apps/eyeLogin/themes/'.LOGIN_THEME.'/gfx/bg_login.png',
+		'alt' => 'eyeLogin window','cent'=>1,'x'=>0,'y'=>0,'cssClass'=>'eyeLoginWindow','width'=>301,'height'=>220));
 $myBackground->show();
 
 //username textbox
@@ -42,8 +62,17 @@ $myTextBox1 = new Textbox( array('name' => 'eyeLogin_Username','father' => 'wnd1
 $myTextBox1->show();
 
 $myTextBox2 = new Textbox(array('name' => 'eyeLogin_Password','father' => 'wnd1_Container','x' => 42,
-	'y' => 98,'width' => 214, 'height'=>24, 'password' => 1));
+	'y' => 90,'width' => 214, 'height'=>24, 'password' => 1));
 $myTextBox2->show();
+
+$mySelect1 = new Select(array('name'=>'eyeLogin_Language', 'father'=>'wnd1_Container',
+	'x'=>42, 'y'=>143, 'width' => 214));
+$mySelect1->show();
+$mySelect1->addOption('( Default / User\'s profile )', 'auto');
+foreach($langs as $lang) {
+	$mySelect1->addOption($lang[0], $lang[1]);
+}
+
 //This script use eyeLogin_Password and eyeLogin_Username.
 service('eyex','loadScript',array('url' => 'index.php?extern=apps/eyeLogin/themes/'.LOGIN_THEME.'/js/eyelogin'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 if (!IE) {
@@ -68,6 +97,15 @@ if (!IE) {
 		'padding-left' => '5px',
 	);
 	$myTextBox2->setCss($myCss);
+	
+	$myCss = array(
+		'border' => 'none',
+		'height' => '14px',
+		'padding-left' => '1px',
+		'margin-left' => '4px'
+	);
+	
+	$mySelect1->setCss($myCss);
 }
 
 $myCssText = array(
@@ -90,9 +128,14 @@ $myLabel1->show();
 $myLabel1->setCss($myCssText);
 
 $myLabel2 = new Label(array ('name' => "eyeLogin_Label2",'father' => 'wnd1_Container',
-	'text' =>"Password",'x' => 43,'y' => 81));
+	'text' =>"Password",'x' => 43,'y' => 70));
 $myLabel2->show();
 $myLabel2->setCss($myCssText);
+
+$myLabel5 = new Label(array ('name' => "eyeLogin_Label5",'father' => 'wnd1_Container',
+	'text' =>"Language for the session",'x' => 43,'y' => 124));
+$myLabel5->show();
+$myLabel5->setCss($myCssText);
 
 if(ALLOW_USER_REGISTER == 1) {
 	$myImage4 = new Imagebox(array('name' => 'eyeLogin_image_new1','father' => 'wnd1_Container',
@@ -125,7 +168,7 @@ $myTextBox1->focus();
 $myBackgroundEyeOSLogo = new Imagebox(array('name' => 'eyeoslogo','father' => 'wnd1_Container',
 	'url' => "index.php?extern=apps/eyeLogin/themes/default/gfx/eyeoslogo.png",
 	'realname' => EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeLogin/themes/default/gfx/eyeoslogo.png',
-	'alt' => 'eyeOS','x'=>115,'y'=>220));
+	'alt' => 'eyeOS','x'=>115,'y'=>260));
 $myBackgroundEyeOSLogo->show();
 
 //new username textbox
@@ -138,7 +181,7 @@ if(ALLOW_USER_REGISTER == 1) {
 	$myBackgroundNewUser = new Imagebox(array('name' => 'wnd2','father' => 'wnd1_Container',
 			'url' => $createUrl,
 			'realname' => $createRealName,
-			'alt' => 'eyeLogin new user window','x'=>0,'y'=>153,'cssClass'=>'hiddenDiv'));
+			'alt' => 'eyeLogin new user window','x'=>0,'y'=>199,'cssClass'=>'hiddenDiv'));
 	$myBackgroundNewUser->show();
 	
 	$myTextBox1NewUser = new Textbox( array('name' => 'eyeLogin_newUser','father' => 'wnd2_Container','x' => 42,
@@ -162,25 +205,7 @@ if(ALLOW_USER_REGISTER == 1) {
 		'y' => 192
 	));
 	$mySelect->show();
-		
-	//default lang
-	$langs[0] = array('English','en');
-	//Adding current languages
-	$dir = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/';
-	if(vfs('isdir',array($dir))){
-		global $currentUser;	
-		$oldUser = $currentUser;	
-		$currentUser = ROOTUSER;
-		$langFiles = vfs('real_getDirContent',array($dir,'*.xml'));		
 			
-		foreach($langFiles as $file){
-			$fileLang = utf8_basename($file,'.xml');
-			$data = eyeXML('getXMLfile',array($file));
-			$langs[] = array($data['lang'][0]['name'][0],$fileLang);
-		}
-		$currentUser = $oldUser;
-	}
-	
 	//$mySelect->addOption('English','en');
 	foreach($langs as $lang){
 		$mySelect->addOption($lang[0],$lang[1]);

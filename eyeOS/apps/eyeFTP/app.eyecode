@@ -24,8 +24,8 @@
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.2
- * @updated 22-Apr-2008
+ * @version 3.1.0
+ * @updated 24-May-2008
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
@@ -36,26 +36,26 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
 define('EYEFTP_IMG_TOOLBAR_MANAGEHOSTS', 'index.php?extern=apps/eyeFTP/gfx/managehosts.png');
 define('EYEFTP_IMG_TOOLBAR_CONNECT', 'index.php?extern=apps/eyeFTP/gfx/connect.png');
 define('EYEFTP_IMG_TOOLBAR_DISCONNECT', 'index.php?extern=apps/eyeFTP/gfx/disconnect.png');
-define('EYEFTP_IMG_TOOLBAR_REFRESH', 'index.php?extern=apps/eyeX/themes/default/images/toolbar/refresh.png');
+define('EYEFTP_IMG_TOOLBAR_REFRESH', 'index.php?extern=images/toolbar/refresh.png&theme=1');
 define('EYEFTP_IMG_TOOLBAR_CREATEFOLDER', 'index.php?extern=apps/eyeFTP/gfx/newfolder.png');
 define('EYEFTP_IMG_TOOLBAR_RENAME', 'index.php?extern=apps/eyeFTP/gfx/rename.png');
 define('EYEFTP_IMG_TOOLBAR_DELETE', 'index.php?extern=apps/eyeFTP/gfx/delete.png');
 define('EYEFTP_IMG_TOOLBAR_DOWNLOAD', 'index.php?extern=apps/eyeFTP/gfx/download.png');
 define('EYEFTP_IMG_TOOLBAR_UPLOAD', 'index.php?extern=apps/eyeFTP/gfx/upload.png');
-define('EYEFTP_IMG_TOOLBAR_HELP', 'index.php?extern=apps/eyeX/themes/default/images/toolbar/help.png');
+define('EYEFTP_IMG_TOOLBAR_HELP', 'index.php?extern=images/toolbar/help.png&theme=1');
 
 define('EYEFTP_IMG_LOCALVIEW_HOME', 'index.php?extern=apps/eyeFTP/gfx/managehosts.png');
 define('EYEFTP_IMG_REMOTEVIEW_HOME', 'index.php?extern=apps/eyeFTP/gfx/managehosts.png');
 
-define('EYEFTP_IMG_LOCALCMN_CREATEFOLDER', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/newfolder.png');
+define('EYEFTP_IMG_LOCALCMN_CREATEFOLDER', 'index.php?extern=icons/16x16/newfolder.png&theme=1');
 define('EYEFTP_IMG_LOCALCMN_SENDTORIGHT', 'index.php?extern=apps/eyeFTP/gfx/toright.png');
-define('EYEFTP_IMG_LOCALCMN_RENAME', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/rename.png');
-define('EYEFTP_IMG_LOCALCMN_DELETE', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png');
+define('EYEFTP_IMG_LOCALCMN_RENAME', 'index.php?extern=icons/16x16/rename.png&theme=1');
+define('EYEFTP_IMG_LOCALCMN_DELETE', 'index.php?extern=icons/16x16/delete.png&theme=1');
 
-define('EYEFTP_IMG_REMOTECMN_CREATEFOLDER', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/newfolder.png');
+define('EYEFTP_IMG_REMOTECMN_CREATEFOLDER', 'index.php?extern=icons/16x16/newfolder.png&theme=1');
 define('EYEFTP_IMG_REMOTECMN_SENDTOLEFT', 'index.php?extern=apps/eyeFTP/gfx/toleft.png');
-define('EYEFTP_IMG_REMOTECMN_RENAME', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/rename.png');
-define('EYEFTP_IMG_REMOTECMN_DELETE', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png');
+define('EYEFTP_IMG_REMOTECMN_RENAME', 'index.php?extern=icons/16x16/rename.png&theme=1');
+define('EYEFTP_IMG_REMOTECMN_DELETE', 'index.php?extern=icons/16x16/delete.png&theme=1');
 /*********************************************************************************************/
 
 define('EYEFTP_WINSIZE_WIDTH', 800);
@@ -63,14 +63,9 @@ define('EYEFTP_WINSIZE_HEIGHT', 600);
 
 function eyeFTP_run($params=null) {
 	global $checknum, $myPid;
-	
-	$version = eyeFTP_getVersionFromInfoXML();
-	
+		
 	eyeX('messageBox',array('content'=>'Welcome to eyeFTP!'));
-	$welcomeConsoleMessage =
-		'['.date('H:i:s',mktime()).'] eyeFTP v.'.$version.' started'
-		."\n".'['.date('H:i:s',mktime()).'] Help and FAQ available on the eyeOS wiki: http://wiki.eyeos.org/EyeFTP';
-	
+		
 	$mainWindow = new Window(array(
 		'name' => 'eyeFTP_WND',
 		'father' => 'eyeApps',
@@ -188,23 +183,55 @@ function eyeFTP_run($params=null) {
 	));
 	$passiveModeCheckbox->show();
 	
-
+	//HOST TEXTBOX FRIENDS (for enterEventMsg)
+	$hostTextbox->addFriend($portTextbox);
+	$hostTextbox->addFriend($usernameTextbox);
+	$hostTextbox->addFriend($passwordTextbox);
+	$hostTextbox->addFriend($passiveModeCheckbox);
+	
+	//PORT TEXTBOX FRIENDS (for enterEventMsg)
+	$portTextbox->addFriend($hostTextbox);
+	$portTextbox->addFriend($usernameTextbox);
+	$portTextbox->addFriend($passwordTextbox);
+	$portTextbox->addFriend($passiveModeCheckbox);
+	
+	//USERNAME TEXTBOX FRIENDS (for enterEventMsg)
+	$usernameTextbox->addFriend($hostTextbox);
+	$usernameTextbox->addFriend($portTextbox);
+	$usernameTextbox->addFriend($passwordTextbox);
+	$usernameTextbox->addFriend($passiveModeCheckbox);
+	
+	//PASSWORD TEXTBOX FRIENDS (for enterEventMsg)
+	$passwordTextbox->addFriend($hostTextbox);
+	$passwordTextbox->addFriend($portTextbox);
+	$passwordTextbox->addFriend($usernameTextbox);
+	$passwordTextbox->addFriend($passiveModeCheckbox);
+	
+	//"ENTER" EVENT
+	$hostTextbox->addEnterEventMsg('eyeFTP_connect_ITM');
+	$portTextbox->addEnterEventMsg('eyeFTP_connect_ITM');
+	$usernameTextbox->addEnterEventMsg('eyeFTP_connect_ITM');
+	$passwordTextbox->addEnterEventMsg('eyeFTP_connect_ITM');
+	
 
 	/**********************************************************/
 	//		CONSOLE WIDGET
 	/**********************************************************/
-	$logTextarea = new Textarea(array(
-		'name' => 'eyeFTP_log_TXTAREA',
+	$logConsole = new Container(array(
+		'name' => 'eyeFTP_log_CTNR',
 		'father' => 'eyeFTP_WND_Content',
 		'x'	=> 5,
 		'y' => 90,
 		'width' => 786,
-		'height' => 70,
-		'enabled' => 0,
-		'text' => $welcomeConsoleMessage
+		'height' => 70
 	));
-	$logTextarea->show();
-
+	$logConsole->show();
+	$logConsole->setCss(array(
+		'border' => 'thin solid #CCCCCC',
+		'overflow' => 'auto',
+		'padding-left' => '1px'
+	));
+	reqLib('eyeWidgets','serialize',array($logConsole));	
 
 
 	/**********************************************************/
@@ -255,9 +282,9 @@ function eyeFTP_run($params=null) {
 		'y' => 24,
 		'width' => 375,
 		'height' => 375,
-		'sortypes' => array('Hidden','Html','String','String','String','String'),
-		'master' => 0,
-		'theader' => array('id',' ','Filename','Filesize','Date','Author'),
+		'sortypes' => array('Html','String','String','String','String','Hidden'),
+		'master' => 5,
+		'theader' => array(' ','Filename','Filesize','Date','Author','id'),
 		'signal' => 'eyeFTP_localFilesClick',
 		'dblsignal' => 'eyeFTP_localFilesDblClick'
 	));
@@ -317,9 +344,9 @@ function eyeFTP_run($params=null) {
 		'y' => 24,
 		'width' => 375,
 		'height' => 375,
-		'sortypes' => array('Hidden','Html','String','String','String','String','String'),
-		'master' => 0,
-		'theader' => array('id',' ','Filename','Filesize','Date','Permissions','Owner'),
+		'sortypes' => array('Html','String','String','String','String','String','Hidden'),
+		'master' => 6,
+		'theader' => array(' ','Filename','Filesize','Date','Permissions','Owner','id'),
 		'signal' => 'eyeFTP_remoteFilesClick',
 		'dblsignal' => 'eyeFTP_remoteFilesDblClick'
 	));
@@ -344,9 +371,9 @@ function eyeFTP_run($params=null) {
 		'signal' => 'eyeFTP_transferToRight_IMG',
 		'alt' => 'Transfer selected file to right'
 	));
+	$transferToRightButton->addFriend($localFilesTable);
 	$transferToRightButton->show(0);
 	$transferToRightButton->setCss(array('cursor'=>'Pointer'));
-	$transferToRightButton->addFriend($localFilesTable);
 	
 	$transferToLeftButton = new Imagebox(array(
 		'name' => 'eyeFTP_transferToLeft_IMG',
@@ -358,9 +385,9 @@ function eyeFTP_run($params=null) {
 		'signal' => 'eyeFTP_transferToLeft_IMG',
 		'alt' => 'Download selected file to current local folder'
 	));
+	$transferToLeftButton->addFriend($remoteFilesTable);
 	$transferToLeftButton->show(0);
 	$transferToLeftButton->setCss(array('cursor'=>'Pointer'));
-	$transferToLeftButton->addFriend($remoteFilesTable);
 	
 	
 	
@@ -584,6 +611,17 @@ function eyeFTP_run($params=null) {
 	}
 	
 	eyeX('rawjs',array('js' => 'sendMsg('.$checknum.',"eyeFTP_initComplete","");'));
+	
+	//CSS
+	service('eyex','loadCss',array(
+		'url' => 'index.php?extern=apps/eyeFTP/css/eyeFTP.css&type=css',
+		'id' => 'eyeFTP.css'
+	));
+	
+	//JS
+	service('eyex','loadScript',array(
+		'url' => 'index.php?extern=apps/eyeFTP/js/eyeFTP'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum
+	));
 }
 
 

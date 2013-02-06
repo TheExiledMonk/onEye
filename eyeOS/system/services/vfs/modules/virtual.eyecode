@@ -43,7 +43,7 @@
 //
 
 global $charBlackList;
-$charBlackList = array("/","\\","<",">");
+$charBlackList = array("/","\\","<",">","[","]");
 
 
 /**
@@ -807,7 +807,7 @@ function service_vfs_checkPermissions($params) {
 	
 	$groups = service('um','getCurrentGroups');
 	foreach($groups as $key=>$value) {
-		$groupDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.FILES_GROUP_DIR.'/';
+		$groupDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.FILES_GROUP_DIR;
 		$groupDir = realpath($groupDir);
 		if($groupDir) {
 			if(realpath($params[0]) == $groupDir && $params[1] == 'e') {
@@ -1229,6 +1229,25 @@ function service_vfs_real_getFileContent($params) {
 	}
 			
 	if($result = file_get_contents($file)){
+		return $result;
+	}	
+}
+
+function service_vfs_real_putFileContent($params) {
+	
+	if($params == null || count($params) < 2){
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$file = $params[0];
+	$content = $params[1];
+		
+	if(!service('vfs','real_checkPermissions',array($file))) {		
+		return false;
+	}
+			
+	if($result = file_put_contents($file,$content)){
 		return $result;
 	}	
 }

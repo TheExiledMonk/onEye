@@ -73,7 +73,6 @@ function miniHome_run($params=null) {
 	
 	$dir = um('getCurrentUserDir');
 	$size = vfs('getDirSize',array($dir));
-	$percent = round($size / DEFAULT_QUOTA * 100);
 
 	$quotaBar = new ProgressBar(array(
 		'name' => 'quotaBar',
@@ -82,7 +81,7 @@ function miniHome_run($params=null) {
 		'y' => 30,
 		'x' => 12,
 		'max' => DEFAULT_QUOTA,
-		'progress' => $percent
+		'progress' => $size
 	));
 	$quotaBar->show();
 	eyeWidgets('serialize', array($quotaBar));

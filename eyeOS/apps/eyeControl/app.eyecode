@@ -330,7 +330,6 @@ function eyeControl_run($params = '') {
 // Used space:
 		} else {
 			$size = vfs('getDirSize',array(eyeControl_lib_getConfigUserPath()));
-			$percentage = round($size / DEFAULT_QUOTA * 100);
 			$myLabel = new Label(array(
 					'name' => 'eyeControl_label_Quota',
 					'father' => 'eyeControl_window_Content',
@@ -350,7 +349,7 @@ function eyeControl_run($params = '') {
 				'x' => 10,
 				'y' => 7,
 				'max' => DEFAULT_QUOTA,
-				'progress' => $percentage
+				'progress' => $size
 			));
 			$myProgress->show();
 		}

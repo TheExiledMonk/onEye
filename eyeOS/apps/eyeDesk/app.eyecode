@@ -107,19 +107,23 @@ function eyeDesk_showDesk($autorun) {
 		//open the css dir of the user selected theme
 		//TODO: PORT IT TO THE VFS, THIS DIR READ
 		if ($handler = opendir(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/css/')) {
-			//read its content
 			while (false !== ($file = readdir($handler))) {
-				//content that begin with a dot "." are ignored
-				if ($file{0} != ".") {
-					//remove the extension from the file
+				if ($file {0} != ".") {
 					$file = str_replace('.css','',$file);
-					//remove the css from the page, using his id
 					service('eyex','removeCSS',array('id' => $file.'Css'));
-					//load the new css from the user prefered theme
-					service('eyex','loadCSS',array('url' => 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/css/'.$file.'.css&type=css','id' => $file.'Css'));
+					if(!strstr($file,'IE')) {
+						service('eyex','loadCSS',array('url' => 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/css/'.$file.'.css&type=css','id' => $file.'Css'));
+					} elseif((strstr($file,'IE6') && IE == 6) || (strstr($file,'IE7') && IE == 7)) {
+						$myIE[] = $file;
+					}
 				}
 			}
 			closedir($handler);
+			if(is_array($myIE)) {
+				foreach($myIE as $file) {
+					service('eyex','loadCSS',array('url' => 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/css/'.$file.'.css&type=css','id' => $file.'Css'));
+				}
+			}
 		}
 	}
 	

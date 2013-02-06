@@ -35,8 +35,16 @@ function eyeLogin_on_doLogin($params="") {
 	global $checknum;
 	$myUsername = $GLOBALS['eyeLogin_Username']->text;
 	$myPassword = $GLOBALS['eyeLogin_Password']->text;
+	$myLanguage = $GLOBALS['eyeLogin_Language']->selected;
+		
 	if(service('um','login',array($myUsername,$myPassword))) {
 		$currentUser = $myUsername;
+		
+		//set language (if selection is not "Auto")
+		if ($myLanguage && $myLanguage != 'auto') {
+			i18n('setLang',array($myLanguage));
+		}
+		
 		service('proc','setProcessUser',array($myPid));
 		service('eyex','rawjs',array('js' => 'eyeLogin_successLogin("'.service('sec','cleanOutPutString',array('var'=>$myUsername,'noreturn' =>1,'nohtml' =>1)).'","'.$checknum.'","'.$myPid.'");'));
 	} else {
@@ -55,14 +63,18 @@ function eyeLogin_on_successLogin($params=null) {
 	proc('end');
 	$tokens = array($currentUser,EYEOS_HOSTNAME);
 	service('eyex','runjs',array('js'=>"document.title =  %s +'@'+ %s ;",'tokens'=>$tokens));
-	$udir = um('getCurrentUserDir');
-	$xml = eyeXML('getXMLfile',array($udir.'/conf/i18n/lang.xml'));	
-	if(is_array($xml)) {
-		$lang = $xml['lang'][0];
-	} else {
-		$lang = 'en';
+	
+	//if language has not been loaded (=> user selected "Auto")
+	if (! i18n('getLang')) {
+		$udir = um('getCurrentUserDir');
+		$xml = eyeXML('getXMLfile',array($udir.'/conf/i18n/lang.xml'));	
+		if(is_array($xml)) {
+			$lang = $xml['lang'][0];
+		} else {
+			$lang = 'en';
+		}
+		i18n('setLang',array($lang));
 	}
-	i18n('setLang',array($lang));	
 	service('proc','launch',array(LOGIN_EXECUTE,'autorun'));
 }
 

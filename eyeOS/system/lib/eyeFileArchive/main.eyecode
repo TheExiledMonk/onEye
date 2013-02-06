@@ -28,9 +28,11 @@ $longExtensions = array('tar.gz'=>'tgz','tar.bz2'=>'tbz');
 
 //Including archive class
 require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive'.EYE_CODE_EXTENSION;
+//Use the eyeOS default tmp directory
+File_Archive::setOption('tmpDirectory',get_tmp_dir());
 
 function lib_eyeFileArchive_extract($params=null){
-	if($params == null || count($params) < 2){
+	if($params == null || empty($params[0]) || empty($params[1])){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
@@ -68,7 +70,7 @@ function lib_eyeFileArchive_extract($params=null){
 }
 
 function lib_eyeFileArchive_list($params){
-	if($params == null || count($params) < 1){
+	if($params == null || empty($params[0])){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
@@ -109,7 +111,7 @@ function lib_eyeFileArchive_compress($params=null){
 	//Setting option, if eqTypes, if eqTypes is null, nothing special happens	
 	if(isset($params['eqTypes'])){
 		File_Archive::setOption('eqTypes',$params['eqTypes']);	
-	}		
+	}
 	$myReaders = _getReaders($params);
 	
 	$myAppender = File_Archive::appender($params[1]);
@@ -128,12 +130,12 @@ function _getEqTypes(&$params){
 	if(is_array($params[0])){
 		//if have a files stored in archived
 		if(is_array($params[0]['archived'])){
-			foreach($params[0]['archived'] as $arcSource){				
-				if(!vfs('real_checkPermissions',array($arcSource[0]))){
+			foreach($params[0]['archived'] as $arcSource){
+				if(!vfs('real_checkPermissions',array($arcSource[0])) || empty($arcSource[0])){
 					return false;
 				}
-				$ext = utf8_strtolower(vfs('getExtension',array($arcSource[0])));				
-				if(!array_key_exists($ext,$params['eqTypes'])){										
+				$ext = utf8_strtolower(vfs('getExtension',array($arcSource[0])));
+				if(!array_key_exists($ext,$params['eqTypes'])){
 					$realExt = vfs('real_getExtension',array($arcSource[0]));
 					if(isset($longExtensions[$realExt])){
 						$realExt = $longExtensions[$realExt];
@@ -141,10 +143,25 @@ function _getEqTypes(&$params){
 					$params['eqTypes'][$ext] = $realExt;
 				}				
 			}
-		}		
+		}
+		if(is_array($params[0]['simple'])){
+			foreach($params[0]['simple'] as $arcSource){
+				if(!vfs('real_checkPermissions',array($arcSource)) || empty($argSource)){
+					return false;
+				}				
+				$ext = utf8_strtolower(vfs('getExtension',array($arcSource)));
+				if(!empty($ext) && !array_key_exists($ext,$params['eqTypes'])){
+					$realExt = vfs('real_getExtension',array($arcSource));
+					if(isset($longExtensions[$realExt])){
+						$realExt = $longExtensions[$realExt];
+					}
+					$params['eqTypes'][$ext] = $realExt;
+				}				
+			}
+		}
 	}else{
 		$ext = utf8_strtolower(vfs('getExtension',array($params[0])));	
-		if(!array_key_exists($ext,$params['eqTypes'])){										
+		if(!array_key_exists($ext,$params['eqTypes'])){
 			$realExt = vfs('real_getExtension',array($params[0]));
 			if(isset($longExtensions[$realExt])){
 				$realExt = $longExtensions[$realExt];
@@ -159,30 +176,32 @@ function _getReaders(&$params){
 //This array content de extracted files with sym if have
 	global $readFiles;
 	if(!is_array($params[0])){
-		if($params[0]{utf8_strlen($params[0])} != '/'){			
-			$params[0] .= '/';			
-		}		
-		$sym = vfs('getVirtualName',array($params[0]));		
-		$ext = vfs('real_getExtension',array($sym));		
-		$sym = utf8_basename($sym);		
-		$sym = utf8_substr($sym,0,utf8_strpos($sym,$ext)-1);
+		$sym = vfs('getVirtualName',array($params[0]));
+		$ext = vfs('real_getExtension',array($sym));
+		$sym = utf8_basename($sym);
 		//Adding to extracted arrray
 		$readFiles[] = $params[1].'/'.$sym;
+		if($params[0]{utf8_strlen($params[0])} != '/'){
+			$params[0] .= '/';
+		}
 		$myReaders = File_Archive::read($params[0],$sym);
 	}else{
 		$myReaders = array();
 		//if have a complex sources
 		if(is_array($params[0]['archived'])){
 			foreach($params[0]['archived'] as $complexSource){
+				if(empty($complexSource[0])){
+					continue;
+				}
 				$archived = $complexSource[0];
-				array_shift($complexSource);								
-				foreach($complexSource as $fileInArc){					
-					$file = $archived.'/'.$fileInArc;					
+				array_shift($complexSource);
+				foreach($complexSource as $fileInArc){
+					$file = $archived.'/'.$fileInArc;
 					$readFiles[] = $params[1].'/'.$fileInArc;
 					if(is_file($archived) == true){
 						$myReaders[] = File_Archive::read($file,$fileInArc);
 					}else{
-						$file = vfs('getRealName',array($file));						
+						$file = vfs('getRealName',array($file));
 						$myReaders[] = File_Archive::read($file,$fileInArc);
 					}
 				}		
@@ -190,10 +209,15 @@ function _getReaders(&$params){
 		}	
 		if(is_array($params[0]['simple'])){
 			foreach($params[0]['simple'] as $file){
+				$sym = vfs('getVirtualName',array($file));
+				if(!vfs('fileExists',array($sym))){
+					$sym = $file;
+				}
+				$sym = utf8_basename($sym);
+
 				if($file{utf8_strlen($file)} != '/'){
 					$file .= '/';
-				}
-				$sym = utf8_basename($file);
+				}				
 				$readFiles[] = $params[1].'/'.$sym;
 				$myReaders[] = File_Archive::read($file,$sym);
 			}
@@ -201,7 +225,6 @@ function _getReaders(&$params){
 	}
 	return $myReaders;
 }
-
 function lib_eyeFileArchive_supportedTypes(){
 	$files = array();
 	

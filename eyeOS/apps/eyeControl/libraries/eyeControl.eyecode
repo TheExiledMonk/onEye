@@ -36,11 +36,11 @@ function eyeControl_lib_addEnterEvent($widget,$message) {
 function eyeControl_lib_deleteDirContent($dir) {
 	if ($handler = opendir($dir)) {
 		while (false !== ($file = readdir($handler))) {
-			if($file != '..' && $file != '.') {
-				if(is_dir($dir.'/'.$file)) {
-					deleteDirContent($dir.'/'.$file,$first);
+			if ($file != '..' && $file != '.') {
+				if (is_dir($dir . $file . '/')) {
+					eyeControl_lib_deleteDirContent($dir . $file . '/');
 				} else {
-					unlink($dir.'/'.$file);
+					unlink($dir . $file);
 				}
 			}
 		}

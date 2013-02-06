@@ -240,7 +240,7 @@ function drawDesktop($reload=false) {
 								$mx = $x;
 								$my = $y;
 							}
-							$myLinkIcon = new Icon(array('name'=>$myName,'text'=>$publicName,'father'=>'eyeApps',
+							$myLinkIcon = new Icon(array('name'=>$myName,'text'=>i18n('translate',array($publicName)),'father'=>'eyeApps',
 									'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png',
 		           					'realname'=>EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png',
 		           					'content'=>array($linkContent,$args),'father'=>'eyeApps','x'=>$mx,'y'=>$my,'overBorder'=>1,'overBorderBg'=>'#0a2c5e','overBorderColor'=>'1px #3b567e solid','draggable'=>0));	  

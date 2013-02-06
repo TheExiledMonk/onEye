@@ -24,8 +24,8 @@
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.2
- * @updated 22-Apr-2008
+ * @version 3.1.0
+ * @updated 24-May-2008
  */
 
 
@@ -39,6 +39,12 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/events-local'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/events-remote'.EYE_CODE_EXTENSION);
 
 define('EYEFTP_USE_REQUEST_BOUNCING',true);
+
+define('EYEFTP_LOGSTYLE_NORMAL', 'norm');
+define('EYEFTP_LOGSTYLE_SUCCESS', 'succ');
+define('EYEFTP_LOGSTYLE_INFO', 'info');
+define('EYEFTP_LOGSTYLE_WARNING', 'warn');
+define('EYEFTP_LOGSTYLE_ERROR', 'err');
 
 /*********************************************************************************************/
 /*********************************************************************************************/
@@ -54,6 +60,11 @@ define('EYEFTP_USE_REQUEST_BOUNCING',true);
  * Called after the initialization of the interface (function 'eyeFTP_run()' in app.eyecode)
  */
 function eyeFTP_on_eyeFTP_initComplete($params="") {
+	$version = eyeFTP_getVersionFromInfoXML();
+	
+	eyeFTP_logConsole('eyeFTP v.%s started', array($version), EYEFTP_LOGSTYLE_INFO);
+	eyeFTP_logConsole('Help and FAQ available on the eyeOS wiki: %s',array('http://wiki.eyeos.org/EyeFTP'));
+	
 	eyeFTP_setActiveView('local');
 	eyeFTP_browseLocal('/');
 }
@@ -79,16 +90,18 @@ function eyeFTP_on_eyeFTP_connect_ITM($params="") {
 
 	//the "host" textfield must be filled in
 	if (! $conf['host']){
-		eyeX('messageBox',array('content'=> i18n("translate",array("Please specify a hostname to connect to"))));
+		eyeX('messageBox',array('content'=> 'Please specify a hostname to connect to'));
 		return;
 	}
 	if (! $conf['username']){
-		eyeX('messageBox',array('content'=>i18n("translate",array("Please specify a username"))));
+		eyeX('messageBox',array('content'=> 'Please specify a username'));
 		return;
 	}
 	
 	eyeFTP_clearLogConsole();
-	eyeFTP_logConsole('Trying to connect to '.$conf['host'].':'.$conf['port'].' (user \''.$conf['username'].'\') ...');
+	eyeFTP_logConsole('Trying to connect to %s:%s (user "%s") ...',
+		array($conf['host'],$conf['port'],$conf['username'])
+	);
 
 	if (EYEFTP_USE_REQUEST_BOUNCING) {
 		eyeFTP_setConnectionActive(true);
@@ -96,14 +109,16 @@ function eyeFTP_on_eyeFTP_connect_ITM($params="") {
 	}
 	else {
 		if (eyeFTP_ftpConnect($conf['host'],$conf['port'],$conf['username'],$conf['password'],$conf['passiveMode']))
-			eyeFTP_browseRemote('/');
+			eyeFTP_browseRemote(eyeFTP_ftpPwd());
 	}
 }
 
 function eyeFTP_on_eyeFTP_disconnect_ITM($params="") {
 	$conf = eyeFTP_getConf();
 	if ($conf['isConnectionActive']) {
-		eyeFTP_logConsole('Disconnecting from '.$conf['host'].':'.$conf['port']);
+		eyeFTP_logConsole('Disconnecting from %s:%s',
+			array($conf['host'],$conf['port'])
+		);
 		eyeFTP_setConnectionActive(false);
 	}
 }
@@ -210,39 +225,43 @@ function eyeFTP_on_eyeFTP_transferToRight_IMG($params="") {
 			'remotePath' => base64_decode($params['remotePath_b64'][0])
 		);
 		if (eyeFTP_ftpPut($uploadParams) === true) {
-			eyeFTP_logConsole('File \''.basename($params['filePath'][0])
-								.'\' successfully uploaded to \''.$uploadParams['remotePath'].'\'');
+			eyeFTP_logConsole('File "%s" successfully uploaded to "%s"',
+				array(basename($params['filePath'][0]),$uploadParams['remotePath']),
+				EYEFTP_LOGSTYLE_SUCCESS
+			);
 			if ($conf['currentRemoteDir'] == $uploadParams['remotePath']) {
 				eyeFTP_refreshRemote();
 			}
 		}
 		else
-			eyeFTP_logConsole('Unable to upload file, error occured');
+			eyeFTP_logConsole('Unable to upload file, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 		return;
 	}
 	// === END OF BOUNCED REQUEST PROCESSING ===
 	
 	if (! $conf['isConnectionActive']) {
 		
-		eyeX('messageBox',array('content'=> i18n("translate",array("You must connect first"))));
+		eyeX('messageBox',array('content'=> 'You must connect first'));
 		return;
 	}
 	if (! $conf['selectedLocalFile'] || $conf['selectedLocalFile']['type'] != '-') {
-		eyeX('messageBox',array('content'=> i18n("translate",array("You must select a local file"))));
+		eyeX('messageBox',array('content'=> 'You must select a local file'));
 		return;
 	}
 	
 	//check path validity
 	$fileDirPath = eyeFTP_resolvePathInUserDir(dirname($conf['selectedLocalFile']['path']),false);
 	if ($fileDirPath === false) {
-		eyeFTP_logConsole('An error occurred during path resolving, aborting');
+		eyeFTP_logConsole('An error occurred during path resolving, aborting', null, EYEFTP_LOGSTYLE_ERROR);
 		return;
 	}
 	$filePath = eyeFTP_getFormatedDirPath($fileDirPath.'/'.$conf['selectedLocalFile']['name']);
 	$displayedFilePath = eyeFTP_getFormatedDirPath(
-							eyeFTP_resolvePathInUserDir($filePath).'/'.$conf['selectedLocalFile']['name']);
+							eyeFTP_resolvePathInUserDir($fileDirPath).'/'.$conf['selectedLocalFile']['name'],$conf['currentRemoteDir']);
 	
-	eyeFTP_logConsole('Uploading: \''.$displayedFilePath.'\' to \''.$conf['currentRemoteDir'].'\'');
+	eyeFTP_logConsole('Uploading: "%s" to "%s"',
+		array($displayedFilePath,$conf['currentRemoteDir'])
+	);
 	
 	if (EYEFTP_USE_REQUEST_BOUNCING) {
 		eyeFTP_bounceRequest(array(
@@ -256,14 +275,16 @@ function eyeFTP_on_eyeFTP_transferToRight_IMG($params="") {
 							'filePath' => $filePath,
 							'remotePath' => $conf['currentRemoteDir']);
 		if (eyeFTP_ftpPut($uploadParams) === true) {
-			eyeFTP_logConsole('File \''.basename($filePath)
-								.'\' successfully uploaded to \''.$conf['currentRemoteDir'].'\'');
+			eyeFTP_logConsole('File "%s" successfully uploaded to "%s"',
+				array(basename($filePath),$conf['currentRemoteDir']),
+				EYEFTP_LOGSTYLE_SUCCESS
+			);
 			if ($conf['currentRemoteDir'] == $uploadParams['remotePath']) {
 				eyeFTP_refreshRemote();
 			}
 		}
 		else
-			eyeFTP_logConsole('Unable to upload file, error occured');
+			eyeFTP_logConsole('Unable to upload file, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 	}
 }
 
@@ -281,7 +302,7 @@ function eyeFTP_on_eyeFTP_transferToLeft_IMG($params="") {
 		if (! eyeFTP_ftpGet(base64_decode($params['dir_b64'][0]),
 							base64_decode($params['filename_b64'][0]),
 							$downloadParams)) {
-			eyeFTP_logConsole('Unable to download file, error occured');
+			eyeFTP_logConsole('Unable to download file, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 		}
 		return;
 	}
@@ -289,18 +310,17 @@ function eyeFTP_on_eyeFTP_transferToLeft_IMG($params="") {
 	
 	$conf = eyeFTP_getConf();
 	if (! $conf['isConnectionActive']) {
-		eyeX('messageBox',array('content'=> i18n("translate",array("You must connect first"))));
+		eyeX('messageBox',array('content'=> 'You must connect first'));
 		return;
 	}
 	if (! $conf['selectedRemoteFile'] || $conf['selectedRemoteFile']['type'] != '-') {
-		eyeX('messageBox',array('content'=> i18n("translate",array("You must select a remote file"))));
+		eyeX('messageBox',array('content'=> 'You must select a remote file'));
 		return;
 	}
 	
-	eyeFTP_logConsole('Downloading: '.
-						eyeFTP_getFormatedDirPath($conf['currentRemoteDir'].'/'.$conf['selectedRemoteFile']['name']
-						.' to '.$conf['currentLocalDir']
-	));
+	eyeFTP_logConsole('Downloading: "%s" to "%s"',
+		array(eyeFTP_getFormatedDirPath($conf['currentRemoteDir'].'/'.$conf['selectedRemoteFile']['name']),$conf['currentLocalDir'])
+	);
 	
 	if (EYEFTP_USE_REQUEST_BOUNCING) {
 		eyeFTP_bounceRequest(array(
@@ -311,9 +331,12 @@ function eyeFTP_on_eyeFTP_transferToLeft_IMG($params="") {
 		));
 	}
 	else {
-		$downloadParams = array('target' => 'eyeos','path' => $conf['currentLocalDir']);
+		$downloadParams = array(
+			'target' => 'eyeos',
+			'path' => $conf['currentLocalDir']
+		);
 		if (! eyeFTP_ftpGet($conf['currentRemoteDir'],$conf['selectedRemoteFile']['name'],$downloadParams)) {
-			eyeFTP_logConsole('Unable to download file, error occured');
+			eyeFTP_logConsole('Unable to download file, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 		}
 	}
 }
@@ -338,7 +361,7 @@ function eyeFTP_on_windowResize($params="") {
 	$dHeight = $newHeight - EYEFTP_WINSIZE_HEIGHT;
 	
 	//log console
-	$GLOBALS['eyeFTP_log_TXTAREA']->setWidth(786 + $dWidth);
+	$GLOBALS['eyeFTP_log_CTNR']->setWidth(786 + $dWidth);
 	
 	//left browser (local files)
 	$GLOBALS['eyeFTP_localPath_TXTBOX']->setWidth(343 + ($dWidth / 2));

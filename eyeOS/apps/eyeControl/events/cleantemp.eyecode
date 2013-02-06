@@ -22,12 +22,11 @@
 */
 
 function eyeControl_on_cleantemp_do($params = '') {
-	$tempDir = get_tmp_dir();
-	if ($tempDir == EYE_ROOT . '/' . EYEOS_TMP_DIR) {
-		eyeControl_lib_deleteDirContent($tempDir);
+	global $currentUser;
+	if ($currentUser == ROOTUSER) {
+		eyeControl_lib_deleteDirContent(EYE_ROOT . '/' . EYEOS_TMP_DIR . '/');
 		eyex('messageBox',array('content' => 'Temporary files and folders successfully removed.'));
-	} else {
-		eyex('messageBox',array('content' => 'Your eyeOS server does not need to be cleaned.'));
+		eyeControl_lib_loadContent('only_root','cleantemp');
 	}
 }
 ?>

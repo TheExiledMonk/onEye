@@ -23,8 +23,8 @@
 
 /**
  * @author Nanawel (nanawel@eyeos.org)
- * @version 1.0
- * @updated 23-Apr-2008
+ * @version 1.1
+ * @updated 22-May-2008
  */
 
 define('EYEFEEDS_WIN_HEIGHT',600);
@@ -83,7 +83,22 @@ function eyeFeeds_run($params=null) {
 		'index.php?extern=apps/eyeX/themes/default/images/toolbar/refresh.png',
 		'Refresh'
 	);
+	$toolbar->addItem(
+		'import_ITM',
+		'index.php?extern=apps/eyeFeeds/gfx/import.png',
+		'Import'
+	);
+	$toolbar->addItem(
+		'export_ITM',
+		'index.php?extern=apps/eyeFeeds/gfx/export.png',
+		'Export'
+	);
 	$toolbar->addLine();
+	$toolbar->addItem(
+		'settings_ITM',
+		'index.php?extern=apps/eyeFeeds/gfx/settings.png',
+		'Settings'
+	);
 	$toolbar->addItem(
 		'help_ITM',
 		'index.php?extern=apps/eyeX/themes/default/images/toolbar/help.png',
@@ -92,9 +107,9 @@ function eyeFeeds_run($params=null) {
 	
 	
 	/**********************************************************/
-	//		LEFT CONTAINER
+	//		LEFT CONTAINERS
 	/**********************************************************/
-	$leftContainer = new Box(array(
+	$leftBox = new Box(array(
 		'name' => 'left_BOX',
 		'father' => 'eyeFeeds_WND_Content',
 		'x' => 4,
@@ -103,7 +118,19 @@ function eyeFeeds_run($params=null) {
 		'height' => 504,
 		'title' => 'Feeds'
 	));
-	$leftContainer->show(0);
+	$leftBox->show(0);
+	
+	//tree container (for scrolling)
+	$treeContainer = new Container(array(
+		'name'=>'tree_CTN',
+		'father'=>'left_BOX',
+		'x'=>1,
+		'y'=>24,
+		'width'=>180,
+		'height'=>460
+	));
+	$treeContainer->show();
+	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_tree_CTN_Container").style.overflow="auto";'));
 	
 	//FEEDS TREE
 	//@see [func.eyecode] eyeFeeds_drawFeedsTree()
@@ -166,7 +193,7 @@ function eyeFeeds_run($params=null) {
 		'father' => 'itemsList_BOX',
 		'x' => 220,
 		'y' => 160,
-		'text' => '  Loading, please wait...  '
+		'text' => 'Loading, please wait...'
 	));
 	$loadingLabel->show(0);
 	$loadingLabel->hide();

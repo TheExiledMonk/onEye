@@ -39,6 +39,7 @@ class Simplebox {
 	var $horiz;
 	var $vert;
 	var $cent;
+	var $visible;
 	
 	var $showed = 0;
 	
@@ -63,6 +64,7 @@ class Simplebox {
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
+		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
 		
 		//especific window options
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
@@ -82,6 +84,7 @@ class Simplebox {
 
 	function show($noserialize=1) {
 		$widgetsparams = array(
+			'visible' => $this->visible,
 			'height' => $this->height,
 			'width' => $this->width,
 			'border'=> $this->border

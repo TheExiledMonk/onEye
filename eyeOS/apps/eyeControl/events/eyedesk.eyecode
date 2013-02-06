@@ -45,7 +45,7 @@ function eyeControl_on_eyedesk_new_add($params = '') {
 		$autorunXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 		$arrayIds = eyeControl_lib_findIdByText(array($autorunXML['eyeDesk'][0]['autolaunch'],$autorun));
 		if (isset($arrayIds[0])) {
-			eyex('messageBox',array('content' => 'The command is already configured.'));
+			eyex('messageBox',array('content' => 'That command is already configured!'));
 		} else {
 			$autorunXML['eyeDesk'][0]['autolaunch'][] = $autorun;
 			eyeControl_lib_setXMLconfig(array('eyeDesk','conf.xml',$autorunXML));
@@ -102,7 +102,7 @@ function eyeControl_on_eyedesk_edit_save($params = '') {
 			eyex('messageBox',array('content' => 'Command successfully saved.'));
 			eyeControl_lib_loadContent('system','eyedesk');
 		} else {
-			eyex('messageBox',array('content' => 'The command does not exist yet.'));
+			eyex('messageBox',array('content' => 'That command does not exist!'));
 		}
 	} else {
 		eyex('messageBox',array('content' => 'Please type a command!'));
@@ -115,7 +115,7 @@ function eyeControl_on_eyedesk_edit_cancel($params = '') {
 
 function eyeControl_on_eyedesk_default($params = '') {
 	eyex('messageBox',array(
-		'content' => 'Do you really want to use the default eyeDesk settings?',
+		'content' => 'Do you really want to restore the default eyeDesk settings?',
 		'type' => 3,
 		'title' => 'Use defaults',
 		'win_name' => 'eyeControl_eyedesk_default_window',
@@ -181,7 +181,7 @@ function eyeControl_on_eyedesk_delete_yes($params = '') {
 		$x = $x[0];
 		unset($autorunXML['eyeDesk'][0]['autolaunch'][$x]);
 		eyeControl_lib_setXMLconfig(array('eyeDesk','conf.xml',$autorunXML));
-		eyex('messageBox',array('content' => 'The command was successfully deleted.'));
+		eyex('messageBox',array('content' => 'Command successfully deleted.'));
 		eyeControl_lib_loadContent('system','eyedesk');
 	}
 }

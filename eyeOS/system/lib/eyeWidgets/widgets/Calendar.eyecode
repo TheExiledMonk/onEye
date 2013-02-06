@@ -45,6 +45,7 @@ class Calendar{
 	//custom widget options
 	var $width;
 	var $height;
+	var $visible;
 	var $rowsAndDate;
 	var $workDays;
 	var $preMonthDays;
@@ -76,6 +77,7 @@ class Calendar{
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
+		isset($params['visible'])? $this->visible = $params['visible'] : $this->visible = 1;
 				
 		//especific window options
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
@@ -135,6 +137,7 @@ class Calendar{
 		$widgetsparams = array(
 			'height' => $this->height,
 			'width' => $this->width,
+			'visible' => $this->visible,
 			'selectFunc' => $this->selectFunc,
 			'rowsAndDate'=>$this->rowsAndDate,
 			'workDays'=>$this->workDays,

@@ -24,8 +24,8 @@
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.2
- * @updated 13-Apr-2008
+ * @version 3.1.0
+ * @updated 24-May-2008
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
@@ -53,32 +53,35 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-remote'.EYE_CODE_EXTENSION);
 function eyeFTP_ftpConnect($host,$port,$username,$password,$passiveMode,$silentSuccess = false,$timeout = 10) {
 	$ftpResource = ftp_connect($host,$port,$timeout);
 	if ($ftpResource === false) {
-		eyeFTP_logConsole('Failed to connect to specified host!');
+		eyeFTP_logConsole('Failed to connect to specified host!', null, EYEFTP_LOGSTYLE_ERROR);
 		eyeFTP_setConnectionActive(false);
 		return false;
 	}
 	
 	if (! $silentSuccess) {
-		eyeFTP_logConsole('Connection accepted');
+		eyeFTP_logConsole('Connection accepted', null, EYEFTP_LOGSTYLE_SUCCESS);
 		eyeFTP_logConsole('Authenticating user...');
 	}
 	if (ftp_login($ftpResource,$username,$password) === false) {
-		eyeFTP_logConsole('Authentication failed. Invalid username/password!');
+		eyeFTP_logConsole('Authentication failed. Invalid username/password!', null, EYEFTP_LOGSTYLE_ERROR);
 		eyeFTP_setConnectionActive(false);
 		return false;
 	}
 	
 	if (! $silentSuccess) {
-		eyeFTP_logConsole('User \''.$username.'\' authenticated successfully');
+		eyeFTP_logConsole('User "%s" authenticated successfully',
+			array($username),
+			EYEFTP_LOGSTYLE_SUCCESS
+		);
 	}
 	
 	if ($passiveMode) {
 		if (ftp_pasv($ftpResource,true) === false) {
-			eyeFTP_logConsole('Passive mode failed! Data transfers will be performed in active mode');
+			eyeFTP_logConsole('Passive mode failed! Data transfers will be performed in active mode', null, EYEFTP_LOGSTYLE_WARNING);
 		}
 		else {
 			if (! $silentSuccess)
-				eyeFTP_logConsole('Passive mode accepted');
+				eyeFTP_logConsole('Passive mode accepted', null, EYEFTP_LOGSTYLE_SUCCESS);
 		}
 	}
 	
@@ -107,14 +110,14 @@ function eyeFTP_ftpListDir($dir) {
 		return false;
 	}
 	if (! ftp_chdir($GLOBALS['eyeFTP_ftpConnectionResource'],'/'.$dir)) {
-		eyeFTP_logConsole('Unable to list files, error occured');
+		eyeFTP_logConsole('Unable to list files, error occured', null, EYEFTP_LOGSTYLE_ERROR);
 		return false;
 	}
 	$dir = eyeFTP_ftpPwd($GLOBALS['eyeFTP_ftpConnectionResource']);
 	
 	$contents = ftp_rawlist($GLOBALS['eyeFTP_ftpConnectionResource'],"-a ".$dir);
 	if ($contents === false) {
-		eyeFTP_logConsole('Unable to list files, error occured. (Do you have sufficient permissions?)');
+		eyeFTP_logConsole('Unable to list files, error occured. (Do you have sufficient permissions?)', null, EYEFTP_LOGSTYLE_ERROR);
 		return false;
 	}
 	
@@ -131,21 +134,21 @@ function eyeFTP_ftpListDir($dir) {
 			
 			case 'l':
 				$urlIcon = 'index.php?extern=apps/eyeFTP/gfx/typelink.png';
-				$size  = $fileInfo['size'].' B';
+				$size  = $fileInfo['size'];
 				break;
 			
 			default:
 				$urlIcon = 'index.php?extern=apps/eyeFTP/gfx/typedefault.png';
-				$size  = $fileInfo['size'].' B';
+				$size  = $fileInfo['size'];
 		}
 		$GLOBALS['eyeFTP_remoteFiles_TAB']->addRow(array(
-			$id,
 			'<img src="'.$urlIcon.'" />',
 			$fileInfo['displayedName'],
 			$size,
 			$fileInfo['month'].' '.$fileInfo['day'].' '.$fileInfo['year-time'],
 			$fileInfo['perms'],
-			$fileInfo['owner']
+			$fileInfo['owner'],
+			$id
 		));
 		$nbFiles++;
 	}
@@ -157,7 +160,10 @@ function eyeFTP_ftpListDir($dir) {
 	global $myPid;
 	eyeX('rawjs',array('js' => 'document.getElementById("'.$myPid.'_eyeFTP_remotePath_TXTBOX").value=Base64.decode("'.base64_encode($dir).'");'));
 	
-	eyeFTP_logConsole('Directory listing successful for \''.$dir.'\' ('.$nbFiles.' file(s) found)');
+	eyeFTP_logConsole('Directory listing successful for "%s" (%s file(s) found)',
+		array($dir,$nbFiles),
+		EYEFTP_LOGSTYLE_SUCCESS
+	);
 	return true;
 }
 
@@ -185,15 +191,16 @@ function eyeFTP_ftpGet($dir,$filename,$downloadParams="") {
 	$tmpfile = fopen($tmpfilepath,'w+');
 	
 	if ($tmpfile === false) {
-		eyeFTP_logConsole('Unable to create temporary file! Download aborted.');
+		eyeFTP_logConsole('Unable to create temporary file! Download aborted.', null, EYEFTP_LOGSTYLE_ERROR);
 		return false;
 	}
 	
 	if (ftp_fget($GLOBALS['eyeFTP_ftpConnectionResource'],
-						$tmpfile,eyeFTP_getFormatedDirPath($dir.'/'.$filename),
+						$tmpfile,
+						eyeFTP_getFormatedDirPath($dir.'/'.$filename),
 						FTP_BINARY,
 						0) !== true) {
-		eyeFTP_logConsole('Error while downloading file! Transfer aborted.');
+		eyeFTP_logConsole('Error while downloading file! Transfer aborted.', null, EYEFTP_LOGSTYLE_ERROR);
 		return false;
 	}
 	
@@ -201,18 +208,18 @@ function eyeFTP_ftpGet($dir,$filename,$downloadParams="") {
 		$targetFilePath = service('um','getCurrentUserDir').FILES_USER_DIR
 																.$downloadParams['path'].'/'.$filename;
 		if(! service('vfs','create',array($targetFilePath,'eyeFTP'))) {
-			eyeFTP_logConsole('Unable to create file at the specified location.');
+			eyeFTP_logConsole('Unable to create file at the specified location.', null, EYEFTP_LOGSTYLE_ERROR);
 			return false;
 		}
 		$fp = service('vfs','open',array($targetFilePath,'w'));
 		if(! $fp) {
-			eyeFTP_logConsole('Unable to write file, try to check permissions.');
+			eyeFTP_logConsole('Unable to write file, try to check permissions.', null, EYEFTP_LOGSTYLE_ERROR);
 			return false;
 		}
 		fclose($tmpfile);
 		$fileContent = file_get_contents($tmpfilepath);
 		if (fwrite($fp,$fileContent) === false) {
-			eyeFTP_logConsole('Unable to write content of file.');
+			eyeFTP_logConsole('Unable to write content of file.', null, EYEFTP_LOGSTYLE_ERROR);
 			return false;
 		}
 		fclose($fp);
@@ -224,7 +231,10 @@ function eyeFTP_ftpGet($dir,$filename,$downloadParams="") {
 		$params = urlencode(serialize($params));
 		service('eyex','rawjs',array('js' => "document.getElementById('".$myPid."_eyeFTP_download_FRM').src='index.php?checknum=$checknum&msg=eyeFTP_downloadRemote_finished&params=".$params."';"));
 	}
-	eyeFTP_logConsole('Download finished successfully, '.filesize($tmpfilepath).' bytes transfered.');
+	eyeFTP_logConsole('Download finished successfully, %s bytes transfered.',
+		array(filesize($tmpfilepath)),
+		EYEFTP_LOGSTYLE_SUCCESS
+	);
 	$conf = eyeFTP_getConf();
 	if ($downloadParams['path'] == $conf['currentLocalDir'])
 		eyeFTP_on_eyeFTP_refreshLocal();
@@ -268,17 +278,23 @@ function eyeFTP_ftpPut($uploadParams="") {
 							FTP_BINARY,
 							0) === true) {
 				$filesize = service('vfs','filesize',array($filePath));
-				eyeFTP_logConsole('Upload finished successfully, '.$filesize.' bytes transfered.');
+				eyeFTP_logConsole('Upload finished successfully, %s bytes transfered.',
+					array($filesize),
+					EYEFTP_LOGSTYLE_SUCCESS
+				);
 			}
 			else {
-				eyeFTP_logConsole('Error while uploading file! Transfer aborted. (Do you have sufficient permissions?)');
+				eyeFTP_logConsole('Error while uploading file! Transfer aborted. (Do you have sufficient permissions?)',
+					null,
+					EYEFTP_LOGSTYLE_ERROR
+				);
 				return false;
 			}
 			fclose($fp);
 			return true;
 		}
 		else {
-			eyeFTP_logConsole('Unable to read source file! Upload aborted.');
+			eyeFTP_logConsole('Unable to read source file! Upload aborted.', null, EYEFTP_LOGSTYLE_ERROR);
 			return false;
 		}
 	}
@@ -290,17 +306,22 @@ function eyeFTP_ftpPut($uploadParams="") {
 							$uploadParams['remotePath'].'/'.$uploadParams['realName'],$fp,
 							FTP_BINARY,
 							0) === true) {
-				eyeFTP_logConsole('Upload finished successfully, '.
-									filesize($uploadParams['tmpName']).' bytes transfered.');
+				eyeFTP_logConsole('Upload finished successfully, %s bytes transfered.',
+					array(filesize($uploadParams['tmpName'])),
+					EYEFTP_LOGSTYLE_SUCCESS
+				);
 			}
 			else {
-				eyeFTP_logConsole('Error while uploading file! Transfer aborted. (Do you have sufficient permissions?)');
+				eyeFTP_logConsole('Error while uploading file! Transfer aborted. (Do you have sufficient permissions?)',
+					null,
+					EYEFTP_LOGSTYLE_ERROR
+				);
 				return false;
 			}
 			fclose($fp);
 		}
 		else {
-			eyeFTP_logConsole('Unable to read temporary file! Upload aborted.');
+			eyeFTP_logConsole('Unable to read temporary file! Upload aborted.', null, EYEFTP_LOGSTYLE_ERROR);
 			return false;
 		}
 		return true;
@@ -320,11 +341,17 @@ function eyeFTP_ftpMkdir($dir,$foldername) {
 	}
 
 	if (ftp_mkdir($GLOBALS['eyeFTP_ftpConnectionResource'],eyeFTP_getFormatedDirPath($dir.'/'.$foldername)) == false) {
-		eyeFTP_logConsole('Unable to create directory, error occured. (Do you have sufficient permissions?)');
+		eyeFTP_logConsole('Unable to create directory, error occured. (Do you have sufficient permissions?)',
+			null,
+			EYEFTP_LOGSTYLE_ERROR
+		);
 		return false;
 	}	
 	else {
-		eyeFTP_logConsole('Directory \''.eyeFTP_getFormatedDirPath($dir.'/'.$foldername).'\' created successfully');
+		eyeFTP_logConsole('Directory "%s" created successfully',
+			array(eyeFTP_getFormatedDirPath($dir.'/'.$foldername)),
+			EYEFTP_LOGSTYLE_SUCCESS
+		);
 		return true;
 	}
 }
@@ -342,11 +369,14 @@ function eyeFTP_ftpRename($currentFileLocation,$newFileLocation) {
 	}
 
 	if (ftp_rename($GLOBALS['eyeFTP_ftpConnectionResource'],$currentFileLocation,$newFileLocation) == false) {
-		eyeFTP_logConsole('Unable to rename selection, error occured. (Do you have sufficient permissions?)');
+		eyeFTP_logConsole('Unable to rename selection, error occured. (Do you have sufficient permissions?)',
+			null,
+			EYEFTP_LOGSTYLE_ERROR
+		);
 		return false;
 	}	
 	else {
-		eyeFTP_logConsole('File/folder renamed successfully');
+		eyeFTP_logConsole('File/folder renamed successfully', null, EYEFTP_LOGSTYLE_SUCCESS);
 		return true;
 	}
 }
@@ -366,22 +396,28 @@ function eyeFTP_ftpDelete($filePath,$fileType) {
 	//FOLDER
 	if ($fileType == 'd') {
 		if (ftp_rmdir($GLOBALS['eyeFTP_ftpConnectionResource'],$filePath) == false) {
-			eyeFTP_logConsole('Unable to delete folder, error occured. (Do you have sufficient permissions?)');
+			eyeFTP_logConsole('Unable to delete folder, error occured. (Do you have sufficient permissions?)',
+				null,
+				EYEFTP_LOGSTYLE_ERROR
+			);
 			return false;
 		}
 		else {
-			eyeFTP_logConsole('Folder deleted successfully');
+			eyeFTP_logConsole('Folder deleted successfully', null, EYEFTP_LOGSTYLE_SUCCESS);
 		return true;
 		}
 	}
 	//FILE (OR LINK)
 	else {
 		if (ftp_delete($GLOBALS['eyeFTP_ftpConnectionResource'],$filePath) == false) {
-			eyeFTP_logConsole('Unable to delete file, error occured. (Do you have sufficient permissions?)');
+			eyeFTP_logConsole('Unable to delete file, error occured. (Do you have sufficient permissions?)',
+				null,
+				EYEFTP_LOGSTYLE_ERROR
+			);
 			return false;
 		}	
 		else {
-			eyeFTP_logConsole('File deleted successfully');
+			eyeFTP_logConsole('File deleted successfully', null, EYEFTP_LOGSTYLE_SUCCESS);
 			return true;
 		}
 	}

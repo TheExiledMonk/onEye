@@ -47,6 +47,7 @@ class Tab {
 	var $width;
 	var $height;
 	var $signal;
+	var $tabwidth;
 	
 	var $showed = 0;
 	
@@ -71,6 +72,7 @@ class Tab {
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = -1;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = -1;
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
+		isset($params['tabwidth']) ? $this->tabwidth = $params['tabwidth'] : $this->tabwidth = 80;
 		
 		//especific button options
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
@@ -86,7 +88,8 @@ class Tab {
 			'caption' => $this->caption,
 			'width' => $this->width,
 			'height' => $this->height,
-			'signal' => $this->signal
+			'signal' => $this->signal,
+			'tabwidth' => $this->tabwidth
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		
@@ -169,14 +172,14 @@ class Tab {
 	function addTab($tabname,$noclose=0) {
 		global $myPid;
 		$name = 'tab_'.$myPid.'_'.$this->name;
+		$ret = $this->name.'_'.$this->counter.'_Content';
+		$this->myTabs[$ret] = $tabname;
 		if($tabname) {
 			$tabname = i18n('translate',array($tabname));
 		}
 		$tokens[] = $tabname;
 		service('eyex','runjs',array('js' => $name.'.addTab( %s ,'.$this->counter.','.$noclose.');','tokens'=>$tokens));
-		$ret = $this->name.'_'.$this->counter.'_Content';
 		$this->counter++;
-		$this->myTabs[$ret] = $tabname;
 		return $ret;
 	}
 	

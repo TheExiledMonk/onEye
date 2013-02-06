@@ -24,8 +24,8 @@
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.2
- * @updated 22-Apr-2008
+ * @version 3.1.0
+ * @updated 24-May-2008
  */
 
 /*********************************************************************************************/
@@ -52,9 +52,9 @@ function eyeFTP_emptyLocalFilesTable() {
 		'y' => 24,
 		'width' => ($GLOBALS['eyeFTP_WND']->width / 2) - 25,
 		'height' => $GLOBALS['eyeFTP_WND']->height - 225,
-		'sortypes' => array('Hidden','Html','String','String','String','String'),
-		'master' => 0,
-		'theader' => array('id',' ','Filename','Filesize','Date','Author'),
+		'sortypes' => array('Html','String','Number','String','String','Hidden'),
+		'master' => 5,
+		'theader' => array(' ','Filename','Filesize (B)','Date','Author','id'),
 		'signal' => 'eyeFTP_localFilesClick',
 		'dblsignal' => 'eyeFTP_localFilesDblClick'
 	));
@@ -80,7 +80,7 @@ function eyeFTP_browseLocal($path = '/') {
 	
 	$path = eyeFTP_resolvePathInUserDir($path);
 	if ($path === false) {
-		eyeFTP_logConsole('Error while trying to browse local folder!');
+		eyeFTP_logConsole('Error while trying to browse local folder!', null, EYEFTP_LOGSTYLE_ERROR);
 		return;
 	}
 	
@@ -100,15 +100,15 @@ function eyeFTP_browseLocal($path = '/') {
 			
 			default:
 				$urlIcon = 'index.php?extern=apps/eyeFTP/gfx/typedefault.png';
-				$size  = $fileInfo['size'].' B';
+				$size  = $fileInfo['size'];
 		}
 		$GLOBALS['eyeFTP_localFiles_TAB']->addRow(array(
-			$id,
 			'<img src="'.$urlIcon.'" />',
 			$fileInfo['displayedName'],
 			$size,
 			$fileInfo['date'],
-			$fileInfo['author']
+			$fileInfo['author'],
+			$id
 		));
 	}
 	$GLOBALS['eyeFTP_serializedLocalFilesData_HID']->setText(serialize($filesData));

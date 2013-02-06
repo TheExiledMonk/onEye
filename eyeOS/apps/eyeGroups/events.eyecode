@@ -135,8 +135,6 @@ function eyeGroups_on_openFile($params=null) {
 							$fileName = utf8_basename($current);
 							$realFileName = utf8_substr($current,utf8_strlen($myUserDir));
 							$tmpName = utf8_basename($realFileName);
-							$realFileName = utf8_substr($realFileName,0,utf8_strlen($realFileName)-utf8_strlen($tmpName));
-							$realFileName .= $fileName;						
 							$realFileName = '/'.$group.'/'.$realFileName;	
 							$info = utf8_pathinfo($realFileName);
 							$extension = utf8_strtolower($info['extension']);
@@ -372,7 +370,8 @@ function eyeGroups_on_Icon_Clicked($params=null) {
 		}
 	} else {								
 		$file = $params['arg0'][0];
-		if($file{0} == 'g'){
+		//{0} for the DnD hack and {1} to be ableto detect if the click icon is a group or is a folder inside group
+		if($file{0} == 'g' && $file{1} == '/'){
 			$file = utf8_substr($file,1,utf8_strlen($file));	
 		}		
 		$rFile = eyeGroups_parsePath($file,1);

@@ -19,8 +19,6 @@
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
-init_eyeFiles($myPid,$checknum);
-
 function init_eyeFiles(pid,checknum) {
 	var myName = pid+'_WND_1_WindowResizeButton';
 	var state=0;
@@ -164,3 +162,5 @@ function eyeFiles_reloadFiles(pid,checknum,path) {
 		sendMsg(checknum,'Icon_Clicked',eyeParam('arg0',document.getElementById(pid+'_eyeFilesText').value)+eyeParam('arg1',myW));	
 	}
 }
+
+init_eyeFiles($myPid,$checknum);

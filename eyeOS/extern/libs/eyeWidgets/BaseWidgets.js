@@ -25,6 +25,7 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var mywidth = params["width"];
 	var title = params["title"];
 	var titleCss = params["titleCss"];
+	var visible = params["visible"];
 	var theText = document.createTextNode(title);
 	
 	var oTable = document.createElement("TABLE");
@@ -71,7 +72,7 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	oTable.appendChild(oTBody);
 	
-	createWidget(name+'_Container',father,oTable,horiz,vert,x,y,-1,-1,"eyeBoxContainer",cent);
+	createWidget(name+'_Container',father,oTable,horiz,vert,x,y,-1,-1,"eyeBoxContainer",cent, 'px', visible);
 }
 function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var mywidth = params['width'];
@@ -83,7 +84,7 @@ function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myLine.style.width = mywidth+'px';
 	myLine.style.height = myheight+'px';
 	myLine.style.backgroundColor = '#dddddd';
-	createWidget(name+'_Container',father,myLine,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent);
+	createWidget(name+'_Container',father,myLine,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible);
 }
 function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var callback = params['callback'];
@@ -111,11 +112,12 @@ function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}else{
 		myIframe.setAttribute('src','index.php?extern=libs/eyeWidgets/getFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
 	}	
-	createWidget(name+'_Container',father,myIframe,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent);
+	createWidget(name+'_Container',father,myIframe,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible);
 }
 function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = params["height"];
 	var mywidth = params["width"];
+	var visible = params["visible"];
 	
 	var divBox = document.createElement('div');		
 	divBox.setAttribute('id',name);
@@ -123,9 +125,9 @@ function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	divBox.style.height = myheight+'px';
 
 	if(params["border"] == 1){
-		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent);
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible);
 	}else{
-		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent);
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible);
 	}
 }
 function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -188,9 +190,6 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myButton.className = "eyeButtonClass";
 	}
 
-	if(visible == 0) {
-		myButton.style.visibility = 'hidden';
-	}
 	if(dis == 0) {
 		if(forceMsg == 0){
 			myContainer.onclick = function(){sendMsg(checknum,sig,eval(sync))};				
@@ -204,12 +203,13 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(myContent) {
 		myContainer.appendChild(myContent);
 	}
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent);
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible);
 }
 function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 {
 	var myWidth = params['width'];
-	var myHeight = params['height'];	
+	var myHeight = params['height'];
+	var visible = params['visible'];	
 	var selectFunc = params['selectFunc'];
 	var drawOnClick = params['drawOnClick'];
 	var drawHighlight = params['drawHighlight'];	
@@ -244,7 +244,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	calendarBase.appendChild(weekDaysNames);
 	calendarBase.appendChild(calendarBody);
 	
-	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent);
+	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible);
 	
 	function getRowsAndDate()
 	{
@@ -576,17 +576,16 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myCheckbox.setAttribute('type', 'checkbox');
 	var myContainer = document.createElement('div');
 	myContainer.setAttribute('id',name+'_textContainer');
-	if (checked == 1) {
-		myCheckbox.setAttribute('checked','true');
+	if(checked == 1) {
+		if(IEversion > 0) {
+			myCheckbox.defaultChecked = true;
+		} else { 
+			myCheckbox.setAttribute('checked',true);
+		}
 	}
 	
 	if (enabled == 0) {
 		myCheckbox.disabled = 1;
-	}
-	
-	if(visible == 0) {
-		myCheckbox.style.visibility = 'hidden';
-		myContainer.style.visibility = 'hidden';
 	}
 	
 	myCheckbox.setAttribute('id',name);
@@ -595,12 +594,13 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myContainer.className='eyeCheckboxText';
 	theText=document.createTextNode(text);
 	myContainer.appendChild(theText);
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckboxContainer",cent);
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckboxContainer",cent,'px',visible);
 }
 function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = parseInt(params["height"]);
 	var mywidth = parseInt(params["width"]);
 	var unit = params["unit"];
+	var visible = params["visible"];
 
 	var myContainer = document.createElement("div");
 	if(myheight > 0) {
@@ -610,7 +610,7 @@ function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myContainer.style.width = mywidth + unit;
 	}
 	myContainer.setAttribute('id',name);
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeContainerContainer",cent,unit);
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeContainerContainer",cent,unit,visible);
 }
 function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var height = params["height"];
@@ -641,9 +641,6 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			myTempParam.setAttribute('value',flashParamsValues[key]);
 			myFlash.appendChild(myTempParam);
 		}
-		if( visible == 0) {
-		    myFlash.style.visibility = 'hidden';
-		}
 	} else {
 		var myFlash = document.createElement("div");
 		myFlash.setAttribute('id', name);
@@ -660,38 +657,8 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myEmbedObject.setAttribute('type', 'application/x-shockwave-flash');
 		myEmbedObject.setAttribute('style', 'position: absolute; top: 0; right: 0;');
 		myFlash.appendChild(myEmbedObject);
-		
-		/*var myFlashObject = document.createElement("object");
-		myFlash.appendChild(myFlashObject);
-		myFlashObject.setAttribute('classid', 'clsid:d27cdb6e-ae6d-11cf-96b8-444553540000');
-		myFlashObject.setAttribute('codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0');
-		myFlashObject.setAttribute('width', width);
-		myFlashObject.setAttribute('height', height);
-		myFlashObject.setAttribute('data', src);
-		myFlashObject.setAttribute('type', 'application/x-shockwave-flash');
-		
-		var myTempParam = document.createElement("param");
-		myTempParam.setAttribute('name', 'movie');
-		myTempParam.setAttribute('value', src);
-		myFlashObject.appendChild(myTempParam);
-		for(key in flashParamsNames){
-			myTempParam = document.createElement("param");
-			myTempParam.setAttribute('name', flashParamsNames[key]);
-			myTempParam.setAttribute('value', flashParamsValues[key]);
-			myFlashObject.appendChild(myTempParam);
-		}
-		*/		
-		
-		//PREVIOUS METHOD [eyeOS 1.0-1.5] (WITH MISTAKES => UNABLE TO PASS PARAMETERS TO THE APPLET)
-		/*myFlash.innerHTML = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="'+width+'" height="'+height+'" data="" type="application/x-shockwave-flash">';
-		myFlash.innerHTML += '<param name="movie" value ="'+src+flashvarsValue+'">';	
-		for(key in flashParamsNames){
-			myFlash.innerHTML += '<param name="'+flashParamsNames[key]+'" value="'+flashParamsValues[key]+'">';
-		}	
-		myFlash.innerHTML += '<embed src="'+src+'" quality="high" width="'+width+'" height="'+height+'" type="application/x-shockwave-flash" style="position: absolute; top: 0; right: 0;"></embed>';
-		myFlash.innerHTML += '</object>';*/
 	}
-	createWidget(name+'_Container',father,myFlash,horiz,vert,x,y,width,height,"eyeFlash",cent);
+	createWidget(name+'_Container',father,myFlash,horiz,vert,x,y,width,height,"eyeFlash",cent,'px',visible);
 }
 function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = params["text"];
@@ -716,6 +683,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	var content = params["content"];
 	var myWidth = params["width"];
 	var myHeight = params["height"];
+	var visible = params["visible"];
 	var myOnLoad = params["myonload"];
 	var realname = params["realname"];
 	var overBorder = params["overBorder"];
@@ -763,23 +731,27 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	myGlobalContainer.appendChild(myContent);
 	realname = tinyMCE.entityDecode(realname);
 	if(overBorder != 0) {
-		myGlobalContainer.onmouseover = function() {
-			myGlobalContainer.style.backgroundColor = overBorderBackground;
-			myGlobalContainer.style.border = overBorderColor;
-			myIconText.innerHTML = "";
-			myIconText.appendChild(document.createTextNode(realname));
-		}
-		
-		myGlobalContainer.onmouseout = function() {
+		if(IEversion > 1 && IEversion < 7) {
+			myGlobalContainer.style.border = 'none';
+		} else {
+			myGlobalContainer.onmouseover = function() {
+				myGlobalContainer.style.backgroundColor = overBorderBackground;
+				myGlobalContainer.style.border = overBorderColor;
+				myIconText.innerHTML = "";
+				myIconText.appendChild(document.createTextNode(realname));
+			}
+			
+			myGlobalContainer.onmouseout = function() {
+				myGlobalContainer.style.border = '1px solid transparent';
+				myGlobalContainer.style.backgroundColor = 'transparent';
+				myIconText.innerHTML = "";
+				myIconText.appendChild(document.createTextNode(text));
+			}		
 			myGlobalContainer.style.border = '1px solid transparent';
-			myGlobalContainer.style.backgroundColor = 'transparent';
-			myIconText.innerHTML = "";
-			myIconText.appendChild(document.createTextNode(text));
-		}		
-		myGlobalContainer.style.border = '1px solid transparent';
+		}
 	}
 	
-	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0);
+	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0,'px',visible);
 	var globalContainer = xGetElementById(name+'_Container');
 	globalContainer.checknum = checknum;
 	globalContainer.style.color = textColor;
@@ -1001,7 +973,7 @@ function moveAndClick(name){
 		}*/
 		
 		if ((movedX > minDiff || movedX < (minDiff)) || ((movedY > minDiff || movedY < minDiff))) {
-			var sendxml = eyeParam('eyeArg',eyeParam('content',myContent[0])+eyeParam('newX',newX)+eyeParam('newY',newY),1);
+			var sendxml = eyeParam('eyeArg',eyeParam('content',myContent[0])+eyeParam('newX',newX)+eyeParam('newY',newY)+eyeParam('rName',myContent[4]),1);
 			sendMsg(checknum,'Icon_Moved',sendxml);
 		}
 	}
@@ -1186,6 +1158,7 @@ function Iframe_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var url = params["url"];
 	var myheight = params["height"];
 	var mywidth = params["width"];
+	var visible = params["visible"];
 	var scroll = params["scroll"];
 	
 	var myFrame = document.createElement('iframe');
@@ -1199,7 +1172,7 @@ function Iframe_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(scroll == 0) {
 		myFrame.setAttribute('scrolling','no');
 	}
-	createWidget(name+'_Container',father,myFrame,horiz,vert,x,y,-1,-1,"eyeIframe",cent);
+	createWidget(name+'_Container',father,myFrame,horiz,vert,x,y,-1,-1,"eyeIframe",cent,'px',visible);
 }
 function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var url = params["url"];
@@ -1229,14 +1202,9 @@ function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 
 	if(myClass != '') {
-		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,myClass,cent);
+		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,myClass,cent,'px',visible);
 	} else {
-		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,"eyeImagebox",cent);
-	}
-	
-	if (visible == 0) {
-		var container = document.getElementById(name+'_Container');
-		container.style.visibility = 'hidden';
+		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,"eyeImagebox",cent,'px',visible);
 	}
 }
 function Label_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -1248,15 +1216,12 @@ function Label_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	var myLabel = document.createElement('div');
 	myLabel.setAttribute('id',name);
-	if (visible == 0) {
-		myLabel.style.visibility='hidden';
-	} 
 	if(dis == 0) {
 		myLabel.onclick = function() {sendMsg(checknum,sig,eyeParam(name,text)+eval(sync))};
 	}
 	text = tinyMCE.entityDecode(text);
 	myLabel.appendChild(document.createTextNode(text));
-	createWidget(name+'_Container',father,myLabel,horiz,vert,x,y,-1,-1,"eyeLabel",cent);
+	createWidget(name+'_Container',father,myLabel,horiz,vert,x,y,-1,-1,"eyeLabel",cent,'px',visible);
 }
 function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var checked = params["checked"];
@@ -1274,7 +1239,7 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myRadio.setAttribute('id', name+'_'+i);
 		myRadio.setAttribute('type','radio');
 		myRadio.setAttribute('value',currentValue[0]);
-		myRadio.textContent = currentValue[1];
+		myRadio.innerHTML = currentValue[1];
 
 		myDiv.appendChild(myRadio);
 	}
@@ -1286,11 +1251,7 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			myRadio.setAttribute('checked','checked');
 		}
 	}
-	if(visible == 0) {
-		myDiv.style.visibility = 'hidden';
-	}	
-	
-	createWidget(name+'_Container',father,myDiv,horiz,vert,x,y,-1,-1,"eyeRadio",cent);
+	createWidget(name+'_Container',father,myDiv,horiz,vert,x,y,-1,-1,"eyeRadio",cent,'px',visible);
 }
 function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
@@ -1302,621 +1263,13 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		mySelect.disabled = 1;
 	}
 	
-	if(visible == 0) {
-		mySelect.style.visibility = 'hidden';
-	}	
-	
 	if(mywidth > 0) {
 		mySelect.style.width = mywidth+'px';	
 	}
 	mySelect.setAttribute('id',name);
 	mySelect.className = 'eyeSelect';
-	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"",cent);
+	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"",cent,'px',visible);
 }
-function Slider_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var minValue = params["minValue"];
-	var maxValue = params["maxValue"];
-	var currentValue = params["currentValue"];
-
-	var sliderInput = document.createElement('div');
-	sliderInput.setAttribute('class','slider-input');
-	sliderInput.setAttribute('name',name);
-	sliderInput.setAttribute('id',name);
-	createWidget(name+'_Container',father,sliderInput,horiz,vert,x,y,-1,-1,"slider",cent);
-	var s = new Slider(document.getElementById(name+'_Container'),document.getElementById(name));
-	s.setMinimum(minValue);
-	s.setMaximum(maxValue);
-	s.setValue(currentValue);
-}
-function Range() {
-	this._value = 0;
-	this._minimum = 0;
-	this._maximum = 100;
-	this._extent = 0;
-
-	this._isChanging = false;
-}
-Range.prototype.setValue = function (value) {
-	value = Math.round(parseFloat(value));
-	if (isNaN(value)) return;
-	if (this._value != value) {
-		if (value + this._extent > this._maximum)
-			this._value = this._maximum - this._extent;
-		else if (value < this._minimum)
-			this._value = this._minimum;
-		else
-			this._value = value;
-		if (!this._isChanging && typeof this.onchange == "function")
-			 this.onchange();
-	}
-};
-
-Range.prototype.getValue = function () {
-	return this._value;
-};
-Range.prototype.setExtent = function (extent) {
-	if (this._extent != extent) {
-		if (extent < 0)
-			this._extent = 0;
-		else if (this._value + extent > this._maximum)
-			this._extent = this._maximum - this._value;
-		else
-			this._extent = extent;
-		if (!this._isChanging && typeof this.onchange == "function")
-			this.onchange();
-	}
-};
-
-Range.prototype.getExtent = function () {
-	return this._extent;
-};
-
-Range.prototype.setMinimum = function (minimum) {
-	if (this._minimum != minimum) {
-		var oldIsChanging = this._isChanging;
-		this._isChanging = true;
-
-		this._minimum = minimum;
-
-		if (minimum > this._value)
-			this.setValue(minimum);
-		if (minimum > this._maximum) {
-			this._extent = 0;
-			this.setMaximum(minimum);
-			this.setValue(minimum)
-		}
-		if (minimum + this._extent > this._maximum)
-			this._extent = this._maximum - this._minimum;
-
-		this._isChanging = oldIsChanging;
-		if (!this._isChanging && typeof this.onchange == "function")
-			this.onchange();
-	}
-};
-
-Range.prototype.getMinimum = function () {
-	return this._minimum;
-};
-
-Range.prototype.setMaximum = function (maximum) {
-	if (this._maximum != maximum) {
-		var oldIsChanging = this._isChanging;
-		this._isChanging = true;
-
-		this._maximum = maximum;
-
-		if (maximum < this._value)
-			this.setValue(maximum - this._extent);
-		if (maximum < this._minimum) {
-			this._extent = 0;
-			this.setMinimum(maximum);
-			this.setValue(this._maximum);
-		}
-		if (maximum < this._minimum + this._extent)
-			this._extent = this._maximum - this._minimum;
-		if (maximum < this._value + this._extent)
-			this._extent = this._maximum - this._value;
-
-		this._isChanging = oldIsChanging;
-		if (!this._isChanging && typeof this.onchange == "function")
-			this.onchange();
-	}
-};
-
-Range.prototype.getMaximum = function () {
-	return this._maximum;
-};
-
-Slider.isSupported = typeof document.createElement != "undefined" &&
-	typeof document.documentElement != "undefined" &&
-	typeof document.documentElement.offsetWidth == "number";
-
-
-function Slider(oElement, oInput, sOrientation) {
-	if (!oElement) return;
-	this._orientation = sOrientation || "horizontal";
-	this._range = new Range();
-	this._range.setExtent(0);
-	this._blockIncrement = 10;
-	this._unitIncrement = 1;
-	this._timer = new Timer(100);
-
-
-	if (Slider.isSupported && oElement) {
-
-		this.document = oElement.ownerDocument || oElement.document;
-
-		this.element = oElement;
-		this.element.slider = this;
-		this.element.unselectable = "on";
-
-		// add class name tag to class name
-		this.element.className = this._orientation + " " + this.classNameTag + " " + this.element.className;
-
-		// create line
-		this.line = this.document.createElement("DIV");
-		this.line.className = "line";
-		this.line.unselectable = "on";
-		this.line.appendChild(this.document.createElement("DIV"));
-		this.element.appendChild(this.line);
-
-		// create handle
-		this.handle = this.document.createElement("DIV");
-		this.handle.className = "handle";
-		this.handle.unselectable = "on";
-		this.handle.appendChild(this.document.createElement("DIV"));
-		this.handle.firstChild.appendChild(
-			this.document.createTextNode(String.fromCharCode(160)));
-		this.element.appendChild(this.handle);
-	}
-
-	this.input = oInput;
-
-	// events
-	var oThis = this;
-	this._range.onchange = function () {
-		oThis.recalculate();
-		if (typeof oThis.onchange == "function")
-			oThis.onchange();
-	};
-
-	if (Slider.isSupported && oElement) {
-		this.element.onfocus		= Slider.eventHandlers.onfocus;
-		this.element.onblur			= Slider.eventHandlers.onblur;
-		this.element.onmousedown	= Slider.eventHandlers.onmousedown;
-		this.element.onmouseover	= Slider.eventHandlers.onmouseover;
-		this.element.onmouseout		= Slider.eventHandlers.onmouseout;
-		this.element.onkeydown		= Slider.eventHandlers.onkeydown;
-		this.element.onkeypress		= Slider.eventHandlers.onkeypress;
-		this.element.onmousewheel	= Slider.eventHandlers.onmousewheel;
-		this.handle.onselectstart	=
-		this.element.onselectstart	= function () { return false; };
-
-		this._timer.ontimer = function () {
-			oThis.ontimer();
-		};
-
-		// extra recalculate for ie
-		window.setTimeout(function() {
-			oThis.recalculate();
-		}, 1);
-	}
-	else {
-		this.input.onchange = function (e) {
-			oThis.setValue(oThis.input.value);
-		};
-	}
-}
-
-Slider.eventHandlers = {
-
-	// helpers to make events a bit easier
-	getEvent:	function (e, el) {
-		if (!e) {
-			if (el)
-				e = el.document.parentWindow.event;
-			else
-				e = window.event;
-		}
-		if (!e.srcElement) {
-			var el = e.target;
-			while (el != null && el.nodeType != 1)
-				el = el.parentNode;
-			e.srcElement = el;
-		}
-		if (typeof e.offsetX == "undefined") {
-			e.offsetX = e.layerX;
-			e.offsetY = e.layerY;
-		}
-
-		return e;
-	},
-
-	getDocument:	function (e) {
-		if (e.target)
-			return e.target.ownerDocument;
-		return e.srcElement.document;
-	},
-
-	getSlider:	function (e) {
-		var el = e.target || e.srcElement;
-		while (el != null && el.slider == null)	{
-			el = el.parentNode;
-		}
-		if (el)
-			return el.slider;
-		return null;
-	},
-
-	getLine:	function (e) {
-		var el = e.target || e.srcElement;
-		while (el != null && el.className != "line")	{
-			el = el.parentNode;
-		}
-		return el;
-	},
-
-	getHandle:	function (e) {
-		var el = e.target || e.srcElement;
-		var re = /handle/;
-		while (el != null && !re.test(el.className))	{
-			el = el.parentNode;
-		}
-		return el;
-	},
-	// end helpers
-
-	onfocus:	function (e) {
-		var s = this.slider;
-		s._focused = true;
-		s.handle.className = "handle hover";
-	},
-
-	onblur:	function (e) {
-		var s = this.slider
-		s._focused = false;
-		s.handle.className = "handle";
-	},
-
-	onmouseover:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (e.srcElement == s.handle)
-			s.handle.className = "handle hover";
-	},
-
-	onmouseout:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (e.srcElement == s.handle && !s._focused)
-			s.handle.className = "handle";
-	},
-
-	onmousedown:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (s.element.focus)
-			s.element.focus();
-
-		Slider._currentInstance = s;
-		var doc = s.document;
-
-		if (doc.addEventListener) {
-			doc.addEventListener("mousemove", Slider.eventHandlers.onmousemove, true);
-			doc.addEventListener("mouseup", Slider.eventHandlers.onmouseup, true);
-		}
-		else if (doc.attachEvent) {
-			doc.attachEvent("onmousemove", Slider.eventHandlers.onmousemove);
-			doc.attachEvent("onmouseup", Slider.eventHandlers.onmouseup);
-			doc.attachEvent("onlosecapture", Slider.eventHandlers.onmouseup);
-			s.element.setCapture();
-		}
-
-		if (Slider.eventHandlers.getHandle(e)) {	// start drag
-			Slider._sliderDragData = {
-				screenX:	e.screenX,
-				screenY:	e.screenY,
-				dx:			e.screenX - s.handle.offsetLeft,
-				dy:			e.screenY - s.handle.offsetTop,
-				startValue:	s.getValue(),
-				slider:		s
-			};
-		}
-		else {
-			var lineEl = Slider.eventHandlers.getLine(e);
-			s._mouseX = e.offsetX + (lineEl ? s.line.offsetLeft : 0);
-			s._mouseY = e.offsetY + (lineEl ? s.line.offsetTop : 0);
-			s._increasing = null;
-			s.ontimer();
-		}
-	},
-
-	onmousemove:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-
-		if (Slider._sliderDragData) {	// drag
-			var s = Slider._sliderDragData.slider;
-
-			var boundSize = s.getMaximum() - s.getMinimum();
-			var size, pos, reset;
-
-			if (s._orientation == "horizontal") {
-				size = s.element.offsetWidth - s.handle.offsetWidth;
-				pos = e.screenX - Slider._sliderDragData.dx;
-				reset = Math.abs(e.screenY - Slider._sliderDragData.screenY) > 100;
-			}
-			else {
-				size = s.element.offsetHeight - s.handle.offsetHeight;
-				pos = s.element.offsetHeight - s.handle.offsetHeight -
-					(e.screenY - Slider._sliderDragData.dy);
-				reset = Math.abs(e.screenX - Slider._sliderDragData.screenX) > 100;
-			}
-			s.setValue(reset ? Slider._sliderDragData.startValue :
-						s.getMinimum() + boundSize * pos / size);
-			return false;
-		}
-		else {
-			var s = Slider._currentInstance;
-			if (s != null) {
-				var lineEl = Slider.eventHandlers.getLine(e);
-				s._mouseX = e.offsetX + (lineEl ? s.line.offsetLeft : 0);
-				s._mouseY = e.offsetY + (lineEl ? s.line.offsetTop : 0);
-			}
-		}
-
-	},
-
-	onmouseup:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = Slider._currentInstance;
-		var doc = s.document;
-		if (doc.removeEventListener) {
-			doc.removeEventListener("mousemove", Slider.eventHandlers.onmousemove, true);
-			doc.removeEventListener("mouseup", Slider.eventHandlers.onmouseup, true);
-		}
-		else if (doc.detachEvent) {
-			doc.detachEvent("onmousemove", Slider.eventHandlers.onmousemove);
-			doc.detachEvent("onmouseup", Slider.eventHandlers.onmouseup);
-			doc.detachEvent("onlosecapture", Slider.eventHandlers.onmouseup);
-			s.element.releaseCapture();
-		}
-
-		if (Slider._sliderDragData) {	// end drag
-			Slider._sliderDragData = null;
-		}
-		else {
-			s._timer.stop();
-			s._increasing = null;
-		}
-		Slider._currentInstance = null;
-	},
-
-	onkeydown:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		//var s = Slider.eventHandlers.getSlider(e);
-		var s = this.slider;
-		var kc = e.keyCode;
-		switch (kc) {
-			case 33:	// page up
-				s.setValue(s.getValue() + s.getBlockIncrement());
-				break;
-			case 34:	// page down
-				s.setValue(s.getValue() - s.getBlockIncrement());
-				break;
-			case 35:	// end
-				s.setValue(s.getOrientation() == "horizontal" ?
-					s.getMaximum() :
-					s.getMinimum());
-				break;
-			case 36:	// home
-				s.setValue(s.getOrientation() == "horizontal" ?
-					s.getMinimum() :
-					s.getMaximum());
-				break;
-			case 38:	// up
-			case 39:	// right
-				s.setValue(s.getValue() + s.getUnitIncrement());
-				break;
-
-			case 37:	// left
-			case 40:	// down
-				s.setValue(s.getValue() - s.getUnitIncrement());
-				break;
-		}
-
-		if (kc >= 33 && kc <= 40) {
-			return false;
-		}
-	},
-
-	onkeypress:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var kc = e.keyCode;
-		if (kc >= 33 && kc <= 40) {
-			return false;
-		}
-	},
-
-	onmousewheel:	function (e) {
-		e = Slider.eventHandlers.getEvent(e, this);
-		var s = this.slider;
-		if (s._focused) {
-			s.setValue(s.getValue() + e.wheelDelta / 120 * s.getUnitIncrement());
-			// windows inverts this on horizontal sliders. That does not
-			// make sense to me
-			return false;
-		}
-	}
-};
-
-
-
-Slider.prototype.classNameTag = "dynamic-slider-control",
-
-Slider.prototype.setValue = function (v) {
-	this._range.setValue(v);
-	this.input.value = this.getValue();
-};
-
-Slider.prototype.getValue = function () {
-	return this._range.getValue();
-};
-
-Slider.prototype.setMinimum = function (v) {
-	this._range.setMinimum(v);
-	this.input.value = this.getValue();
-};
-
-Slider.prototype.getMinimum = function () {
-	return this._range.getMinimum();
-};
-
-Slider.prototype.setMaximum = function (v) {
-	this._range.setMaximum(v);
-	this.input.value = this.getValue();
-};
-
-Slider.prototype.getMaximum = function () {
-	return this._range.getMaximum();
-};
-
-Slider.prototype.setUnitIncrement = function (v) {
-	this._unitIncrement = v;
-};
-
-Slider.prototype.getUnitIncrement = function () {
-	return this._unitIncrement;
-};
-
-Slider.prototype.setBlockIncrement = function (v) {
-	this._blockIncrement = v;
-};
-
-Slider.prototype.getBlockIncrement = function () {
-	return this._blockIncrement;
-};
-
-Slider.prototype.getOrientation = function () {
-	return this._orientation;
-};
-
-Slider.prototype.setOrientation = function (sOrientation) {
-	if (sOrientation != this._orientation) {
-		if (Slider.isSupported && this.element) {
-			// add class name tag to class name
-			this.element.className = this.element.className.replace(this._orientation,
-									sOrientation);
-		}
-		this._orientation = sOrientation;
-		this.recalculate();
-
-	}
-};
-
-Slider.prototype.recalculate = function() {
-	if (!Slider.isSupported || !this.element) return;
-
-	var w = this.element.offsetWidth;
-	var h = this.element.offsetHeight;
-	var hw = this.handle.offsetWidth;
-	var hh = this.handle.offsetHeight;
-	var lw = this.line.offsetWidth;
-	var lh = this.line.offsetHeight;
-
-	// this assumes a border-box layout
-
-	if (this._orientation == "horizontal") {
-		this.handle.style.left = (w - hw) * (this.getValue() - this.getMinimum()) /
-			(this.getMaximum() - this.getMinimum()) + "px";
-		this.handle.style.top = (h - hh) / 2 + "px";
-
-		this.line.style.top = (h - lh) / 2 + "px";
-		this.line.style.left = hw / 2 + "px";
-		//this.line.style.right = hw / 2 + "px";
-		this.line.style.width = Math.max(0, w - hw - 2)+ "px";
-		this.line.firstChild.style.width = Math.max(0, w - hw - 4)+ "px";
-	}
-	else {
-		this.handle.style.left = (w - hw) / 2 + "px";
-		this.handle.style.top = h - hh - (h - hh) * (this.getValue() - this.getMinimum()) /
-			(this.getMaximum() - this.getMinimum()) + "px";
-
-		this.line.style.left = (w - lw) / 2 + "px";
-		this.line.style.top = hh / 2 + "px";
-		this.line.style.height = Math.max(0, h - hh - 2) + "px";	//hard coded border width
-		//this.line.style.bottom = hh / 2 + "px";
-		this.line.firstChild.style.height = Math.max(0, h - hh - 4) + "px";	//hard coded border width
-	}
-};
-
-Slider.prototype.ontimer = function () {
-	var hw = this.handle.offsetWidth;
-	var hh = this.handle.offsetHeight;
-	var hl = this.handle.offsetLeft;
-	var ht = this.handle.offsetTop;
-
-	if (this._orientation == "horizontal") {
-		if (this._mouseX > hl + hw &&
-			(this._increasing == null || this._increasing)) {
-			this.setValue(this.getValue() + this.getBlockIncrement());
-			this._increasing = true;
-		}
-		else if (this._mouseX < hl &&
-			(this._increasing == null || !this._increasing)) {
-			this.setValue(this.getValue() - this.getBlockIncrement());
-			this._increasing = false;
-		}
-	}
-	else {
-		if (this._mouseY > ht + hh &&
-			(this._increasing == null || !this._increasing)) {
-			this.setValue(this.getValue() - this.getBlockIncrement());
-			this._increasing = false;
-		}
-		else if (this._mouseY < ht &&
-			(this._increasing == null || this._increasing)) {
-			this.setValue(this.getValue() + this.getBlockIncrement());
-			this._increasing = true;
-		}
-	}
-
-	this._timer.start();
-};
-
-function Timer(nPauseTime) {
-	this._pauseTime = typeof nPauseTime == "undefined" ? 1000 : nPauseTime;
-	this._timer = null;
-	this._isStarted = false;
-}
-
-Timer.prototype.start = function () {
-	if (this.isStarted())
-		this.stop();
-	var oThis = this;
-	this._timer = window.setTimeout(function () {
-		if (typeof oThis.ontimer == "function")
-			oThis.ontimer();
-	}, this._pauseTime);
-	this._isStarted = false;
-};
-
-Timer.prototype.stop = function () {
-	if (this._timer != null)
-		window.clearTimeout(this._timer);
-	this._isStarted = false;
-};
-
-Timer.prototype.isStarted = function () {
-	return this._isStarted;
-};
-
-Timer.prototype.getPauseTime = function () {
-	return this._pauseTime;
-};
-
-Timer.prototype.setPauseTime = function (nPauseTime) {
-	this._pauseTime = nPauseTime;
-};
 
 function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
@@ -1982,7 +1335,7 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	oTable.setAttribute('id',name);
 	oTable.className="sort-table";
 	widget.appendChild(oTable);
-	createWidget(name+'_Container',father,widget,horiz,vert,x,y,-1,-1,"eyeTable",cent);
+	createWidget(name+'_Container',father,widget,horiz,vert,x,y,-1,-1,"eyeTable",cent,sizeUnit,visible);
 	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'","'+dsignal+'");');
 }
 function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName, dsignal) {
@@ -2155,7 +1508,7 @@ SortableTable.prototype.initHeader = function (oSortTypes) {
 		c = cells[i];
 		if (this.sortTypes[i] != null && this.sortTypes[i] != "None" && this.sortTypes[i] != "HtmlButNoSort") {
 			img = doc.createElement("IMG");
-			img.src = "index.php?extern=apps/eyeX/themes/default/images/widgets/blank.png";
+			img.src = "index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/widgets/blank.png";
 			c.appendChild(img);
 			if (this.sortTypes[i] != null)
 				c._sortType = this.sortTypes[i];
@@ -2521,14 +1874,14 @@ function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myObj.style.height = myheight+'px';		
 	}
 	createWidget(name+'_Container',father,myObj,horiz,vert,x,y,-1,-1,"eyeTabContainer",cent);
-	eval('tab_'+name+' = new eyeTab(document.getElementById("'+name+'"),"'+sig+'","'+checknum+'");');
+	eval('tab_'+name+' = new eyeTab(document.getElementById("'+name+'"),"'+sig+'","'+checknum+'","' + parseInt(params["tabwidth"]) + '");');
 }
 //eyeTab class
-function eyeTab(oTab,signal,mychecknum) {
-	this.csignal = signal; //sigal to use when a tab is requested to be closed
+function eyeTab(oTab,signal,mychecknum,tabwidth) {
+	this.csignal = signal; //signal to use when a tab is requested to be closed
 	this.checknum = mychecknum; //checknum to send messages to eyeos
 	this.lastClick = null; //store the last tab selected
-	this.tabWidth = 80;
+	this.tabWidth = tabwidth;
 	this.initialOffset = 5;
 	this.tabHeight = 23;
 	this.myName = oTab.id;
@@ -2658,6 +2011,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var cols = params["cols"];
 	var enabled = params["enabled"];
 	var CcssClass = params["cssClass"];
+	var visible = params["visible"];
 
 	var myTextarea = document.createElement('textarea');
 	if(code == 1) {
@@ -2687,10 +2041,10 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	if (CcssClass) {
 		myTextarea.className = CcssClass;
-		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,CcssClass,cent);
+		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,CcssClass,cent,'px',visible);
 	} else {
 		myTextarea.className = 'eyeTextarea';
-		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,"eyeTextareaContainer",cent);
+		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,"eyeTextareaContainer",cent,'px',visible);
 	}
 	
 	if (rich == 1) {
@@ -2723,9 +2077,6 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(mywidth != "") {
 		myTextbox.style.width = mywidth+'px';
 	}
-	if(visible == 0) {
-		myTextbox.style.visibility = 'hidden';
-	}
 
 	if(enabled == 0) {
 		myTextbox.setAttribute('disabled',1);
@@ -2739,7 +2090,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myTextbox.setAttribute('id',name);
 	myTextbox.className = 'eyeTextbox';
 	
-	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent);
+	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'px',visible);
 }activeWindow = "";
 
 min_apps_width = 100;
@@ -2811,6 +2162,9 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		var myImage = document.createElement('img');
 		myImage.setAttribute('id',name+'_background');
 		myImage.src=background;
+		if(IEversion == 6) {
+			fixPNG(myImage.id);
+		}
 		var myDiv = document.createElement('div');
 		myDiv.style.overflow = "hidden";
 		myDiv.appendChild(myImage);
@@ -3251,9 +2605,6 @@ function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(mywidth != "") {
 		myProgress.style.width = mywidth+'px';
 	}
-	if(visible == 0) {
-		myProgress.style.visibility = 'hidden';
-	}
 	
 	myProgress.setAttribute('id',name);
 	myProgress.className = 'eyeProgress';
@@ -3276,7 +2627,7 @@ function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myProgress.appendChild(myProgressBar);
 	myProgress.appendChild(myProgressC);
 	
-	createWidget(name+'_Container',father,myProgress,horiz,vert,x,y,-1,-1,"eyeProgressContainer",cent);
+	createWidget(name+'_Container',father,myProgress,horiz,vert,x,y,-1,-1,"eyeProgressContainer",cent,'px',visible);
 }
 
 function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -3803,9 +3154,5 @@ function Applet_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myApplet.setAttribute('codebase', codebase);
 	}
 	
-	if( visible == 0) {
-	    myApplet.style.visibility = 'hidden';
-	}
-	
-	createWidget(name+'_Container',father,myApplet,horiz,vert,x,y,width,height,"eyeApplet",cent);
+	createWidget(name+'_Container',father,myApplet,horiz,vert,x,y,width,height,"eyeApplet",cent,'px',visible);
 }

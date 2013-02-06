@@ -24,7 +24,10 @@ init_login($myPid,$checknum);
 
 function eyeLogin_keyPressed(characterCode,checknum,pid){
 	if(characterCode == 13){ //if generated character code is equal to ascii 13 (if enter key)
-		sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));
+		sendMsg(checknum,'doLogin',
+			eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)
+			+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value)
+			+eyeParam('eyeLogin_Language',document.getElementById(pid+'_eyeLogin_Language').value));
 		return false;
 	} else {
 		return true;
@@ -101,6 +104,7 @@ function init_login(pid,checknum) {
 	var objUsr = document.getElementById(pid+'_eyeLogin_Username');
 	var objImg = document.getElementById(pid+'_eyeLogin_image_new1_Container');
 	var objPwd = document.getElementById(pid+'_eyeLogin_Password');
+	var objLang = document.getElementById(pid+'_eyeLogin_Language');
 	if(objImg) {
 		objImg.onclick = function () {launch_newuserwnd(pid);};
 		objImg.style.zIndex = '10000';
@@ -126,14 +130,27 @@ function init_login(pid,checknum) {
 		objPwd.onfocus=function() {makeLight(pid+'_eyeLogin_Password');};
 		objPwd.onblur=function() {removeLight(pid+'_eyeLogin_Password');};
 	}
+	if (objLang) {
+		objLang.onkeypress=function(e){
+		var event = new xEvent(e);
+		var ch = event.keyCode;
+		eyeLogin_keyPressed(ch,checknum,pid);
+		};
+		objLang.onfocus=function() {makeLight(pid+'_eyeLogin_Language');};
+		objLang.onblur=function() {removeLight(pid+'_eyeLogin_Language');};
+	}
 	
 	var objUsr2 = document.getElementById(pid+'_eyeLogin_Label4');
 	var objImg2 = document.getElementById(pid+'_eyeLogin_image_enter_Container');
 	
 	if (objUsr2 && objImg2) {
-		objUsr2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
+		objUsr2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)
+																	+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value)
+																	+eyeParam('eyeLogin_Language',document.getElementById(pid+'_eyeLogin_Language').value));};
 		objUsr2.style.zIndex = '10000';
-		objImg2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
+		objImg2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)
+																	+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value)
+																	+eyeParam('eyeLogin_Language',document.getElementById(pid+'_eyeLogin_Language').value));};
 		objImg2.style.zIndex = '10000';
 	}
 }
@@ -205,7 +222,7 @@ function launch_newuserwnd(pid) {
 	objPwd1.onkeypress=function(e){
 		var characterCode;
 		event = new xEvent(e);
-			characterCode = event.keyCode;
+		characterCode = event.keyCode;
 		eyeLogin_newuser_keyPressed(characterCode,checknum,pid);
 	};
 	var objPwd2 = document.getElementById(pid+'_eyeLogin_Pass2');

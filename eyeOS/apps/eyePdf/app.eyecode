@@ -30,14 +30,14 @@ function eyePdf_run($params=null) {
 		proc('end');
 		return;
 	}
-	$tokens = array($url,$url);
-	eyex('runjs',array('js' => '
-		if (navigator.mimeTypes["application/pdf"] && navigator.mimeTypes["application/pdf"].enabledPlugin != null) {
-			sendMsg(' . $checknum . ',"showPdf",eyeParam("url", %s ));
-		} else {
-			sendMsg(' . $checknum . ',"downloadPdf",eyeParam("url", %s ));
-		}',
-		'tokens'=>$tokens
+	eyex('runjs',array(
+		'js' => '
+			if (navigator.mimeTypes["application/pdf"] && navigator.mimeTypes["application/pdf"].enabledPlugin != null) {
+				sendMsg(' . $checknum . ',"showPdf",eyeParam("url",%s));
+			} else {
+				sendMsg(' . $checknum . ',"downloadPdf",eyeParam("url",%s));
+			}',
+		'tokens' => array($url,$url)
 	));
 }
 

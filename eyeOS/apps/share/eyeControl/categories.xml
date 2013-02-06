@@ -131,7 +131,7 @@
 		<img>index.php?theme=1&amp;extern=icons/48x48/autorun.png</img>
 	</content>
 	<content>
-		<description>Manage eyeNav's startpage, its bookmarks and search engines</description>
+		<description>Manage eyeNav's startpage, bookmarks and search engines</description>
 		<display>Web Browser</display>
 		<name>eyenav</name>
 		<permissions>all</permissions>

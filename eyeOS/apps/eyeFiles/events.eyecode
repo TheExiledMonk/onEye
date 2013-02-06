@@ -135,10 +135,9 @@ function eyeFiles_on_openFile($params=null) {
 				} else {
 					$icon = 'unknown';
 					$fileName = utf8_basename($current);
-					$realFileName = str_replace($myUserDir.'/files/','',$current);
-					$tmpName = utf8_basename($realFileName);
-					$realFileName = utf8_substr($realFileName,0,utf8_strlen($realFileName)-utf8_strlen($tmpName));
-					$realFileName .= $fileName;
+					$realFileName = str_replace($myUserDir.'/files/','',$current);									
+					$tmpName = utf8_basename($realFileName);					
+					
 					$info = utf8_pathinfo($realFileName);
 					$extension = utf8_strtolower($info['extension']);
 					if(($extension == 'jpeg' || $extension == 'gif' || $extension == 'png' || $extension == 'jpg') && function_exists("gd_info")) {

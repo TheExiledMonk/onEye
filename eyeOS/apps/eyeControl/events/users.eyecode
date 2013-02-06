@@ -64,7 +64,7 @@ function eyeControl_on_users_delete_yes($params = '') {
 	$user = $GLOBALS['users_delete_hidden']->text;
 	if ($user && $user != ROOTUSER) {
 		um('deleteUser',array($user));
-		eyex('messageBox',array('content' => 'The user was successfully deleted.'));
+		eyex('messageBox',array('content' => 'User successfully deleted.'));
 		eyeControl_lib_loadContent('only_root','users');
 	}
 }

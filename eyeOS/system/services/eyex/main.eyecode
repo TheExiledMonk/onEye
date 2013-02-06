@@ -475,6 +475,7 @@ function service_eyex_createWidget($params) {
 	
 	$myAction = eyeXML('array2xml',array($task));
 	mmap('addToBuffer',array($myAction));
+	return true;
 }
 
 /**
@@ -811,7 +812,7 @@ function service_eyex_messageBox($params) {
 			'father' => $win_name . '_Content',
 			'signal' => $btn1_name,
 			'caption' => $btn1_capt,
-			'x' => $btnX - (10 + (4 * utf8_strlen($btn1_capt))),
+			'x' => $btnX - (15 + utf8_strlen($btn1_capt)),
 			'y' => 90
 		));
 		$myButton->addFriend($myTextbox);
@@ -822,7 +823,7 @@ function service_eyex_messageBox($params) {
 				'name' => $btn2_name,
 				'father' => $win_name . '_Content',
 				'caption' => $btn2_capt,
-				'x' => (2 * $btnX) - (10 + (4 * utf8_strlen($btn1_capt))),
+				'x' => (2 * $btnX) - (15 + utf8_strlen($btn2_capt)),
 				'y' => 90
 			));
 			$myButton->addFriend($myTextbox);
@@ -834,7 +835,7 @@ function service_eyex_messageBox($params) {
 				'name' => $btn3_name,
 				'father' => $win_name . '_Content',
 				'caption' => $btn3_capt,
-				'x' => (3 * $btnX) - (10 + (4 * utf8_strlen($btn1_capt))),
+				'x' => (3 * $btnX) - (15 + utf8_strlen($btn3_capt)),
 				'y' => 90
 			));
 			$myButton->addFriend($myTextbox);

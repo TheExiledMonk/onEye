@@ -47,6 +47,7 @@
 .eyeDock_right {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/right.png', sizingMethod='scale');
+	right: -1px;
 }
 .eyeDock_center {
 	background-image: url();
@@ -56,32 +57,32 @@
 .eyeDockMenuTopRight {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/top_right.png', sizingMethod='scale');
-	top: -14px;
+	top: -13px;
 }
 .eyeDockMenuTopLeft {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/top_left.png', sizingMethod='scale');
-	top: -14px;
+	top: -13px;
 }
 .eyeDockMenuBottonLeft {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/bottom_left.png', sizingMethod='scale');
-	bottom: -15px;
+	bottom: -13px;
 }
 .eyeDockMenuBottonRight {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/bottom_right.png', sizingMethod='scale');
-	bottom: -15px;
+	bottom: -13px;
 }
 .eyeDockMenuBottomCenter {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/bg.png', sizingMethod='scale');
-	bottom: -15px;
+	bottom: -13px;
 }
 .eyeDockMenuTopCenter {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/bg.png', sizingMethod='scale');
-	top: -14px;
+	top: -13px;
 }
 .eyeDockMenuRightCenter {
 	background-image: url();
@@ -98,6 +99,11 @@
 .eyeDockMenuLine {
 	background-image: url(index.php?extern=apps/eyeX/themes/default/images/IE/apps/eyeDock/line.png);
 }
+.eyeLoginWindow {
+	top: expression((document.documentElement.clientHeight/2)-87);
+	left: expression((document.documentElement.clientWidth/2)-150);
+	margin-top: -100px;
+}
 .eyeMessageBox {
 	background-image: url("index.php?extern=apps/eyeX/themes/default/images/IE/desktop/messagebox.png");
 }
@@ -106,12 +112,12 @@
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/minimized/minbar_bg.png', sizingMethod='scale');
 }
 .minimizedAppsLeft {
-	left:  -1px;
+  left:  -1px;
   background-image: url();
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/minimized/minbar_left.png', sizingMethod='scale');
 }
 .minimizedAppsRight {
-	right:  112px;
+	right:  113px;
   background-image: url();
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/minimized/minbar_right.png', sizingMethod='scale');
 }
@@ -132,11 +138,11 @@
 }
 .eyeWindowTitle_border_right {
   background-image: url();
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/windows/border_top_right.png', sizingMethod='scale');
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/windows/bg_top_right.png', sizingMethod='scale');
 }
 .eyeWindowTitle_border_left {
   background-image: url();
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/windows/border_top_left.png', sizingMethod='scale');
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/windows/bg_top_left.png', sizingMethod='scale');
 }
 .minimizedApps {
 	width: expression(this.parentNode.offsetWidth-160);
@@ -153,6 +159,18 @@
 	width: expression(this.parentNode.offsetWidth);
 	height: expression(this.parentNode.offsetHeight);
 }
+.eyeWindowMinimizeButton {
+  background-image: url();
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/windows/min.png', sizingMethod='scale');
+}
+.eyeWindowMaxButton {
+  background-image: url();
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/windows/max.png', sizingMethod='scale');
+}
+.eyeWindowCloseButton {
+  background-image: url();
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/windows/close.png', sizingMethod='scale');
+}
 .eyeDockMenuIcon:hover {
 	background-image: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/apps/eyeDock/dockbgover.png',sizingMethod='scale');
@@ -160,5 +178,4 @@
 	left: 2px;
 	width: 100%;
 	cursor:pointer;
-	
 }

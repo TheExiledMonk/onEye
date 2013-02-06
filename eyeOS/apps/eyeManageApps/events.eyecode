@@ -1143,6 +1143,39 @@ function eyeManageApps_on_moveDown($params) {
 	}
 }
 
+function eyeManageApps_on_useDefaults($params = '') {
+	eyex('messageBox',array(
+		'content' => 'Do you really want to use the default eyeDock configuration?',
+		'type' => 3,
+		'title' => 'Use defaults',
+		'win_name' => 'eyeManageApps_useDefaults_window',
+		'win_style' => TITLE + CLOSE,
+		'win_removepid' => 0,
+		'btn1_capt' => 'Yes',
+		'btn1_name' => 'useDefaults_yes',
+		'btn2_capt' => 'No',
+		'btn2_name' => 'useDefaults_no',
+		'father' => 'eyeManageAppsWND',
+		'img' => '?'
+	));
+}
+
+function eyeManageApps_on_useDefaults_yes($params = '') {
+	global $currentUser;
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	$xml = eyeXML('getXMLfile',array(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/skel/'.CONF_USER_DIR.'/eyeDock/eyeDock.xml'));
+	$currentUser = $oldUser;
+	eyeXML('setXMLconfig',array('eyeDock','eyeDock.xml',$xml));
+	eyex('messageBox',array('content' => 'You are now using the default configuration again'));
+	$GLOBALS['eyeManageApps_useDefaults_window']->close();
+	eyex('sendMessage',array('msg' => 'ListApps','params' => '.'));
+	eyex('sendMessage',array('msg' => 'refreshDock','params' => '.'));
+}
+
+function eyeManageApps_on_useDefaults_no($params = '') {
+	$GLOBALS['eyeManageApps_useDefaults_window']->close();
+}
 
 //Returns an indexed array with the usable groups
 function getGroupList() {

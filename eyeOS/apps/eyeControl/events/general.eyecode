@@ -96,7 +96,7 @@ function eyeControl_on_general_uninstall_yes($params = '') {
 	global $currentUser;
 	if ($currentUser == ROOTUSER) {
 		eyeWidgets('unserialize');
-		eyex('messageBox',array('content' => 'The eyeOS system was successfully deleted.'));
+		eyex('messageBox',array('content' => 'Your eyeOS system was successfully deleted.'));
 		eyex('rawjs',array('js' => 'window.setTimeout("home()",2000);'));
 		vfs('real_rmdir',array(EYE_ROOT . '/'));
 	}

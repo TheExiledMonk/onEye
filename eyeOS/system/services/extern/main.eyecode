@@ -105,6 +105,8 @@ function service_extern_getFile($params) {
 			header('Content-Disposition: attachment; filename="'.$myFile.'"');
 		} elseif ($type == 'css' || $myExt == 'css') {
 			header("Content-type: text/css");
+		} elseif ($type == 'xml' || $myExt == 'xml' || $myExt == 'xsl') {
+			header("Content-type: text/xml");
 		} elseif($type == 'swf'  || $myExt == 'swf'){
 			header("Content-type: application/x-shockwave-flash");
 		} elseif($type == 'dynamic') {
