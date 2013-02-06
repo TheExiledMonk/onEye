@@ -83,14 +83,14 @@ function eyeInfo_run($params = '') {
 	));
 	$myImagebox->show();
 	
-	$team = array('Alejandro Fiestas','Anaël Ollier','Daniel Gil','Jordi Ferrer','José Carlos Norte','Lars Knickrehm','Marc Cercós','Matthew Powell','Pau Garcia-Milà','Pau Peris','Pol Watine');
+	$team = array('Alejandro Fiestas','Anaël Ollier','Daniel Gil','Jordi Ferrer','José Carlos Norte','Lars Knickrehm','Marc Cercós','Matthew Powell','Pau Garcia-Milà','Pau Peris','Pol Watine','Adrián Norte','Julia Garcia');
 	shuffle($team);
 	$y = 246 / (2 + count($team));
 	
 	$myLabel = new Label(array(
 		'father' => $teamTab,
 		'name' => 'eyeInfo_Label_Team',
-		'text' => 'The eyeOS Crowd',
+		'text' => 'The eyeOS Crowd (randomly displayed)',
 		'x' => 10,
 		'y' => $y - 10
 	));

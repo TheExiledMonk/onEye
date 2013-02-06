@@ -41,37 +41,39 @@ if(empty($currentUser) && isset($_REQUEST["username"]) && isset($_REQUEST["passw
 if(empty($currentUser)) {
 	//Draw login page
 	echo '<?xml version="1.0" encoding="UTF-8" ?>
-	<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
-	<html>
-		<head>
-			<base href="' . INDEX_BASE . 'mobile/" />
-			<title>Welcome to eyeOS Mobile</title>
-			<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-		  	<style type="text/css">
-				body {
-					background-color:#FFFFFF;
-					font-family:sans-serif;
-					margin:0px;
-				}
-				.messageBox {
-					padding: 10px 4px;
-					background-color: #e6f3fc;
-				}
-			</style>
-		</head>
-		<body>
-			<img style="margin-left: 5px; margin-top: 5px;" src="mobile-logo.png" />
-			'.$messageBox.'
-			<div class="messageBox">
-				<strong>eyeOS Mobile login:</strong><br />
-				<form action="index.php" method="post">
-					<input name="username" type="text" /><br /><br />
-					<input name="password" type="password" /><br /><br />
-					<input type="submit" value="Login" />
-				</form>
-			</div>
-		</body>
-	</html>';
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html>
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>' . "\n";
+	if (IE && IE > 7) { // We need a better workaround for this IE6 and IE7 problem!
+		echo "\t\t" . '<base href="' . INDEX_BASE . 'mobile/" />' . "\n";
+	}
+	echo "\t\t" . '<title>Welcome to eyeOS Mobile</title>
+		<style type="text/css">
+			body {
+				background-color:#FFFFFF;
+				font-family:sans-serif;
+				margin:0px;
+			}
+			.messageBox {
+				padding: 10px 4px;
+				background-color: #e6f3fc;
+			}
+		</style>
+	</head>
+	<body>
+		<img style="margin-left: 5px; margin-top: 5px;" src="mobile-logo.png" />
+		'.$messageBox.'
+		<div class="messageBox">
+			<strong>eyeOS Mobile login:</strong><br />
+			<form action="index.php" method="post">
+				<input name="username" type="text" /><br /><br />
+				<input name="password" type="password" /><br /><br />
+				<input type="submit" value="Login" />
+			</form>
+		</div>
+	</body>
+</html>';
 } else {
 	//Draw file list
 	
@@ -89,12 +91,14 @@ if(empty($currentUser)) {
 	include_once("../mobile/mobile_functions.eyecode");
 	
 	echo '<?xml version="1.0" encoding="UTF-8" ?>
-	<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
-	<html>
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html>
 	<head>
-		<base href="' . INDEX_BASE . '/" />
-		<title>eyeOS Mobile</title>
-		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>' . "\n";
+	if (IE && IE > 7) { // We need a better workaround for this IE6 and IE7 problem!
+		echo "\t\t" . '<base href="' . INDEX_BASE . 'mobile/" />' . "\n";
+	}
+	echo "\t\t" . '<title>eyeOS Mobile</title>
 		<style type="text/css">
 			body {
 				background-color:#FFFFFF;

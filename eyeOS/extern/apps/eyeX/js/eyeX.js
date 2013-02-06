@@ -267,7 +267,11 @@ function localEngine(msg) {
 	//message is not set, could be an empty response to a request
 	notifyEndOfLoadingRequest();
 	if(msg.hasChildNodes()) {
-		var actions = msg.firstChild.childNodes;
+		if (IEversion) {
+			var actions = msg.getElementsByTagName('action');
+		} else {
+			var actions = msg.firstChild.childNodes;
+		}
 		var mySize = actions.length;
 		for(count=0;count < mySize;count++) {
 			try {
@@ -703,7 +707,7 @@ var EventHandler = {
 	Add : function (handler,element,code,option) {
 		if (typeof EventHandler.List[handler] != 'object') {
 			EventHandler.List[handler] = new Array();
-			xAddEventListener(window,handler,EventHandler.HandleEvent,false);
+			xAddEventListener(document,handler,EventHandler.HandleEvent,false);
 		}
 		if (typeof EventHandler.List[handler][element] != 'object') {
 			EventHandler.List[handler][element] = new Array();
@@ -1025,21 +1029,6 @@ function makeDrag (widgetid,father,afterfunction,checknum,content,noIndex) {
 		}
 	}
 
-}
-
-//REMOVE DESKTOP ICONS
-
-function cleanDesktop(pid) {
-	var prefix = pid+'_eyeDesk_icon_';
-	var eyeapps = document.getElementById('eyeApps');
-	var obj;
-	for(var i=0; i < eyeapps.childNodes.length; i++) {
-		obj = eyeapps.childNodes[i];
-		if (obj.id.indexOf(prefix) == 0 && (obj.className == 'eyeIcon' || obj.className == 'eyeContextMenu')) {
-			eyeapps.removeChild(obj);
-			i = 0;
-		}
-	}
 }
 
 function removeWidget(widgetid) {

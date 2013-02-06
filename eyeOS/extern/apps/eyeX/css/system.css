@@ -297,6 +297,7 @@ body, html {
 	border-right: 2px ridge #ffffff;
 	height: 100%;
 	left: -11px;
+	overflow: hidden;
 	padding-bottom: 5px;
 	position: absolute;
 	top: -6px;

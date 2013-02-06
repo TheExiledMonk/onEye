@@ -67,6 +67,13 @@
 				<icon>eyePresentation.png</icon>
 				<exec>eyePresentation</exec>
 			</item>
+                        <item>
+                                <name>eyeMail</name>
+                                <desc>Mail Client</desc>
+                                <text>Access your mailboxes. IMAP and POP3 support</text>
+                                <icon>eyeMail.png</icon>
+                                <exec>eyeMail</exec>
+                        </item>
 			<item>
 				<name>eyeCalendar</name>
 				<desc>Calendar</desc>
