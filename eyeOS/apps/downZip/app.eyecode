@@ -1,60 +1,48 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function downZip_run($params=null) {
+function downZip_run($params = '') {
 	global $checknum;
-	if(is_array($params)) {
-		$path = $params[0];
-		$info = utf8_pathinfo($path);
-		$ext = utf8_strtolower($info['extension']);
-		if (service('vfs','real_fileExists',array($path)) && $ext == utf8_strtolower(EYEOS_LINK_EXT)) {
-			service('eyex','messageBox',array('content'=>'Links cannot be downloaded!'));
+	global $myPid;
+	if ($params[0]) {
+		$file = utf8_basename($params[0]);
+		$path = eyeFiles('cleanPath',array(utf8_substr(utf8_trim($params[0],'/\\'),0,- utf8_strlen($file))));
+		if ($path[1] != 'real' && utf8_strtolower(strrchr($file,'.')) == '.' . utf8_strtolower(EYEOS_LINK_EXT) && vfs('real_fileExists',array($path[0] . '/' . $file))) {
+			eyex('messageBox',array('content' => 'Links cannot be downloaded!'));
 			proc('end');
-			return;
+		} elseif (IE && IE < 7) {
+			$_SESSION['downZip'][$myPid] = $path[1] . '://' . $path[2] . '/' . $file;
+			eyex('rawjs',array('js' => 'window.open("index.php?msg=download&checknum=' . $checknum . '");'));
+		} else {
+			$_SESSION['downZip'][$myPid] = $path[1] . '://' . $path[2] . '/' . $file;
+			$myIframe = new Iframe(array(
+				'father' => 'eyeApps',
+				'name' => 'downZip_Iframe',
+				'url' => 'index.php?msg=download&checknum=' . $checknum,
+				'visible' => 0
+			));
+			$myIframe->show();
 		}
-	} else {
-		proc('end');
-		return;
-	}
-	if (IE < 0 && IE < 7) {
-		eyex('rawjs',array('js' => 'window.open("index.php?checknum=' . $checknum . '&msg=downloadZip");'));
-	} else {
-		$myWindow = new Window(array('name'=>'downloadWND','father'=>'eyeApps',
-			'type'=>NOLIST_CLOSE_WINDOW,'cent'=>1,'width'=>5,'height'=>5));
-		$myWindow->show();
-		$myWindow->setCss(array('visibility'=>'hidden'));
-		$myHidden = new Hidden(array('name'=>'dPath','father'=>'newFolder_Content','text'=>$path));
-		reqLib('eyeWidgets','serialize',array($myHidden));
-		$myFrame = new Iframe(array('name'=>'downloadFrame','father'=>'downloadWND_Content','x'=>5,
-			'y'=>5,'height'=>5,'width'=>5,
-			'url'=>"index.php?checknum=$checknum&msg=downloadZip",
-			'scroll'=>0));
-		$myFrame->show();
 	}
 }
-
-function downZip_end($params=null) {
-	eyeWidgets('unserialize');
-}
-
 ?>

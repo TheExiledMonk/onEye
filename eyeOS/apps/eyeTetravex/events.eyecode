@@ -1,30 +1,30 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)     
- */
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+*/
 
 /**
  * @author Nanawel (nanawel@eyeos.org)
- * @version 1.0
- * @updated 04-Apr-2008
+ * @version 1.1
+ * @updated 16-Nov-2008
  */
 
 //only keep in memory the best 100 records per level
@@ -48,8 +48,66 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		$configValues = $content['eyeTetravex'][0]['configuration'][0];
 	}
 	$return['configuration'][0] = $configValues;
+	
+	/**
+	 * WARNING!
+	 * Here the tokens are NOT "%s" but "{}". Be careful to mark them well in the translated strings.
+	 */
+	$i18nValues = array(
+		//GLOBAL
+		'global_unknownString' => array(i18n('translate',array('[Unknown string]'))),
+		'global_yes' => array(i18n('translate',array('Yes'))),
+		'global_no' => array(i18n('translate',array('No'))),
+		'global_save' => array(i18n('translate',array('Save'))),
+		'global_cancel' => array(i18n('translate',array('Cancel'))),
+		'global_close' => array(i18n('translate',array('Close'))),
+		
+		//MAIN BUTTONS
+		'main_button_newgame' => array(i18n('translate',array('New game'))),
+		'main_button_configuration' => array(i18n('translate',array('Configuration'))),
+		'main_button_highscores' => array(i18n('translate',array('Highscores'))),
+		'main_button_fullscreen' => array(i18n('translate',array('Fullscreen'))),
+		
+		//CONFIGURATION DIALOG
+		'dialog_configuration_title' => array(i18n('translate',array('Configuration'))),
+		'dialog_configuration_level' => array(str_replace('%s','{}',i18n('translate',array('Level / board size (%s-%s):')))),
+		'dialog_configuration_maxValue' => array(i18n('translate',array('Maximum value on edges:'))),
+		'dialog_configuration_usecolorednumbers' => array(i18n('translate',array('Use colored numbers on tiles'))),
+		'dialog_configuration_notice1' => array(i18n('translate',array('These options won\'t be applied until you start a new game.'))),
+		'dialog_configuration_saveconfigtofile' => array(i18n('translate',array('Always remember my last configuration'))),
+		'dialog_configuration_usesharedhighscores' => array(i18n('translate',array('Use shared highscores on server (all users)'))),
+		'dialog_configuration_notice2' => array(i18n('translate',array('These features can only be used when running from an eyeOS server.'))),
+		
+		//HIGHSCORES DIALOG
+		'dialog_highscores_title' => array(i18n('translate',array('Highscores'))),
+		'dialog_highscores_boardsize' => array(i18n('translate',array('Board size :'))),
+		'dialog_highscores_column_rank' => array(i18n('translate',array('Rank'))),
+		'dialog_highscores_column_user' => array(i18n('translate',array('User'))),
+		'dialog_highscores_column_date' => array(i18n('translate',array('Date'))),
+		'dialog_highscores_column_maximum' => array(i18n('translate',array('Maximum'))),
+		'dialog_highscores_column_time' => array(i18n('translate',array('Time'))),
+		'dialog_highscores_column_moves' => array(i18n('translate',array('Moves'))),
+		
+		//NEW GAME DIALOG
+		'dialog_newgame_title' => array(i18n('translate',array('New game'))),
+		'dialog_newgame_text' => array(i18n('translate',array('Do you want to start a new game?'))),
+		
+		//GAME OVER DIALOG
+		'dialog_gameover_yourrank' => array(i18n('translate',array('Your rank:'))),
+		'dialog_gameover_tipused' => array(i18n('translate',array('Tip used! Ranking disabled...'))),
+		'dialog_gameover_advisehigherlevel' => array(i18n('translate',array('Maybe you should try a higher level...'))),
+		'dialog_gameover_finished' => array(i18n('translate',array('Finished!'))),
+		'dialog_gameover_yourtime' => array(i18n('translate',array('Your time:'))),
+		'dialog_gameover_nummoves' => array(i18n('translate',array('Number of moves:'))),
+		
+		//NETWORK PROBLEM DIALOG
+		'dialog_netprob_title' => array(i18n('translate',array('Network problem'))),
+		'dialog_netprob_text1' => array(i18n('translate',array('Unable to connect to the host server.'))),
+		'dialog_netprob_text2' => array(i18n('translate',array('Would you like to disable eyeOS related features?')))
+	);
+	$return['configuration'][0]['i18n'][0] = $i18nValues;
 
-	header('Content-type: text/xml; charset="utf-8"');
+	header('Content-type: text/xml; charset="UTF-8"');
 	echo reqLib('eyeXML','array2xml',array($return));
 	exit;
 }

@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 define('ICON_SIZE',48);
@@ -114,7 +114,7 @@ function eyeManageApps_on_ListApps() {
 			'height' => 1
 		));
 		$groupLine->show();
-		if(IE == 6) {
+		if(IE && IE < 7) {
 			$groupLine->setCSS(array('backgroundColor' => 'white', 'border-top' => '1px solid #DDD'));
 		}
 								
@@ -342,11 +342,22 @@ function eyeManageApps_on_addApplication($params=null) {
 	$myButton2->addFriend($myTextbox2);
 	$myButton2->addFriend($myTextbox3);
 	$myButton2->show();
-		
+	
+	$myContainer = new Window(array(
+		'name' => 'WND2_WND',
+	 	'father' => 'WND2_Content',
+		'type' => INVISIBLE_WINDOW,
+	 	'y' => 160,
+	 	'x' => 0,
+	 	'width' => 528,
+		'height' => 315
+	));
+	$myContainer->show();
+	
 	$myLine1 = new Line(array(
 		'name' => 'line1', 
 		'father' => 'WND2_Content',
-		'width' => 510,
+		'width' => 528,
 		'height' => 1, 
 		'y' => 180,
 		'x' => 0
@@ -355,7 +366,7 @@ function eyeManageApps_on_addApplication($params=null) {
 	
 	$AppDir  = EYE_ROOT.'/'.APP_DIR.'/';
 	$x =10;
-	$y = 190;
+	$y = 0;
 	global $myPid;
 	if($dir = opendir($AppDir)) {
 		while(($myFile = readdir($dir)) !== false) {
@@ -367,7 +378,7 @@ function eyeManageApps_on_addApplication($params=null) {
 						$myIcon = new Icon(array(
 							'name'=>'addIcon'.$xml['name'][0],
 							'text'=>$xml['name'][0],
-							'father'=>'WND2_Content',
+							'father'=>'WND2_WND_Content',
 							'image'=>$xml['icon'][0],
 							'content'=>array($xml['name'][0]),'x'=>$x,'y'=>$y
 						));

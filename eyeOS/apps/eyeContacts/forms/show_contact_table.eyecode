@@ -1,26 +1,25 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
-
 
 function eyeContacts_show_table($letter='',$windowWidth='',$windowHeight=''){
 	if($windowWidth == ''){
@@ -35,12 +34,12 @@ function eyeContacts_show_table($letter='',$windowWidth='',$windowHeight=''){
 	$sortypes = array("String","String","String","String","String","Hidden");
 	$myHeader = array('Name','Surname','Home Phone','Mobile Phone','E-mail','unserialized');
 	
-	$myTable = new Sortabletable(array('name'=>'eyeContacts_Contacts','father'=>'tableContainer',
-		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>0,'y'=>0,'width'=>$windowWidth-5,'height'=>$windowHeight-125,'master'=>5,'dblsignal'=>'EditContact'));
+	$myTable = new Sortabletable(array('name'=>'eyeContacts_Contacts','father'=>'tableContainer',	'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>0,'y'=>0,'width'=>$windowWidth-49,'height'=>$windowHeight-125,'master'=>5,'dblsignal'=>'EditContact'));
 	$myTable->show();
 	$myPath = service('um', 'getCurrentUserdir').CONF_USER_DIR."/eyeContacts";
 	$myFiles = service('vfs', 'real_getDirContent', array($myPath));
 	$contacts = eyeContacts('userList');
+	$chars = str_split($letter);
 	foreach($contacts as $key=>$myFileContent) {		
 		$md5Name = $myFileContent['name'][0];
 		
@@ -50,8 +49,8 @@ function eyeContacts_show_table($letter='',$windowWidth='',$windowHeight=''){
 				continue;
 			}
 		}else if($letter != 'ALL'){
-			if(utf8_strtoupper($md5Name{0}) != $letter){
-				continue;	
+			if(array_search(utf8_strtoupper($md5Name{0}),$chars) === false){
+				continue;
 			}
 		}
 		

@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	Process Manager service
 */
@@ -32,6 +32,8 @@
 	[pid]
 	...
 */
+
+//Warning: TABLENAME is too generic to be a define, maybe we should change it an break a bit the compatibility.
 define('TABLENAME','ProcessTable');
 
 function service_proc_init() {
@@ -242,7 +244,9 @@ function service_proc_close($params) {
 	$pid = $params[0];
 	//Get the appName and check if app is running.
 	$appName = proc('findNameByPid',array($pid));
-		
+
+	
+	//Calling the _end funciton if it exists
 	include_once(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/app'.EYE_CODE_EXTENSION);
 	if(function_exists($appName.'_end')) {
 		global $myPid,$checknum,$procInfo;
@@ -259,6 +263,9 @@ function service_proc_close($params) {
 		$checkunm = $oldChecknum;
 		$procInfo = $oldProc;
 	}
+	//Deleting possible listener service calls
+	removeListenerServiceCallByPid($pid);
+	removeListenerServiceCallByPid($pid,1);
 	//Delete the proc
 	eyeSessions('DelArrayValueByKey',array(TABLENAME,$pid));
 	

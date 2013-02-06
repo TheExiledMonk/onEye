@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeDock_on_clicked($params) {
@@ -41,7 +41,7 @@ function eyeDock_on_Launch() {
 	}
 
 	$checkIE = "";
-	if (IE > 0 && IE < 7) {
+	if (IE && IE < 7) {
 		$checkIE = "IE/";
 	}
 	
@@ -151,7 +151,7 @@ function eyeDock_on_Launch() {
 			}
 			$clickedCode = "onclick=\"sendMsg('".$checknum."','App_Clicked',$execValue)\"";
 			$loadImageCode = "src='index.php?version=" . EXTERN_CACHE_VERSION . "&theme=1&extern=icons/20x20/".$aicon."'";
-			if (IE > 0 && IE < 7) {
+			if (IE && IE < 7) {
 				$loadImageCode = "src='index.php?version=".EXTERN_CACHE_VERSION."&extern=apps/eyeX/gfx/spacer.gif' width=20 height=20 style=\"filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=" . EXTERN_CACHE_VERSION . "&theme=1&extern=icons/20x20/".$aicon."&type=imagethod='scale')\"";				
 			}
 			$content .= "<div class='eyeDockMenuIcon' style='top: ".$topIcon."px;' $clickedCode><img class='eyeDockItemImg' id='icon_".$intKey."' $loadImageCode  alt='' title='".$intText."' /><div class='eyeDockMenuText'><span class='cPointer' title='".$intText."'>".$intDesc ."</span></div></div>";
@@ -163,7 +163,7 @@ function eyeDock_on_Launch() {
 			}
 		}
 		
-		if(IE > 0 && IE < 7) {			
+		if(IE && IE < 7) {			
 			if(!is_float($i / 2)) {
 				eyeX('updateCss',array('name'=>$myPid.'_eyedockMenuBottonLeft_'.$key,'property'=>'bottom','value'=>'-14px'));
 				eyeX('updateCss',array('name'=>$myPid.'_eyeDockMenuBottonRight_'.$key,'property'=>'bottom','value'=>'-14px'));

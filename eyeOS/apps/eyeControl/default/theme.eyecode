@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 global $checknum;
@@ -37,9 +37,9 @@ $dir = EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/';
 $oldUser = $currentUser;
 $currentUser = ROOTUSER;
 $openDir = vfs('real_getDirContent',array($dir));
+$UserThemeXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 foreach ($openDir as $theme) {
 	if (is_dir($theme) && file_exists($theme . '/info.xml')) {
-		$UserThemeXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 		$ThemeXML = eyeXML('getXMLfile',array($theme . '/info.xml'));
 		$theme = utf8_basename($theme);
 		if ($theme == $UserThemeXML['eyeDesk'][0]['theme'][0]) {
@@ -129,7 +129,7 @@ $myImagebox = new Imagebox(array(
 	'height' => 120,
 	'x' => 160,
 	'y' => $ContentY,
-	'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . THEMES_DIR . '/' . $UserThemeXML['eyeDesk'][0]['theme'][0] . '/screenshot.png'
+	'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=0&extern=' . THEMES_DIR . '/' . $UserThemeXML['eyeDesk'][0]['theme'][0] . '/screenshot.png'
 ));
 $myImagebox->show();
 ?>

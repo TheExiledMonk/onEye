@@ -1,10 +1,10 @@
 <package>
 	<name>eyeInfo</name>
-	<category>extras</category>
-	<version>1.7</version>
-	<description>eyeOS information app</description>
+	<category>System</category>
+	<version>1.8</version>
+	<description>Utility to view the people behind eyeOS</description>
 	<author>eyeOS Team</author>
-	<license>GPL</license>
+	<license>AGPL</license>
 	<type>Utility</type>
 	<icon></icon>
 </package>

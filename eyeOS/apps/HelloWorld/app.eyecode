@@ -1,79 +1,80 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function HelloWorld_run($params=null) {
-	// We create the window:
-	$myWindow1 = new Window(array(
-		'name' => 'HelloWorld_WND',
-		'father' => 'eyeApps',
+function HelloWorld_run($params = '') {
+	// First we create a new Window:
+	$myWindow = new Window(array(
 		'cent' => 1,
-		'width' => 250,
+		'father' => 'eyeApps',
 		'height' => 150,
-		'title' => 'Example eyeApp'
+		'name' => 'HelloWorld_Window',
+		'title' => 'Example Application',
+		'width' => 250
 	));
-	$myWindow1->show();
-
-	// We add the initial "Hello World!" Label:
-	$myLabel1 = new Label(array(
-		'name' => 'HelloWorld_LBL',
-		'father' => 'HelloWorld_WND_Content',
-		'x' => 20,
-		'y' => 20,
-		'text' => 'Hello World!'
-	));
-	$myLabel1->show(0);
-
-	// We create the Textarea where the user 
-	// will add the new "Hello World!" message:
-	$myTextbox1 = new Textbox(array(
-		'name'=>'HelloWorld_TXTBOX',
-		'father'=>'HelloWorld_WND_Content',
-		'x' => 20,
-		'y' => 50,
-		'width' => 150
-	));
-	$myTextbox1->show();
-	// We focus it, so the user can start typing 
-	// from the moment he opens the app without 
-	// having to click into the textarea:
-	$myTextbox1->focus();
+	$myWindow->show();
 	
-	$myButton1 = new Button(array(
-		'name'=>'HelloWorld_BTN',
-		'father'=>'HelloWorld_WND_Content',
-		'caption'=>'Change Label Text',
-		'x'=>20,
-		'y'=>80
+	// Now we create the initial "Hello World!" Label:
+	$myLabel = new Label(array(
+		'father' => 'HelloWorld_Window_Content',
+		'name' => 'HelloWorld_Label',
+		'text' => 'Hello World!',
+		'x' => 20,
+		'y' => 20
 	));
-	// We add the Textbox as friend of the button, 
-	// so the user when clicks the button will be 
-	// sending the textbox input text. A button can 
-	// have as many friends as user wants:
-	$myButton1->addFriend($myTextbox1);
-	$myButton1->show();
+	$myLabel->show(0);
+	
+	// Afterwards we create the Textbox, where the user 
+	// will add the new "Hello World!" message:
+	$myTextbox = new Textbox(array(
+		'father' => 'HelloWorld_Window_Content',
+		'name' => 'HelloWorld_Textbox',
+		'width' => 150,
+		'x' => 20,
+		'y' => 50
+	));
+	$myTextbox->show();
+	// Because the user should be able to start typing 
+	// from the moment he opens the application without 
+	// having to click into the Textbox we focus it:
+	$myTextbox->focus();
+	
+	// 
+	$myButton = new Button(array(
+		'caption' => 'Change Label Text',
+		'father' => 'HelloWorld_Window_Content',
+		'name' => 'HelloWorld_Button',
+		'x' => 20,
+		'y' => 80
+	));
+	// The Textbox need to be a friend of the Button:
+	// So every time the user clicks the Button the Textbox
+	// text will be sent.
+	// A button can have as many friends as you want.
+	$myButton->addFriend($myTextbox);
+	$myButton->show();
 }
 
-function HelloWorld_end($params=null) {
-	eyeWidgets('unserialize');
+function HelloWorld_end($params = '') {
+	eyeWidgets('unserialize',$params);
 }
 ?>

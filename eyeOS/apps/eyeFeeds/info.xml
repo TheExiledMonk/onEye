@@ -4,7 +4,7 @@
 	<version>1.1</version>
 	<description>RSS feeds reader for eyeOS.</description>
 	<author>Nanawel [nanawel@eyeos.org]</author>
-	<license>GPL</license>
+	<license>AGPL</license>
 	<type>Application</type>
 	<icon>index.php?theme=1&amp;extern=icons/48x48/RSS.png</icon>
 </package>

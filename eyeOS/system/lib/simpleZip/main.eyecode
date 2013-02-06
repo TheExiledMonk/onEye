@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	simple zip file abstraction library for eyeOS
 */
@@ -34,20 +34,25 @@ function lib_simpleZip_createZip($params) {
 		errorCodes('setErrorcode',array(INCORRECT_PARAMS));
 		return false;
 	}
+	if ($params[1]) {
+		$suffix = 'real_';
+	} else {
+		$suffix = '';
+	}
 	
 	$file = $params[0]; //full path to directory
 	if(is_dir($file)) {
 		$zipfile = new zipfile;
-		recursiveZip($file,$zipfile,$file);
+		recursiveZip($file,$zipfile,$file,$suffix);
 		return $zipfile->zipped_file(); 
 	} else {
 		$zipfile = new zipfile;
 		$name = utf8_basename($file);
-		$fp = service('vfs','open',array($file,'r'));
+		$fp = vfs($suffix . 'open',array($file,'r'));
 		if(!$fp) {
 			return false;
 		}
-		$size = service('vfs','filesize',array($file));
+		$size = vfs($suffix . 'filesize',array($file));
 		$content = fread($fp,$size);
 		fclose($fp);
 		$zipfile->create_file($content, $name);
@@ -55,7 +60,7 @@ function lib_simpleZip_createZip($params) {
 	}
 }
 
-function recursiveZip($file,$zipfile,$orig) {
+function recursiveZip($file,$zipfile,$orig,$suffix) {
 	if($file == $orig) {
 		$name = utf8_basename($file);
 		$zipfile->create_dir($name);
@@ -64,18 +69,18 @@ function recursiveZip($file,$zipfile,$orig) {
 		$dirPath = utf8_substr($file,utf8_strlen($orig));
 		$zipfile->create_dir($name.$dirPath);
 	}
-	$content = service('vfs','getDirContent',array($file));	
+	$content = vfs($suffix . 'getDirContent',array($file));	
 	if($content) {
 		if(is_array($content)) {
 			foreach($content as $current) {
 				if(is_dir($current)) {
-					recursiveZip($current,$zipfile,$orig);
+					recursiveZip($current,$zipfile,$orig,$suffix);
 				} else {
-					$fp = service('vfs','open',array($current,'r'));
+					$fp = vfs($suffix . 'open',array($current,'r'));
 					if(!$fp) {
 						return false;
 					}
-					$size = vfs('filesize',array($current));
+					$size = vfs($suffix . 'filesize',array($current));
 					$myContent = fread($fp,$size);
 					fclose($fp);
 					$sName = utf8_basename($current);

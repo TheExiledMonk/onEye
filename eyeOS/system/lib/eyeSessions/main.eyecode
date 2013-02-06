@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	Session handling lib for eyeOS
 */
@@ -41,13 +41,8 @@ function lib_eyeSessions_startSession($params=null){
 	register_shutdown_function('reqLib','eyeSessions','saveSession');	
 	//If already has a id (and posible session)
 	
-	if(isset($_GET[FLASH_UPLOAD_FIX])){
-		$sessionId = $_GET[COOKIE_ID];	
-	}else{
-		$sessionId = $_REQUEST[COOKIE_ID];
-	}
-	
-	if(!empty($sessionId)){
+	$sessionId = eyeSessions('getSessionId');
+	if($sessionId != false){
 		//If session exists
 		if(reqLib('eyeIPC','isSet',array($sessionId,IPC_TYPE))){						
 			$_SESSION = reqLib('eyeIPC','getVar',array($sessionId,IPC_TYPE));			
@@ -72,11 +67,37 @@ function lib_eyeSessions_startSession($params=null){
 * @date 2008/03/11
 */
 function lib_eyeSessions_checkAndSstartSession(){
-	if(isset($_GET[FLASH_UPLOAD_FIX]) && isset($_GET[COOKIE_ID]) || isset($_REQUEST[COOKIE_ID])){
+	//Getting the possible session ID
+	$sessionId = eyeSessions('getSessionId');
+	//Checking the there are an ID and if it exists as session
+	if($sessionId != false && reqLib('eyeIPC','isSet',array($sessionId,IPC_TYPE))){
 		eyeSessions('startSession');
 	}
 }
 
+/**
+* Return the session ID
+*
+* @return Return the sessionId if the request have one, if not return false
+* @date 2008/12/10
+*/
+function lib_eyeSessions_getSessionId(){
+	global $sessionId;
+	//If the petition already have a sessionId, just return it.
+	if(!empty($sessionId)){
+		return $sessionId;
+	}
+	//If the request doesn't have a sessionId, we have to check if the user have sent it via $_REQUEST
+	//Flash fix,
+	//TODO: Documment the flash trick
+	if(isset($_GET[FLASH_UPLOAD_FIX]) && isset($_GET[COOKIE_ID])){
+		return $_GET[COOKIE_ID];
+	}
+	if(isset($_REQUEST[COOKIE_ID])){
+		return $_REQUEST[COOKIE_ID];
+	}
+	return false;
+}
 //single var operations
 
 /**
@@ -308,7 +329,11 @@ function lib_eyeSessions_saveSession(){
 		return true;		
 	}
 	//If a script is finished along with the session, save it with ipc.
-	$dir = dirname(($_SERVER['SCRIPT_FILENAME'])).'/'.REAL_EYE_ROOT;	
+	if (IS_MOBILE) {
+		$dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/../' . REAL_EYE_ROOT;
+	} else {
+		$dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/' . REAL_EYE_ROOT;
+	}
 	chdir($dir);	
 	//save the session	
 	reqLib('eyeIPC','setVar',array($sessionId,$_SESSION,IPC_TYPE));

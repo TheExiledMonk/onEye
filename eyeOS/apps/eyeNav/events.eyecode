@@ -1,25 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 global $currentUser;
 
 include_once(EYE_ROOT . '/' . APP_DIR . '/eyeNav/libs.eyecode');
@@ -38,14 +39,34 @@ function eyeNav_on_Message($params = '') {
 }
 
 function eyeNav_on_Resize($params = '') {
-	$width = intval($params['arg'][0]);
-	$height = intval($params['arg'][1]);
-	$GLOBALS['eyeNav_url']->setWidth($width - 80);
+	$GLOBALS['eyeNav_window']->width = intval($params['arg'][0]);
+	$GLOBALS['eyeNav_window']->height = intval($params['arg'][1]);
+	$GLOBALS['eyeNav_url']->setWidth($GLOBALS['eyeNav_window']->width - 80);
 	$GLOBALS['eyeNav_image_url_right']->setX($GLOBALS['eyeNav_image_url_left']->x + $GLOBALS['eyeNav_url']->width);
-	$GLOBALS['eyeNav_window_box']->setHeight($height - ($GLOBALS['eyeNav_url']->y + 65));
+	$GLOBALS['eyeNav_window_box']->setHeight($GLOBALS['eyeNav_window']->height - $GLOBALS['eyeNav_url']->y - 65);
 	$GLOBALS['eyeNav_line']->setHeight($GLOBALS['eyeNav_window_box']->height);
 	$GLOBALS['eyeNav_frame']->setHeight($GLOBALS['eyeNav_window_box']->height);
-	$GLOBALS['eyeNav_frame']->setWidth($width - ($GLOBALS['eyeNav_window_box']->width + 35));
+	if ($GLOBALS['eyeNav_box']) {
+		$GLOBALS['eyeNav_frame']->setX($GLOBALS['eyeNav_window_box']->width + 20);
+		$GLOBALS['eyeNav_frame']->setWidth($GLOBALS['eyeNav_window']->width - $GLOBALS['eyeNav_window_box']->width - 35);
+	} else {
+		$GLOBALS['eyeNav_frame']->setWidth($GLOBALS['eyeNav_window']->width - 25);
+		$GLOBALS['eyeNav_frame']->setX(10);
+	}
+}
+
+function eyeNav_on_Fullscreen($params = '') {
+	global $myPid;
+	$GLOBALS['eyeNav_window']->setFullScreen();
+	if ($GLOBALS['eyeNav_window']->fullScreen) {
+		$press = 'Press';
+	}
+	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeNav_toolbar");
+	for (var i = 0; i < e.childNodes.length; i++) {
+		if (e.childNodes[i].id == "Fullscreen_Container") {
+			e.childNodes[i].className = "blockbarItem' . $press . '_right";
+		}
+	}'));
 }
 
 function eyeNav_on_Back($params = '') {
@@ -63,7 +84,29 @@ function eyeNav_on_Startpage($params = '') {
 }
 
 function eyeNav_on_Bookmarks($params = '') {
-	eyeNav_lib_ShowBookmarks();
+	global $myPid;
+	if (is_object($GLOBALS['eyeNav_box']) && (is_object($GLOBALS['eyeNav_hidden_bookmarks_url']) && $GLOBALS['eyeNav_hidden_bookmarks_url']->text == '<none>')) {
+		$GLOBALS['eyeNav_box']->remove();
+		$GLOBALS['eyeNav_frame']->setWidth($GLOBALS['eyeNav_window']->width - 25);
+		$GLOBALS['eyeNav_frame']->setX(10);
+		$GLOBALS['eyeNav_line']->hide();
+		$xml = eyeXML('getXMLconfig',array('eyeNav','conf.xml'));
+		$xml['eyeNav'][0]['sidebar'][0] = 0;
+		eyeXML('setXMLconfig',array('eyeNav','conf.xml',$xml));
+	} else {
+		eyeNav_lib_ShowBookmarks();
+		$GLOBALS['eyeNav_frame']->setWidth($GLOBALS['eyeNav_window']->width - $GLOBALS['eyeNav_window_box']->width - 35);
+		$GLOBALS['eyeNav_frame']->setX($GLOBALS['eyeNav_window_box']->width + 20);
+		$GLOBALS['eyeNav_line']->unhide();
+		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeNav_toolbar");
+		for (var i = 0; i < e.childNodes.length; i++) {
+			if (e.childNodes[i].id == "Bookmarks_Container") {
+				e.childNodes[i].className = "blockbarItemPress";
+			} else if (e.childNodes[i].id == "Search_Container") {
+				e.childNodes[i].className = "blockbarItem";
+			}
+		}'));
+	}
 }
 
 function eyeNav_on_bookmarks_label($params = '') {
@@ -138,7 +181,13 @@ function eyeNav_on_delBookmark_no($params = '') {
 
 function eyeNav_on_open_bookmarks($params = '') {
 	global $checknum;
-	proc('launch',array('eyeDialog',array(0,'open_bookmarks_now',$checknum)));
+	proc('launch',array('eyeDialog',
+		array(
+			EYEDIALOG_TYPE_OPENFILE,
+			'open_bookmarks_now',
+			$checknum
+		)
+	));
 }
 
 function eyeNav_on_open_bookmarks_now($params = '') {
@@ -146,7 +195,29 @@ function eyeNav_on_open_bookmarks_now($params = '') {
 }
 
 function eyeNav_on_Search($params = '') {
-	eyeNav_lib_ShowSearch();
+	global $myPid;
+	if (is_object($GLOBALS['eyeNav_box']) && (is_object($GLOBALS['eyeNav_hidden_search_url']) && $GLOBALS['eyeNav_hidden_search_url']->text == '<none>')) {
+		$GLOBALS['eyeNav_box']->remove();
+		$GLOBALS['eyeNav_frame']->setWidth($GLOBALS['eyeNav_window']->width - 25);
+		$GLOBALS['eyeNav_frame']->setX(10);
+		$GLOBALS['eyeNav_line']->hide();
+		$xml = eyeXML('getXMLconfig',array('eyeNav','conf.xml'));
+		$xml['eyeNav'][0]['sidebar'][0] = 0;
+		eyeXML('setXMLconfig',array('eyeNav','conf.xml',$xml));
+	} else {
+		eyeNav_lib_ShowSearch();
+		$GLOBALS['eyeNav_frame']->setWidth($GLOBALS['eyeNav_window']->width - $GLOBALS['eyeNav_window_box']->width - 35);
+		$GLOBALS['eyeNav_frame']->setX($GLOBALS['eyeNav_window_box']->width + 20);
+		$GLOBALS['eyeNav_line']->unhide();
+		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeNav_toolbar");
+		for (var i = 0; i < e.childNodes.length; i++) {
+			if (e.childNodes[i].id == "Search_Container") {
+				e.childNodes[i].className = "blockbarItemPress";
+			} else if (e.childNodes[i].id == "Bookmarks_Container") {
+				e.childNodes[i].className = "blockbarItem";
+			}
+		}'));
+	}
 }
 
 function eyeNav_on_search_label($params = '') {
@@ -168,7 +239,13 @@ function eyeNav_on_search_default($params = '') {
 
 function eyeNav_on_open_searches($params = '') {
 	global $checknum;
-	proc('launch',array('eyeDialog',array(0,'open_searches_now',$checknum)));
+	proc('launch',array('eyeDialog',
+		array(
+			EYEDIALOG_TYPE_OPENFILE,
+			'open_searches_now',
+			$checknum
+		)
+	));
 }
 
 function eyeNav_on_open_searches_now($params = '') {

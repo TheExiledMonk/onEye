@@ -1,25 +1,25 @@
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 document.onclick=clickedScreen;
 clickEvents = new Object();
 eyeDeskItems=0;
@@ -36,20 +36,20 @@ mouseX = 0;
 mouseY = 0;
 
 var eyeKeyDown = 0;
-document.oncontextmenu = function(e) { if(IEversion == 0) { e.preventDefault(); e.cancelBubble = true; } return false; }
+document.oncontextmenu = function(e) { if(!IEversion) { e.preventDefault(); e.cancelBubble = true; } return false; }
 document.onkeydown = function (e) { var e = new xEvent(e); if (e.which) { eyeKeyDown = e.which; } else { eyeKeyDown = e.keyCode; } }
 document.onkeyup = function () { eyeKeyDown = 0; }
 
 //For fix Internet explorer <6 png24 no alpha.
 function fixPNG(img,type){
-	if (IEversion > 0 && IEversion < 7) {
-		var myImage = document.getElementById(img);
-		if (myImage && myImage.src != 'index.php?version='+EXTERN_CACHE_VERSION+'&extern=apps/eyeX/gfx/spacer.gif') {
+	if (IEversion && IEversion < 7) {
+		var myImage = xGetElementById(img);
+		if (myImage.src.substr(myImage.src.length - 4).toLowerCase() == '.png' && myImage.src.substr(myImage.src.length - 24).toLowerCase() != 'apps/eyex/gfx/spacer.gif') {
 			if (!type) {
 				type = 'scale';
 			}
 			myImage.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + myImage.src + "', sizingMethod='" + type + "')";
-			myImage.src = 'index.php?version='+EXTERN_CACHE_VERSION+'&extern=apps/eyeX/gfx/spacer.gif';
+			myImage.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&extern=apps/eyeX/gfx/spacer.gif';
 		}
 	}
 }
@@ -108,13 +108,12 @@ function resetLoadingRequests() {
 
 if (navigator.appVersion.indexOf("Mac")!=-1) {
 	document.onmousemove = function (e) {
-		if (IEversion == 0) {
-		  mouseX = e.pageX;
-		  mouseY = e.pageY;
-		}
-		if (IEversion > 0) {
+		if (IEversion && IEversion < 8) {
 		  mouseX = event.clientX + document.body.scrollLeft;
 		  mouseY = event.clientY + document.body.scrollTop;
+		} else {
+		  mouseX = e.pageX;
+		  mouseY = e.pageY;
 		}
 		if(typeof('oCursor')!='undefined' && loadingRequests > 0) {
 			oCursor.style.left = mouseX+10+'px';
@@ -594,7 +593,7 @@ function eyeMessageBoxShow(msg) {
 	if (msg != "") {
 		box = document.getElementById("eyeMessageBoxText");
 		box.innerHTML = msg;
-		if (IEversion < 7) {
+		if (!IEversion) {
 			updateOpacity("eyeMessageBox", 0, 100, 1000);
 		} else {
 			document.getElementById("eyeMessageBox").style.visibility='visible';
@@ -606,7 +605,7 @@ function eyeMessageBoxShow(msg) {
 function eyeMessageBoxHid() {
 	box = document.getElementById("eyeMessageBoxText");
 	var delayedEmptyText = 1;
-	if (IEversion < 7) {
+	if (!IEversion) {
 		if (document.getElementById("eyeMessageBox").style.opacity == 1) {
 			updateOpacity("eyeMessageBox", 100, 0, 1000);
 			delayedEmptyText = 1000;
@@ -677,8 +676,22 @@ function getArrayArg(arg) {
 	return myRet;
 }
 zindex = 100;
-
-function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight,wclass,cent,sizeUnit,isVisible)
+function getParentWidgetType(widget,widgetType){
+	if(!widget.parentNode){
+		return false;
+	}
+	var widgetParent = widget.parentNode;
+	while(1){
+		if(widgetParent.widgetType == widgetType){
+			return widgetParent;
+		}
+		if(!widgetParent.parentNode){
+			return false;
+ 		}
+		widgetParent = widgetParent.parentNode;
+	}
+}
+function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight,wclass,cent,sizeUnit,isVisible,widgetType)
 {
 	var father = document.getElementById(fatherid);
 	if (!father) {
@@ -692,6 +705,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 
 	var widget = document.createElement('div');
 	widget.setAttribute("id", widgetid);
+	widget.widgetType = widgetType;
 	widget.style.display = 'none';
 	father.appendChild(widget);
 	if (wclass) {
@@ -717,7 +731,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		widgetwidth = parseInt(widgetwidth.substr(0,widgetwidth.length - 2)) / 2;
 		var styleLeft = fatherwidth - widgetwidth;
 		if (styleLeft > 0) {
-			if(IEversion > 0) {
+			if(IEversion && IEversion < 8) {
 				widget.style.left = styleLeft+"px";
 				widget.style.right = styleLeft+"px";
 			} else {
@@ -742,7 +756,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		widgetwidth = widgetwidth.substr(0,widgetwidth.length - 2) / 2;
 		var styleLeft = fatherwidth - widgetwidth;
 		if (styleLeft > 0) {
-			if(IEversion > 0) {
+			if(IEversion && IEversion < 8) {
 				widget.style.left = styleLeft+"px";
 				widget.style.right = styleLeft+"px";
 			} else {
@@ -761,7 +775,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		}
 	} else if(cent == 4) {
 		var fatherwidth = xWidth(xGetElementById(fatherid)) / 2;
-		if(IEversion > 0) {
+		if(IEversion && IEversion < 8) {
 			widget.style.right = fatherwidth+"px";
 		} else {
 			widget.style.left = fatherwidth+"px";	
@@ -770,7 +784,7 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		widget.style.top = fatherheight+"px";
 	} else if(cent == 5) {
 		var fatherwidth = xWidth(xGetElementById(fatherid)) / 2;
-		if(IEversion > 0) {
+		if(IEversion && IEversion < 8) {
 			widget.style.right = fatherwidth+"px";
 		} else {
 			widget.style.left = fatherwidth+"px";	
@@ -1040,6 +1054,41 @@ function xPageX(e)
   return x;
 }
 
+function xEnableDrag2(id,fS,fD,fE,x1,y1,x2,y2)
+{
+  var b = null; // boundary element
+  if (typeof x1 != 'undefined' && !x2) {
+    b = xGetElementById(x1);
+  }
+  xEnableDrag(id,
+    function (el, x, y, ev) { // dragStart
+      if (b) { // get rect from current size of ele
+        x1 = xPageX(b);
+        y1 = xPageY(b);
+        x2 = x1 + b.offsetWidth;
+        y2 = y1 + b.offsetHeight;
+      }
+      if (fS) fS(el, x, y, ev);
+    },
+    function (el, dx, dy, ev) { // drag
+      var x = xPageX(el) + dx; // absolute coords of target
+      var y = xPageY(el) + dy;
+      var mx = ev.pageX; // absolute coords of mouse
+      var my = ev.pageY;
+      if  (!(x < x1 || x + el.offsetWidth > x2) && !(mx < x1 || mx > x2)) {
+        el.style.left = (el.offsetLeft + dx) + 'px';
+      }
+      if (!(y < y1 || y + el.offsetHeight > y2) && !(my < y1 || my > y2)) {
+        el.style.top = (el.offsetTop + dy) + 'px';
+      }
+      if (fD) fD(el, dx, dy, ev);
+    },
+    function (el, x, y, ev) { // dragEnd
+      if (fE) fE(el, x, y, ev);
+    }
+  );
+}
+
 /* (x_style.js) Compiled from X 4.17 by XC 1.06 on 20Jun08 */
 xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xAddClass(e,c){if((e=xGetElementById(e))!=null){var s='';if(e.className.length&&e.className.charAt(e.className.length-1)!=' '){s=' ';}if(!xHasClass(e,c)){e.className+=s+c;return true;}}return false;}function xBackground(e,c,i){if(!(e=xGetElementById(e)))return'';var bg='';if(e.style){if(xStr(c)){e.style.backgroundColor=c;}if(xStr(i)){e.style.backgroundImage=(i!='')?'url('+i+')':null;}bg=e.style.backgroundColor;}return bg;}function xColor(e,s){if(!(e=xGetElementById(e)))return'';var c='';if(e.style&&xDef(e.style.color)){if(xStr(s))e.style.color=s;c=e.style.color;}return c;}function xDisplay(e,s){if((e=xGetElementById(e))&&e.style&&xDef(e.style.display)){if(xStr(s)){try{e.style.display=s;}catch(ex){e.style.display='';}}return e.style.display;}return null;}function xFindAfterByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToLast(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xFindBeforeByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToFirst(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xGetCSSRules(ss){return ss.rules?ss.rules:ss.cssRules;}function xGetComputedStyle(e,p,i){if(!(e=xGetElementById(e)))return null;var s,v='undefined',dv=document.defaultView;if(dv&&dv.getComputedStyle){s=dv.getComputedStyle(e,'');if(s)v=s.getPropertyValue(p);}else if(e.currentStyle){v=e.currentStyle[xCamelize(p)];}else return null;return i?(parseInt(v)||0):v;}function xGetStyleSheetFromLink(cl){return cl.styleSheet?cl.styleSheet:cl.sheet;}function xHasClass(e,c){e=xGetElementById(e);if(!e||e.className=='')return false;var re=new RegExp("(^|\\s)"+c+"(\\s|$)");return re.test(e.className);}function xHasStyleSelector(ss){if(!xHasStyleSheets())return undefined;function testSelector(cr){return cr.selectorText.indexOf(ss)>=0;}return xTraverseDocumentStyleSheets(testSelector);}function xHasStyleSheets(){return document.styleSheets?true:false;}function xHide(e){return xVisibility(e,0);}function xInsertRule(ss,sel,rule,idx){if(!(ss=xGetElementById(ss)))return false;if(ss.insertRule){ss.insertRule(sel+"{"+rule+"}",(idx>=0?idx:ss.cssRules.length));}else if(ss.addRule){ss.addRule(sel,rule,idx);}else return false;return true;}function xOpacity(e,o){var set=xDef(o);if(!(e=xGetElementById(e)))return 2;if(xStr(e.style.opacity)){if(set)e.style.opacity=o+'';else o=parseFloat(e.style.opacity);}else if(xStr(e.style.filter)){if(set)e.style.filter='alpha(opacity='+(100*o)+')';else if(e.filters&&e.filters.alpha){o=e.filters.alpha.opacity/100;}}else if(xStr(e.style.MozOpacity)){if(set)e.style.MozOpacity=o+'';else o=parseFloat(e.style.MozOpacity);}else if(xStr(e.style.KhtmlOpacity)){if(set)e.style.KhtmlOpacity=o+'';else o=parseFloat(e.style.KhtmlOpacity);}return isNaN(o)?1:o;}function xRemoveClass(e,c){if(!(e=xGetElementById(e)))return false;e.className=e.className.replace(new RegExp("(^|\\s)"+c+"(\\s|$)",'g'),function(str,p1,p2){return(p1==' '&&p2==' ')?' ':'';});return true;}function xShow(e){return xVisibility(e,1);}function xStyle(sProp,sVal){var i,e;for(i=2;i<arguments.length;++i){e=xGetElementById(arguments[i]);if(e.style){try{e.style[sProp]=sVal;}catch(err){e.style[sProp]='';}}}}function xToggleClass(e,c){if(!(e=xGetElementById(e)))return null;if(!xRemoveClass(e,c)&&!xAddClass(e,c))return false;return true;}function xTraverseDocumentStyleSheets(cb){var ssList=document.styleSheets;if(!ssList)return undefined;for(i=0;i<ssList.length;i++){var ss=ssList[i];if(!ss)continue;if(xTraverseStyleSheet(ss,cb))return true;}return false;}function xTraverseStyleSheet(ss,cb){if(!ss)return false;var rls=xGetCSSRules(ss);if(!rls)return undefined;var result;for(var j=0;j<rls.length;j++){var cr=rls[j];if(cr.selectorText){result=cb(cr);if(result)return true;}if(cr.type&&cr.type==3&&cr.styleSheet)xTraverseStyleSheet(cr.styleSheet,cb);}if(ss.imports){for(var j=0;j<ss.imports.length;j++){if(xTraverseStyleSheet(ss.imports[j],cb))return true;}}return false;}function xVisibility(e,bShow){if(!(e=xGetElementById(e)))return null;if(e.style&&xDef(e.style.visibility)){if(xDef(bShow))e.style.visibility=bShow?'visible':'hidden';return e.style.visibility;}return null;}function xZIndex(e,uZ){if(!(e=xGetElementById(e)))return 0;if(e.style&&xDef(e.style.zIndex)){if(xNum(uZ))e.style.zIndex=uZ;uZ=parseInt(e.style.zIndex);}return uZ;}
 
@@ -1076,16 +1125,16 @@ function xDisableDrop(id)
 /*
 Copyright (c) Copyright (c) 2007, Carl S. Yestrau All rights reserved.
 Code licensed under the BSD License: http://www.featureblend.com/license.txt
-Version: 1.0.2
+Version: 1.0.3
 */
 var FlashDetect = new function(){
 	var self = this;
 	self.installed = false;
+	self.raw = "";
 	self.major = -1;
 	self.minor = -1;
 	self.revision = -1;
 	self.revisionStr = "";
-	self.activeXVersion = "";
 	var activeXDetectRules = [
 		{
 			"name":"ShockwaveFlash.ShockwaveFlash.7",
@@ -1128,10 +1177,23 @@ var FlashDetect = new function(){
 	var parseActiveXVersion = function(str){
 		var versionArray = str.split(",");//replace with regex
 		return {
+			"raw":str,
 			"major":parseInt(versionArray[0].split(" ")[1], 10),
 			"minor":parseInt(versionArray[1], 10),
 			"revision":parseInt(versionArray[2], 10),
 			"revisionStr":versionArray[2]
+		};
+	};
+	var parseStandardVersion = function(str){
+		var descParts = str.split(/ +/);
+		var majorMinor = descParts[2].split(/\./);
+		var revisionStr = descParts[3];
+		return {
+			"raw":str,
+			"major":parseInt(majorMinor[0], 10),
+			"minor":parseInt(majorMinor[1], 10), 
+			"revisionStr":revisionStr,
+			"revision":parseRevisionStrToInt(revisionStr)
 		};
 	};
 	var parseRevisionStrToInt = function(str){
@@ -1145,13 +1207,13 @@ var FlashDetect = new function(){
 			var type = 'application/x-shockwave-flash';
 			var mimeTypes = navigator.mimeTypes;
 			if(mimeTypes && mimeTypes[type] && mimeTypes[type].enabledPlugin && mimeTypes[type].enabledPlugin.description){
-				var desc = mimeTypes[type].enabledPlugin.description;
-				var descParts = desc.split(' ');//replace with regex
-				var majorMinor = descParts[2].split('.');
-				self.major = parseInt(majorMinor[0], 10);
-				self.minor = parseInt(majorMinor[1], 10); 
-				self.revisionStr = descParts[3];
-				self.revision = parseRevisionStrToInt(self.revisionStr);
+				var version = mimeTypes[type].enabledPlugin.description;
+				var versionObj = parseStandardVersion(version);
+				self.raw = versionObj.raw;
+				self.major = versionObj.major;
+				self.minor = versionObj.minor; 
+				self.revisionStr = versionObj.revisionStr;
+				self.revision = versionObj.revision;
 				self.installed = true;
 			}
 		}else if(navigator.appVersion.indexOf("Mac")==-1 && window.execScript){
@@ -1163,15 +1225,15 @@ var FlashDetect = new function(){
 					version = activeXDetectRules[i].version(obj);
 					if(version!=-1){
 						var versionObj = parseActiveXVersion(version);
+						self.raw = versionObj.raw;
 						self.major = versionObj.major;
 						self.minor = versionObj.minor; 
 						self.revision = versionObj.revision;
 						self.revisionStr = versionObj.revisionStr;
-						self.activeXVersion = version;
 					}
 				}
 			}
 		}
 	}();
 };
-FlashDetect.release = "1.0.2";
+FlashDetect.release = "1.0.3";

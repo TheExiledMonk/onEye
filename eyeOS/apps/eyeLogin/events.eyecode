@@ -1,190 +1,129 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
-*/
-/*
-	events resource for eyeLogin 
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-
-function eyeLogin_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
-}
-
-function eyeLogin_on_doLogin($params="") {
+function eyeLogin_on_Create($params = '') {
+	global $checknum;
 	global $currentUser;
 	global $myPid;
-	global $checknum;
-	$myUsername = $GLOBALS['eyeLogin_Username']->text;
-	$myPassword = $GLOBALS['eyeLogin_Password']->text;
-	$myLanguage = $GLOBALS['eyeLogin_Language']->selected;
-		
-	if(service('um','login',array($myUsername,$myPassword))) {
-		$currentUser = $myUsername;
-		$config = eyeXML('getXMLconfig',array('eyex','eyex.xml'));
-		if ($config && $config['changes'][0]['increase'][0]) {
-			$config['changes'][0]['times'][0] += $config['changes'][0]['increase'][0];
-			$config['changes'][0]['increase'][0] = '0';
-			eyeXML('setXMLconfig',array('eyex','eyex.xml',$config));
-		}
-		//set language
-		if ($myLanguage && $myLanguage != 'auto') {
-			i18n('setLang',array($myLanguage));
+	if (ALLOW_USER_REGISTER) {
+		$user = $GLOBALS['eyeLogin_Textbox_2_User']->text;
+		$password1 = base64_decode($GLOBALS['eyeLogin_Textbox_2_Password_1']->text);
+		$password2 = base64_decode($GLOBALS['eyeLogin_Textbox_2_Password_2']->text);
+		$language = utf8_basename($GLOBALS['eyeLogin_Select_2_Language']->selected);
+		if (!$user || !$password1 || !$password2) {
+			$GLOBALS['eyeLogin_Label_2_Message']->setText('Please fill out all fields!');
+		} elseif (utf8_strlen($user) < 2) {
+			$GLOBALS['eyeLogin_Label_2_Message']->setText('Username is too short!');
+		} elseif (!preg_match('/^[-_a-zA-Z0-9]+$/',$user)) {
+			$GLOBALS['eyeLogin_Label_2_Message']->setText('Username should be alpha-numeric!');
+		} elseif (utf8_strlen($password1) < 4) {
+			$GLOBALS['eyeLogin_Label_2_Message']->setText('Password is too short!');
+		} elseif ($password1 != $password2) {
+			$GLOBALS['eyeLogin_Label_2_Message']->setText('Password fields do not match!');
+			$GLOBALS['eyeLogin_Textbox_2_Password_2']->setText('');
+		} elseif ($language != 'en' && !vfs('real_fileExists',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/' . $language . '.xml'))) {
+			$GLOBALS['eyeLogin_Label_2_Message']->setText('The language does not exist!');
 		} else {
-			$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/conf/i18n/lang.xml'));	
-			if (is_array($xml) && $xml['lang'][0]) {
+			$oldUser = $currentUser;
+			$currentUser = ROOTUSER;
+			if (um('userExist',array($user))) {
+				$currentUser = $oldUser;
+				$GLOBALS['eyeLogin_Label_2_Message']->setText('That user already exists!');
+				$GLOBALS['eyeLogin_Textbox_2_User']->setText('');
+			} elseif (um('createUser',array('username' => $user,'password' => $password1))) {
+				$currentUser = $user;
+				$xml = eyeXML('getXMLconfig',array('i18n','lang.xml'));
+				$xml['lang'][0] = $language;
+				eyeXML('setXMLconfig',array('i18n','lang.xml',$xml));
+				eyex('rawjs',array('js' => 'eyeLogin_2_Clean(' . $myPid . ');'));
+				if (um('login',array($user,$password1))) {
+					i18n('setLang',array($language));
+					proc('setProcessUser',array($myPid));
+					eyex('rawjs',array('js' => 'xGetElementById("eyex-info").style.display = "block"; xGetElementById("eyex-powered").style.display = "block"; eyeLogin_successLogin("' . sec('cleanOutPutString',array('var' => $user,'noreturn' => 1,'nohtml' => 1)) . '","' . $checknum . '","' . $myPid . '");'));
+				}
+			} else {
+				$currentUser = $oldUser;
+				$GLOBALS['eyeLogin_Label_2_Message']->setText('Error creating new user!');
+			}
+		}
+	} else {
+		if (is_object($GLOBALS['eyeLogin_Label_2_Message'])) {
+			$GLOBALS['eyeLogin_Label_2_Message']->setText('This system does not allow user registrations!');
+		}
+	}
+	$GLOBALS['eyeLogin_Label_2_Message']->unhide();
+}
+
+function eyeLogin_on_Login($params = '') {
+	global $checknum;
+	global $currentUser;
+	global $myPid;
+	$GLOBALS['eyeLogin_Label_1_Disabled']->hide();
+	$user = $GLOBALS['eyeLogin_Textbox_1_User']->text;
+	$password = base64_decode($GLOBALS['eyeLogin_Textbox_1_Password']->text);
+	$language = $GLOBALS['eyeLogin_Select_1_Language']->selected;
+	if (um('login',array($user,$password))) {
+		$currentUser = $user;
+		$xml = eyeXML('getXMLconfig',array('eyex','eyex.xml'));
+		if ($xml['changes'][0]['increase'][0]) {
+			$xml['changes'][0]['times'][0] += $xml['changes'][0]['increase'][0];
+			$xml['changes'][0]['increase'][0] = 0;
+			eyeXML('setXMLconfig',array('eyex','eyex.xml',$xml));
+		}
+		if ($language && $language != '[auto]' && ($language == 'en' || vfs('real_fileExists',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/' . $language . '.xml')))) {
+			i18n('setLang',array($language));
+		} else {
+			$xml = eyeXML('getXMLconfig',array('i18n','lang.xml'));
+			if ($xml['lang'][0]) {
 				i18n('setLang',array($xml['lang'][0]));
 			} else {
-				i18n('setLang',array(DEFAULT_LANGUAGE));
+				i18n('setLang',array('en'));
 			}
-			
 		}
-		
-		service('proc','setProcessUser',array($myPid));
-		eyex('rawjs',array('js' => 'document.getElementById("eyex-powered").style.display = "block";'));
-		eyex('rawjs',array('js' => 'document.getElementById("eyex-info").style.display = "block";'));
-		service('eyex','rawjs',array('js' => 'eyeLogin_successLogin("'.service('sec','cleanOutPutString',array('var'=>$myUsername,'noreturn' =>1,'nohtml' =>1)).'","'.$checknum.'","'.$myPid.'");'));
+		proc('setProcessUser',array($myPid));
+		eyex('rawjs',array('js' => 'xGetElementById("eyex-info").style.display = "block"; xGetElementById("eyex-powered").style.display = "block"; eyeLogin_successLogin("' . sec('cleanOutPutString',array('var' => $user,'noreturn' => 1,'nohtml' => 1)) . '","' . $checknum . '","' . $myPid . '");'));
 	} else {
-		service('eyex','rawjs',array('js' => 'eyeLogin_badLogin("'.service('sec','cleanOutPutString',array('var'=>$myUsername,'noreturn' =>1,'nohtml' =>1)).'","'.service('sec','cleanOutPutString',array('var'=>$myPassword,'noreturn' =>1,'nohtml' =>1)).'","'.$checknum.'","'.$myPid.'");'));
+		if (errorCodes('getErrorCode') == UM_USER_IS_DISABLED) {
+			$GLOBALS['eyeLogin_Label_1_Disabled']->unhide();
+		} else {
+			eyex('rawjs',array('js' => 'eyeLogin_badLogin("' . sec('cleanOutPutString',array('var' => $user,'noreturn' => 1,'nohtml' => 1)) . '","' . sec('cleanOutPutString',array('var' => $password,'noreturn' => 1,'nohtml' => 1)) . '","' . $checknum . '","' . $myPid . '");'));
+		}
 	}
 }
 
-function eyeLogin_on_successLogin($params=null) {
-	global $currentUser;	
-	if(empty($currentUser)){
-		return false;
-	}
-	loadConfig('eyeLogin');
-	$pid = service('proc','findPidByName',array('eyeX'));
-	service('proc','setProcessUser',array($pid)); //set eyeX to the currentUser
-	proc('end');
-	
-	service('proc','launch',array(LOGIN_EXECUTE,'autorun'));
-	eyex('rawjs',array('js' => 'document.getElementById("eyex-powered").style.display = "none";'));
-	eyex('rawjs',array('js' => 'document.getElementById("eyex-info").style.display = "none";'));
+function eyeLogin_on_Message($params = '') {
+	eyeWidgets('updateContent',$params);
 }
 
-function eyeLogin_on_doCreateUser($params="") {
-	
-	if(ALLOW_USER_REGISTER != 1) {
-		if(is_object($GLOBALS['eyeLogin_HiddenLabel'])) {
-			$GLOBALS['eyeLogin_HiddenLabel']->setText("This system does not allow user registration");
-		}
-		return;
-	}
-	global $myPid;
-	global $checknum;
-	$myUsername = $GLOBALS['eyeLogin_newUser']->text;
-	$pass1 = $GLOBALS['eyeLogin_Pass1']->text;
-	$pass2 = $GLOBALS['eyeLogin_Pass2']->text;
-
-	if(!$myUsername || !$pass1 || !$pass2) {
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("Sorry, you must provide username and password");
-		$GLOBALS['eyeLogin_newUser']->setText("");
-		$GLOBALS['eyeLogin_Pass1']->setText("");
-		$GLOBALS['eyeLogin_Pass2']->setText("");
-		return false;
-	}
-	
-	if($pass1 != $pass2) {
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("Password fields do not match");
-		$GLOBALS['eyeLogin_Pass1']->setText("");
-		$GLOBALS['eyeLogin_Pass2']->setText("");
-		return false;
-	}
-	
-	$lang = $GLOBALS['eyeLogin_selectLang']->selected;
-	
-	if(!$lang || empty($lang)){
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("Sorry, language is needed");
-		$GLOBALS['eyeLogin_Pass1']->setText("");
-		$GLOBALS['eyeLogin_Pass2']->setText("");
-		return false;
-	}
-	
-	$tmpLangs = $_SESSION['tmpLangs'];	
-	foreach($tmpLangs as $tmpLang){
-		if($lang == $tmpLang[1]){
-			$exists = true;
-			break;
-		}
-	}
-	
-	if(!$exists){
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("The language does not exist");
-		$GLOBALS['eyeLogin_Pass1']->setText("");
-		$GLOBALS['eyeLogin_Pass2']->setText("");
-		return false;	
-	}
-	
-	if(utf8_strlen($pass1) < 4) {
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("Password is too short");
-		return false;
-	}
-	
-	if(utf8_strlen($myUsername) < 2) {
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("Username is too short");
-		return false;
-	}
-	
-	if (!preg_match("/^[-_a-zA-Z0-9]+$/", $myUsername)) {
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("Error: username should be alpha-numeric");
-		return false;
-	}
-	
+function eyeLogin_on_successLogin($params = '') {
 	global $currentUser;
-	$oldUser = $currentUser;
-	$currentUser = ROOTUSER;
-	if(service('um','userExist',array($myUsername))) {
-		$currentUser = $oldUser;
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("That user already exists");
-		$GLOBALS['eyeLogin_newUser']->setText("");
-		return false;
-	}
-	
-	if(service('um','createUser',array('username' => $myUsername,'password' => $pass1))) {
-		//Getting the lang.xml
-		$dir = um('getUserDir',array($myUsername));
-		$dir = $dir.'/'.CONF_USER_DIR.'/i18n/lang.xml';
-		$data = eyeXML('getXMLfile',array($dir));
-		//Setting the register language (if the user don't select any it will be the default language		
-		$data['lang'][0] = $lang;
-		//Saving...
-		eyeXML('setXMLfile',array($dir,$data));
-		//restoring user...
-		$currentUser = $oldUser;
-		service('eyex','rawjs',array('js'=>"eyeLoginCleanWindow($myPid);"));
-		//we don't need any more
-		unset($_SESSION['tmpLangs'][0]);
-		
-		//autologin
-		if(service('um','login',array($myUsername,$pass1))) {
-			$currentUser = $myUsername;
-			service('proc','setProcessUser',array($myPid));
-			service('eyex','rawjs',array('js' => 'eyeLogin_successLogin("'.service('sec','cleanOutPutString',array('var'=>$myUsername,'noreturn' =>1,'nohtml' =>1)).'","'.$checknum.'","'.$myPid.'");'));
-		}
-	} else {
-		$currentUser = $oldUser;
-		$GLOBALS['eyeLogin_HiddenLabel']->setText("Error creating new user");
+	if ($currentUser) {
+		$pid = proc('findPidByName',array('eyeX'));
+		proc('setProcessUser',array($pid));
+		eyex('rawjs',array('js' => 'EXTERN_CACHE_VERSION = "' . EXTERN_CACHE_VERSION . '"; xGetElementById("eyex-info").style.display = "none"; xGetElementById("eyex-powered").style.display = "none";'));
+		loadConfig('eyeLogin');
+		proc('launch',array(LOGIN_EXECUTE,'autorun'));
+		proc('end');
 	}
 }
-
 ?>

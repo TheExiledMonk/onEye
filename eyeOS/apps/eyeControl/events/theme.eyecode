@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeControl_on_theme_change($params = '') {
@@ -33,7 +33,7 @@ function eyeControl_on_theme_change($params = '') {
 		include_once(EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/' . $newTheme . '/load.eyecode');
 		call_user_func('theme_' . $newTheme . '_load');
 	}
-	//reload the ThemeXML var, because the xml file may change
+	// Reload $ThemeXML, because its content could change
 	$ThemeXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 	$ThemeXML['eyeDesk'][0]['theme'][0] = $newTheme;
 	eyeControl_lib_setXMLconfig(array('eyeDesk','conf.xml',$ThemeXML));
@@ -47,10 +47,16 @@ function eyeControl_on_theme_change($params = '') {
 		$eyelogin = getConfig('eyeLogin');
 		$eyelogin['CONFIG'][0]['LOGIN_THEME'][0] = $params['eyeControl_theme_select'][0];
 		setConfig('eyeLogin','conf.xml',$eyelogin);
+		// INCREASE CACHE_VERSION
+		$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
+		$xml = eyeXML('getXMLfile',array($file));
+		$xml['CONFIG'][0]['CACHE_VERSION'][0] = 1 + intval($xml['CONFIG'][0]['CACHE_VERSION'][0]);
+		eyeXML('setXMLFile',array($file,$xml));
+	} else {
+		$xml = eyeControl_lib_getXMLconfig(array('eyex','eyex.xml'));
+		$xml['changes'][0]['increase'][0] = '1';
+		eyeControl_lib_setXMLconfig(array('eyex','eyex.xml',$xml));
 	}
-	$xml = eyeControl_lib_getXMLconfig(array('eyex','eyex.xml'));
-	$xml['changes'][0]['increase'][0] = '1';
-	eyeControl_lib_setXMLconfig(array('eyex','eyex.xml',$xml));
 	eyex('messageBox',array('content' => 'Theme changed. You must restart your desktop for the changes to become active.'));
 }
 
@@ -68,6 +74,6 @@ function eyeControl_on_theme_select($params = '') {
 	eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_theme_label_display_2").appendChild(document.createTextNode(%s));','tokens' => array(i18n('translate',array($ThemeXML['display'][0] . ' %s',array($ThemeXML['version'][0]))))));
 	eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_theme_label_author_2").innerHTML = "";'));
 	eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_theme_label_author_2").appendChild(document.createTextNode(%s));','tokens' => array($ThemeXML['author'][0])));
-	eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_theme_imagebox").src = "index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . THEMES_DIR . '/' . $theme . '/screenshot.png";'));
+	eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_theme_imagebox").src = "index.php?version=' . EXTERN_CACHE_VERSION . '&theme=0&extern=' . THEMES_DIR . '/' . $theme . '/screenshot.png";'));
 }
 ?>

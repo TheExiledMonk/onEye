@@ -1,59 +1,57 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeVideo_on_Message($params="") {
+function eyeVideo_on_Close($params = '') {
+	proc('end');
+}
+
+function eyeVideo_on_getFile($params = '') {
+	$url = $GLOBALS['eyeVideo_Hidden']->text;
+	$file = utf8_basename($url);
+	$path = eyeFiles('cleanPath',array(utf8_substr(utf8_trim($url,'/\\'),0,- utf8_strlen($file))));
+	header('Content-type: video/x-flv');
+	if ($path[1] == 'real') {
+		header('Content-Length: ' . vfs('real_filesize',array($path[0] . '/' . $file)));
+	} else {
+		header('Content-Length: ' . vfs('filesize',array($path[0] . '/' . $file)));
+	}
+	header('Accept-Ranges: bytes');
+	header('X-Pad: avoid browser bug');
+	if ($path[1] == 'real') {
+		vfs('printFile',array($path[0] . '/' . $file));
+	} else {
+		vfs('readFile',array($path[0] . '/' . $file));
+	}
+	exit;
+}
+
+function eyeVideo_on_loadVideo($params = '') {
+	global $myPid;
+	addShortUrl($myPid . '_eyeVideo','getFile');
+	eyex('rawjs',array('js' => 'var fo = new SWFObject("index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/FlowPlayer.swf","FlowPlayer","468","350","7","#ffffff",true); fo.addVariable("config","{ showPlayListButtons: true,playList: [ { overlayId: \'play\' },{ url: \'index.php/' . $myPid . '_eyeVideo\' } ],initialScale: \'fit\' }"); fo.write("' . $myPid . '_eyeVideo_Window_Content");'));
+}
+
+function eyeVideo_on_Message($params = '') {
 	eyeWidgets('updateContent',$params);
 }
-
-function eyeVideo_on_playerLoaded($params=null) {
-	global $myPid;
-	global $checknum;
-	addShortUrl($myPid."_video",'getVideo');
-	$shortUrl = "index.php/".$myPid."_video";	
-	$wndname = $myPid.'_win1_Content';
-	$js = 'var fo = new SWFObject("index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/FlowPlayer.swf", "FlowPlayer", "468", "350", "7", "#ffffff", true);';
-	$js .= 'fo.addVariable("config", "{ showPlayListButtons: true, playList: [ {overlayId: \'play\' }, { url: \''.$shortUrl.'\' } ], initialScale: \'fit\' }");';
-	$js .= 'fo.write("'.$wndname.'");';
-	eyeX('rawjs',array('js'=>$js));
-}
-
-function eyeVideo_on_getVideo($params=""){
-	global $checknum,$myPid;
-	$viPath = $GLOBALS['vPath']->text;
-	if(!service('vfs','checkPermissions',array($viPath))) {
-		exit;
-	}
-	$myName = service('vfs','getRealName',array($viPath));
-	$size = service('vfs','filesize',array($viPath),1);	
-	header('Content-Type: video/x-flv');
-	header("Content-Length: $size");
-	readfile($myName);		
-	eyeWidgets('rawunserialize');
-	exit;								
-}
-
-function eyeVideo_on_Close($params=null) {
-	proc('end');	
-}
-
 ?>

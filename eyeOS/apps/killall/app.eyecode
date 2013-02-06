@@ -1,51 +1,44 @@
-<?php 
+<?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function killall_run($params=null) {
-	global $myPid;
-	//error handling
-	if(!$params || !is_array($params)) {
-		errorCodes('setErrorCode', array(INCORRENT_PARAMS));
-		return false;
-	}
-
-	$appNames = $params;
-	$processesKilled = false;
-	foreach($appNames as $killedapp) {
-		while(($killedPid = proc('findPidByName', array($killedapp))) !== false) {
-			proc('close', array($killedPid));
-			$processesKilled = true;
+function killall_run($params = '') {
+	if (!$params[0]) {
+		errorCodes('setErrorCode',array(INCORRENT_PARAMS));
+	} else {
+		foreach ($params as $app) {
+			while (($pid = proc('findPidByName',array($app))) !== false) {
+				proc('close',array($pid));
+				$killed = 1;
+			}
+		}
+		if (!$killed) {
+			eyex('messageBox', array('content' => 'No process has been killed!'));
 		}
 	}
-
-	if(!$processesKilled) {
-		eyeX('messageBox', array('content' => "No process was killed"));
-	}
-
 	proc('end');
 }
 
-function killall_end() {
-	eyeWidgets('rawunserialize');
+function killall_end($params = '') {
+	eyeWidgets('unserialize',$params);
 }
 ?>

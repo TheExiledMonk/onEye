@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeContacts_on_Message($params="") {
@@ -304,7 +304,7 @@ function eyeContacts_on_SendMessage() {
 		
 		$xml = eyeContacts('retrive',array($myInfo[0],$myInfo[1],$myInfo[2]));		
 		if ($xml['eyeos-user'][0]) {
-			proc('launch',array('eyeMessages',array('action' => 'new','to' => $xml['eyeos-user'][0])));
+			proc('launch',array('newMessage',array('to' => $xml['eyeos-user'][0])));
 		} else {
 			service('eyex','messageBox',array('content'=>'Please fill in the eyeOS Username for this contact first.'));
 		}
@@ -454,6 +454,36 @@ function eyeContacts_on_sortContacts($params){
 	eyeContacts_show_table($letter);
 	
 }
+
+function eyeContacts_on_mainResize($params){
+	$width = intval($params['arg'][0]);
+	$height = intval($params['arg'][1]);
+
+	$widthDiff = $GLOBALS['eyeContactsWND']->width - $width;
+	$heightDiff = $GLOBALS['eyeContactsWND']->height - $height;
+	$GLOBALS['eyeContactsWND']->width = $width;
+	$GLOBALS['eyeContactsWND']->height = $height;
+	
+	$width = $GLOBALS['eyeContacts_Contacts']->width - $widthDiff;
+	$height = $GLOBALS['eyeContacts_Contacts']->height - $heightDiff;
+	$GLOBALS['eyeContacts_Contacts']->setWidth($width);
+	$GLOBALS['eyeContacts_Contacts']->setHeight($height);
+
+	$width = $GLOBALS['tableContainer']->width - $widthDiff;
+	$height = $GLOBALS['tableContainer']->height - $heightDiff;
+	$GLOBALS['tableContainer']->setWidth($width);
+	$GLOBALS['tableContainer']->setHeight($height);
+
+	$width = $GLOBALS['buttonsContainer']->width - $widthDiff;
+	$GLOBALS['buttonsContainer']->setWidth($width);
+	
+}
+
+function eyeContacts_on_fullScreen(){
+	global $myPid;
+	$GLOBALS['eyeContactsWND']->setFullScreen();
+}
+
 function eyeContacts_on_Close(){		
 	proc('end');
 }

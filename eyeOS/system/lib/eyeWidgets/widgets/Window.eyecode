@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	Window widget abstraction
 */
@@ -82,6 +82,8 @@ class Window {
 	var $nodrag;
 	var $width;
 	var $height;
+	var $minWidth;
+	var $minHeight;
 	var $removepid;
 	var $sendResizeMsg;
 	var $background;
@@ -99,8 +101,17 @@ class Window {
 	var $noZindex;
 	var $allDrag;
 	var $showtitle;
+	var $oldWidth;
+	var $oldHeight;
+	var $oldX;
+	var $oldY;
+	var $fullScreen = 0;
+	//This var are needed for fullscreen system
+	var $originWidth;
+	var $originHeight;
 	//raw vars
 	var $content;
+	var $visible;
 	//cssClasses
 	var $cssClasses = array('wMain'=>'eyeWindowMain', 
 							'wTitle'=>'eyeWindowTitle',
@@ -115,8 +126,6 @@ class Window {
 							'wRight'=>'eyeWindowRight',
 							'wContent'=>'eyeWindowContent',				
 							);
-							
-	//function Window($name,$title,$father="eyeApps",$type=NORMAL_WINDOW,$width=200,$height=200,$cent=0,$x=20,$y=20,$horiz=0,$vert=0) {
 	function Window($params) {	
 		global $myPid;
 		$this->creatorPid = $myPid;
@@ -151,16 +160,24 @@ class Window {
 				isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 				isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
 			} else {
-				$this->x = $position['left'][0];
-				$this->y = $position['top'][0];
+				$this->x = intval($position['left'][0]);
+				$this->y = intval($position['top'][0]);
 				$this->cent = 0;
 			}
 		}
 		
 		//specific window options
 		isset($params['title']) ? $this->title = $params['title'] : $this->title = $this->name;
+		isset($params['minWidth']) ? $this->minWidth = $params['minWidth'] : $this->minWidth = 100;
+		isset($params['minHeight']) ? $this->minHeight = $params['minHeight'] : $this->minHeight = 70;
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
+		if ($this->width < $this->minWidth){
+			$this->width = $this->minWidth;
+		}
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
+		if ($this->height < $this->minHeight){
+			$this->height = $this->minHeight;
+		}
 		isset($params['removepid']) ? $this->removepid = $params['removepid'] : $this->removepid = 1;
 		isset($params['sendResizeMsg']) ? $this->sendResizeMsg = $params['sendResizeMsg'] : $this->sendResizeMsg = 0;
 		isset($params['background']) ? $this->background = $params['background'] : $this->background = "";
@@ -168,7 +185,7 @@ class Window {
 		isset($params['removeWin']) ? $this->removeWin = $params['removeWin'] : $this->removeWin = 1;
 		isset($params['saveFunc']) ? $this->saveFunc = $params['saveFunc'] : $this->saveFunc = '';
 		isset($params['sigClose']) ? $this->sigClose = $params['sigClose'] : $this->sigClose = 'Close';
-		isset($params['dragBgColor']) ? $this->dragBgColor = $params['dragBgColor'] : $this->dragBgColor = '#A1BFE6';
+		isset($params['dragBgColor']) ? $this->dragBgColor = $params['dragBgColor'] : $this->dragBgColor = 0;
 		isset($params['dragBgAlpha']) ? $this->dragBgAlpha = $params['dragBgAlpha'] : $this->dragBgAlpha = '80';
 		isset($params['showDragContent']) ? $this->showDragContent = $params['showDragContent'] : $this->showDragContent = false;
 		isset($params['cssReplace']) ? $this->cssReplace = $params['cssReplace'] : $this->cssReplace = '';
@@ -301,6 +318,8 @@ class Window {
 		$widgetsparams = array(
 			'height' => $this->height,
 			'width' => $this->width,
+			'minHeight' => $this->minHeight,
+			'minWidth' => $this->minWidth,
 			'title' => htmlspecialchars($this->title,ENT_QUOTES,'UTF-8'),
 			'type' => $this->type,
 			'showtitle' => $this->showtitle,
@@ -354,6 +373,7 @@ class Window {
 			'center' => $this->cent,
 		);
 		$this->showed=1;
+		$this->visible=1;
 		service('eyex','createWidget',$myWindow);
 		if(!$this->noZindex){
 			$this->focus();	
@@ -377,24 +397,34 @@ class Window {
 
 	function setWidth($width) {
 		global $myPid;
+		if($width < $this->minWidth){
+			$width = $this->minWidth;
+		}
+		$this->oldWidth = $this->width;
 		$this->width = intval($width);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
 	}
 	
 	function setHeight($height) {
 		global $myPid;
+		if($height < $this->minHeight){
+			$height = $this->minHeight;
+		}
+		$this->oldHeight = $this->height;
 		$this->height = intval($height);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
 	}
 	
 	function setX($x) {
 		global $myPid;
+		$this->oldX = $this->x;
 		$this->x = intval($x);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.left="'.$this->x.'px";'));
 	}
 	
 	function setY($y) {
 		global $myPid;
+		$this->oldY = $this->y;
 		$this->y = intval($y);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.top="'.$this->y.'px";'));
 	}
@@ -438,11 +468,194 @@ class Window {
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.display="block"'));
 	}
 	
+	function setTitle($title) {
+		global $myPid;
+		$this->title = $title;
+		eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '_WindowTitle_text").innerHTML = %s; xGetElementById("' . $myPid . '_' . $this->name . '_WindowOnBar").childNodes[0].innerHTML = %s;','tokens' => array($title,$title)));
+	}
+	
 	function setRawContent($myContent) {
 		global $myPid;
 		$this->content = $myContent;
 		$myContent = base64_encode($myContent);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Content").innerHTML=Base64.decode("'.$myContent.'")'));
+	}
+	/*
+	*This method change the  noDrag style in runtime without make any hack outside this method.
+	*/
+	function setNoDrag($bool){
+		global $myPid;
+		if($bool == true){
+			$this->nodrag = 1;
+			service('eyex','rawjs',array('js' => 'xGetElementById("'.$myPid.'_'.$this->name.'").notDrag = 1;'));
+		}else{
+			$this->nodrag = 0;
+			service('eyex','rawjs',array('js' => 'xGetElementById("'.$myPid.'_'.$this->name.'").notDrag = 0;'));
+		}
+	}
+
+	function setFullScreen($bool=null,$noAutoResize=0){
+		global $myPid;
+		if(!$bool){
+			if(!$this->fullScreen){
+				$bool = true;
+			}else{
+				$bool = false;
+			}
+		}
+		$outsideDiv = array('minimizedApps','minimizedAppsRight','minimizedAppsLeft','minIconLeft','minIconRight');
+		//$bool eq true means the window widget will be fullscreened (so is in window mode now)
+		if($bool == true){
+			$this->fullScreen = 1;
+			$this->originWidth = $this->width;
+			$this->originHeight = $this->height;
+			$this->setWidth($_SESSION['SCREEN']['eyeApps']['width']);
+			if (IE && IE < 7) {
+				$this->setHeight($_SESSION['SCREEN']['eyeApps']['height'] + 23);
+			} else {
+				$this->setHeight($_SESSION['SCREEN']['eyeApps']['height']);
+				$this->height += 23;
+			}
+			$this->setX(0);
+			$this->setY(0);
+			//Window as top of any desktop element
+			eyex('rawjs',array('js' => 'xZIndex("' . $myPid . '_' . $this->name . '",10001); xGetElementById("' . $myPid . '_' . $this->name . '").noZindex = 1;'));
+			//The content is not at top, so we have to move it
+			service('eyex','rawjs',array(
+				'js' => 'var ele = xGetElementById("'.$myPid.'_'.$this->name.'_Content");
+						ele.oldTop = ele.style.top;
+						ele.style.top = "0px";'));
+			//We have some stuff not in eyeApps, so we have to hide it manually :(
+			foreach($outsideDiv as $div){
+				service('eyex','rawjs',array('js'=>'xVisibility("'.$div.'",false);'));
+			}
+			$this->showMaxButton(false);
+			$this->showResizeButton(false);
+			$this->showCloseButton(false);
+			$this->showMinimizeButton(false);
+		}else{
+			$this->fullScreen = 0;
+			$this->setWidth($this->originWidth);
+			$this->setHeight($this->originHeight);
+			$this->setX($this->oldX);
+			$this->setY($this->oldY);
+			//Restauring the normal zIndex calling focus
+			$this->focus();
+			eyex('rawjs',array('js' => 'xGetElementById("' . $myPid . '_' . $this->name . '").noZindex = ' . $this->noZindex . ';'));
+			//The content is not at top, so we have to move it
+			service('eyex','rawjs',array(
+				'js' => 'var ele = xGetElementById("'.$myPid.'_'.$this->name.'_Content");
+						ele.style.top = ele.oldTop;'));
+			//We have some stuff not in eyeApps, so we have to hide it manually :(
+			foreach($outsideDiv as $div){
+				service('eyex','rawjs',array('js'=>'xVisibility("'.$div.'",true);'));
+			}
+			$this->showMaxButton(true);
+			$this->showResizeButton(true);
+			$this->showCloseButton(true);
+			$this->showMinimizeButton(true);
+		}
+		if(!$noAutoResize){
+			$appName = proc('findNameByPid',array($myPid));
+			include_once(EYE_ROOT . '/' . APP_DIR . '/' . $appName . '/events' . EYE_CODE_EXTENSION);
+			$funcName = $appName . '_on_' . $this->sigResize;
+			//If the resize function exists, then the params should be the standars...
+			if(function_exists($funcName)){
+				//Simulating no resize has been done
+				$width = $this->width;
+				$height = $this->height;
+				$this->width = $this->oldWidth;
+				$this->height = $this->oldHeight;
+				$params = array('arg'=>array($width,$height));
+				call_user_func($funcName,$params);
+			}
+		}
+	}
+	//This function is designed to be called in a KListenerCall
+	function listenerResizeFullScreen($params){
+		global $myPid;
+		$params['appWidth'] < $this->minWidth ? $width = $this->minWidth : $width = $params['appWidth'];
+		$params['appHeight'] < $this->minHeight ? $height = $this->minHeight : $height = $params['appHeight'];
+
+		//WE have to simulate a real window resize, so.. let's go
+		//First we have to calculate the eyeApps different
+		$diffHeight = $height - $_SESSION['SCREEN']['eyeApps']['height'];
+		$diffWidth = $width - $_SESSION['SCREEN']['eyeApps']['width'];
+
+		//Saving the old size to simulate resize
+		$oldWidth = $this->width;
+		$oldHeight = $this->height;
+
+		$this->setWidth($width);
+		if(IE && IE < 7){
+			$this->setHeight($height+23);
+		}else{
+			$this->setHeight($height);
+		}
+
+		//Retauring the size to simulate resize event
+		$this->width = $oldWidth;
+		$this->height = $oldHeight;
+
+ 		$height += 23;//That's for the window top
+		$params = array('arg'=>array($width,$height));
+		$appName = proc('findNameByPid',array($myPid));
+		include_once(EYE_ROOT . '/' . APP_DIR . '/' . $appName . '/events' . EYE_CODE_EXTENSION);
+		call_user_func($appName.'_on_'.$this->sigResize,$params);
+	}
+
+	function showMaxButton($bool=null){
+		global $myPid;
+		if($bool === null){
+			//TODO: set error code
+			return false;
+		}
+		if($bool == true){
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowMaxButton").style.display = "block";'));
+		}else{
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowMaxButton").style.display = "none";'));
+		}
+	}
+	function showMinimizeButton($bool=null){
+		global $myPid;
+		if($bool === null){
+			//TODO: set error code
+			return false;
+		}
+		if($bool == true){
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowMinimizeButton").style.display = "block";'));
+		}else{
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowMinimizeButton").style.display = "none";'));
+		}
+	}
+	function showCloseButton($bool=null){
+		global $myPid;
+		if($bool === null){
+			//TODO: set error code
+			return false;
+		}
+		if($bool == true){
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowCloseButton").style.display = "block";'));
+		}else{
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowCloseButton").style.display = "none";'));
+		}
+	}
+	function showResizeButton($bool=null){
+		global $myPid;
+		if($bool === null){
+			//TODO: set error code
+			return false;
+		}
+		if($bool == true){
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowResizeButton").style.display = "block";'));
+		}else{
+			eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_'.$this->name.'_WindowResizeButton").style.display = "none";'));
+		}
+	}
+	function unserialize(){
+	    if($this->fullScreen == 1){
+			$this->setFullScreen(false);
+	    }
 	}
 }
 ?>

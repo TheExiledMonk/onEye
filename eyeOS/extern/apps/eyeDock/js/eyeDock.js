@@ -1,133 +1,108 @@
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
-eyeDock_handled = new Object();
+
+eyeDock_handled = new Array();
 eyeDockLastObject = new Object();
-eyeDockMenuState = "";
-eyeDockLastId = "";
-eyeDockLastPid = "";
-eyeDockLastIcon = "";
+eyeDockLastIcon = '';
+eyeDockLastId = '';
+eyeDockMenuState = '';
 init_eyeDock($checknum);
 
-	
-function init_eyeDock(checknum) {
-	sendMsg(checknum,'Launch','');
-}
-	
-function dockButOnClick(id,icon,pid) {
-	
-	var but = document.getElementById(pid+'_'+id);
-	if(!eyeDock_handled[id]) {
-		eyeDockClickHandler(id,pid);
-	}
-	if (eyeDockMenuState == "") {
-		dockActiveMenu(id,icon,but,pid);
-	} else {      
-		if(eyeDockLastObject.id == but.id)
-		{
-			dockDesactiveMenu(pid);
-		}else{
-			dockDesactiveMenu(pid);//One var redundance..., desactive old menu
-			dockActiveMenu(id,icon,but,pid);		
-		}
-	}
-}
-
-function eyeDockClickHandler(id,pid){
-	eyeDock_handled[id] = id;
-	var openedDiv = pid+'_'+id;
-	var codeClick = "if (eyeDockMenuState == '"+id+"') { dockDesactiveMenu('"+pid+"');}";	
-	addClickHandler(openedDiv,codeClick);
-}
-
-//Ever desactive the last menu.
-function dockDesactiveMenu(pid){
-	eyeDockLastObject.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeDock/icons/"+eyeDockLastIcon+".png";	
-	if (eyeDockLastPid) {
-		fixPNG(pid+'_'+eyeDockLastPid);
-	}
-	eyeDockLastPid = "";
-	document.getElementById(pid+'_menu_items_'+eyeDockLastId).style.display = 'none';
-	eyeDockMenuState = "";
-}
-
 function dockActiveMenu(id,icon,but,pid){
-	document.getElementById(pid+'_menu_items_'+id).style.display = 'block';
-	eyeDockLastPid = id;
-	eyeDockMenuState = id;	
-	eyeDockLastObject = but;
+	xGetElementById(pid + '_menu_items_' + id).style.display = 'block';
 	eyeDockLastIcon = icon;
 	eyeDockLastId = id;
-}
-
-//Private position functions.
-function dockCenter(id,pid) {
-	/* Center Width */
-	var dockContentWidth = document.getElementById(pid+'_eyeDockContent').style.width;	
-	var fatherwidth = xWidth(xGetElementById('eyeApps')) / 2;
-	var	dockContentWidth = dockContentWidth.substr(0,dockContentWidth.length - 2) / 2;
-	var styleLeft = fatherwidth - dockContentWidth;
-	if (styleLeft > 0) {
-		document.getElementById(pid+'_'+id).style.left = styleLeft+"px";	
-	}
+	eyeDockLastObject = but;
+	eyeDockMenuState = id;
 }
 
 function dockAdvanceXIcon(id,intx,pid,menuNum) {
-	var dockIconLeft = document.getElementById(pid+'_'+id);
-	var margin = 110;
-	var toRest = 31*menuNum;
-	margin = margin-toRest;
-	margin = margin*(-1);	
-	dockIconLeft.style.left = "50%";
-	dockIconLeft.style.marginLeft = margin+"px";	
+	var dockIconLeft = xGetElementById(pid + '_' + id);
+	dockIconLeft.style.left = '50%';
+	dockIconLeft.style.marginLeft = - (110 - 31 * menuNum) + 'px';
 }
 
-function dockMenuHeight(id,inty,pid) {
-	var dockMenu = document.getElementById(pid+'_'+id).style;
-	dockMenu.height = inty+"px";
-}
-
-function dockButOnMouseOver(id,icon,pid) {
-	var but = document.getElementById(pid+'_'+id);
-	but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeDock/icons/"+icon+"_x.png";
-	fixPNG(pid+'_'+id);
-	var txt = document.getElementById(pid+'_menu_text_items_'+id);
-	txt.style.display="block";
-	if (eyeDockMenuState != "") {
-		dockDesactiveMenu(pid);
+function dockButOnClick(id,icon,pid) {
+	var but = xGetElementById(pid + '_' + id);
+	if (!eyeDock_handled[id]) {
+		eyeDockClickHandler(id,pid);
+	}
+	if (eyeDockMenuState == '') {
 		dockActiveMenu(id,icon,but,pid);
-		if(!eyeDock_handled[id]) {
-			eyeDockClickHandler(id,pid);
+	} else {      
+		if (eyeDockLastObject.id == but.id) {
+			dockDesactiveMenu(pid);
+		} else {
+			dockDesactiveMenu(pid);
+			dockActiveMenu(id,icon,but,pid);
 		}
 	}
 }
 
 function dockButOnMouseOut(id,icon,pid) {
-	var txt = document.getElementById(pid+'_menu_text_items_'+id);
-	txt.style.display="none";
-	if(eyeDockMenuState == id)
-	{
-		return;
+	xGetElementById(pid + '_menu_text_items_' + id).style.display = 'none';
+	if (eyeDockMenuState != id) {
+		xGetElementById(pid + '_' + id).src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeDock/icons/' + icon + '.png';
+		fixPNG(pid + '_' + id);
 	}
-	var but = document.getElementById(pid+'_'+id);
-	but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeDock/icons/"+icon+".png";
-	fixPNG(pid+'_'+id);
+}
+
+function dockButOnMouseOver(id,icon,pid) {
+	var but = xGetElementById(pid + '_' + id);
+	but.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeDock/icons/' + icon + '_x.png';
+	fixPNG(pid + '_' + id);
+	xGetElementById(pid + '_menu_text_items_' + id).style.display = 'block';
+	if (eyeDockMenuState != '') {
+		dockDesactiveMenu(pid);
+		dockActiveMenu(id,icon,but,pid);
+		if (!eyeDock_handled[id]) {
+			eyeDockClickHandler(id,pid);
+		}
+	}
+}
+
+function dockCenter(id,pid) {
+	var styleLeft = xWidth(xGetElementById('eyeApps')) / 2 - xWidth(xGetElementById(pid + '_eyeDockContent')) / 2;
+	if (styleLeft > 0) {
+		xGetElementById(pid + '_' + id).style.left = styleLeft + 'px';
+	}
+}
+
+function dockDesactiveMenu(pid) {
+	eyeDockLastObject.src = 'index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeDock/icons/' + eyeDockLastIcon + '.png';
+	fixPNG(eyeDockLastObject.id);
+	xGetElementById(pid + '_menu_items_' + eyeDockLastId).style.display = 'none';
+	eyeDockMenuState = '';
+}
+
+function dockMenuHeight(id,inty,pid) {
+	xGetElementById(pid + '_' + id).style.height = inty + 'px';
+}
+
+function eyeDockClickHandler(id,pid) {
+	eyeDock_handled[id] = id;
+	addClickHandler(pid + '_' + id,'if (eyeDockMenuState == "' + id + '") { dockDesactiveMenu("' + pid + '"); }');
+}
+
+function init_eyeDock(checknum) {
+	sendMsg(checknum,'Launch','');
 }

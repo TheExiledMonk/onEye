@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	UserManager service
 */
@@ -34,6 +34,8 @@
  * <password>
  * <email>
  * <creationDate>
+ * <lastLogin>
+ * <disabled>
  */
 
 
@@ -49,6 +51,7 @@
 * @param $username String containing the username.
 * @param $password String containing the password.
 * @param $email String containing the email of the user
+* @param $disabled String indicating if the user is disabled or not
 * @return If the function succeeds, returns true. Otherwise, returns
 *	false and sets the error code depending on the error
 *	occurred.
@@ -117,6 +120,11 @@ function service_um_createUser($params = null){
 		} elseif ($params['mngUser']) {
 			$array['mngUser'][0] = $params['mngUser'];
 		}
+	}
+	if ($params['disabled'] && (!$array['admin'][0] || $currentUser == REAL_ROOTUSER)) {
+		$array['disabled'][0] = 1;
+	} else {
+		$array['disabled'][0] = 0;
 	}
 	
 	//rmDoubleUserArrays
@@ -221,6 +229,7 @@ function service_um_userExist($params = null){
 * @param $username String containing the username of the user.
 * @param $password String containing the password of the user.
 * @param $fullname String containing the full name of ther account's owner.
+* @param $disabled String indicating if the user is disabled or not
 * @param $email Email of the user.
 * @param $lastLogin Date indicating when the user logged in last time.
 * @param $creationDate Date indicating when the user was created.
@@ -302,6 +311,9 @@ function service_um_updateUser($params = null){
 			unset($array['maintain']);
 			unset($array['maintainer']);
 			unset($array['mngUser']);
+		}
+		if (isset($params['disabled']) && (!$array['admin'][0] || $currentUser == REAL_ROOTUSER)) {
+			$array['disabled'][0] = $params['disabled'];
 		}
 	}
 	
@@ -397,6 +409,29 @@ function service_um_checkMaintainer($params = '') {
 	}
 }
 
+/**
+* Checks if the current user is disabled or not
+*
+* @return Returns a boolean value indicating whether the user is
+*	disabled or not
+* @date 2008/04/12
+*/
+function service_um_checkDisabled($params = '') {
+	global $currentUser;
+	if (isset($params[0]) && !is_array($params[0])) {
+		$xml = um('retrieveUser',array($params[0]));
+	}elseif(isset($params[0]) && is_array($params[0])){
+		$xml = $params[0];
+	}
+
+	//Ok, I know that's not the best but if what we have until eyeOS 2.0 :/
+	if (isset($xml['eyeUser'][0]['disabled'][0]) && $xml['eyeUser'][0]['disabled'][0] == '1' && $xml['eyeUser'][0]['username'][0] != REAL_ROOTUSER) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 /*--------------------------------------------------------------------*/
 
 /*--------------------------------------------------------------------*/
@@ -412,6 +447,7 @@ function service_um_checkMaintainer($params = '') {
 *	false and sets the error code depending on the error
 *	occurred.
 * @exception INCORRECT_PARAMS No username or password are specified.
+* @exception UM_USER_IS_DISABLED The user is currently disabled.
 * @date 2008/03/11
 */
 function service_um_login($params = null) {
@@ -439,8 +475,12 @@ function service_um_login($params = null) {
 	//user not exist
 		return false;
 	}
-	
 	if($info['eyeUser'][0]['password'][0] == $password) {
+		//If the user is disabled, set error and return false
+		if(service_um_checkDisabled(array($info))){
+			errorCodes('setErrorCode',array(UM_USER_IS_DISABLED));
+			return false;
+		}
 		foreach($info['eyeUser'][0]['group'] as $value) {
 			$_SESSION['groups'][$value] = 1;
 		}
@@ -478,7 +518,7 @@ function service_um_getCurrentGroups() {
 * @date 2008/07/29
 */
 function service_um_getAllUsers($params = '') {
-	um('getAllUsersBy',$params);
+	return um('getAllUsersBy',$params);
 }
 
 /**

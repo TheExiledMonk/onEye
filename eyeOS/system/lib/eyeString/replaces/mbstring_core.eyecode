@@ -18,7 +18,7 @@
 * @subpackage strings
 */
 function utf8_strlen($str){    
-	return mb_strlen($str);
+	return @mb_strlen($str);
 }
 
 
@@ -36,7 +36,7 @@ function utf8_strlen($str){
 */
 function utf8_strpos($str, $search, $offset = FALSE){
     if ( $offset === FALSE ) {
-        return mb_strpos($str, $search);
+        return @mb_strpos($str, $search);
     } else {
         return mb_strpos($str, $search, $offset);
     }
@@ -60,7 +60,7 @@ function utf8_strrpos($str, $search, $offset = FALSE){
         if ( empty($str) ) {
             return FALSE;
         }
-        return mb_strrpos($str, $search);
+        return @mb_strrpos($str, $search);
     } else {
         if ( !is_int($offset) ) {
             //trigger_error('utf8_strrpos expects parameter 3 to be long',E_USER_WARNING);

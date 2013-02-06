@@ -1,25 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeSheets_on_Message($params="") {
@@ -31,7 +30,8 @@ function eyeSheets_on_Resize($params=null) {
 	$height = $params['arg'][1];
 	$width = intval($width);
 	$height = intval($height);
-
+	$GLOBALS['eyeSheetsWND']->width = $width;
+	$GLOBALS['eyeSheetsWND']->height = $height;
 	$GLOBALS['eyeSheetsFrame']->setWidth($width-4);
 	$GLOBALS['eyeSheetsFrame']->setHeight($height-30);
 }
@@ -40,13 +40,16 @@ function eyeSheets_on_getSheet($params=null) {
 	global $myPid;
 	$file = $GLOBALS['sheetPath']->text;
 	if(!$file) {
-			echo "
-cols = 10;
-rows = 30;	
-dbCells = [];";
-			exit;
+		echo "
+			cols = 10;
+			rows = 30;
+			dbCells = [];";
+		//Now, we are inside the iframe, so we have to exit now to not echo the ob_buffer
+		exit;
 	}
 	$myReal = vfs('getRealName',array($file));
+
+	//Warning, maybe that's redundant?
 	if(!vfs('checkPermissions',array($myReal))) {
 		return false;
 	}
@@ -93,27 +96,26 @@ function openFile($file) {
 function parseMyODS($content) {
 	require_once(EYE_ROOT.'/'.APP_DIR.'/eyeSheets/lib/ods'.EYE_CODE_EXTENSION);
 	$myOds = parseOds($content);
-	
 	$ret = "
-cols = 10;
-rows = 30;	
-dbCells = [";
-	for($x=0;$x<count($myOds->sheets[0]['rows']);$x++) {
-		for($i=0;$i<count($myOds->sheets[0]['rows'][$x]);$i++) {
-			if(isset($myOds->sheets[0]['rows'][$x][$i]['attrs']['TABLE:FORMULA'])) {
-				$formula = $myOds->sheets[0]['rows'][$x][$i]['attrs']['TABLE:FORMULA'];
-				$formula = utf8_substr($formula,5);
-				$formula = str_replace("[.","",$formula);
-				$formula = str_replace("[","",$formula);
-				$formula = str_replace("]","",$formula);
-				$formula = str_replace(":.",":",$formula);
-				$formula = str_replace("SUM","sum",$formula);
-				$ret .= "[$i,$x,'".$formula."',''],";
-			} else {
-				$ret .= "[$i,$x,'".$myOds->sheets[0]['rows'][$x][$i]['value']."',''],";
+		cols = 10;
+		rows = 30;
+		dbCells = [";
+		for($x=0;$x<count($myOds->sheets[0]['rows']);$x++) {
+			for($i=0;$i<count($myOds->sheets[0]['rows'][$x]);$i++) {
+				if(isset($myOds->sheets[0]['rows'][$x][$i]['attrs']['TABLE:FORMULA'])) {
+					$formula = $myOds->sheets[0]['rows'][$x][$i]['attrs']['TABLE:FORMULA'];
+					$formula = utf8_substr($formula,5);
+					$formula = str_replace("[.","",$formula);
+					$formula = str_replace("[","",$formula);
+					$formula = str_replace("]","",$formula);
+					$formula = str_replace(":.",":",$formula);
+					$formula = str_replace("SUM","sum",$formula);
+					$ret .= "[$i,$x,'".$formula."',''],";
+				} else {
+					$ret .= "[$i,$x,'".$myOds->sheets[0]['rows'][$x][$i]['value']."',''],";
+				}
 			}
 		}
-	}
 	$ret .= "];";
 	return $ret;
 }
@@ -139,9 +141,8 @@ function eyeSheets_on_saveFile($params=null) {
 	$arg = base64_decode($arg);
 	
 	$maxX = substr($arg, 0, strpos($arg, ','));
-	$arg = substr($arg, strpos($arg, ',')+1);
+	$arg = substr($arg, strpos($arg, "\n")+1);
 	$maxY = substr($arg, 0, strpos($arg, ','));
-	$arg = substr($arg, strpos($arg, ',')+1);
 
 	$myArgs = explode("\n",$arg);
 	$pattern = '/\[(\d+)\,(\d+)\,\"([^"]+)\"/';

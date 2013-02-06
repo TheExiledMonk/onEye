@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/app'.EYE_CODE_EXTENSION);
@@ -96,9 +96,16 @@ function eyeFeeds_on_import_ITM($params=null) {
 function eyeFeeds_on_export_ITM($params=null) {
 	global $checknum;
 	$options = array(
-		1,
+		EYEDIALOG_TYPE_SAVEFILE,
 		'doExport',
 		$checknum,
+		'',
+		array(
+			'OPML files' => '*.opml|*.xml',
+			'All files' => '*.*'
+		),
+		false,
+		true
 	);
 	service('proc','launch',array('eyeDialog',$options));
 }
@@ -143,6 +150,7 @@ function eyeFeeds_on_feeds_TREE($params=null) {
 		eyeFeeds_displayFeedItems($feed);
 		$GLOBALS['itemsList_BOX']->setTitle($feed['name'][0]);
 		$GLOBALS['itemContent_BOX']->setTitle('Select an item to read...');
+		$GLOBALS['eyeFeeds_WND']->setTitle($feed['name'][0].' - '.i18n('translate',array('RSS Feed Reader')));
 		return;
 	}
 	
@@ -281,7 +289,10 @@ function eyeFeeds_on_windowResize($params=null) {
 	$GLOBALS['itemContent_BOX']->setWidth(580 + $dWidth);
 	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.height="'.(150 + ($dHeight / 2)).'px";'));
 }
-
+function eyeFeeds_on_fullScreen(){
+	global $myPid;
+	$GLOBALS['eyeFeeds_WND']->setFullScreen();
+}
 function eyeFeeds_on_Message($params="") {
 	reqLib('eyeWidgets', 'updateContent', $params);
 }

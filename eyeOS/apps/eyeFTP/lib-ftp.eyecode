@@ -1,26 +1,25 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
-
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
@@ -115,7 +114,9 @@ function eyeFTP_ftpListDir($dir) {
 	}
 	$dir = eyeFTP_ftpPwd($GLOBALS['eyeFTP_ftpConnectionResource']);
 	
-	$contents = ftp_rawlist($GLOBALS['eyeFTP_ftpConnectionResource'],"-a ".$dir);
+	$listCmdArguments = ($GLOBALS['eyeFTP_listA_HID']->text)? '-a' : '';
+	
+	$contents = ftp_rawlist($GLOBALS['eyeFTP_ftpConnectionResource'],$listCmdArguments.$dir);
 	if ($contents === false) {
 		eyeFTP_logConsole('Unable to list files, error occured. (Do you have sufficient permissions?)', null, EYEFTP_LOGSTYLE_ERROR);
 		return false;
@@ -171,8 +172,7 @@ function eyeFTP_ftpListDir($dir) {
  * Downloads file to temporary folder and then :
  *  - updates "dummy" iframe on the interface to show a "save as" dialog box so the user can download the
  *    file from the HTTP server.(case of download to browser)
- *  - copies file's content into a new eyeOS file in the directory the user gave through eyeDialog
- *    (case of download to eyeos filesystem)
+ *  - copies file's content into a new eyeOS file in the directory the user selected through the left panel
  * 
  * @param string $dir The path to the directory where the file is located on the FTP server
  * @param string $filename The name of the file

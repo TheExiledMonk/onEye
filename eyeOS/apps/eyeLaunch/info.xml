@@ -1,10 +1,10 @@
 <package>
 	<name>eyeLaunch</name>
 	<category>Utilities</category>
-	<version>1.7</version>
-	<description>Basic process launcher</description>
+	<version>1.8</version>
+	<description>Utility to launch applications</description>
 	<author>eyeOS Team</author>
-	<license>GPL</license>
+	<license>AGPL</license>
 	<type>Utility</type>
 	<icon></icon>
 </package>

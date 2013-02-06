@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyePresentation_on_Message($params="") {
@@ -61,41 +61,7 @@ function eyePresentation_on_SelectFileOpen($params=null) {
 
 function eyePresentation_on_fullscreen($params=null) {
 	global $checknum;
-	if($GLOBALS['fullscreen']->text == 1) {
-		$windowWidth = $_SESSION['SCREEN']['width'];
-		$windowHeight = $_SESSION['SCREEN']['height'];
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedAppsLeft").style.zIndex="0";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedAppsRight").style.zIndex="0";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedApps").style.zIndex="0";'));
-		$myHidden = new Hidden(array('name'=>'fullscreen','father'=>'eyeApps','text'=>2));
-		reqLib('eyeWidgets','serialize',array($myHidden));	
-		$myWindow1 = new Window(array('title'=>'eyePresentation','name'=>'eyePresentationWNDFull','father' => 'eyeApps',
-		'y'=>35,'type'=>NOLIST_CLOSE_WINDOW,'x'=>0,'cent'=>2,'width'=>$windowWidth,'height'=>$windowHeight));
-		$myWindow1->show();
-		$myToolbar = new Toolbar(array('name'=>'myToolbar2','father'=>'eyePresentationWNDFull_Content'));
-		$myToolbar->show();
-		$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
-		$myToolbar->addLine();
-		$myToolbar->addItem('back','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/previous.png','Back');
-		$myToolbar->addItem('next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/next.png','Next');
-		$myToolbar->addLine();
-		$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full');
-	
-		$myFrame = new Iframe(array('name'=>'imgFrame','father'=>'eyePresentationWNDFull_Content','x'=>5,
-			'y'=>55,'height'=>$myWindow1->height-90,'width'=>$myWindow1->width-20, 'url'=>"about:blank",'scroll'=>1));
-		$myFrame->show();
-		$myFrame->setCss(array('margin'=>'0 auto'));
-		if($GLOBALS['filepath']->text) {
-			gotoSlide($GLOBALS['currentSlide']->text);
-			$myFrame->setUrl("index.php?checknum=".$checknum."&msg=getSlide&anticache=".md5(uniqid(time())));
-		}
-	} else {
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedAppsLeft").style.zIndex="10000";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedAppsRight").style.zIndex="10000";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedApps").style.zIndex="10000";'));
-		proc('launch',array('eyePresentation'));
-		proc('end');
-	}
+	$GLOBALS['presentationWND']->setFullScreen();
 }
 
 function eyePresentation_on_back($params=null) {

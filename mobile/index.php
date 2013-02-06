@@ -1,26 +1,27 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
+define('IS_MOBILE',1);
 
 //Loading basic settings for eyeOS Kernel and Services
 include_once('../settings.php');
@@ -31,7 +32,7 @@ chdir('../'.REAL_EYE_ROOT);
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeString/main'.EYE_CODE_EXTENSION);
 call_user_func('lib_eyeString_start');
 //setting library loaded
-define('LIB_'.strtoupper('eyeString').'_LOADED',1);
+define('LIB_EYESTRING_LOADED',1);
 
 //Loading the Kernel
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/kernel'.EYE_CODE_EXTENSION);
@@ -49,6 +50,8 @@ if(EYEOS_DEBUG_MODE == 0) {
 	error_reporting(0);
 } elseif(EYEOS_DEBUG_MODE == 2) {
 	error_reporting(E_ALL);
+} elseif(EYEOS_DEBUG_MODE == 3) {
+	error_reporting(E_ALL ^ E_NOTICE);
 }else {
 	error_reporting(E_ERROR); //TODO: SUPPORT E_ALL
 }
@@ -79,7 +82,9 @@ if (isset($_GET['extern'])) {
 		} else {
 			$type = "";
 		}
-		//call to extern to throw the file¡
+		//call to extern to throw the file
+		//Only start session if we already have a session (keep in mind that extern doesn't have session)
+		reqLib('eyeSessions','checkAndSstartSession');
 		service('extern','getFile',array($myExtern,$type),1);
 } else {
 	//Loading eyeWidgets definitions
@@ -135,11 +140,8 @@ if (isset($_GET['extern'])) {
 			$_SESSION['ping'] = time();
 			exit;
 		}		
-		
 		//Loading the Mobile eyeOS code	
 		include_once("../mobile/mobile_eyeFiles.eyecode");
-
-
 	}
 }
 

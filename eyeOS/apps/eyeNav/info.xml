@@ -1,10 +1,10 @@
 <package>
 	<name>eyeNav</name>
-	<category>Networking</category>
-	<version>1.7</version>
-	<description>Little web browser</description>
+	<category>Network</category>
+	<version>1.8</version>
+	<description>Application to browse the web</description>
 	<author>eyeOS Team</author>
-	<license>GPL</license>
+	<license>AGPL</license>
 	<type>Application</type>
 	<icon>index.php?theme=1&amp;extern=icons/48x48/eyeNav.png</icon>
 </package>

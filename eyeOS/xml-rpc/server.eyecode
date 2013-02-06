@@ -1,39 +1,52 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
+function parseParams($paramsx) {
+	$params = array();
+	if(is_array($paramsx)) {
+		foreach($paramsx as $value) {
+			$params[] = parseParams($value);
+		}
+		return $params;
+	}
+	if(!is_object($paramsx)) {
+		return $paramsx;
+	}
+	$i = $paramsx->arraysize();
+	for($j=0; $j<$i; $j++) {
+		$position = $paramsx->arraymem($j)->scalarval();
+		$position = parseParams($position);
+		$params[] = $position;
+	}
+	return $params;
+}
 
 function xmlrpc_process($m) {
 	$user = $m->getParam(0)->scalarval();
 	$pass = $m->getParam(1)->scalarval();
 	$paramsx = $m->getParam(2);
-	$i = $paramsx->arraysize();
-	
-	$params = array();
-	for($j=0; $j<$i; $j++) {
-		$position = $paramsx->arraymem($j)->scalarval();
-		$params[] = $position;
-	}
-	
+
+	$params = parseParams($paramsx);
 	$what = $m->methodname;
 	$parts = explode(".",$what);
 	

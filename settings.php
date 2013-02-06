@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	Main configuration file.
 	Please read the eyeOS configuration documentation 
@@ -62,10 +62,17 @@ define('VFS_MODULE','virtual');
 //um module to use
 define('UM_MODULE','eyeos');
 
+//The real god of eyeOS users, master of masters
+define('REAL_ROOTUSER','root');
+
 //Extras
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('REAL_ROOTUSER','root');
-define('EYEOS_VERSION','1.7.0.1-2');
+define('EYEOS_VERSION','1.8.0.0');
+
+//eyeDialog that defines should be moved to another place desinged for it.
+define('EYEDIALOG_TYPE_OPENFILE', 0);
+define('EYEDIALOG_TYPE_SAVEFILE', 1);
+define('EYEDIALOG_TYPE_SELECTFOLDER', 2);
 
 ?>

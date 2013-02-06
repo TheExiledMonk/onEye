@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 $_SESSION['layerTable']['eyeScreen'] = '';
@@ -26,10 +26,15 @@ $_SESSION['layerTable']['eyeScreen'] = '';
 function eyeLightDesk_run($params=null) {
 	global $myPid;
 	//Preparing eyeapps
-	eyex('rawjs',array('js' => 'xGetElementById("eyeApps").style.width = "auto"; xGetElementById("eyeApps").style.left = "220px"; xGetElementById("eyeApps").style.right = "0";'));
 	$myWindow = new Window(array('name'=>'eyeLightDeskWND','type'=>INVISIBLE_WINDOW,'father'=>'eyeScreen',
 	'cent'=>0,'width'=>220,'height'=>1300,'title'=>'eyeLightDesk'));
 	$myWindow->show();
+	//Since the window is not child of eyeApps, we must modify the eyeapps size
+	$_SESSION['SCREEN']['eyeApps']['width'] -= 220;
+	$_SESSION['SCREEN']['eyeApps']['x'] = 220;
+
+	eyex('rawjs',array('js' => 'xGetElementById("eyeApps").style.width = "'.$_SESSION['SCREEN']['eyeApps']['width'].'px"; xGetElementById("eyeApps").style.left = "'.$_SESSION['SCREEN']['eyeApps']['x'].'px";'));
+
 	$myCssText = array(
 		'background-color'=>'white',
 		'height'=>'100%',

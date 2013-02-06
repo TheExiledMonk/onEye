@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	eyeOS X system, for visual tasks
 */
@@ -275,7 +275,7 @@ function service_eyex_getThemeImage($params) {
 		$path = $themes_path . '/' . eyeSessions('getVar',array('usertheme')) . '/' . utf8_substr($url,utf8_strlen($themes_path . '/default/'));
 		$path = eyex_getExistingPath($path);
 		if (!$path) {
-			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/alias' . EYE_CODE_EXTENSION;
+			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/image_alias' . EYE_CODE_EXTENSION;
 			$temp = utf8_substr($url,utf8_strlen($themes_path . '/default/'));
 			if ($alias[0][$temp]) {
 				$path = $themes_path . '/' . eyeSessions('getVar',array('usertheme')) . '/' . $alias[0][$temp];
@@ -290,12 +290,12 @@ function service_eyex_getThemeImage($params) {
 				if (!$path) {
 					if ($alias[0][$temp]) {
 						$path = $themes_path . '/default/' . $alias[0][$temp];
-						$path = eyex_getExistingPath($path);
+						$path = eyex_getExistingPath($path,$extend);
 					} else {
 						$path = false;
 					}
 					if (!$path) {
-						return eyex_returnWrongPath($url);
+						return eyex_returnWrongPath($url,$extend);
 					}
 				}
 			}
@@ -304,12 +304,12 @@ function service_eyex_getThemeImage($params) {
 	} else {
 		$path = eyex_getExistingPath($path);
 		if (!$path) {
-			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/alias' . EYE_CODE_EXTENSION;
+			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/image_alias' . EYE_CODE_EXTENSION;
 			$path = utf8_substr($url,utf8_strlen(EYE_ROOT . '/' . EXTERN_DIR . '/'));
 			if ($alias[1][$path]) {
 				$path = eyex('getThemeImage',array($themes_path . '/default/' . $alias[1][$path],3));
 			} else {
-				return eyex_returnWrongPath($path);
+				return eyex_returnWrongPath($path,$extend);
 			}
 		}
 	}
@@ -322,7 +322,7 @@ function service_eyex_getThemeImage($params) {
 }
 
 function eyex_getExistingPath($path) {
-	if (IE > 0 && IE < 7 && utf8_substr($path,-4) == '.png' && vfs('real_fileExists',array(utf8_substr($path,0,-3) . 'gif'))) {
+	if (IE && IE < 7 && utf8_substr($path,-4) == '.png' && vfs('real_fileExists',array(utf8_substr($path,0,-3) . 'gif'))) {
 		return utf8_substr($path,0,-3) . 'gif';
 	} elseif (vfs('real_fileExists',array($path))) {
 		return $path;
@@ -331,9 +331,11 @@ function eyex_getExistingPath($path) {
 	}
 }
 
-function eyex_returnWrongPath($path) {
+function eyex_returnWrongPath($path,$extend) {
 	errorCodes('setErrorCode',array(VFS_FILE_NOT_FOUND));
-	if ($extend == 2) {
+	if ($extend == 3) {
+		return EYE_ROOT . '/' . EXTERN_DIR . '/' . $path;
+	} elseif ($extend == 2) {
 		return EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/' . $path;
 	} elseif ($extend === 1) {
 		return 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . $path;
@@ -859,7 +861,7 @@ function service_eyex_messageBox($params) {
 			'x' => 0,
 			'y' => 0,
 			'text' => $content,
-			'tokens' => array($tokens)
+			'tokens' => $tokens
 		));
 		$myLabel->show();
 		
@@ -1786,18 +1788,10 @@ function service_eyex_resizedBrowser($params=''){
  		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
-	// Set width
-	$width = $params['width'];
-	if ($width < 500) {
-		$width = 500;
-	}
-	$_SESSION['SCREEN']['width'] = $width;
-	// Set height
-	$height = $params['height'];
-	if ($height < 400) {
-		$height = 400;
-	}
-	$_SESSION['SCREEN']['height'] = $height;
+	$_SESSION['SCREEN']['width'] = $params['width'];
+	$_SESSION['SCREEN']['height'] = $params['height'];
+	$_SESSION['SCREEN']['eyeApps']['height'] = $params['appHeight'];
+	$_SESSION['SCREEN']['eyeApps']['width'] = $params['appWidth'];
  	return true;
  }
  

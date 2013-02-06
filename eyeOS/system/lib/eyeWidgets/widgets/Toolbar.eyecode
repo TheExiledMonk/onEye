@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	Toolbar widget abstraction
 */
@@ -110,13 +110,13 @@ class Toolbar {
 		service('eyex','removeWidget',array('name'=>$name));
 	}
 	
-	function addLine() {
+	function addLine($id = '',$right = 0) {
 		global $myPid;
-		$js = 'addLineToBar("'.$myPid.'_'.$this->name.'");';
+		$js = 'addLineToBar("'.$myPid.'_'.$this->name.'","' . $id . '",' . $right . ');';
 		eyeX('rawjs',array('js'=>$js));
 	}
 	
-	function addItem($itemName,$img,$text,$ofriends=null,$height = 22,$width = 22) {
+	function addItem($itemName,$img,$text,$ofriends=null,$right=0,$height = 22,$width = 22) {
 		global $myPid;
 		global $checknum;
 		$friends="''";
@@ -134,7 +134,7 @@ class Toolbar {
 		$text = i18n('translate',array($text));
 		$friends = base64_encode($friends);
 		$tokens = array($itemName,$img,$text);
-		$js = 'addItemToBar("'.$myPid.'_'.$this->name.'", %s , %s , %s ,"'.$friends.'",'.$checknum.',' . $height . ',' . $width . ');';
+		$js = 'addItemToBar("'.$myPid.'_'.$this->name.'", %s , %s , %s ,"'.$friends.'",'.$checknum.','.$height.','.$width.','.$right.');';
 		eyex('runjs',array('js'=>$js,'tokens'=>$tokens));
 	}
 }

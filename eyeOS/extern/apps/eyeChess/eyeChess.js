@@ -1,25 +1,26 @@
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
-var windowd = document.getElementById("$myPid_eyeChess_Window_Content");
+
+var windowd = document.getElementById('$myPid_eyeChess_Window_Content');
 
 M=I=P=N=q=K=J=Btime=0
 Bt=1999
@@ -38,8 +39,8 @@ if(m){s=m.length
 for(x=0;x<s;){m[s+x]=-m[x++]}}}
 x='g00000000g'
 y='gggggggggg'
-b=y+y+"g23456432gg11111111g"+x+x+x+x+"g99999999ggABCDECBAg"+y+y
-w=x+x+x+"000111100000123321000123553210"
+b=y+y+'g23456432gg11111111g'+x+x+x+x+'g99999999ggABCDECBAg'+y+y
+w=x+x+x+'000111100000123321000123553210'
 a='000012346900'
 Y=[]
 PY=[]
@@ -52,9 +53,9 @@ d=document
 A=E=d.all
 if(!E)event=0
 DM=d.getElementsByTagName||null
-if(DM||E){ windowd.innerHTML += "<img src=index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeChess/0.png id=PI name=PI width=47 height=48>";
-A=(E||d.getElementsByTagName("img"))
-Ic=A["PI"].style}cp=new Function('a','b','return b[0]-a[0]')
+if(DM||E){ windowd.innerHTML += '<img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" id="PI" name="PI" width="47" height="48" />';
+A=(E||d.getElementsByTagName('img'))
+Ic=A['PI'].style}cp=new Function('a','b','return b[0]-a[0]')
 function Z(c,U,C,s,e,A,B,K){var z=-1,C=-C,V=8-U,b=Al,r=R,S,E=r[e],g,d
 if(C<-400)return[C,s,e]
 r[e]=S=r[s]
@@ -95,8 +96,8 @@ p=Pz(M,K,0)
 for(;z<p.length;z++){t=t||(s==p[z][1]&&e==p[z][2])}
 if(!t)return 0
 if(Sf(0,8-M,s,e,K)>400)return 0}if(Sf(0,M,s,e,K)>400)c=1
-var x=s%10,g=e-s,D=Ds[u],t=e%10,n=1+(N>>1),l="abcdefgh"
-Df((M?'     ':(n<10?" ":"")+n+".  ")+l.charAt(x-1)+((s-x)/10-1)+(E?'x':'-')+l.charAt(t-1)+((e-t)/10-1)+(c?'+':' '))
+var x=s%10,g=e-s,D=Ds[u],t=e%10,n=1+(N>>1),l='abcdefgh'
+Df((M?'     ':(n<10?' ':'')+n+'.  ')+l.charAt(x-1)+((s-x)/10-1)+(E?'x':'-')+l.charAt(t-1)+((e-t)/10-1)+(c?'+':' '))
 if(Sf(1,8-M,s,e,K)<-400)fy(c)
 if((E&7)==6){fy(1);return 0;}Rh[N]=[R.toString(),KL.toString(),K]
 K=0
@@ -195,8 +196,8 @@ mv(Tt[1],Tt[2],0)}}
 function Gb(){if(!N)return
 N-=2
 var b=Rh[N]
-R=eval("["+b[0]+"]")
-KL=eval("["+b[1]+"]")
+R=eval('['+b[0]+']')
+KL=eval('['+b[1]+']')
 Df(' --undo--')
 K=b[2]
 M=N%2
@@ -205,14 +206,13 @@ H()}
 function dr(e){e=e||event
 Ic.left=(e.clientX+1)+'px'
 Ic.top=(e.clientY-4)+'px'}
-function O(x,y,z){if((A||x!='PI')&&z)x="i"+(P?119-x:x)
-d.images[x].src='index.php?version='+EXTERN_CACHE_VERSION+'&extern=apps/eyeChess/'+y+'.png'}
-h='<table cellpadding=4 class="eyeChess_t">'
-for(y=90;y>10;y-=10){h+="<tr>"
+function O(x,y,z){if((A||x!='PI')&&z)x='i'+(P?119-x:x)
+d.images[x].src='index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/'+y+'.png'}
+h='<table cellpadding="4" class="eyeChess_t">'
+for(y=90;y>10;y-=10){h+='<tr>'
 for(x=0;x<10;x++){z=y+x
-if(x&&x<9){h+=('<td class="'+(x+(y/10)&1?'eyeChess_b':'eyeChess_w')+'"><a href="#" onclick="B(P?119-'+z+':'+z+'); return false"><img src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeChess/0.png" width="0" height="48" border="0"><img src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeChess/0.png" width="47" height="48" name="i'+z+'" border="0"><img src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeChess/0.png" width="0" height="48" border="0"></a></td>\n')}}h+='</tr>\n'}h+='</table>'
+if(x&&x<9){h+=('<td class="'+(x+(y/10)&1?'eyeChess_b':'eyeChess_w')+'"><span onclick="B(P?119-'+z+':'+z+');" style="cursor: pointer;"><img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" width="0" height="48" border="0"><img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" width="47" height="48" name="i'+z+'" border="0" /><img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" width="0" height="48" border="0" /></span></td>\n')}}h+='</tr>\n'}h+='</table>'
 windowd.innerHTML += h;
-Rf(0)
-
-windowd.innerHTML += "<form name='FF'><center><table class='eyeChess_Table' border='0'><tr><td></td><td><textarea name='b' cols='12' rows='24' class='eyeChess_textarea'></textarea></td></tr></table><div class='eyeChess_TextUndo'><p><a href='#' onclick='Gb();return false;'>$lang:Undo</a></div> <div class='eyeChess_Text'><p>$lang:Next pawn becomes:<select name='h'><option selected>$lang:Queen<option>$lang:Bishop<option>$lang:Knight<option>$lang:Rook</select>$lang:Computer level:<select name='i'><option>$lang:Stupid<option selected>$lang:Middling<option>$lang:Slow</select></center></div></form>";
+Rf(0);
+windowd.innerHTML += '<form name="FF"><div style="text-align: center;"><table class="eyeChess_Table" border="0"><tr><td></td><td><textarea name="b" cols="12" rows="24" class="eyeChess_textarea"></textarea></td></tr></table><div class="eyeChess_TextUndo" style="color: blue; cursor: pointer; margin-top: 13px;"><span onclick="Gb();">$lang:Undo</span></div><div class="eyeChess_Text" style="margin-top: 15px;">$lang:Next pawn becomes:<select name="h"><option selected="selected">$lang:Queen</option><option>$lang:Bishop</option><option>$lang:Knight</option><option>$lang:Rook</option></select>$lang:Computer level:<select name="i"><option>$lang:Stupid</option><option selected="selected">$lang:Middling</option><option>$lang:Slow</option></select></div></div></form>';
 H();

@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeDocs_on_Message($params="") {
@@ -28,9 +28,15 @@ function eyeDocs_on_Message($params="") {
 function eyeDocs_on_Open($params=null) {
 	global $checknum;
 	$options = array(
-		0,
+		EYEDIALOG_TYPE_OPENFILE,
 		'SelectFileOpen',
 		$checknum,
+		'',
+		array(
+			'eyeOS document files' => '*.eyedoc',
+			'MS Word document files' => '*.doc',
+			'All files' => '*.*'
+		)
 	);
 	service('proc','launch',array('eyeDialog',$options));
 }
@@ -41,17 +47,29 @@ function eyeDocs_on_Resize($params=null) {
 	$height = $params['arg'][1];
 	$width = intval($width);
 	$height = intval($height);
+	$GLOBALS['eyeDocsWND']->width = $width;
+	$GLOBALS['eyeDocsWND']->height = $height;
 	$width = $width - 19;
 	$height = $height - 100;
 	service('eyex','rawjs',array('js'=>'TinyMCE_AdvancedTheme._resizeTo(tinyMCE.getInstanceById("'.$myPid.'_noteContent"),'.$width.','.$height.',true)'));
 }
 
+function eyeDocs_on_fullScreen(){
+	global $myPid;
+	$GLOBALS['eyeDocsWND']->setFullScreen();
+}
+
 function eyeDocs_on_Save($params=null) {
 	global $checknum;
 	$options = array(
-		1,
+		EYEDIALOG_TYPE_SAVEFILE,
 		'SelectFileSave',
 		$checknum,
+		'',
+		array(
+			'eyeOS document files' => '*.eyedoc',
+			'All files' => '*.*'
+		)
 	);
 	if(is_object($GLOBALS['notePath']) && $GLOBALS['notePath']->text) {
 		$info = utf8_pathinfo($GLOBALS['notePath']->text);
@@ -79,9 +97,14 @@ function eyeDocs_on_Save($params=null) {
 function eyeDocs_on_SaveAs($params=null) {
 	global $checknum;
 	$options = array(
-		1,
+		EYEDIALOG_TYPE_SAVEFILE,
 		'SelectFileSave',
 		$checknum,
+		'',
+		array(
+			'eyeOS document files' => '*.eyedoc',
+			'All files' => '*.*'
+		)
 	);
 	service('proc','launch',array('eyeDialog',$options));
 }
@@ -174,7 +197,7 @@ function eyeDocs_on_SelectFileOpen($params=null) {
 }
 
 function eyeDocs_on_Close(){
-	if(!IE) {
+	if(!IE || IE > 7) {
 		$GLOBALS['noteContent']->richClean();
 	}
 	vfs('cleanTemp');

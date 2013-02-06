@@ -1,6 +1,7 @@
 <eyeNav>
 	<home>http://eyeos.org/navigator/</home>
 	<plugin>iframe</plugin>
+	<sidebar>1</sidebar>
 	<bookmarks>
 		<title>Bookmarks</title>
 		<category>

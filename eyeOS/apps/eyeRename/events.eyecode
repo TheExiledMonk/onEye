@@ -1,69 +1,76 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeRename_on_Message($params = '') {
-	reqLib('eyeWidgets','updateContent',$params);
+function eyeRename_on_Close($params = '') {
+	proc('end');
 }
 
-function eyeRename_on_rename($params = '') {
-	$orig = $GLOBALS['rnPath']->text;
-	$callback = $GLOBALS['rnCallback']->text;
-	$dest = $GLOBALS['rnTextbox']->text;
-	if ($dest) {
-		$info = utf8_pathinfo($orig);
-		if (vfs('checkSpecialChars',array($dest)) === false) {
-			$dest = str_replace('/','',$dest);
-			$dest = str_replace('\\','',$dest);
-			service('eyex','messageBox',array('content' => 'Some special chars have been removed.'));
-		}
-		$dest = $info['dirname'].'/'.$dest;
-		if (service('vfs','fileExists',array($orig))) {
-			if (!service('vfs','rename',array($orig,$dest))) {
-				service('eyex','messageBox',array('content' => 'Error renaming file!'));
-				$callback = '';
-			} elseif (realpath(utf8_substr($dest,0,- utf8_strlen(strrchr($dest,'/'))) . '/') == realpath(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/')) {
-				$xml = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
-				if (is_array($xml['icon'])) {
-					foreach ($xml['icon'] as $key => $value) {
-						if ($value['name'][0] == utf8_basename($orig)) {
-							$xml['icon'][$key]['name'][0] = utf8_basename($dest);
-						}
-					}
-					eyeXML('setXMLconfig',array('eyeDesk','icons.xml',$xml));
-				}
+function eyeRename_on_Do($params = '') {
+	$file = $GLOBALS['eyeRename_Textbox']->text;
+	if ($file) {
+		if (vfs('checkSpecialChars',array($file)) === false) {
+			global $charBlackList;
+			foreach ($charBlackList as $char){
+				$file = str_replace($char,'',$file);
 			}
-		} elseif (service('vfs','real_fileExists',array($orig)) && utf8_strtolower(strrchr($orig,'.')) == utf8_strtolower('.' . EYEOS_LINK_EXT)) {
-			$dest = $dest . '.' . EYEOS_LINK_EXT;
-			if (!service('vfs','real_move',array($orig,$dest))) {
-				service('eyex','messageBox',array('content' => 'Error renaming file!'));
-				$callback = '';
+			eyex('messageBox',array('content' => 'Some special chars have been removed.'));
+		}
+		$old = utf8_basename($GLOBALS['eyeRename_Hidden_Path']->text);
+		$path = eyeFiles('cleanPath',array(utf8_substr(utf8_trim($GLOBALS['eyeRename_Hidden_Path']->text,'/\\'),0,- utf8_strlen($old))));
+		if ($path[1] != 'real' && vfs('fileExists',array($path[0] . '/' . $old))) {
+			if (vfs('rename',array($path[0] . '/' . $old,$path[0] . '/' . $file))) {
+				eyeFiles('update',array($path[1] . '://' . $path[2]));
+			} else {
+				$error = 1;
 			}
 		} else {
-			service('eyex','messageBox',array('content' => 'Error renaming file!'));
-			$callback = '';
+			if ($path[1] != 'real' && utf8_strtolower(strrchr($old,'.')) == '.' . utf8_strtolower(EYEOS_LINK_EXT)) {
+				$xmlLink = eyeXML('getXMLfile',array($path[0] . '/' . $old));
+			}
+			if (vfs('real_move',array($path[0] . '/' . $old,$path[0] . '/' . $file . '.' . EYEOS_LINK_EXT))) {
+				eyeFiles('update',array($path[1] . '://' . $path[2]));
+			} else {
+				$error = 1;
+			}
 		}
-		if($callback != '') {
-			service('eyex','rawjs',array('js'=>$callback));
+		if ($error) {
+			eyex('messageBox',array('content' => 'Error renaming file!'));
+		} else {
+			if ($xmlLink) {
+				$file = $xmlLink['eyeLink'][0]['content'][0];
+			}
+			if ($path[1] == 'home' && utf8_strtolower(utf8_basename($path[2])) == 'desktop') {
+				$xml = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
+				foreach ($xml['icon'] as $key => $value) {
+					if ($value['name'][0] == $old) {
+						$xml['icon'][$key]['name'][0] = $file;
+					}
+				}
+				eyeXML('setXMLconfig',array('eyeDesk','icons.xml',$xml));
+			}
+			if ($GLOBALS['eyeRename_Hidden_Callback']->text) {
+				eyex('rawjs',array('js' => $GLOBALS['eyeRename_Hidden_Callback']->text));
+			}
 		}
 		proc('end');
 	} else {
@@ -71,11 +78,7 @@ function eyeRename_on_rename($params = '') {
 	}
 }
 
-function eyeRename_on_cancel($params = '') {
-	proc('end');
-}
-
-function eyeRename_on_Close($params = '') {
-	proc('end');
+function eyeRename_on_Message($params = '') {
+	eyeWidgets('updateContent',$params);
 }
 ?>

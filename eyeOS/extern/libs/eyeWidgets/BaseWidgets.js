@@ -1,25 +1,25 @@
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = params["height"];
 	var mywidth = params["width"];
@@ -60,7 +60,7 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	oTBody.appendChild(oRow);
 	
-	if (IEversion == 0) {
+	if (!IEversion || IEversion > 8) {
 		oCell = document.createElement("TD");
 		oRow = document.createElement("TR");
 		oCell.className='eyeBoxBottCent';
@@ -72,7 +72,7 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	oTable.appendChild(oTBody);
 	
-	createWidget(name+'_Container',father,oTable,horiz,vert,x,y,-1,-1,"eyeBoxContainer",cent, 'px', visible);
+	createWidget(name+'_Container',father,oTable,horiz,vert,x,y,-1,-1,"eyeBoxContainer",cent, 'px', visible,'Box');
 }
 function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var mywidth = params['width'];
@@ -81,11 +81,11 @@ function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	var myLine = document.createElement('div');
 	myLine.setAttribute('id',name);
+	myLine.className = 'eyeLine';
 	myLine.style.fontSize = '1px';
 	myLine.style.width = mywidth+'px';
 	myLine.style.height = myheight+'px';
-	myLine.style.backgroundColor = '#dddddd';
-	createWidget(name+'_Container',father,myLine,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible);
+	createWidget(name+'_Container',father,myLine,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible,'Line');
 }
 function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var callback = params['callback'];
@@ -113,7 +113,7 @@ function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}else{
 		myIframe.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/getFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
 	}
-	createWidget(name+'_Container',father,myIframe,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible);
+	createWidget(name+'_Container',father,myIframe,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible,'File');
 }
 function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = params["height"];
@@ -126,9 +126,9 @@ function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	divBox.style.height = myheight+'px';
 	
 	if(params["border"] == 1){
-		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible);
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible,'Simplebox');
 	}else{
-		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible);
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible,'Simplebox');
 	}
 }
 function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -214,7 +214,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(myContent) {
 		myContainer.appendChild(myContent);
 	}
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible);
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible,'Button');
 	fixPNG(name + '_cpt_img');
 }
 function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
@@ -257,7 +257,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	calendarBase.appendChild(weekDaysNames);
 	calendarBase.appendChild(calendarBody);
 	
-	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible);
+	createWidget(name+'_Container',father,calendarBase,horiz,vert,x,y,myWidth,myHeight,"eyeCalendar",cent,'px',visible,'Calendar');
 	
 	function getRowsAndDate()
 	{
@@ -408,12 +408,12 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			weekMonth.style.position = 'absolute';
 			weekMonth.style.top = top+'%';
 			weekMonth.style.left = '0%';
-			if(weekHighlight != false && weekHighlight == x && drawHighlight != 0){
+			/*if(weekHighlight != false && weekHighlight == x && drawHighlight != 0){
 				weekMonth.style.backgroundColor = params['clickedWeek'];
 				weekMonth.style.borderColor = params['clickedWeek'];
 				weekMonth.style.borderStyle = 'solid';
 				weekMonth.style.borderWidth = '1px';
-			}
+			}*/
 			var left = 11;
 			var vdate = new Date();
 			for(y=0;y<7;y++)
@@ -436,7 +436,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 						weekDay.style.borderColor = params['todayBorder'];
 						weekDay.style.color = params['todayFontColor'];
 						weekDay.style.backgroundColor = params['todayBackground'];
-						
+
 						weekMonth.style.backgroundColor = params['toWeekBackground'];
 						weekMonth.style.borderColor = params['toWeekBackground'];
 						weekMonth.style.borderStyle = 'solid';
@@ -450,12 +450,12 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 						if(dayNums[count] == drawServerDate.getDate() && globalMonth == drawServerDate.getMonth() && globalYear == drawServerDate.getFullYear()){
 							weekDay.style.border = 'solid 1px';
 							weekDay.style.borderColor = params['clickedBorder'];
-							
+
 							weekMonth.style.backgroundColor = params['clickedWeek'];
 							weekMonth.style.borderColor = params['clickedWeek'];
 							weekMonth.style.borderStyle = 'solid';
 							weekMonth.style.borderWidth = '1px';
-							
+
 							lastSelect = weekDay;
 						}
 					}
@@ -595,7 +595,7 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myContainer = document.createElement('div');
 	myContainer.setAttribute('id',name+'_textContainer');
 	if(checked == 1) {
-		if(IEversion > 0) {
+		if(IEversion && IEversion < 8) {
 			myCheckbox.defaultChecked = true;
 		} else {
 			myCheckbox.setAttribute('checked',true);
@@ -615,7 +615,7 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myContainer.className='eyeCheckboxText';
 	theText=document.createTextNode(text);
 	myContainer.appendChild(theText);
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckboxContainer",cent,'px',visible);
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeCheckboxContainer",cent,'px',visible,'Checkbox');
 }
 function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = parseInt(params["height"]);
@@ -631,7 +631,7 @@ function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myContainer.style.width = mywidth + unit;
 	}
 	myContainer.setAttribute('id',name);
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeContainerContainer",cent,unit,visible);
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeContainerContainer",cent,unit,visible,'Container');
 }
 function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var height = params["height"];
@@ -648,7 +648,7 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		}
 	}
 	
-	if (IEversion == 0) {
+	if (!IEversion || IEversion > 7) {
 		var myFlash = document.createElement("object");
 		myFlash.setAttribute('width',width);
 		myFlash.setAttribute('height',height);
@@ -679,7 +679,7 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myEmbedObject.setAttribute('style', 'position: absolute; top: 0; right: 0;');
 		myFlash.appendChild(myEmbedObject);
 	}
-	createWidget(name+'_Container',father,myFlash,horiz,vert,x,y,width,height,"eyeFlash",cent,'px',visible);
+	createWidget(name+'_Container',father,myFlash,horiz,vert,x,y,width,height,"eyeFlash",cent,'px',visible,'Flash');
 }
 function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = params["text"];
@@ -694,7 +694,7 @@ function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myHidden.setAttribute('id',name);
 	myHidden.className = 'eyeHidden';
 	
-	createWidget(name+'_Container',father,myHidden,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent);
+	createWidget(name+'_Container',father,myHidden,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'Hidden');
 }
 function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	var text = params["text"];
@@ -752,7 +752,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	myGlobalContainer.appendChild(myContent);
 	realname = tinyMCE.entityDecode(realname);
 	if(overBorder != 0) {
-		if(IEversion > 1 && IEversion < 7) {
+		if(IEversion && IEversion < 7) {
 			myGlobalContainer.style.border = 'none';
 		} else {
 			myGlobalContainer.onmouseover = function() {
@@ -772,7 +772,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 		}
 	}
 	
-	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0,'px',visible);
+	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0,'px',visible,'Icon');
 	var globalContainer = xGetElementById(name+'_Container');
 	globalContainer.checknum = checknum;
 	globalContainer.style.color = textColor;
@@ -788,19 +788,25 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 			}
 			sendMsg(checknum,'Icon_Clicked',result);
 		}
+	} else if (onclick == 2) {
+		myGlobalContainer.ondblclick = function() {
+			var myContent = getArrayArg(content);
+			var result = '';
+			for (var i in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
+			}
+			sendMsg(checknum,'Icon_Clicked',result);
+		}
 	}
 	fixPNG('img_' + name);
 }
 widgetDrop_behaviours = [];
-widgetDrops_ie = [];
 dropIndex = 400;
 function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 	//I don't know how it works under ie 8
-	if(IEversion > 1 && IEversion < 8){
-		if(!widgetDrops_ie[checknum]){
-			widgetDrops_ie[checknum] = [];
-		}
-		widgetDrops_ie[checknum].push(father);
+	var widget = xGetElementById(father);
+	if(widget.xDropEnabled == true){
+		return false;
 	}
 	
 	var widget = xGetElementById(father);
@@ -864,6 +870,16 @@ function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 		}else{
 			callback(drop,drag,x,y,event,checknum,num);
 		}
+	}
+	try{
+		var windowP = getParentWidgetType(widget,'Window');
+		if(windowP){
+			if(windowP.xDropEnabled){
+				windowP.xDropEnabled = false
+			}
+		}
+	}catch(err){
+		//Waiting for ddebug api
 	}
 	xEnableDrop(widget,widgetDrop);
 }
@@ -962,9 +978,13 @@ function moveAndClick(name){
 		}
 	}
 	this.moveAction = function moveAction(drop,drag,x,y,event,checknum){
-		this.moveUpdate(drag.id,xLeft(drag),xTop(drag),drag.diffX,drag.diffY,drag.checknum,drag.content);
-		drag.style.left = drag.diffX+'px';
-		drag.style.top = drag.diffY+'px';
+		if (this.params['moveType'] < 2) {
+			this.moveUpdate(drag.id,xLeft(drag),xTop(drag),drag.diffX,drag.diffY,drag.checknum,drag.content);
+		}
+		if (this.params['moveType'] < 3) {
+			drag.style.left = drag.diffX+'px';
+			drag.style.top = drag.diffY+'px';
+		}
 	}
 	this.menuAction = function menuAction(drop,drag,x,y,event,checknum){
 		var result = '';
@@ -995,7 +1015,10 @@ function moveAndClick(name){
 		}*/
 		
 		if ((movedX > minDiff || movedX < (minDiff)) || ((movedY > minDiff || movedY < minDiff))) {
-			var sendxml = eyeParam('eyeArg',eyeParam('content',myContent[0])+eyeParam('newX',newX)+eyeParam('newY',newY)+eyeParam('rName',myContent[4]),1);
+			if (!this.params['moveMaster']) {
+				this.params['moveMaster'] = 0;
+			}
+			var sendxml = eyeParam('eyeArg',eyeParam('content',myContent[this.params['moveMaster']])+eyeParam('newX',newX)+eyeParam('newY',newY)+eyeParam('rName',myContent[4]),1);
 			sendMsg(checknum,'Icon_Moved',sendxml);
 		}
 	}
@@ -1064,19 +1087,18 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 		
 		//Respect where de user click in the drag object
 		
-		try{
-			var left = xGetElementById('eyeApps').style.marginLeft;
-			left = left.substr(0,left.length - 2);
-		}catch(err){
-			var left = null;
+		var left = xLeft('eyeApps');
+		if(!left){
+			left = 0;
 		}
-		if(cursorPos == 0 && !left){
+		var top = xTop('eyeApps');
+		if(!top){
+			top = 0;
+		}
+ 		mouseX -= left;
+		mouseY -= top;
+		if(cursorPos == 0){
 			startX = mouseX-event.offsetX;
-			startY = mouseY-event.offsetY;
-		//Position the mouse in the corner
-		}else if(cursorPos == 0 && left){
-			startX = mouseX-event.offsetX;
-			startX = startX -left;
 			startY = mouseY-event.offsetY;
 		}else if(cursorPos == 1){
 			startX = mouseX;
@@ -1103,6 +1125,10 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 			//Adding it to global father
 			dragWidget.setAttribute('id',father+'_drag');//Setting a unique id
 			eyeApps.appendChild(dragWidget);
+			
+			xZIndex(widget,zindex);
+			zindex++;
+			
 			xZIndex(dragWidget, zindex);zindex++;//Moving it on top of layers
 			//updating the css style if it is set
 			if(dragCssNames){
@@ -1169,6 +1195,10 @@ function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
 	for (var i in myContent) {
 		result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
 	}
+	
+	xZIndex(xGetElementById(widgetid),zindex);
+	zindex++;
+	
 	if (movedX < 1 && movedX > (-1) && movedY < 1 && movedY > (-1)) {
 		sendMsg(checknum,'Icon_Clicked',result);
 	} else {
@@ -1194,7 +1224,7 @@ function Iframe_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(scroll == 0) {
 		myFrame.setAttribute('scrolling','no');
 	}
-	createWidget(name+'_Container',father,myFrame,horiz,vert,x,y,-1,-1,"eyeIframe",cent,'px',visible);
+	createWidget(name+'_Container',father,myFrame,horiz,vert,x,y,-1,-1,"eyeIframe",cent,'px',visible,'Iframe');
 }
 function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var url = params["url"];
@@ -1224,9 +1254,9 @@ function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	
 	if(myClass != '') {
-		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,myClass,cent,'px',visible);
+		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,myClass,cent,'px',visible,'Imagebox');
 	} else {
-		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,"eyeImagebox",cent,'px',visible);
+		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,"eyeImagebox",cent,'px',visible,'Imagebox');
 	}
 	fixPNG(name);
 }
@@ -1244,61 +1274,42 @@ function Label_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	text = tinyMCE.entityDecode(text);
 	myLabel.appendChild(document.createTextNode(text));
-	createWidget(name+'_Container',father,myLabel,horiz,vert,x,y,-1,-1,"eyeLabel",cent,'px',visible);
+	createWidget(name+'_Container',father,myLabel,horiz,vert,x,y,-1,-1,"eyeLabel",cent,'px',visible,'Label');
 }
 function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var checked = params["checked"];
 	var enabled = params["enabled"];
 	var visible = params["visible"];
-	var vertAlign = params["vertAlign"];
-	var content = getArrayArg(params["content"]);
-	var myDiv = document.createElement("div");
-	myDiv.setAttribute('id',name);
-	myDiv.value = '';
-	var myRadio;
-	var currentValue;
+	var group = params["group"];
+	var text = params["text"];
+	var myContainer = document.createElement('div');
+	var myRadio = document.createElement('input');
 	
-	//Usually the people start to count from 1
-	if(checked > 0)
-		checked--;
-	
-	for(i=0;i<content.length;i++) {
-		currentValue = getArrayArg(content[i]);
-		myRadio = document.createElement('input');
-		myRadio.setAttribute('name',name);
-		myRadio.setAttribute('id', name+'_'+i);
-		myRadio.setAttribute('type','radio');
-		myRadio.setAttribute('value',currentValue[0]);
-		myRadio.setAttribute('onClick','Radio_onClick("' + name + '","' + currentValue[0] + '","' + String(i) + '","' + String(content.length) + '");');
-		//this would be better outside the loop, but input radio seems to be outside dom tree :s (firefox)
-		if(checked == i){
-			myRadio.setAttribute('checked','checked');
-			myRadio.setAttribute('defaultChecked','true');
-			myDiv.value = currentValue[0];
-		}
-
-		myDiv.appendChild(myRadio);
-		myDiv.innerHTML += currentValue[1];
-		if(vertAlign == true){
-			myDiv.innerHTML += "<br />";
-		}
-	}
-	
-	createWidget(name+'_Container',father,myDiv,horiz,vert,x,y,-1,-1,"eyeRadio",cent,'px',visible);
-}
-function Radio_onClick(father,value,thisRadio,allRadio){
-	if (IEversion) {
-		for (i = 0;i < allRadio;i++) {
-			if (i == thisRadio) {
-				xGetElementById(father + '_' + i).checked = true;
-			} else {
-				xGetElementById(father + '_' + i).checked = false;
+	myContainer.setAttribute('id', name+'_textContainer');
+	myRadio.setAttribute('name',group);
+	myRadio.setAttribute('id', name);
+	myRadio.setAttribute('type','radio');
+	myContainer.appendChild(myRadio);
+	if (IEversion && IEversion < 8) {
+		myRadio.onclick = function() {
+			this.checked = 1;
+			inputs = document.getElementsByTagName('input');
+			for (i = 0; i < inputs.length; i++) {
+				if (inputs[i].type == 'radio' && inputs[i].name == this.name && inputs[i].id != this.id) {
+					inputs[i].checked = 0;
+				}
 			}
-		}
+		};
 	}
-	var parent = xGetElementById(father);
-	if(parent && value)
-		parent.value = value;
+	myContainer.appendChild(document.createTextNode(text));
+	if(checked == 1) {
+		myRadio.setAttribute('checked','checked');
+		myRadio.setAttribute('defaultChecked','true');
+	}
+	if(enabled == 0) {
+		myRadio.setAttriute('disabled', 'true');
+	}
+	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,-1,-1,"eyeRadio",cent,'px',visible,'Radio');
 }
 function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
@@ -1315,7 +1326,7 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	mySelect.setAttribute('id',name);
 	mySelect.className = 'eyeSelect';
-	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"",cent,'px',visible);
+	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"",cent,'px',visible,'Select');
 }
 
 function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -1382,7 +1393,7 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	oTable.setAttribute('id',name);
 	oTable.className="sort-table";
 	widget.appendChild(oTable);
-	createWidget(name+'_Container',father,widget,horiz,vert,x,y,-1,-1,"eyeTable",cent,sizeUnit,visible);
+	createWidget(name+'_Container',father,widget,horiz,vert,x,y,-1,-1,"eyeTable",cent,sizeUnit,visible,'SortableTable');
 	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'","'+dsignal+'");');
 }
 function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName, dsignal) {
@@ -1911,6 +1922,7 @@ function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	var myObj = document.createElement('div');
 	myObj.setAttribute('id',name);
+	myObj.useDisplay = params['useDisplay'];
 	myObj.className = 'eyeTab';
 	if(mywidth > 0) {
 		myObj.style.width = mywidth+'px';
@@ -1918,7 +1930,7 @@ function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(myheight > 0) {
 		myObj.style.height = myheight+'px';
 	}
-	createWidget(name+'_Container',father,myObj,horiz,vert,x,y,-1,-1,"eyeTabContainer",cent);
+	createWidget(name+'_Container',father,myObj,horiz,vert,x,y,-1,-1,"eyeTabContainer",cent,'Tab');
 	eval('tab_'+name+' = new eyeTab(document.getElementById("'+name+'"),"'+sig+'","'+checknum+'","' + parseInt(params["tabwidth"]) + '");');
 }
 //eyeTab class
@@ -2034,13 +2046,21 @@ eyeTab.prototype.selectTab = function (tabname) {
 	if(myObj.id != this.lastClick) {
 		myObj.className = 'eyeTabSelected';
 		var myContent = document.getElementById(myObj.id+'_Content');
-		myContent.style.display='block';
+		if (this.moTab.useDisplay == 0) {
+			myContent.style.visibility = 'visible';
+		} else {
+			myContent.style.display = 'block';
+		}
 		if(this.lastClick) {
 			var tObj = document.getElementById(this.lastClick);
 			if(tObj) {
 				tObj.className = 'eyeTabNotSelected';
 				var tContent = document.getElementById(tObj.id+'_Content');
-				tContent.style.display = 'none';
+				if (this.moTab.useDisplay == 0) {
+					tContent.style.visibility = 'hidden';
+				} else {
+					tContent.style.display = 'none';
+				}
 			}
 		}
 		this.lastClick = tabname;
@@ -2086,10 +2106,10 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	if (CcssClass) {
 		myTextarea.className = CcssClass;
-		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,CcssClass,cent,'px',visible);
+		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,CcssClass,cent,'px',visible,'Textarea');
 	} else {
 		myTextarea.className = 'eyeTextarea';
-		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,"eyeTextareaContainer",cent,'px',visible);
+		createWidget(name+'_Container',father,myTextarea,horiz,vert,x,y,Wwidth,Hheight,"eyeTextareaContainer",cent,'px',visible,'Textarea');
 	}
 	
 	if (rich == 1) {
@@ -2109,7 +2129,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var noborder = params["noborder"];
 	
 	var myTextbox = document.createElement('input');
-	if(myPassword==1) {
+	if (myPassword) {
 		myTextbox.setAttribute('type','password');
 	} else {
 		myTextbox.setAttribute('type','text');
@@ -2135,7 +2155,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myTextbox.setAttribute('id',name);
 	myTextbox.className = 'eyeTextbox';
 	
-	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'px',visible);
+	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'px',visible,'Textbox');
 }
 
 activeWindow = "";
@@ -2148,7 +2168,6 @@ openWindows=new Array();
 firstButtonPosition = 6;
 secondButtonPosition = 21;
 thirdButtonPosition = 38;
-
 function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var title = params["title"];
 	var type = params["type"];
@@ -2163,6 +2182,8 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var resize = params["resize"];
 	var nodrag = params["nodrag"];
 	var width = params["width"];
+	var minWidth = params["minWidth"];
+	var minHeight = params["minHeight"];
 	var height = params["height"];
 	var sendCloseMsg = params["sendCloseMsg"];
 	var sendResizeMsg = params["sendResizeMsg"];
@@ -2178,7 +2199,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var showDragContent = params["showDragContent"];
 	var noZindex = params['noZindex'];
 	var allDrag = params['allDrag'];
-	
+		
 	//Css classes for each window part
 	var wCssMain = params['wMain'];
 	var wCssTitle = params['wTitle'];
@@ -2194,11 +2215,15 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var wCssContent = params['wContent'];
 	
 	var theText = document.createTextNode('');
-	var createdWindow = createWidget(name,father,theText,horiz,vert,x,y,width,height,wCssMain,cent);
+	var createdWindow = createWidget(name,father,theText,horiz,vert,x,y,width,height,wCssMain,cent,null,null,'Window');
 	
 	createdWindow.dragBgColor = dragBgColor;
 	createdWindow.dragBgAlpha = dragBgAlpha;
 	createdWindow.showDragContent = showDragContent;
+	createdWindow.minWidth = minWidth;
+	createdWindow.minHeight = minHeight;
+
+	xEnableDrop(createdWindow,function foo(){});
 	//Getting window for set a few properties
 	title = tinyMCE.entityDecode(title);
 	
@@ -2312,6 +2337,8 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag) {
 	var widget = xGetElementById(widgetid);
+	widget.notDrag = notDrag;
+	widget.noZindex = noZindex;
 	if (!widget) {
 		return;
 	}
@@ -2339,7 +2366,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	}
 	
 	if (document.getElementById(widgetid + '_Content').className != 'eyeWindowContentInvisible') {
-		if (IEversion > 0 && IEversion < 7) {
+		if (IEversion && IEversion < 7) {
 			aw = document.getElementById(activeWindow);
 			if (aw) {
 				selects = aw.getElementsByTagName('select');
@@ -2393,7 +2420,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			minIconLeft.style.display="block";
 			minIconRight.style.display="block";
 			minArrows = 1;
-			if(IEversion!=0) {
+			if(IEversion && IEversion < 7) {
 				fixPNG(myImgRight.id);
 				fixPNG(myImgLeft.id);
 			}
@@ -2404,10 +2431,14 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			if (!minimized) {
 				if(activeWindow == this.id){
 					minimized = true;
-					widget.style.display = 'none';
+					if (widget.showDragContent == 2) {
+						widget.style.visibility = 'hidden';
+					} else {
+						widget.style.display = 'none';
+					}
 					barWin.className = "eyeWindowOnBar_Off";
 				}else{
-					if (IEversion > 0 && IEversion < 7) {
+					if (IEversion && IEversion < 7) {
 						aw = document.getElementById(activeWindow);
 						if (aw) {
 							selects = aw.getElementsByTagName('select');
@@ -2422,7 +2453,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 					xZIndex(widget, zindex);
 					zindex++;
 					activeWindow = this.id;
-					if (IEversion > 0 && IEversion < 7) {
+					if (IEversion && IEversion < 7) {
 						selects = this.getElementsByTagName('select');
 						for (i = 0;i < selects.length;i++) {
 							if (selects[i].name == 'visible') {
@@ -2432,7 +2463,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 					}
 				}
 			} else {
-				if (IEversion > 0 && IEversion < 7) {
+				if (IEversion && IEversion < 7) {
 					aw = document.getElementById(activeWindow);
 					if (aw) {
 						selects = aw.getElementsByTagName('select');
@@ -2445,11 +2476,15 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 					}
 				}
 				minimized = false;
-				widget.style.display = 'block';
+				if (widget.showDragContent == 2) {
+					widget.style.visibility = 'visible';
+				} else {
+					widget.style.display = 'block';
+				}
 				barWin.className = "eyeWindowOnBar_On";
 				activeWindow = this.id;
 				xZIndex(widget, zindex);zindex++;
-				if (IEversion > 0 && IEversion < 7) {
+				if (IEversion && IEversion < 7) {
 					selects = this.getElementsByTagName('select');
 					for (i = 0;i < selects.length;i++) {
 						if (selects[i].name == 'visible') {
@@ -2465,7 +2500,11 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			{
 				if (!minimized) {
 					minimized = true;
-					widget.style.display = 'none';
+					if (widget.showDragContent == 2) {
+						widget.style.visibility = 'hidden';
+					} else {
+						widget.style.display = 'none';
+					}
 					barWin.className = "eyeWindowOnBar_Off";
 				}
 			}
@@ -2508,7 +2547,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 				if (notList != 1) {
 					slideClose(fatherid,widgetid);
 				}
-			} else {
+			} else if(removeWin != 2) {
 				widget.style.display = 'none';
 			}
 			if(sendCloseMsg == 1) {
@@ -2545,14 +2584,14 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 		xEnableDrag(widget, begindrag, barOnDrag, callafterfunction);
 	}
 	function begindrag() {
-		if(!xGetElementById(widgetid).showDragContent){
+		if(!xGetElementById(widgetid).showDragContent && !xGetElementById(widgetid).notDrag){
 			widgetDragStart(widgetid);
 		}
 	}
 	
 	function GoToTop()
 	{
-		if (IEversion > 0 && IEversion < 7) {
+		if (IEversion && IEversion < 7) {
 			aw = document.getElementById(activeWindow);
 			if (aw) {
 				selects = aw.getElementsByTagName('select');
@@ -2565,17 +2604,11 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			}
 		}
 		activeWindow = this.id; //Set window active.
-		if(!noZindex){
+		if (!widget.noZindex) {
 			xZIndex(widget, zindex);
 			zindex++;
-			if(widgetDrops_ie[checknum]){
-				for (var x in widgetDrops_ie[checknum]){
-					var widgetX = xGetElementById(widgetDrops_ie[checknum][x]);
-					xZIndex(widgetX, dropIndex);dropIndex++;
-				}
-			}
 		}
-		if (IEversion > 0 && IEversion < 7) {
+		if (IEversion && IEversion < 7) {
 			selects = this.getElementsByTagName('select');
 			for (i = 0;i < selects.length;i++) {
 				if (selects[i].name == 'visible') {
@@ -2587,12 +2620,16 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	
 	function barOnDrag(e, mdx, mdy)
 	{
+		var ele = xGetElementById(widgetid);
+		if(ele.notDrag == 1){
+			return true;
+		}
 		var x = xLeft(widget) + mdx;
 		var y = xTop(widget) + mdy;
 		var xright = xWidth(father) - xWidth(widget) - rightBorder;
 		var ybottom = xHeight(father) - xHeight(widget);
 		
-		if(document.getElementById(widgetid).parentNode.id == "eyeApps") {
+		if(ele.parentNode.id == "eyeApps") {
 			if (x < leftBorder - xWidth(widget) + 75) x = leftBorder - xWidth(widget) + 75;
 			if (x > xright + xWidth(widget) - 75) x = xright + xWidth(widget) - 75;
 			if (y > ybottom + xHeight(widget) - 50) y = ybottom + xHeight(widget) - 50;
@@ -2608,7 +2645,11 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	
 	function callafterfunction()
 	{
-		if(!xGetElementById(widgetid).showDragContent){
+		var ele = xGetElementById(widgetid);
+		if(ele.notDrag == 1){
+			return true;
+		}
+		if(!ele.showDragContent){
 			widgetDragEnd(widgetid);
 		}
 		if(savePosition == 1){
@@ -2635,7 +2676,10 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 function widgetDragStart(widgetid){
 	document.getElementById(widgetid+'_Content').style.display = 'none';
 	var window = document.getElementById(widgetid);
-	window.style.backgroundColor = window.dragBgColor;
+	window.className = 'eyeWindowMainDrag';
+	if (window.dragBgColor) {
+		window.style.backgroundColor = window.dragBgColor;
+	}
 	if (!IEversion || IEversion > 6) {
 		updateOpacityOnce(window.dragBgAlpha, window.id);
 	}
@@ -2644,7 +2688,10 @@ function widgetDragEnd(widgetid){
 	document.getElementById(widgetid+'_Content').style.display = 'block';
 	xShow(widgetid+'_Content');
 	var window = document.getElementById(widgetid);
-	window.style.backgroundColor = 'transparent';
+	window.className = 'eyeWindowMain';
+	if (window.dragBgColor) {
+		window.style.backgroundColor = 'transparent';
+	}
 	if (!IEversion || IEversion > 6) {
 		updateOpacityOnce(100, window.id);
 	}
@@ -2691,7 +2738,9 @@ function slideClose(fatherid,widgetid) {
 	}
 	
 	if (document.getElementById(widgetid+"_WindowOnBarContainer")){
-		xGetElementById(widgetid+"_WindowOnBarContainer").removeChild(barWin);
+		var ele = xGetElementById(widgetid+"_WindowOnBarContainer");
+		ele.removeChild(barWin);
+		ele.parentNode.removeChild(ele);
 	}
 }
 
@@ -2699,8 +2748,8 @@ function resOnDrag(e, mdx, mdy) {
 	widget = e.parentNode;
 	var x = xWidth(widget) + mdx;
 	var y = xHeight(widget) + mdy;
-	if (x < min_apps_width) x = min_apps_width;
-	if (y < min_apps_height) y = min_apps_height;
+	if (x < widget.minWidth) x = widget.minWidth;
+	if (y < widget.minHeight) y = widget.minHeight;
 	xResizeTo(widget, x, y);
 }
 
@@ -2748,7 +2797,7 @@ function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myProgress.appendChild(myProgressBar);
 	myProgress.appendChild(myProgressC);
 	
-	createWidget(name+'_Container',father,myProgress,horiz,vert,x,y,-1,-1,"eyeProgressContainer",cent,'px',visible);
+	createWidget(name+'_Container',father,myProgress,horiz,vert,x,y,-1,-1,"eyeProgressContainer",cent,'px',visible,'ProgressBar');
 }
 
 function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -2761,18 +2810,25 @@ function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myBar.className = 'blockbar';
 	myBar.paintClick = params['paintOnClick'];
 	myBar.select = params['select'];
+	myBar.widgetType = 'Toolbar';
 	obj.appendChild(myBar);
 }
 
-function addLineToBar(myToolbar) {
+function addLineToBar(myToolbar,id,right) {
 	var obj = document.getElementById(myToolbar);
 	var container = document.createElement('div');
+	if (id) {
+		container.id = id;
+	}
 	container.className = 'blockbarline';
+	if (right) {
+		container.className = 'blockbarline_right';
+	}
 	container.innerHTML = '&nbsp;';
 	obj.appendChild(container);
 }
 
-function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight,myWidth) {
+function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight,myWidth,right) {
 	var obj = document.getElementById(myToolbar);
 	var paintClick = obj.paintClick;
 	var select = obj.select;
@@ -2780,14 +2836,26 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight
 	var container = document.createElement('div');
 	var myFriends = Base64.decode(sync);
 	container.setAttribute('id',itemName+'_Container');
-	container.className = 'blockbarItem';
+	if(right == 1){
+		container.className = 'blockbarItem_right';
+	}else{
+		container.className = 'blockbarItem';
+	}
 
 	if(paintClick == 1){
 		container.onmousedown = function(){
-			container.className = 'blockbarItemPress';
+			if(right == 1){
+				container.className = 'blockbarItemPress_right';
+			}else{
+				container.className = 'blockbarItemPress';
+			}
 		}
 		container.onmouseup = function(){
-			container.className = 'blockbarItem';
+			if(right == 1){
+				container.className = 'blockbarItem_right';
+			}else{
+				container.className = 'blockbarItem';
+			}
 			sendMsg(checknum,itemName,eval(myFriends));
 		}
 	}
@@ -2840,7 +2908,7 @@ function Tree(father, signal, checknum, name, height, width, x, y, clickTree,syn
 	this.myChecknum = checknum;
 	this.myClickTree = clickTree;
 	this.mySync = sync;
-	
+	this.widgetType = 'Tree';
 	var oThis = this;
 	
 	this._listOnClick = function (e) {
@@ -2892,7 +2960,11 @@ Tree.prototype.getValue = function(e) {
 			if(obj.tagName == 'LI') { //subimos hasta el siguiente li
 				if(obj.childNodes.item(0).innerHTML) { //y bajamos un span
 					tmpContent = obj.childNodes.item(0).innerHTML;
-					tmpContent = tmpContent.substring(6,tmpContent.length);
+					if (tmpContent.substr(0,6) != '&nbsp;') {
+						tmpContent = tmpContent.substr(1);
+					} else {
+						tmpContent = tmpContent.substring(6,tmpContent.length);
+					}
 					content = tmpContent+'/'+content;
 				}
 			}
@@ -2914,7 +2986,9 @@ Tree.prototype.listOnClick = function(e) {
 			itemName = el.id.substring(6,el.id.length); //simple item
 		else
 			itemName = el.parentNode.id.substring(6,el.parentNode.id.length); //sublist
-		sendMsg(this.myChecknum,this.mySignal,eval(this.mySync)+eyeParam('itemName',itemName));
+		if (myValue != false) {
+			sendMsg(this.myChecknum,this.mySignal,eval(this.mySync)+eyeParam('itemName',itemName));
+		}
 	}
 }
 
@@ -3091,9 +3165,10 @@ function SimpleMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	var myMenu = document.createElement('div');
 	myMenu.setAttribute('id',name);
+	myMenu.widgetType = 'SimpleMenu';
 	myMenu.className = 'eyeContextMenu';
 	myMenu.style.display = 'none';
-	if(IEversion == 6){
+	if(IEversion && IEversion < 7){
 		myMenu.style.position = 'absolute';
 	}else{
 		myMenu.style.position = 'fixed';
@@ -3116,7 +3191,7 @@ function showSimpleMenu(e,menuName,rFather) {
 	lastMenu = menuName;
 	var top = e.pageY;
 	var left = e.pageX;
-	if(IEversion == 6){
+	if(IEversion && IEversion < 7){
 		var father = document.getElementById(rFather);
 		top = e.offsetY;
 		left = e.offsetX;
@@ -3140,12 +3215,6 @@ function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params,imgId
 	myEntry.className = 'eyeContextMenuEntry';
 	myEntry.innerHTML = text;
 	myEntry.onclick = function() { sendMsg(checknum,signal,params);};
-	myEntry.onmouseover = function () {
-		myEntry.style.backgroundColor = '#3B7CEF';
-	}
-	myEntry.onmouseout = function () {
-		myEntry.style.backgroundColor = 'white';
-	}
 	obj.appendChild(myEntry);
 	fixPNG(imgId);
 }
@@ -3170,8 +3239,9 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myMenu = document.createElement('div');
 	myMenu.setAttribute('id',name);
 	myMenu.className = 'eyeContextMenu';
+	myMenu.widgetType = 'ContextMenu';
 	myMenu.style.display = 'none';
-	if(IEversion == 6){
+	if(IEversion && IEversion < 7){
 		myMenu.style.position = 'absolute';
 	}else{
 		myMenu.style.position = 'fixed';
@@ -3212,8 +3282,8 @@ function showContextMenu(e,menuName,rFather,myFather) {
 	lastMenu = menuName;
 	var top = e.pageY;
 	var left = e.pageX;
-	if (IEversion == 6 && myFather != 'eyeApps') {
-		var father = document.getElementById(rFather);
+	if (IEversion && IEversion < 7) {
+		var father = xGetElementById(rFather);
 		top = e.offsetY;
 		left = e.offsetX;
 		top += xTop(father);
@@ -3236,12 +3306,6 @@ function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	myEntry.className = 'eyeContextMenuEntry';
 	myEntry.innerHTML = text;
 	myEntry.onclick = function() { sendMsg(checknum,signal,params);};
-	myEntry.onmouseover = function () {
-		myEntry.style.backgroundColor = '#3B7CEF';
-	}
-	myEntry.onmouseout = function () {
-		myEntry.style.backgroundColor = 'white';
-	}
 	obj.appendChild(myEntry);
 	fixPNG(imgId);
 }
@@ -3262,7 +3326,7 @@ function Applet_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var appletParamsNames = getArrayArg(params["appletParamsNames"]);
 	var appletParamsValues = getArrayArg(params["appletParamsValues"]);
 	
-	if(IEversion == 0) {
+	if(!IEversion || IEversion > 8) {
 		var myApplet = document.createElement("embed");
 		myApplet.setAttribute('type', 'application/x-java-applet');
 		myApplet.setAttribute('width', width);
@@ -3290,6 +3354,157 @@ function Applet_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if( codebase) {
 		myApplet.setAttribute('codebase', codebase);
 	}
+	createWidget(name+'_Container',father,myApplet,horiz,vert,x,y,width,height,"eyeApplet",cent,'px',visible,'Applet');
+}
+
+function Split_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var myheight = params["height"];
+	var mywidth = params["width"];
+	var orientation = parseInt(params["orientation"]);
+	var position = params["position"];
+	var visible = params["visible"];
+	var sendResizeMsg = parseInt(params["sendResizeMsg"]);
+	var sigResize = params["sigResize"];
 	
-	createWidget(name+'_Container',father,myApplet,horiz,vert,x,y,width,height,"eyeApplet",cent,'px',visible);
+	var globalContainer = document.createElement('div');
+	globalContainer.className = 'eyeSplit';
+	globalContainer.setAttribute('id',name+'_split');
+	globalContainer.style.position='absolute';
+	globalContainer.style
+	if(visible == 1) {
+		globalContainer.style.display='block';
+	} else {
+		globalContainer.style.display='none';
+	}
+	globalContainer.style.width = mywidth+'px';
+	globalContainer.style.height = myheight+'px';
+	
+	var firstPanel = document.createElement('div');
+	firstPanel.className = 'eyeSplitPanel';
+	firstPanel.setAttribute('id',name+'_first');
+	firstPanel.style.position='absolute';
+	
+	var lastPanel = document.createElement('div');
+	lastPanel.className = 'eyeSplitPanel';
+	lastPanel.setAttribute('id',name+'_last');
+	lastPanel.style.position='absolute';
+	
+	var splitter = document.createElement('div');
+	splitter.className = 'eyeSplitter';
+	splitter.setAttribute('id',name+'_splitter');
+	splitter.style.position='absolute';
+	
+	if(orientation == 1) { //vertical
+		splitter.className = 'eyeSplitter_vertical';
+		firstPanel.style.height = myheight+'px';
+		firstPanel.style.left = '0px';
+		firstPanel.style.top = '0px';
+		lastPanel.style.height = myheight+'px';
+		lastPanel.style.right = '0px';
+		lastPanel.style.top = '0px';
+		splitter.style.height = myheight+'px';
+		splitter.style.width = '3px';
+		splitter.style.top = '0px';
+		splitter.style.cursor = 'w-resize';
+		
+		var totalWidth = mywidth - 3;
+
+		splitter.style.left = position+'px';
+		
+		firstPanel.style.width = totalWidth - (totalWidth - position)+'px';
+		lastPanel.style.width = totalWidth - position -1+'px';
+
+	} else { 
+		splitter.className = 'eyeSplitter_horizontal';
+		firstPanel.style.width = mywidth+'px';
+		firstPanel.style.top = '0px';
+		firstPanel.style.left = '0px';
+		lastPanel.style.width = mywidth+'px';
+		lastPanel.style.bottom = '0px';
+		lastPanel.style.left = '0px';
+		splitter.style.width = mywidth+'px';
+		splitter.style.height = '3px';
+		splitter.style.left = '0px';
+		splitter.style.zIndex = '1';
+		splitter.style.cursor = 's-resize';
+		
+		var totalHeight = myheight - 3;
+		
+		splitter.style.top = position +'px';
+		
+		firstPanel.style.height = totalHeight - (totalHeight - position)+'px';
+		lastPanel.style.height = totalHeight - position-1+'px';
+	}
+	
+	globalContainer.appendChild(firstPanel);
+	globalContainer.appendChild(lastPanel);
+	globalContainer.appendChild(splitter);
+	
+	xEnableDrag2(splitter,
+		function(el, x, y, ev) {
+			firstPanel.style.display = 'none';
+			lastPanel.style.display = 'none';
+		},null,function(el, x, y, ev) {
+			var myY = el.style.top;
+			myY = parseInt(myY.substring(0,myY.length-2));  
+			var myX = el.style.left;
+			myX = parseInt(myX.substring(0,myX.length-2));
+			if(orientation == 1) {
+				position = myX;
+				totalWidth = globalContainer.style.width;
+				totalWidth = parseInt(totalWidth.substring(0,totalWidth.length-2))-3;  
+				firstPanel.style.width = totalWidth - (totalWidth - position)+'px';
+				lastPanel.style.width = totalWidth - position-1+'px';	
+				sendMsg(checknum,sigResize,eyeParam('arg',totalWidth - (totalWidth - position))+eyeParam('arg',totalWidth - position));
+			} else {
+				position = myY; 
+				totalHeight = globalContainer.style.height;
+				totalHeight = parseInt(totalHeight.substring(0,totalHeight.length-2))-3;
+				firstPanel.style.height = totalHeight - (totalHeight - position)+'px';
+				lastPanel.style.height = totalHeight - position-1+'px';
+				sendMsg(checknum,sigResize,eyeParam('arg',totalHeight - (totalHeight - position))+eyeParam('arg',totalHeight - position));		
+			}
+			firstPanel.style.display = 'block';
+			lastPanel.style.display = 'block';
+		}
+	,globalContainer);
+	
+	createWidget(name+'_Container',father,globalContainer,horiz,vert,x,y,-1,-1,"eyeSplitContainer",cent, 'px', visible);
+}
+
+function splitter_setPosition(id,pos,orientation,checknum,sigResize) {
+	var position = parseInt(pos);
+	var globalContainer = document.getElementById(id+'_split');
+	var firstPanel = document.getElementById(id+'_first');
+	var lastPanel = document.getElementById(id+'_last');
+	var splitter = document.getElementById(id+'_splitter');
+	if(orientation == 1) {
+		splitter.style.left = position+'px';
+		totalWidth = globalContainer.style.width;
+		totalWidth = parseInt(totalWidth.substring(0,totalWidth.length-2))-3;  
+		firstPanel.style.width = totalWidth - (totalWidth - position)+'px';
+		lastPanel.style.width = totalWidth - position-1+'px';
+		sendMsg(checknum,sigResize,eyeParam('arg',totalWidth - (totalWidth - position))+eyeParam('arg',totalWidth - position));
+	} else {
+		splitter.style.top = position+'px';
+		totalHeight = globalContainer.style.height;
+		totalHeight = parseInt(totalHeight.substring(0,totalHeight.length-2))-3;
+		firstPanel.style.height = totalHeight - (totalHeight - position)+'px';
+		lastPanel.style.height = totalHeight - position-1+'px';
+		sendMsg(checknum,sigResize,eyeParam('arg',totalHeight - (totalHeight - position))+eyeParam('arg',totalHeight - position));		
+	}
+}	
+
+function increaseWidth(ele,w) {
+	var myEle = document.getElementById(ele);
+	var myW = myEle.style.width;
+	myW = parseInt(myW.substring(0,myW.length-2));
+	myEle.style.width = myW+w+'px';
+}
+
+function increaseHeight(ele,h) {
+	var myEle = document.getElementById(ele);
+	var myH = myEle.style.height;
+	myH = parseInt(myH.substring(0,myH.length-2));
+	myEle.style.height = myH+h+'px';
 }

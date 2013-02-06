@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeControl_on_groups_new($params = '') {
@@ -46,6 +46,8 @@ function eyeControl_on_groups_create($params = '') {
 		eyex('messageBox',array('content' => 'You are not allowed to manage groups!'));
 		eyeControl_lib_loadContent();
 		return;
+	} elseif (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
+		$myUserXml = um('retrieveUser',array(eyeControl_lib_getConfigUser()));
 	}
 	
 	$group = $GLOBALS['eyeControl_groups_create_textbox']->text;
@@ -54,12 +56,12 @@ function eyeControl_on_groups_create($params = '') {
 		$oldUser = $currentUser;
 		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 			$currentUser = ROOTUSER;
-			$xml['eyeUser'][0]['group'][] = $group;
-			$xml['eyeUser'][0]['maintain'][] = $group;
+			$myUserXml['eyeUser'][0]['group'][] = $group;
+			$myUserXml['eyeUser'][0]['maintain'][] = $group;
 			um('updateUser',array(
 				'username' => $oldUser,
-				'groups' => $xml['eyeUser'][0]['group'],
-				'maintain' => $xml['eyeUser'][0]['maintain']
+				'groups' => $myUserXml['eyeUser'][0]['group'],
+				'maintain' => $myUserXml['eyeUser'][0]['maintain']
 			));
 			if ($oldUser == eyeControl_lib_getConfigUser()) {
 				$_SESSION['groups'][$group] = 1;
@@ -116,7 +118,7 @@ function eyeControl_on_groups_rename($params = '') {
 	
 	$group_old = $GLOBALS['eyeControl_groups_rename_hidden']->text;
 	
-	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser())) || um('checkMaintainer',array(eyeControl_lib_getConfigUser())) && !in_array($group_old,$myUserXML['eyeUser'][0]['maintain'])) {
+	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser())) || um('checkMaintainer',array(eyeControl_lib_getConfigUser())) && !in_array($group_old,$myUserXml['eyeUser'][0]['maintain'])) {
 		eyex('messageBox',array('content' => 'You are not allowed to manage groups!'));
 		eyeControl_lib_loadContent();
 		return;
@@ -129,13 +131,13 @@ function eyeControl_on_groups_rename($params = '') {
 		$oldUser = $currentUser;
 		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 			$currentUser = ROOTUSER;
-			foreach ($xml['eyeUser'][0]['group'] as $value) {
+			foreach ($myUserXml['eyeUser'][0]['group'] as $value) {
 				if ($value != $group_old) {
 					$array[] = $value;
 				}
 			}
 			$array[] = $group_new;
-			foreach ($xml['eyeUser'][0]['maintain'] as $value) {
+			foreach ($myUserXml['eyeUser'][0]['maintain'] as $value) {
 				if ($value != $group_old) {
 					$maintain[] = $value;
 				}
@@ -222,7 +224,7 @@ function eyeControl_on_groups_delete_yes($params = '') {
 	
 	$group = $GLOBALS['groups_delete_hidden']->text;
 	
-	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser())) || um('checkMaintainer',array(eyeControl_lib_getConfigUser())) && !in_array($group,$myUserXML['eyeUser'][0]['maintain'])) {
+	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser())) || um('checkMaintainer',array(eyeControl_lib_getConfigUser())) && !in_array($group,$myUserXml['eyeUser'][0]['maintain'])) {
 		eyex('messageBox',array('content' => 'You are not allowed to manage groups!'));
 		eyeControl_lib_loadContent();
 		return;
@@ -236,13 +238,13 @@ function eyeControl_on_groups_delete_yes($params = '') {
 		
 		if (vfs('real_rmdir',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/'))) {
 			if ($oldUser != ROOTUSER) {
-				foreach ($xml['eyeUser'][0]['group'] as $value) {
+				foreach ($myUserXml['eyeUser'][0]['group'] as $value) {
 					if ($value != $group) {
 						$array[] = $value;
 					}
 				}
-				foreach ($xml['eyeUser'][0]['maintain'] as $value) {
-					if ($value != $group_old) {
+				foreach ($myUserXml['eyeUser'][0]['maintain'] as $value) {
+					if ($value != $group) {
 						$maintain[] = $value;
 					}
 				}

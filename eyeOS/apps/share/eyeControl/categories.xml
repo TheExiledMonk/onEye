@@ -44,7 +44,7 @@
 		<description>Change your desktop wallpaper</description>
 		<display>Desktop</display>
 		<name>desktop</name>
-		<permissions>only_this</permissions>
+		<permissions>all</permissions>
 		<title>yes</title>
 		<img>index.php?theme=1&amp;extern=icons/48x48/desktop.png</img>
 	</content>

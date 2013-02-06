@@ -1,74 +1,76 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-
-function eyeUpload_run($params=null) {
-	if(is_array($params)) {
-		$path = $params[0];
-		$callback = $params[1];
-	}
-	if(isset($params[3]) && $params[3] == true){
-		$width = 410;
-		$height = 272;
-		$multiple = '';			
-	}else{			
-		$width = 470;
-		$height = 270;
-		$multiple = 1;
-	}
-	
+function eyeUpload_run($params = '') {
 	$myWindow = new Window(array(
-		'name'=>'uploadWND_Parent',
-		'father'=>'eyeApps',
+		'cent' => 1,
+		'father' => 'eyeApps',
+		'name' => 'eyeUpload_Window',
+		'height' => 270,
+		'savePosition' => 1,
+		'showDragContent' => 1,
 		'style' => TITLE + CLOSE + LISTED + MIN,
-		'cent'=>1,
-		'width'=>$width,
-		'height'=>$height,
-		'title'=>'Upload files',
-		'showDragContent'=>true,
-		'savePosition' => 1
+		'title' => 'Upload files',
+		'width' => 470
 	));
 	$myWindow->show();
+	
+	$myHidden = new Hidden(array(
+		'father' => 'eyeUpload_Window_Content',
+		'name' => 'eyeUpload_Hidden_Path',
+		'text' => $params[0]
+	));
+	$myHidden->show();
+	
+	$myHidden = new Hidden(array(
+		'father' => 'eyeUpload_Window_Content',
+		'name' => 'eyeUpload_Hidden_Callback',
+		'text' => $params[1]
+	));
+	$myHidden->show();
+	
 	$myTab = new Tab(array(
-		'name' => 'tabs',
-		'father' => 'uploadWND_Parent_Content',
-		'width' => $width-2,
-		'height' => $height-60,
-		'x' => 0,
+		'father' => 'eyeUpload_Window_Content',
+		'name' => 'eyeUpload_Tab',
+		'height' => 210,
+		'tabwidth' => 90,
+		'useDisplay' => 0,
+		'width' => 466,
+		'x' => intval(!IE || IE > 6),
 		'y' => 5
 	));
 	$myTab->show();
-	$systemTab = $myTab->addTab('Simple',2);
-	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeUpload/tabs/normal.eyecode');
 	
-	if ($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] > 8 && (IE || !$_SERVER['HTTPS'])) {
-		$flashTab = $myTab->addTab('Advanced',1);
-		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeUpload/tabs/flash.eyecode');
+	$simpleTab = $myTab->addTab('Simple',1);
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeUpload/tabs/simple.eyecode');
+	if ($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] > 8 && (!$_SERVER['HTTPS'] || IE)) {
+		$advancedTab = $myTab->addTab('Advanced',1);
+		include_once(EYE_ROOT . '/' . APP_DIR . '/eyeUpload/tabs/advanced.eyecode');
 	}
 	if (WEB_UPLOAD) {
 		$webTab = $myTab->addTab('Web',1);
-		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeUpload/tabs/web.eyecode');
-		if ($flashTab) {
+		include_once(EYE_ROOT . '/' . APP_DIR . '/eyeUpload/tabs/web.eyecode');
+		if ($advancedTab) {
 			$myTab->selectByName('Advanced');
 		} else {
 			$myTab->selectByName('Simple');
@@ -76,8 +78,7 @@ function eyeUpload_run($params=null) {
 	}
 }
 
-function eyeUpload_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+function eyeUpload_end($params = '') {
+	eyeWidgets('unserialize',$params);
 }
-
 ?>

@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFeeds/func'.EYE_CODE_EXTENSION);
@@ -1033,9 +1033,14 @@ function eyeFeeds_createImportFeedsDialog($params=null) {
 function eyeFeeds_on_importFeeds_selectFile_BTN($params=null) {
 	global $checknum;
 	$options = array(
-		0,
+		EYEDIALOG_TYPE_OPENFILE,
 		'importFeeds_selectFile',
 		$checknum,
+		'',
+		array(
+			'OPML files' => '*.opml|*.xml',
+			'All files' => '*.*'
+		)
 	);
 	service('proc','launch',array('eyeDialog',$options));
 }

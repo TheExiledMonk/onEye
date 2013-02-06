@@ -1,25 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	events resource for eyeLaunch
 */
@@ -41,7 +42,7 @@ function eyeLaunch_on_doLaunch($params="") {
 
 	if($GLOBALS['su_chk']->checked == 1) {
 		$user = $GLOBALS['eyeLaunch_user']->text;
-		$pass = $GLOBALS['eyeLaunch_pass']->text;
+		$pass = base64_decode($GLOBALS['eyeLaunch_pass']->text);
 		if(empty($user) || (empty($pass) && $currentUser != ROOTUSER)) {
 			service('eyex','messageBox',array('content' => 'Error, empty username or password'));
 			return false;
@@ -57,8 +58,16 @@ function eyeLaunch_on_doLaunch($params="") {
 			$currentUser = $user;
 			if(!service('proc','launch',array($myApp,$arguments))) {
 				$currentUser = $oldUser;
-				service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
-				return false;
+				if(reqLib('errorCodes','getErrorCode') == PROC_APP_NOT_FOUND) {
+					service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
+					return false;
+				}elseif(reqLib('errorCodes','getErrorCode') == PROC_APP_DONT_HAVE_RUN_FUNCTION) {
+					service('eyex','messageBox',array('content' => '%s has had a problem and could not be executed','tokens' => array($myApp)));
+					return false;
+				}else{
+					service('eyex','messageBox',array('content' => '%s has had an unknow problem and could not be executed','tokens' => array($myApp)));
+					return false;
+				}
 			}
 			$currentUser = $oldUser;
 		} else {
@@ -67,12 +76,19 @@ function eyeLaunch_on_doLaunch($params="") {
 		}
 	} else {
 		if(!service('proc','launch',array($myApp,$arguments))) {
-			service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
-			return false;
+			if(reqLib('errorCodes','getErrorCode') == PROC_APP_NOT_FOUND) {
+				service('eyex','messageBox',array('content' => '%s not found','tokens' => array($myApp)));
+				return false;
+			}elseif(reqLib('errorCodes','getErrorCode') == PROC_APP_DONT_HAVE_RUN_FUNCTION) {
+				service('eyex','messageBox',array('content' => '%s has had a problem and could not be executed','tokens' => array($myApp)));
+				return false;
+			}else{
+				service('eyex','messageBox',array('content' => '%s has had an unknow problem and could not be executed','tokens' => array($myApp)));
+				return false;
+			}
 		} 
 	}
 	
-
 	proc('end');
 }
 

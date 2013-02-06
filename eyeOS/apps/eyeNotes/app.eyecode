@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeNotes_run($params=null) {
@@ -68,6 +68,7 @@ function eyeNotes_run($params=null) {
 		} else {
 			$lang = 'text';
 		}
+		$myWindow->setTitle(utf8_basename($params[0].' - '.i18n('translate',array('Text Editor'))));
 		$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
 			'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60,'code'=>1,'lang'=>$lang));
 	}
@@ -87,7 +88,9 @@ function eyeNotes_run($params=null) {
 	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
 	$myToolbar->addItem('save','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesave.png','Save',array($myTextArea));
 	$myToolbar->addItem('saveAs','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesaveas.png','Save As',array($myTextArea));
-	
+	$myToolbar->addLine();
+	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
+	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 	if($params[0]) {
 		$file = $params[0];
 		$fp = service('vfs','open',array($file,'r'));

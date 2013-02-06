@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 class File {
@@ -161,14 +161,14 @@ class File {
 	}
 	
 	function notify($callback) {
-		global $checknum;		
+		global $checknum;
 		$js = '<script>window.parent.sendMsg('.$checknum.',"'.$callback.'","");</script>';
 		echo $js;
 	}
 	
 	function checkfile() {
 		if($this->multiple != 0){
-			foreach($_FILES[$this->filename]['tmp_name'] as $index=>$file){				
+			foreach($_FILES[$this->filename]['tmp_name'] as $index=>$file){
 				if($_FILES[$this->filename]['error'][$index] != 0){
 					continue;
 				}
@@ -180,17 +180,17 @@ class File {
 		}else{
 			if (is_uploaded_file($_FILES[$this->filename]['tmp_name'])) {
 				return true;
-			} 	
-		}		
+			}
+		}
 		return false;
 	}
 	
-	function saveFile($where) {
-		if(!vfs('checkPermissions',array($where))) {
+	function saveFile($where,$suffix = '') {
+		if(!vfs($suffix . 'checkPermissions',array($where))) {
 			return false;
 		}
 		if($this->multiple != 0){
-			foreach($_FILES[$this->filename]['tmp_name'] as $index=>$file){				
+			foreach($_FILES[$this->filename]['tmp_name'] as $index=>$file){
 				if($_FILES[$this->filename]['error'][$index] != 0){
 					continue;
 				}
@@ -199,15 +199,11 @@ class File {
 				if(!vfs('checkQuota',array($file))) {
 					exit;
 				}
-				
 				$countFiles = 0;
-				while (vfs('fileExists',array($finalPath))) {
-					$finalPathInfo = utf8_pathinfo($finalPath);
-					$extension = $finalPathInfo['extension'];
-					if (!$countFiles) {
-						$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
-					} else {
-						$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+				$extension = utf8_substr(strrchr($finalPath,'.'),1);
+				while (vfs($suffix . 'fileExists',array($finalPath))) {
+					$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+					if ($countFiles) {
 						$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPathTemp) - utf8_strlen(strrchr($finalPathTemp,'_')));
 					}
 					$countFiles++;
@@ -215,23 +211,21 @@ class File {
 				}
 				
 				move_uploaded_file($file,$finalPath);
-				vfs('realToVirtual',array($finalPath));		
-			}			
+				if (!$suffix) {
+					vfs('realToVirtual',array($finalPath));
+				}
+			}
 		}else{
 			$filename = utf8_basename($_FILES[$this->filename]['name']);
 			$finalPath = $where.'/'.$filename;
 			if(!vfs('checkQuota',array($_FILES[$this->filename]['tmp_name']))) {
 				exit;
 			}
-			
 			$countFiles = 0;
-			while (vfs('fileExists',array($finalPath))) {
-				$finalPathInfo = utf8_pathinfo($finalPath);
-				$extension = $finalPathInfo['extension'];
-				if (!$countFiles) {
-					$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
-				} else {
-					$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+			$extension = utf8_substr(strrchr($finalPath,'.'),1);
+			while (vfs($suffix . 'fileExists',array($finalPath))) {
+				$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+				if ($countFiles) {
 					$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPathTemp) - utf8_strlen(strrchr($finalPathTemp,'_')));
 				}
 				$countFiles++;
@@ -239,7 +233,9 @@ class File {
 			}
 			
 			move_uploaded_file($file,$finalPath);
-			vfs('realToVirtual',array($finalPath));
+			if (!$suffix) {
+				vfs('realToVirtual',array($finalPath));
+			}
 		}
 		return true;
 	}

@@ -1,58 +1,55 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function emptyTrash_on_Message($params="") {
-	reqLib('eyeWidgets','updateContent',$params);
+function emptyTrash_on_Close($params = '') {
+	proc('end');
 }
 
-function emptyTrash_on_yes($params=null) {
-	$myUserDir = service('um','getCurrentUserDir');
-	$file = $myUserDir.'/'.TRASH_USER_DIR.'/';
-	$content = service('vfs','real_getDirContent',array($file));
-	if($content) {
-		if(is_array($content)) {
-			foreach($content as $current) {
-				$name = utf8_basename($current);
-				if($name{0} != '.') {
-					if(is_dir($current)) {
-						service('vfs','rmdir',array($current));
-					}
-					service('vfs','real_delete',array($current));
-				}
+function emptyTrash_on_Do($params = '') {
+	$path = um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/';
+	if ($GLOBALS['emptyTrash_Hidden_File']->text) {
+		$path .= utf8_substr($GLOBALS['emptyTrash_Hidden_File']->text,0,- utf8_strlen('.' . EYEOS_TRASH_EXT));
+		$files = array($path,$path . '.' . EYEOS_FILE_EXT,$path . '.' . EYEOS_INFO_EXT,$path . '.' . EYEOS_TRASH_EXT);
+	} else {
+		$files = vfs('real_getDirContent',array($path));
+	}
+	foreach ($files as $file) {
+		if (utf8_substr(utf8_basename($file),0,1) != '.') {
+			if (vfs('isdir',array($file))) {
+				vfs('rmdir',array($file));
+			} else {
+				vfs('real_delete',array($file));
 			}
 		}
 	}
-	$callback = $GLOBALS['nfCallback']->text;
-	if($callback) {
-		service('eyex','rawjs',array('js'=>$callback));
+	if ($GLOBALS['emptyTrash_Hidden_Callback']->text) {
+		eyex('rawjs',array('js' => $GLOBALS['emptyTrash_Hidden_Callback']->text));
 	}
+	eyeFiles('update',array('trash:///'));
 	proc('end');
 }
 
-function emptyTrash_on_no($params=null) {
-	proc('end');
+function emptyTrash_on_Message($params = '') {
+	eyeWidgets('updateContent',$params);
 }
-
-function emptyTrash_on_Close(){
-	proc('end');
-}
+?>

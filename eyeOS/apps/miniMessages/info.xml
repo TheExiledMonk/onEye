@@ -1,10 +1,10 @@
 <package>
 	<name>miniMessages</name>
 	<category>Utilities</category>
-	<version>1.7</version>
-	<description>miniMessages widget.</description>
+	<version>1.8</version>
+	<description>miniMessages widget</description>
 	<author>eyeOS Team</author>
-	<license>GPL</license>
+	<license>AGPL</license>
 	<type>Application</type>
 	<icon>index.php?theme=1&amp;extern=icons/48x48/miniMessages.png</icon>
 </package>

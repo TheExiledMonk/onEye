@@ -6,19 +6,20 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.7
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 //global var for all eyeOS when eyeCalendar instance is loaded.
 weekPlanner_instances = [];
 //Widget show Function
@@ -26,7 +27,7 @@ function weekPlanner_close(pid){
 	if(weekPlanner_instances[pid]){
 		//Deleting timeouts
 		clearTimeout(weekPlanner_instances[pid].base.timeOut);
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			weekPlanner_instances[pid].base.father = null;
 			weekPlanner_instances[pid] = null;
 		}else{
@@ -219,7 +220,7 @@ function weekPlanner_calendars(weekPlanner){
 		imageContainer.style.height = '100%';
 		imageContainer.style.right = '5px';
 		var image = document.createElement('img');
-		image.src = 'index.php?version='+EXTERN_CACHE_VERSION+'&extern=apps/eyeCalendar/gfx/widget/selected.png';
+		image.src = 'index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/apps/eyeCalendar/widget/selected.png';
 		image.setAttribute('id',this.father.pid + '_selectedImg_img');
 		imageContainer.appendChild(image);
 		fixPNG(this.father.pid + '_selectedImg_img');
@@ -272,9 +273,13 @@ function weekPlanner_calendars(weekPlanner){
 			contentName.style.styleFloat = 'left';
 			contentName.style.marginLeft = '5px';
 			contentName.style.width = this.father.calendarsFatherWidth-48+'px';
-			contentName.style.height = '100%';
+			if (IEversion && IEversion < 7) {
+				contentName.style.height = '16px';
+			} else {
+				contentName.style.height = '100%';
+			}
 			contentName.style.color = 'white';
-			if (IEversion > 0 && IEversion < 7) {
+			if (IEversion && IEversion < 7) {
 				contentName.style.marginTop = '4px';
 			}
 			contentName.evenType = 'selectCalendar';
@@ -395,7 +400,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			dayName.style.color = '#145689';
 			dayName.style.lineHeight = '200%';
 			//This is painted because this row need have the same width as dayTodo
-			if(h!=this.father.dayFrom && IEversion != 6){
+			if(h!=this.father.dayFrom && (!IEversion || IEversion > 6)){
 				dayName.style.borderLeft = '1px transparent solid';
 			}else if(h!=this.father.dayFrom){
 				dayName.style.borderLeft = '1px transparent';
@@ -503,9 +508,9 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 					parts[x].pid =this.father.pid;
 					l++;
 				}
-				this.totalParts = l;
 				paintHour++;
 			}
+			this.totalParts = l;
 			this.daysContainer.appendChild(weekDay);
 		}
 	}
@@ -558,6 +563,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 				weekDay.appendChild(part);
 				paintHour++;
 			}
+			this.totalParts = l;
 			this.daysContainer.appendChild(weekDay);
 		}	
 	}
@@ -574,7 +580,11 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			hour.style.cssFloat = 'left';
 			hour.style.styleFloat = 'left';
 			hour.style.width = '100%';
-			hour.style.height = this.father.rowHeight+'px';
+			if (IEversion && IEversion < 7) {
+				hour.style.height = String(this.father.rowHeight + 1) + 'px';
+			} else {
+				hour.style.height = this.father.rowHeight + 'px';
+			}
 			hour.style.borderTop = '1px #E6E6E6 solid';
 			hour.style.textAlign = 'center';
 			hour.style.color = '#585858';
@@ -667,9 +677,9 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			this.hoursBase.setAttribute('id',this.father.pid+'_hoursBase');
 			this.hoursBase.style.position = 'absolute';
 			this.hoursBase.style.left = '0px';
-			if(IEversion == 6){
-				this.hoursBase.style.top = '45px';
-			}else{
+			if (IEversion && IEversion < 7) {
+				this.hoursBase.style.top = '43px';
+			} else {
 				this.hoursBase.style.top = '42px';
 			}
 			this.hoursBase.style.width = this.father.hourRowWidth+'px';
@@ -731,7 +741,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 				this.draw_todos();
 			this.daysBase.appendChild(this.daysContainer);
 			this.drawCurrentHour();
-				if(IEversion == 6 || IEversion == 7){
+				if(IEversion && IEversion < 8){
 					this.draw_bodyDaysIE();
 				}else{
 					this.draw_bodyDays();
@@ -782,7 +792,7 @@ function weekPlanner_notes(weekPlanner){
 		this.draw_event(note,this.father.defaultEvenText);
 		
 		//Resize hack
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			note.style.zIndex = 0;
 			note.noteBody.style.zIndex = 0;
 		}else{
@@ -805,7 +815,7 @@ function weekPlanner_notes(weekPlanner){
 	this.draw_contextualMenu = function draw_contextualMenu(note){
 		var params = Array();
 		params['sFather'] = 1;
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			params['mFather'] = this.father.base.daysContainer.id;
 			params['rFather'] = this.father.base.daysContainer.id;
 		}
@@ -821,7 +831,7 @@ function weekPlanner_notes(weekPlanner){
 	this.jsEvent_resizeNote = function jsEvent_resizeNote(e){
 		this.father.tmpNote = e.target.parentNode;
 		this.father.evenType = 'resizeNote';
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			this.father.tmpNote.style.zIndex = 0;
 			this.father.tmpNote.noteBody.style.zIndex = 0;
 		}else{
@@ -839,7 +849,7 @@ function weekPlanner_notes(weekPlanner){
 			this.father.evenType = 'moveNoteBody';
 		}
 		
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			this.father.tmpNote.style.zIndex = 0;
 			this.father.tmpNote.noteBody.style.zIndex = 0;
 		}else{
@@ -915,7 +925,7 @@ function weekPlanner_notes(weekPlanner){
 		if(this.father.tmpNote.noteBody.firstChild){
 			var first = this.father.tmpNote.noteBody.firstChild;
 			this.father.tmpNote.noteBody.removeChild(first);
-			if(IEversion == 6 || IEversion == 7){
+			if(IEversion && IEversion < 8){
 				first = null;
 			}else{
 				delete first;
@@ -1159,7 +1169,7 @@ function weekPlanner_notes(weekPlanner){
 
 		var minEven = minEvenFloat*60;	
 
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			hourEvenFloat = null;
 			minEvenFloat = null;
 			minFromFloat = null;
@@ -1227,7 +1237,7 @@ function weekPlanner_notes(weekPlanner){
 		note.style.width = '100%';
 		note.pid = this.father.pid;
 		note.style.height = height+'px';
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			note.style.zIndex = '2';
 		}
 		note.pid = this.father.pid;
@@ -1258,7 +1268,7 @@ function weekPlanner_notes(weekPlanner){
 			noteRemove.setAttribute('id','noteRemove');
 			noteRemove.style.position = 'absolute';
 			noteRemove.style.backgroundRepeat = 'no-repeat';
-			noteRemove.style.backgroundImage ='url(index.php?version=' + EXTERN_CACHE_VERSION + '&extern=apps/eyeCalendar/gfx/deleteNote.png)';
+			noteRemove.style.backgroundImage ='url(index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeCalendar/deleteNote.png)';
 			noteRemove.style.top = '0px';
 			noteRemove.style.right = '0px';
 			noteRemove.style.height = this.father.pixelPart+'px';
@@ -1447,11 +1457,11 @@ function weekPlanner_events(weekPlanner){
 		}
 		this.father.base.daysContainer.style.cursor = 'pointer';
 		this.father.tmpNote.noteBody.style.zIndex = 3;
-		if(IEversion == 6 || IEversion == 7){
+		if(IEversion && IEversion < 8){
 			this.father.tmpNote.style.zIndex = 2;
 		}		
 		if(this.father.tmpNote.lastPart){
-			if(IEversion == 6 || IEversion == 7){
+			if(IEversion && IEversion < 8){
 				this.father.tmpNote.lastPart = null;
 			}else{
 				delete this.father.tmpNote.lastPart;

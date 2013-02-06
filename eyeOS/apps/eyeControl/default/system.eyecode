@@ -1,25 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 global $checknum;
 global $myPid;
 
@@ -189,6 +190,26 @@ if (!$quota_checked) {
 	$mySelect_quota->disable();
 }
 $ContentY += 40;
+// Create thumbnails
+$xml = getConfig('eyeFiles','conf.xml');
+$myLabel = new Label(array(
+	'name' => 'eyeControl_system_system_label_thumbnails',
+	'father' => $systemTab,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'Create thumbnails'
+));
+$myLabel->show();
+$myCheckbox_thumbnails = new Checkbox(array(
+	'name' => 'eyeControl_system_system_checkbox_thumbnails',
+	'father' => $systemTab,
+	'x' => 160,
+	'y' => $ContentY,
+	'text' => ' ',
+	'checked' => $xml['eyeFiles'][0]['CreateThumbnails'][0] != '0'
+));
+$myCheckbox_thumbnails->show();
+$ContentY += 40;
 // Save changes
 $myButton = new Button(array(
 	'name' => 'eyeControl_system_system_button_save',
@@ -204,6 +225,7 @@ $myButton->addFriend($myCheckbox_ipprotect);
 $myButton->addFriend($myCheckbox_quota);
 $myButton->addFriend($myTextbox_quota);
 $myButton->addFriend($mySelect_quota);
+$myButton->addFriend($myCheckbox_thumbnails);
 $myButton->show();
 
 // permissionsTab
@@ -330,22 +352,39 @@ $myLabel = new Label(array(
 	'text' => 'Patch CSS files'
 ));
 $myLabel->show();
-$myRadio_cache = new Radio(array(
-	'name' => 'eyeControl_system_cache_radio_cache',
+$myRadio_cache_manual = new Radio(array(
+	'checked' => !intval(EXTERN_CACHE_AUTO),
 	'father' => $cacheTab,
+	'group' => 'Cache',
+	'name' => 'eyeControl_system_cache_radio_manual',
+	'text' => 'Manual: No automatic patch',
 	'x' => 160,
-	'y' => $ContentY,
-	'checked' => intval(EXTERN_CACHE_AUTO) + 1,
-	'vertAlign' => 1,
-	'content' => array(
-		array('1','Manual: No automatic patch'),
-		array('2','Automatic: Patch on every request'),
-		array('3','Semi-automatic: Patch on every cache version change')
-		
-	)
+	'y' => $ContentY
 ));
-$myRadio_cache->show();
-$ContentY += 80;
+$myRadio_cache_manual->show();
+$ContentY += 30;
+$myRadio_cache_automatic = new Radio(array(
+	'checked' => intval(EXTERN_CACHE_AUTO) + 1 == 2,
+	'father' => $cacheTab,
+	'group' => 'Cache',
+	'name' => 'eyeControl_system_cache_radio_automatic',
+	'text' => 'Automatic: Patch on every request',
+	'x' => 160,
+	'y' => $ContentY
+));
+$myRadio_cache_automatic->show();
+$ContentY += 30;
+$myRadio_cache_semiautomatic = new Radio(array(
+	'checked' => intval(EXTERN_CACHE_AUTO) + 1 == 3,
+	'father' => $cacheTab,
+	'group' => 'Cache',
+	'name' => 'eyeControl_system_cache_radio_semiautomatic',
+	'text' => 'Semi-automatic: Patch on every cache version change',
+	'x' => 160,
+	'y' => $ContentY
+));
+$myRadio_cache_semiautomatic->show();
+$ContentY += 30;
 $myContainer = new Simplebox(array(
 	'name' => 'eyeControl_system_cache_box_warning',
 	'father' => $cacheTab,
@@ -378,7 +417,9 @@ $myButton = new Button(array(
 ));
 $myButton->addFriend($myCheckbox_cache);
 $myButton->addFriend($myTextbox_version);
-$myButton->addFriend($myRadio_cache);
+$myButton->addFriend($myRadio_cache_manual);
+$myButton->addFriend($myRadio_cache_automatic);
+$myButton->addFriend($myRadio_cache_semiautomatic);
 $myButton->show();
 
 // officeTab
@@ -495,7 +536,7 @@ if ($currentUser == REAL_ROOTUSER) {
 		'father' => $uninstallTab,
 		'x' => 160,
 		'y' => $ContentY + 2,
-		'password' => 1
+		'password' => 2
 	));
 	$myTextbox_password->show();
 	$myTextbox_password->addEnterEventMsg('system_uninstall');

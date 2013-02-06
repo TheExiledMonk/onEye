@@ -1,25 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	Icon widget abstraction
 */
@@ -91,7 +92,7 @@ class Icon {
 		isset($params['overBorderBg']) ? $this->overBorderBg = $params['overBorderBg'] : $this->overBorderBg = '#c7ddf8';
 		isset($params['overBorderColor']) ? $this->overBorderColor = $params['overBorderColor'] : $this->overBorderColor = '1px solid #9ec8fb';
 		isset($params['moveout']) ? $this->moveout = $params['moveout'] : $this->moveout = 0;
-		if (strstr($this->image,'extern=') && IE == 6) {
+		if ($this->cent || strstr($this->image,'extern=') && IE && IE < 7) {
 			$info = @getimagesize(eyex('getThemeImage',array($this->image,3)));
 			$this->width = $info[0];
 			$this->height = $info[1];

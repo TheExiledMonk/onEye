@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeRename_run($params = '') {
@@ -28,37 +28,38 @@ function eyeRename_run($params = '') {
 	} else {
 		proc('end');
 	}
-	if (service('vfs','fileExists',array($path))) {
-		$name = utf8_basename($path);
-	} elseif (service('vfs','real_fileExists',array($path)) && utf8_strtolower(strrchr($path,'.')) == utf8_strtolower('.' . EYEOS_LINK_EXT)) {
-		$name = utf8_basename($path,'.' . EYEOS_LINK_EXT);
+	$file = utf8_basename($params[0]);
+	$path = eyeFiles('cleanPath',array(utf8_substr(utf8_trim($params[0],'/\\'),0,- utf8_strlen($file))));
+	if ($path[1] != 'real' && utf8_strtolower(strrchr($file,'.')) == '.' . utf8_strtolower(EYEOS_LINK_EXT) && vfs('real_fileExists',array($path[0] . '/' . $file))) {
+		$file = utf8_basename($params[0],'.' . EYEOS_LINK_EXT);
+	}
+	if ($params[0]) {
+		eyex('messageBox',array(
+			'btn1_capt' => 'Rename',
+			'btn1_name' => 'Do',
+			'btn2_capt' => 'Cancel',
+			'btn2_name' => 'Close',
+			'content' => 'Please type the new name here:',
+			'hidden_name' => 'eyeRename_Hidden_Path',
+			'hidden_text' => $params[0],
+			'hidden2_name' => 'eyeRename_Hidden_Callback',
+			'hidden2_text' => $params[1],
+			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/rename.png',
+			'savePosition' => 1,
+			'textbox_event' => 'Do',
+			'textbox_name' => 'eyeRename_Textbox',
+			'textbox_text' => $file,
+			'title' => i18n('translate',array('Rename %s',array($file))),
+			'type' => 3,
+			'win_name' => 'eyeRename_Window',
+			'win_style' => TITLE + LISTED + MIN + CLOSE
+		));
 	} else {
-		service('eyex','messageBox',array('content'=>'Error renaming file!'));
 		proc('end');
 	}
-	eyex('messageBox',array(
-		'content' => 'Please type a new name here:',
-		'type' => 3,
-		'title' => 'Rename',
-		'win_name' => 'eyeRename',
-		'win_style' => TITLE + LISTED + MIN + CLOSE,
-		'btn1_capt' => 'Rename',
-		'btn1_name' => 'rename',
-		'btn2_capt' => 'Cancel',
-		'btn2_name' => 'cancel',
-		'textbox_text' => $name,
-		'textbox_name' => 'rnTextbox',
-		'textbox_event' => 'rename',
-		'hidden_text' => $path,
-		'hidden_name' => 'rnPath',
-		'hidden2_text' => $callback,
-		'hidden2_name' => 'rnCallback',
-		'img' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFiles/gfx/rename_big.png',
-		'savePosition' => 1
-	));
 }
 
 function eyeRename_end($params = '') {
-	reqLib('eyeWidgets','unserialize');
+	eyeWidgets('unserialize');
 }
 ?>

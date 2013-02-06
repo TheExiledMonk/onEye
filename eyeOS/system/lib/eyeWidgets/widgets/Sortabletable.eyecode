@@ -1,26 +1,26 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 /*
 	Sortabletable widget abstraction
 */
@@ -118,7 +118,11 @@ class Sortabletable {
 		service('eyex','createWidget',$mySortable);
 		$this->showed=1;
 		if($noserialize == 0) {
-			$mySelector = new SortabletableSelected(array('name'=>$this->name));
+			$mySelector = new SortabletableSelected(array('name'=>$this->name,
+															'width'=>$this->width,
+															'height'=>$this->height,
+															'x'=>$this->x,
+															'y'=>$this->y));
 			reqLib('eyeWidgets','serialize',array($mySelector));
 		}
 	}
@@ -237,7 +241,7 @@ class Sortabletable {
 	function delAllRows() {
 		global $myPid;
 		$name = $myPid.'_'.$this->name.'_Body';
-		if(IE == 0) {
+		if(!IE) {
 			eyeX('rawjs', array('js' => 'document.getElementById("'.$name.'").innerHTML = "";'));
 		} else {
 			eyeX('rawjs', array('js' => 't = document.getElementById("'.$name.'");while(t.firstChild){t.removeChild(t.firstChild);}'));
@@ -248,9 +252,17 @@ class Sortabletable {
 class SortabletableSelected {
 	var $selected;
 	var $name;
-	
+	var $width;
+	var $height;
+	var $x;
+	var $y;
 	function SortabletableSelected($params) {
 		$this->name = $params['name'];
+		$this->width = $params['width'];
+		$this->height = $params['height'];
+		$this->x = $params['x'];
+		$this->y = $params['y'];
+		
 		$this->selected="";
 	}
 	
@@ -340,7 +352,7 @@ class SortabletableSelected {
 	function delAllRows() {
 		global $myPid;
 		$name = $myPid.'_'.$this->name.'_Body';
-		if(IE == 0) {
+		if(!IE) {
 			eyeX('rawjs', array('js' => 'document.getElementById("'.$name.'").innerHTML = "";'));
 		} else {
 			eyeX('rawjs', array('js' => 't = document.getElementById("'.$name.'");while(t.firstChild){t.removeChild(t.firstChild);}'));

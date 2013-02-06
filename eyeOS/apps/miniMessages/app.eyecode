@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function miniMessages_run($params=null) {
@@ -31,16 +31,21 @@ function miniMessages_run($params=null) {
 		return;
 	}
 	
-	eyeX('createDiv', array('name' => 'miniMessagesOuter', 'father' => 'eyeApps', 'class' => 'miniMessagesOuter'));
-	eyeX('createDiv', array('name' => 'miniMessagesInner', 'father' => 'miniMessagesOuter', 'class' => 'miniMessagesInner'));
-	eyeX('loadCSS', array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniMessages/css/miniMessages.css', 'id' => 'miniMessages'));
-	
-	//We want to list the messages of the eyeMessages namespace
-	$newMsgs = reqLib('eyeSwap', 'list', array('eyeMessages'));
+	$myWindow = new Window(array(
+		'name' => 'miniMessagesWND',
+		'father' => 'eyeApps',
+		'width' => 382,
+		'height' => 205,
+		'type' => WIN_IMAGE_DRAGGABLE_NOTLISTED,
+		'savePosition' => 1,
+		'background' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniMessages/minimessages.png'
+	));
+	$myWindow->show();
+	eyeX('updateCSS', array('name' => $myPid.'_miniMessagesWND_Content', 'property' => 'overflow', 'value' => 'hidden'));
 	
 	$myImage = new Imagebox(array(
 		'name' => 'imgLaunch',
-		'father' => 'miniMessagesOuter',
+		'father' => 'miniMessagesWND_Content',
 		'x' => 4,
 		'y' => 5,
 		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/open.png',
@@ -52,18 +57,18 @@ function miniMessages_run($params=null) {
 	
 	$myLabel = new Label(array(
 		'name' => 'Launch',
-		'father' => 'miniMessagesOuter',
+		'father' => 'miniMessagesWND_Content',
 		'x' => 20,
 		'y' => 2,
 		'text' => 'Internal Messaging',
 		'disablemsg' => 0
 	));
 	$myLabel->show();
-	$myLabel->setCss(array('cursor' => 'Pointer', 'color' => '#155D9A', 'font-weight' => 'bold'));
+	$myLabel->setCss(array('cursor' => 'Pointer', 'color' => '#155D9A', 'fontWeight' => 'bold'));
 	
 	$myImage1 = new Imagebox(array(
 		'name' => 'imgClose',
-		'father' => 'miniMessagesOuter',
+		'father' => 'miniMessagesWND_Content',
 		'horiz' => 1,
 		'x' => 5,
 		'y' => 5,
@@ -76,7 +81,7 @@ function miniMessages_run($params=null) {
 	
 	$myImage2 = new Imagebox(array(
 		'name' => 'imgRefresh',
-		'father' => 'miniMessagesOuter',
+		'father' => 'miniMessagesWND_Content',
 		'horiz' => 1,
 		'x' => 20,
 		'y' => 4,
@@ -87,15 +92,31 @@ function miniMessages_run($params=null) {
 	$myImage2->show();
 	$myImage2->setCss(array('cursor' => 'Pointer'));
 	
+	$containerMessages = new Container(array(
+		'name' => 'containerMessages',
+		'father' => 'miniMessagesWND_Content',
+		'x' => 1,
+		'y' => 21,
+		'width' => 380,
+		'height' => 153
+	));
+	$containerMessages->show();
+	
+	$newMsgs = reqLib('eyeMessages', 'getUnread');
+	
 	if(is_array($newMsgs)) {
 		$newMsgs = date_sort($newMsgs);
 		
 		$count = 0;
 		$Yoffset = 5;
-		foreach($newMsgs as $msg) {
+		//miniMessages only lists the newest 6 messages
+		foreach($newMsgs as $date => $msg) {
+			if($count > 5) {
+				continue;
+			}
 			$msgLabel = new Label(array(
 				'name' => 'msgFrom'.$count,
-				'father' => 'miniMessagesInner',
+				'father' => 'containerMessages',
 				'x' => 12,
 				'y' => $Yoffset,
 				'text' => $msg['author']
@@ -108,23 +129,23 @@ function miniMessages_run($params=null) {
 			}
 			$msgLabel = new Label(array(
 				'name' => 'msgSubject'.$count,
-				'father' => 'miniMessagesInner',
+				'father' => 'containerMessages',
 				'x' => 80,
 				'y' => $Yoffset,
 				'text' => $strSubject
 			));
 			$msgLabel->show(1);
 			
-			if(date('d') == date('d', $msg['date'])) {
-				$date = date('G:i', $msg['date']);
+			if(date('d') == date('d', $date)) {
+				$date = date('G:i', $date);
 			} else {
-				$date = date('m/d/Y',$msg['date']);
+				$date = date('m/d/Y',$date);
 			}
 			$msgLabel = new Label(array(
 				'name' => 'msgDate'.$count,
-				'father' => 'miniMessagesInner',
+				'father' => 'containerMessages',
 				'horiz' => 1,
-				'x' => 20,
+				'x' => 10,
 				'y' => $Yoffset,
 				'text' => $date
 			));
@@ -134,7 +155,6 @@ function miniMessages_run($params=null) {
 			$count++;
 		}
 	}
-	eyeX('makeDrag', array('name' => $myPid.'_miniMessagesOuter', 'father' => 'eyeApps', 'noIndex' => 1));
 }
 
 function date_sort($list) {
@@ -150,7 +170,7 @@ function date_sort($list) {
 }
 
 function miniMessages_end() {
-	eyeX('removeWidget', array('name' => 'miniMessagesOuter'));
+	eyeWidgets('unserialize');
 }
 
 ?>

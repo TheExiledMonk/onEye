@@ -1,88 +1,26 @@
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 init_eyeDesk_extras($myPid,$checknum);
-eyeCalendar_active = 0;
-function init_eyeDesk_extras(myPid,checknum) {
-	var eyeApps = document.getElementById('eyeApps');
-	var eyeClockId = document.createElement('div');
-	var eyeClockText = document.createElement('div');
-	
-	eyeClockId.setAttribute('id',myPid+'_eyeClockDiv');
-	xAddEventListener(eyeClockId,'click',showMiniCalendar);
-	eyeClockText.setAttribute('id',myPid+'_eyeClockText');
-	
-	eyeClockId.className = "eyeClock";
-	eyeClockText.className = "eyeClockText";
-	
-	eyeApps.appendChild(eyeClockId);
-	eyeClockId.appendChild(eyeClockText);
-
-	eyeClock(myPid);
-
-	var params = new Object();
-	params.width = '168';
-	params.height = '148';	
-		
-	var calendarContent = document.createElement('div');
-	calendarContent.setAttribute('id',myPid+'_calendar_Content');
-	calendarContent.className="eyeDesk_miniCalendar";
-		
-	eyeApps.appendChild(calendarContent);
-	//Preparing params arguments for calendar widget.
-	var params = new Object();
-	params.width = '168';
-	params.height = '148';	
-	//Calendar widget colors
-	params.rowsAndDate = '#519eda';
-	params.workDays = 'white';
-	params.preMonthDays = '#bbbbbb';
-	params.nextMonthDays = '#bbbbbb';
-	params.weekEnd = '#519eda';
-	params.todayBorder = '#132B4D';
-	params.monthNames = '$months';
-	params.weekDays = '$weekDays';	
-	params.backgroundNames = '#53A0E1';
-	params.todayBackground = '#90A6C2';
-	params.todayFontColor = '#000';
-	params.toWeekBackground = '#2A4774';
-	params.drawServerDate = '';
-	params.forceDate = '';
-	params.drawHighlight = 0;
-	params.drawOnClick = 0;
-	Calendar_show(params,'calendarWidget_'+myPid,myPid+'_calendar_Content',100,100,1,0,checknum,1);
-		
-	function showMiniCalendar(){
-		if (eyeCalendar_active == 0) {
-			document.getElementById(myPid+'_calendar_Content').style.display="block";
-			eyeCalendar_active = 1;
-		} else {
-			document.getElementById(myPid+'_calendar_Content').style.display="none";
-			eyeCalendar_active = 0;
-		}
-	}
-	function hideMiniCalendar() {
-		
-	}
-}
 
 function eyeClock(myPid) {
 	var myTime = new Date();
@@ -91,15 +29,66 @@ function eyeClock(myPid) {
 	var day = myTime.getDate();
 	var month = myTime.getMonth() + 1;
 	
-	if (minutes <= 9) minutes = "0" + minutes;
-	if (hours <= 9) hours = "0" + hours;
-	if (day <= 9) day = "0" + day;
-	if (month <= 9) month = "0" + month;
+	if (minutes <= 9) minutes = '0' + minutes;
+	if (hours <= 9) hours = '0' + hours;
+	if (day <= 9) day = '0' + day;
+	if (month <= 9) month = '0' + month;
 	
-	var display = day + "/" + month + " &nbsp; " + hours + ":" + minutes;
-	var eyeClockText = document.getElementById(myPid+"_eyeClockText");
-	eyeClockText.innerHTML = display;
-	setTimeout("eyeClock("+myPid+");", 5000);
+	xGetElementById(myPid + '_eyeClockText').innerHTML = day + '/' + month + ' &nbsp; ' + hours + ':' + minutes;
+	setTimeout('eyeClock(' + myPid + ');',5000);
 }
 
-
+function init_eyeDesk_extras(myPid,checknum) {
+	// Clock
+	var eyeClockId = document.createElement('div');
+	eyeClockId.setAttribute('id',myPid + '_eyeClockDiv');
+	eyeClockId.className = 'eyeClock';
+	
+	var eyeClockText = document.createElement('div');
+	eyeClockText.setAttribute('id',myPid + '_eyeClockText');
+	eyeClockText.className = 'eyeClockText';
+	
+	xAddEventListener(eyeClockId,'click',showMiniCalendar);
+	xGetElementById('eyeApps').appendChild(eyeClockId);
+	eyeClockId.appendChild(eyeClockText);
+	
+	eyeClock(myPid);
+	
+	// Calendar
+	var calendarContent = document.createElement('div');
+	calendarContent.setAttribute('id',myPid + '_calendar_Content');
+	calendarContent.className = 'eyeDesk_miniCalendar';
+	xGetElementById('eyeApps').appendChild(calendarContent);
+	
+	var params = new Array();
+	params.backgroundNames = '#53a0e1';
+	params.drawHighlight = 0;
+	params.drawOnClick = 0;
+	params.drawServerDate = '';
+	params.forceDate = '';
+	params.height = '148';
+	params.monthNames = '$months';
+	params.nextMonthDays = '#bbbbbb';
+	params.preMonthDays = '#bbbbbb';
+	params.rowsAndDate = '#519eda';
+	params.todayBackground = '#90a6c2';
+	params.todayBorder = '#132b4d';
+	params.todayFontColor = '#000000';
+	params.toWeekBackground = '#2a4774';
+	params.weekDays = '$weekDays';
+	params.weekEnd = '#519eda';
+	params.width = '168';
+	params.workDays = 'white';
+	
+	Calendar_show(params,'calendarWidget_' + myPid,myPid + '_calendar_Content',100,100,1,0,checknum,1);
+	
+	function hideMiniCalendar() {}
+	
+	function showMiniCalendar() {
+		if (xGetElementById(myPid + '_calendar_Content').style.display == 'block') {
+			xGetElementById(myPid + '_calendar_Content').style.display = 'none';
+		} else {
+			xGetElementById(myPid + '_calendar_Content').style.display = 'block';
+		}
+	}
+}

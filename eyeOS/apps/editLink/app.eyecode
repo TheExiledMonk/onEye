@@ -1,84 +1,124 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function editLink_run($params=null) {
+function editLink_run($params = '') {
 	global $myPid;
-	if(is_array($params) && $params[0]) {
-		$path = $params[0];
+	$file = utf8_basename($params[0]);
+	$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/' . $file));
+	if ($xml['eyeLink'][0]) {
+		$myWindow = new Window(array(
+			'cent' => 1,
+			'father' => 'eyeApps',
+			'height' => 170,
+			'name' => 'editLink_Window',
+			'savePosition' => 1,
+			'style' => TITLE + CLOSE + LISTED + MIN,
+			'title' => i18n('translate',array('Edit %s',array($file))),
+			'width' => 350
+		));
+		$myWindow->show();
+		
+		$myHidden = new Hidden(array(
+			'father' => 'eyeApps',
+			'name' => 'editLink_Hidden_File',
+			'text' => $file
+		));
+		$myHidden->show();
+		
+		$myHidden = new Hidden(array(
+			'father' => 'eyeApps',
+			'name' => 'editLink_Hidden_Callback',
+			'text' => $params[1]
+		));
+		$myHidden->show();
+		
+		$myImage = new Imagebox(array(
+			'father' => 'editLink_Window_Content',
+			'name' => 'editLink_Imagebox',
+			'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/' . $xml['eyeLink'][0]['icon'][0] . '.png',
+			'x' => 25,
+			'y' => 28
+		));
+		$myImage->show();
+		
+		$mySelect = new Select(array(
+			'father' => 'editLink_Window_Content',
+			'name' => 'editLink_Select',
+			'x' => 22,
+			'y' => 100
+		));
+		$mySelect->show();
+		$mySelect->addEvent('onchange','document.getElementById("' . $myPid . '_editLink_Imagebox").src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/" + this.value + ".png";');
+		$files = scandir(eyex('getThemeImage',array('icons/48x48/',2)));
+		foreach ($files as $file) {
+			if (utf8_strtolower(utf8_substr($file,-4)) == '.png') {
+				if ($file == $xml['eyeLink'][0]['icon'][0] . '.png') {
+					$mySelect->addOption(utf8_basename($file,'.png'),utf8_basename($file,'.png'),1);
+				} else {
+					$mySelect->addOption(utf8_basename($file,'.png'),utf8_basename($file,'.png'));
+				}
+			}
+		}
+		
+		$myLabel = new Label(array(
+			'name' => 'editLink_Label',
+			'father' => 'editLink_Window_Content',
+			'text' => 'Command to be executed:',
+			'x' => 105,
+			'y' => 25
+		));
+		$myLabel->show();
+		
+		$myTextbox = new Textbox(array(
+			'father' => 'editLink_Window_Content',
+			'name' => 'editLink_Textbox',
+			'text' => $xml['eyeLink'][0]['content'][0],
+			'width' => 200,
+			'x' => 105,
+			'y' => 55
+		));
+		$myTextbox->addFriend($mySelect);
+		$myTextbox->show();
+		$myTextbox->addEnterEventMsg('Do');
+		
+		$myButton = new Button(array(
+			'caption' => 'Update',
+			'father' => 'editLink_Window_Content',
+			'horiz' => 1,
+			'name' => 'editLink_Button',
+			'signal' => 'Do',
+			'x' => 40,
+			'y' => 100
+		));
+		$myButton->addFriend($myTextbox);
+		$myButton->addFriend($mySelect);
+		$myButton->show();
 	} else {
 		proc('end');
-		return;
 	}
-	$myWindow = new Window(array('name'=>'editLink','father'=>'eyeApps',
-		'style' => TITLE + CLOSE + LISTED + MIN,'cent'=>1,'width'=>350,'height'=>170,
-		'title'=>'Edit link','savePosition' => 1));
-	$myWindow->show();
-	
-	$data = eyeXML('getXMLfile',array($path));
-	
-	if(!is_array($data)) {
-		eyeX('messageBox',array('content'=>'Invalid link file.'));
-		proc('end');
-		return; //if a process is killed, we need to return...
-	}
-	$content = $data['eyeLink'][0]['content'][0];
-	$icon = $data['eyeLink'][0]['icon'][0];
-	
-	$myLabel = new Label(array('name'=>'edLabel','father'=>'editLink_Content',
-		'text'=>'App to be executed:','y'=>25,'x'=>105));
-	$myLabel->show();
-	$mySelect = new Select(array('name'=>'iconSelect','father'=>'editLink_Content',
-		'x'=>22,'y'=>100));
-	$mySelect->show();
-	$icon.='.png';
-	if ($handle = opendir(eyex('getThemeImage',array('icons/48x48/',2)))) {
-	    while (false !== ($file = readdir($handle))) {
-	        if ($file != "." && $file != ".." && $file{0} != "." && utf8_strtolower(utf8_ltrim(strrchr($file,'.'),'.')) == 'png' && $file != $icon) {
-	        	$mySelect->addOption(utf8_basename($file,'.png'),$file);
-	        }
-	    }
-	    closedir($handle);
-	}
-	$mySelect->addOption(utf8_basename($icon,'.png'),$icon,1);
-	$mySelect->addEvent('onchange','document.getElementById("'.$myPid.'_image_link").src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/"+this.value'.';');
-	$myTextBox = new Textbox(array('name'=>'edTextbox','father'=>'editLink_Content',
-		'x'=>105,'y'=>55,'width'=>200,'text'=>$content));
-	$myTextBox->show();
-	$myImage = new Imagebox(array('name'=>'image_link','father'=>'editLink_Content',
-		'url'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/'.$icon,
-		'x'=>25,'y'=>28));
-	$myImage->show();
-	$myButton = new Button(array('name'=>'edButton','father'=>'editLink_Content',
-		'caption'=>'Update','x'=>40,'y'=>100,'horiz'=>1,'signal'=>'updateLink'));
-	$myButton->addFriend($myTextBox);
-	$myButton->addFriend($mySelect);
-	$myButton->show();
-	$myHidden = new Hidden(array('name'=>'xPath','father'=>'eyeApps','text'=>$path));
-	reqLib('eyeWidgets','serialize',array($myHidden));
 }
 
-function editLink_end($params=null) {
+function editLink_end($params = '') {
 	eyeWidgets('unserialize');
 }
-
 ?>

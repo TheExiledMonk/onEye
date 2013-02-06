@@ -7,7 +7,6 @@
  * **SWFObject is the SWF embed script formerly known as FlashObject. The name was changed for
  *   legal reasons.
  */
-sendMsg($checknum,'playerLoaded','');
 if(typeof deconcept=="undefined"){var deconcept=new Object();}
 if(typeof deconcept.util=="undefined"){deconcept.util=new Object();}
 if(typeof deconcept.SWFObjectUtil=="undefined"){deconcept.SWFObjectUtil=new Object();}

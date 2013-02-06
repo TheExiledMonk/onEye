@@ -1,31 +1,30 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
-
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.1.0
- * @updated 24-May-2008
+ * @version 3.2.0
+ * @updated 07-Dec-2008
  */
 
 /*********************************************************************************************/
@@ -77,7 +76,7 @@ function eyeFTP_getConf() {
 	$conf['host'] = $GLOBALS['eyeFTP_host_TXTBOX']->text;
 	$conf['port'] = $GLOBALS['eyeFTP_port_TXTBOX']->text;
 	$conf['username'] = $GLOBALS['eyeFTP_username_TXTBOX']->text;
-	$conf['password'] = $GLOBALS['eyeFTP_password_TXTBOX']->text;
+	$conf['password'] = base64_decode($GLOBALS['eyeFTP_password_TXTBOX']->text);
 	$conf['passiveMode'] = $GLOBALS['eyeFTP_passiveMode_CHKBOX']->checked;
 	
 	$conf['currentLocalDir'] = $GLOBALS['eyeFTP_currentLocalDir_HID']->text;
@@ -136,22 +135,22 @@ function eyeFTP_getFormatedDirPath($dir) {
  * 
  * @param string $text The text to append to the console
  * @param array $tokens Tokens for i18n
- * @param string $type Message type (normal, success, warning, ... ; See defined constants in events.eyecode)
+ * @param string $type Message type (normal, success, warning, ... See defined constants in events.eyecode)
  * @param boolean $debug Debug mode (do a print_r() on the $text argument when displaying it)
  */
 function eyeFTP_logConsole($text, $tokens=null, $type=EYEFTP_LOGSTYLE_NORMAL, $debug=false) {
 	$type = ($type == null)? EYEFTP_LOGSTYLE_NORMAL : $type;
 	if ( $debug === true) {
 		$text = print_r($text,true);
-		$debugJs = 'true';
+		$debug = 'true';
 	}
 	else {
-		$debugJs = 'false';
+		$debug = 'false';
 	}
 	
 	global $myPid;
 	$text_b64 = base64_encode(i18n('translate',array($text,$tokens)));
-	eyeX('rawjs',array('js' => 'eyeFTP_logConsole("'.$myPid.'","'.$text_b64.'",100,"'.$type.'",'.$debugJs.')'));
+	eyeX('rawjs',array('js' => 'eyeFTP_logConsole("'.$myPid.'","'.$text_b64.'",100,"'.$type.'",'.$debug.')'));
 }
 
 function eyeFTP_clearLogConsole() {
@@ -173,6 +172,7 @@ function eyeFTP_setConnectionActive($active=true) {
 		$GLOBALS['eyeFTP_passiveMode_CHKBOX']->disable();
 		
 		$GLOBALS['eyeFTP_isFTPConnectionActive_HID']->setText('1');
+		$GLOBALS['eyeFTP_WND']->setTitle($GLOBALS['eyeFTP_username_TXTBOX']->text.'@'.$GLOBALS['eyeFTP_host_TXTBOX']->text.' - '.i18n('translate',array('FTP Client')));
 	}
 	else {
 		$GLOBALS['eyeFTP_host_TXTBOX']->enable();
@@ -182,6 +182,7 @@ function eyeFTP_setConnectionActive($active=true) {
 		$GLOBALS['eyeFTP_passiveMode_CHKBOX']->enable();
 		
 		$GLOBALS['eyeFTP_isFTPConnectionActive_HID']->setText('0');
+		$GLOBALS['eyeFTP_WND']->setTitle(i18n('translate',array('Disconnected - FTP Client')));
 		eyeFTP_emptyRemoteFilesTable();
 	}
 }

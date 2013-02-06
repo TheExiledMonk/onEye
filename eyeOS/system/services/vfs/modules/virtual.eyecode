@@ -1,25 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
-
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 /*
@@ -358,7 +357,6 @@ function service_vfs_copy($params) {
 * @exception INCORRECT_PARAMS One or both arguments have not been specified.
 * @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to copy the directory.
 * @exception VFS_FILE_NOT_EXISTS The origin directory does not exist.
-* @exception VFS_FILE_ALREADY_EXISTS The destination directory already exists.
 * @date 2008/03/11
 */
 function service_vfs_copyDir($params) {
@@ -444,7 +442,7 @@ function service_vfs_move($params) {
 	$subdest = $dest;
 	$dest .=  '_'.utf8_substr($orig,utf8_strlen($orig)-utf8_strlen(strrchr($orig,'_'))+1);
 	
-	if (rename($orig.'.'.EYEOS_FILE_EXT,$dest.'.'.EYEOS_FILE_EXT)){
+	if (@rename($orig.'.'.EYEOS_FILE_EXT,$dest.'.'.EYEOS_FILE_EXT)){
 		$fp = fopen($orig.'.'.EYEOS_INFO_EXT,'r');
 		$content = fread($fp,filesize($orig.'.'.EYEOS_INFO_EXT));
 		fclose($fp);
@@ -454,7 +452,7 @@ function service_vfs_move($params) {
 		$fp = fopen($dest.'.'.EYEOS_INFO_EXT,'w');
 		fwrite($fp,$content);
 		fclose($fp);
-		if(unlink($orig.'.'.EYEOS_INFO_EXT)) {
+		if(@unlink($orig.'.'.EYEOS_INFO_EXT)) {
 			return true;
 		} else {
 			reqLib('errorCodes','setErrorCode',array(PHP_ERROR_ON_UNLINK));
@@ -511,9 +509,9 @@ function service_vfs_rename($params) {
 		return false;
 	}
 	if(is_dir($orig)) {
-		rename($orig,$dest);
+		return @rename($orig,$dest);
 	}else {
-		service('vfs','move',array($orig,$dest));
+		return vfs('move',array($orig,$dest));
 	} 
 	return true;
 }
@@ -658,6 +656,7 @@ function service_vfs_readInfo($params)
 * @exception INCORRECT_PARAMS No directory is specified.
 * @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to create the directory.
 * @exception PHP_ERROR_ON_MKDIR There is a PHP error creating the directory.
+* @exception VFS_FILE_ALREADY_EXISTS The path already exists as file or directory
 * @date 2008/03/11
 */
 function service_vfs_mkdir($params) {
@@ -811,7 +810,7 @@ function service_vfs_checkPermissions($params) {
 			} 
 			if (0 === utf8_strpos($file_path,$groupDir)) {
 				$xml = um('retrieveUser',array($currentUser));
-				if (in_array($key,$xml['eyeUser'][0]['maintain'])) {
+				if (is_array($xml['eyeUser'][0]['maintain']) && in_array($key,$xml['eyeUser'][0]['maintain'])) {
 					return true;
 				}
 				if($filename) {
@@ -902,7 +901,7 @@ function service_vfs_getDirContent($params) {
 	//$dirToRead = html_entity_decode($dirToRead,ENT_QUOTES,'UTF-8');
 	
 	//Check the permissions.	
-	if(!service('vfs','checkPermissions',array($dirToRead))) {
+	if(!service('vfs','checkPermissions',array($dirToRead,'r'))) {
 		return false;
 	}	
 	//This don't cause infinite bucle because dirtoread only can be a dir (this is checked in fileExists)
@@ -1094,7 +1093,6 @@ function service_vfs_real_create($params) {
 * @exception INCORRECT_PARAMS One or both parameters have not been specified.
 * @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to copy the file.
 * @exception VFS_FILE_NOT_EXISTS The file to copy does not exist.
-* @exception VFS_FILE_ALREADY_EXISTS There already exists a file in the same place as the destination file.
 * @exception PHP_ERROR_ON_COPY There is a PHP error when copying the file.
 * @date 2008/03/11
 */
@@ -1162,8 +1160,9 @@ function service_vfs_real_delete($params) {
 		reqLib('errorCodes','setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
 	}
-	
-	if (unlink($file)) {
+	if (is_dir($file)) {
+		return vfs('rmdir',array($file));
+	} elseif (unlink($file)) {
 		return true;
 	} else {
 		reqLib('errorCodes','setErrorCode',array(PHP_ERROR_ON_UNLINK));
@@ -1224,9 +1223,7 @@ function service_vfs_real_getFileContent($params) {
 		return false;
 	}
 			
-	if($result = file_get_contents($file)){
-		return $result;
-	}	
+	return @file_get_contents($file);
 }
 
 function service_vfs_real_putFileContent($params) {
@@ -1800,6 +1797,41 @@ function service_vfs_realToVirtualDir($params=null){
 		}
 	}
 	return $num;	
+}
+
+function service_vfs_virtualToReal($params = '') {
+	if (!count($params) || !vfs('real_checkPermissions',array($params[0]))) {
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	if (vfs('real_fileExists',array($params[0]))) {
+		errorCodes('setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
+		return false;
+	}
+	$virtual = utf8_basename(getRealFileName($params[0]) . '.' . EYEOS_INFO_EXT);
+	$path = utf8_substr($params[0],0,- utf8_strlen(utf8_basename($params[0])));
+	$info = eyeXML('getXMLfile',array($path . '/' . $virtual));
+	$real = $info['eyeFile'][0]['filename'][0];
+	if (rename($path . '/' . utf8_substr($virtual,0,- utf8_strlen(EYEOS_INFO_EXT)) . EYEOS_FILE_EXT,$path . '/' . $real) && unlink($path . '/' . $virtual)) {
+		return true;
+	}
+	return false;
+}
+
+function service_vfs_virtualToRealDir($params = '') {
+	$number = 0;
+	if (!count($params) || !is_dir($params[0]) || !vfs('checkPermissions',array($params[0]))) {
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	foreach (vfs('getDirContent',array($params[0])) as $file) {
+		if (vfs('isdir',array($file))) {
+			$number += vfs('virtualToRealDir',array($file));
+		} elseif (vfs('virtualToReal',array($file))) {
+			$number++;
+		}
+	}
+	return $number;
 }
 
 

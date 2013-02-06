@@ -1,30 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
-*/
-
-/*
-TODO:
-Support for tabbed browsing
-Add dialogs for categories, etc.
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeNav_run($params = '') {
@@ -37,6 +31,7 @@ function eyeNav_run($params = '') {
 		vfs('real_copy',array(EYE_ROOT . '/' . SYSTEM_DIR . '/conf/skel/' . CONF_USER_DIR . '/eyeNav/conf.xml',um('getCurrentUserDir') . 'conf/eyeNav/conf.xml'));
 		$currentUser = $oldUser;
 	}
+	$xml = eyeXML('getXMLconfig',array('eyeNav','conf.xml'));
 	
 	$myWindow = new Window(array(
 		'name' => 'eyeNav_window',
@@ -47,12 +42,12 @@ function eyeNav_run($params = '') {
 		'height' => 600,
 		'sendResizeMsg' => 1,
 		'sigResize' => 'Resize',
-		'showDragContent'=>1,
+		'showDragContent'=> 2,
 		'savePosition' => 1
 	));
 	$myWindow->show();
 	
-	if (IE > 0) {
+	if (IE && IE < 8) {
 		$myY = 67;
 		$myYimg = 68;
 	} else {
@@ -108,44 +103,54 @@ function eyeNav_run($params = '') {
 		'x' => $myImage->x + $myTextbox->width,
 		'y' => $myYimg,
 		'disableMsg' => 0,
-		'signal'=>'OpenUrl'
+		'signal' => 'OpenUrl'
 	));
 	$myImage->addFriend($myTextbox);
 	$myImage->show(0);
-	$myImage->setCss(array('cursor'=>'Pointer'));
+	$myImage->setCss(array('cursor' => 'pointer'));
 	
 	$myWindow_box = new Window(array(
 		'name' => 'eyeNav_window_box',
 		'father' => 'eyeNav_window_Content',
 		'x' => 10,
 		'y' => $myTextbox->y + 30,
-		'height' => $myWindow->height - ($myTextbox->y + 65),
+		'height' => $myWindow->height - $myTextbox->y - 65,
 		'width' => 160,
 		'type' => INVISIBLE_WINDOW
 	));
 	$myWindow_box->show();
 	$myWindow_box->setCss(array(
-		'overflow' => 'auto',
-		'direction' => 'rtl'
+		'direction' => 'rtl',
+		'overflow' => 'auto'
 	));
+	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeNav_window_box"); e.style.visibility = ""; e.style.zIndex = 0;'));
 	
+	if (!$xml['eyeNav'][0]['sidebar'][0]) {
+		$visible = 0;
+		$width = $myWindow->width - 20;
+		$x = 10;
+	} else {
+		$width = $myWindow->width - $myWindow_box->width - 35;
+		$x = $myWindow_box->width + 20;
+	}
 	$myLine = new Line(array(
 		'name' => 'eyeNav_line',
 		'father' => 'eyeNav_window_Content',
 		'x' => 165,
 		'y' => $myWindow_box->y,
 		'width' => 1,
-		'height' => $myWindow_box->height
+		'height' => $myWindow_box->height,
+		'visible' => $visible
 	));
 	$myLine->show(0);
 	
 	$myIframe = new Iframe(array(
 		'name' => 'eyeNav_frame',
 		'father' => 'eyeNav_window_Content',
-		'x' => $myWindow_box->width + 20,
+		'x' => $x,
 		'y' => $myWindow_box->y,
 		'height' => $myWindow_box->height,
-		'width' => $myWindow->width - ($myWindow_box->width + 35)
+		'width' => $width
 	));
 	$myIframe->show();
 	$GLOBALS['eyeNav_frame'] = $myIframe;
@@ -164,9 +169,29 @@ function eyeNav_run($params = '') {
 	$myToolbar->addItem('Search','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/search.png','Search');
 	$myToolbar->addLine();
 	$myToolbar->addItem('Settings','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/lin_agt_wrench.png','Settings');
-	
+	$myToolbar->addLine();
+	$myToolbar->addItem('Fullscreen','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
+
+	addListenerServiceCall('fullResized','eyex','resizedbrowser');
+
 	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeNav/libs.eyecode');
-	eyeNav_lib_ShowBookmarks();
+	if ($xml['eyeNav'][0]['sidebar'][0] == 2) {
+		eyeNav_lib_ShowSearch();
+		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeNav_toolbar");
+		for (var i = 0; i < e.childNodes.length; i++) {
+			if (e.childNodes[i].id == "Search_Container") {
+				e.childNodes[i].className = "blockbarItemPress";
+			}
+		}'));
+	} elseif ($xml['eyeNav'][0]['sidebar'][0]) {
+		eyeNav_lib_ShowBookmarks();
+		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeNav_toolbar");
+		for (var i = 0; i < e.childNodes.length; i++) {
+			if (e.childNodes[i].id == "Bookmarks_Container") {
+				e.childNodes[i].className = "blockbarItemPress";
+			}
+		}'));
+	}
 	
 	if ($params[0]) {
 		eyeNav_lib_doUrl(array('page' => array($params[0])));

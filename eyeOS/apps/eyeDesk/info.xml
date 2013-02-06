@@ -1,10 +1,10 @@
 <package>
 	<name>eyeDesk</name>
-	<category>Desktop</category>
-	<version>1.7</version>
-	<description>eyeOS Desktop</description>
+	<category>System</category>
+	<version>1.8</version>
+	<description>eyeOS desktop</description>
 	<author>eyeOS Team</author>
-	<license>GPL</license>
+	<license>AGPL</license>
 	<type>System</type>
 	<icon></icon>
 </package>

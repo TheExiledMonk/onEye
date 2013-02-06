@@ -1,176 +1,171 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-function eyeInfo_run($params=null) {
-	global $myPid;
-	$content = "";
-	$myWindow = new Window(array('name'=>'eyeInfoWND','style'=>TITLE + LISTED + CLOSE + MIN,'father'=>'eyeApps', 'cent'=>1,
-		'width'=>400,'height'=>350,'title'=>'About eyeOS','savePosition' => 1));
+function eyeInfo_run($params = '') {
+	$myWindow = new Window(array(
+		'cent' => 1,
+		'father' => 'eyeApps',
+		'height' => 400,
+		'name' => 'eyeInfo_Window',
+		'title' => 'About eyeOS',
+		'savePosition' => 1,
+		'style' => TITLE + LISTED + CLOSE + MIN,
+		'width' => 400
+	));
 	$myWindow->show();
-	$myImage3 = new Imagebox(array('name'=>'eyeos_logo','father'=>'eyeInfoWND_Content',
-		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/logo.png',
-		'x'=>10,'y'=>15,'cent'=>2,'width'=>60,'height'=>49,'disableMsg'=>0,'cssClass'=>'cPointer','signal'=>'Logo_Clicked'));
-	$myImage3->show();
-
-	$myCssText = array(
-	'color' => '#000',
-	'font-family'=>'Verdana',
-	'font-size'=>'11px',
-	'font-weight'=>'bold'
-	);
 	
-	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl_version_1",'father' => 'eyeInfoWND_Content',
-		'text' =>"eyeOS ".EYEOS_VERSION,'x' => 156,'y' => 75));
-	$myLabel1->show();
-
-	$myLabel1->setCss($myCssText);
-
+	$myImagebox = new Imagebox(array(
+		'cent' => 2,
+		'cssClass' => 'cPointer',
+		'disableMsg' => 0,
+		'father' => 'eyeInfo_Window_Content',
+		'name' => 'eyeInfo_Imagebox_Logo',
+		'signal' => 'Navigate',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeX/gfx/logo.png',
+		'x' => 0,
+		'y' => 15
+	));
+	$myImagebox->show();
+	
+	$myLabel = new Label(array(
+		'father' => 'eyeInfo_Window_Content',
+		'name' => 'eyeInfo_Label_Version',
+		'text' => 'eyeOS ' . EYEOS_VERSION,
+		'x' => 0,
+		'y' => 75
+	));
+	$myLabel->show();
+	$myLabel->setCss(array('font-weight' => 'bold','text-align' => 'center','width' => '398px'));
+	
 	$myTab = new Tab(array(
-		'name' => 'tabs',
-		'father' => 'eyeInfoWND_Content',
-		'width' => 395,
-		'height' => 220,
+		'father' => 'eyeInfo_Window_Content',
+		'name' => 'eyeInfo_Tab',
+		'height' => 270,
+		'tabwidth' => 100,
+		'width' => 398,
 		'x' => 0,
 		'y' => 100
 	));
 	$myTab->show();
-	$teamTab = $myTab->addTab('Team',1);
-	$colTab = $myTab->addTab('Developers',1);	
-	$thanksTab = $myTab->addTab('Thanks',1);
-	$idTeam = $myTab->getRealNameByName('Team');
-	$myTab->selectTab($idTeam);
+	$teamTab = $myTab->addTab('eyeOS Team',1);
+	$supportersTab = $myTab->addTab('Supporters',1);
+	$projectsTab = $myTab->addTab('Projects',1);
+	$myTab->selectByName('eyeOS Team');
 	
-	$x = 20;
-	$y = 20;
-
-	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl1_1",'father' => $teamTab,
-		'text' =>"eyeOS Engineering Team",'x' => $x,'y' => $y));
-	$myLabel1->show();
+	$myImagebox = new Imagebox(array(
+		'father' => 'eyeInfo_Tab',
+		'horiz' => 1,
+		'name' => 'eyeInfo_Imagebox_Doowee',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeX/gfx/doowee.png',
+		'vert' => 1,
+		'x' => 10,
+		'y' => 10
+	));
+	$myImagebox->show();
 	
-	$y += 20;
+	$team = array('Alejandro Fiestas','Anaël Ollier','Daniel Gil','Jose Carlos Norte','Lars Knickrehm','Marc Cercós','Pau Garcia-Milà','Pol Watine');
+	shuffle($team);
+	$y = 246 / (2 + count($team));
 	
-	$names = array(
-		"Pau Garcia-Milà",
-		"Marc Cercós",
-		"Jose Carlos Norte",
-		"Daniel Gil",
-		"Alejandro Fiestas",
-		"Pol Watine"
-	);
+	$myLabel = new Label(array(
+		'father' => $teamTab,
+		'name' => 'eyeInfo_Label_Team',
+		'text' => 'Official eyeOS Team',
+		'x' => 10,
+		'y' => $y - 10
+	));
+	$myLabel->show();
+	$myLabel->setCss(array('font-weight' => 'bold'));
 	
-	shuffle($names);
-	
-	foreach($names as $values) {
-		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2",'father' => $teamTab,
-			'text' =>$values,'x' => $x,'y' => $y));
-		$myLabel2->show();
-		$y += 22;
+	$i = 2;
+	foreach ($team as $value) {
+		$myLabel = new Label(array(
+			'father' => $teamTab,
+			'name' => 'eyeInfo_Label_Team_' . $i,
+			'text' => $value,
+			'x' => 20,
+			'y' => $i * $y - 7
+		));
+		$myLabel->show();
+		$i++;
 	}
 	
-	$myImage3 = new Imagebox(array('name'=>'eyeos_logo_1','father'=>$teamTab,
-		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/doowee.png',
-		'x'=>10,'y'=>10, 'horiz'=>1, 'vert'=>1));
-	$myImage3->show();
+	$supporters = array('Alexandre Mejat','David Comuñas','Edouard Daubin','Juan Lao Tebar','Juanjo Ponz','Matthew Powell','Nick McMillen');
+	shuffle($supporters);
+	$y = 246 / (2 + count($supporters));
 	
-	$myLabel1->setCss($myCssText);
+	$myLabel = new Label(array(
+		'father' => $supportersTab,
+		'name' => 'eyeInfo_Label_Supporters',
+		'text' => 'eyeOS Community Developers',
+		'x' => 10,
+		'y' => $y - 10
+	));
+	$myLabel->show();
+	$myLabel->setCss(array('font-weight' => 'bold'));
 	
-	//developers tab
-	
-	$x = 20;
-	$y = 0;
-	
-	$myWindowInv = new Window(array('title'=>'eyeApps','name'=>'wndInv','father' => $colTab,
-	'y'=>40,'type'=>INVISIBLE_WINDOW,'x'=>0,'width'=>260,'height'=>155));
-	$myWindowInv->show();	
-
-	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl1_2",'father' => $colTab,
-		'text' =>"eyeOS Community Developers",'x' => 20,'y' => 20));
-	$myLabel1->show();
-	
-	$names = array(
-		"Anaël Ollier",
-		"Lars Knickrehm",
-		"Juanjo Ponz",
-		"Juan Lao Tebar",
-		"David Comuñas",
-		"Nick McMillen",
-		"Alexandre Mejat",
-		"Edouard Daubin"
-	);
-	
-	$myImage3 = new Imagebox(array('name'=>'eyeos_logo_2','father'=>$colTab,
-		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/doowee.png',
-		'x'=>10,'y'=>10, 'horiz'=>1, 'vert'=>1));
-	$myImage3->show();
-	
-	shuffle($names); 
-	
-	foreach($names as $values) {
-		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2",'father' => 'wndInv',
-			'text' =>$values,'x' => $x,'y' => $y));
-		$myLabel2->show();
-		$y += 22;
+	$i = 2;
+	foreach ($supporters as $value) {
+		$myLabel = new Label(array(
+			'father' => $supportersTab,
+			'name' => 'eyeInfo_Label_Supporters_' . $i,
+			'text' => $value,
+			'x' => 20,
+			'y' => $i * $y - 7
+		));
+		$myLabel->show();
+		$i++;
 	}
-	$myLabel1->setCss($myCssText);
 	
-	//thanks tab
+	$projects = array('CodePress','Oxygen Icons','PHP UTF8','TinyMCE (Moxiecode)','X Library (Cross-Browser.com)');
+	shuffle($projects);
+	$y = 246 / (2 + count($projects));
 	
-	$x = 20;
-	$y = 20;
-
-	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl1",'father' => $thanksTab,
-		'text' =>"Thanks to",'x' => $x,'y' => $y));
-	$myLabel1->show();
+	$myLabel = new Label(array(
+		'father' => $projectsTab,
+		'name' => 'eyeInfo_Label_Projects',
+		'text' => 'Thanks to...',
+		'x' => 10,
+		'y' => $y - 10
+	));
+	$myLabel->show();
+	$myLabel->setCss(array('font-weight' => 'bold'));
 	
-	$y += 20;
-	
-	$names = array(
-		"Cross-Browser.com (X Library)",
-		"Moxiecode (TinyMCE)",
-		"The phputf8 Project",
-		"Oxygen Icons",
-		"CodePress.org (CodePress)"
-	);
-	
-	$myImage3 = new Imagebox(array('name'=>'eyeos_logo_3','father'=>$thanksTab,
-		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/doowee.png',
-		'x'=>10,'y'=>10, 'horiz'=>1, 'vert'=>1));
-	$myImage3->show();
-	
-	shuffle($names); 
-	
-	foreach($names as $values) {
-		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2_3",'father' => $thanksTab,
-			'text' =>$values,'x' => $x,'y' => $y));
-		$myLabel2->show();
-		$y += 22;
+	$i = 2;
+	foreach ($projects as $value) {
+		$myLabel = new Label(array(
+			'father' => $projectsTab,
+			'name' => 'eyeInfo_Label_Projects_' . $i,
+			'text' => $value,
+			'x' => 20,
+			'y' => $i * $y - 7
+		));
+		$myLabel->show();
+		$i++;
 	}
-	$myLabel1->setCss($myCssText);
 }
 
-function eyeInfo_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+function eyeInfo_end($params = '') {
+	eyeWidgets('unserialize',$params);
 }
-
-
 ?>

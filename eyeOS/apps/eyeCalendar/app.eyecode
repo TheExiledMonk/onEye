@@ -1,24 +1,24 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)    
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
 function eyeCalendar_run($params = null)
@@ -57,7 +57,7 @@ function eyeCalendar_run($params = null)
 	if(!isset($_SESSION['eyeCalendarJs']) || $_SESSION['eyeCalendarJs'] < $_SESSION['SCREEN']['refresh']){
 		eyeX('rawjs',array('js'=>'eyeCalendarChecknum = '.$checknum.';'));
 		service('eyex','loadScript',array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeCalendar/js/components/eyeCalendar' . EYE_CODE_EXTENSION . '&type=dynamic'));
-		if (IE > 0 && IE < 7) {
+		if (IE && IE < 7) {
 			service('eyex','loadCss',array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeCalendar/css/eyeCalendar_IE6.css&type=css','id' =>'eyeCalendar.css'));
 		}else{
 			service('eyex','loadCss',array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeCalendar/css/eyeCalendar.css&type=css','id' =>'eyeCalendar.css'));
@@ -68,26 +68,13 @@ function eyeCalendar_run($params = null)
 	
 	//Making the gui
 	//Making the main window
-	if($fullScreen == true){
-		$windowWidth = $_SESSION['SCREEN']['width'];
-		$windowHeight = $_SESSION['SCREEN']['height'];
-		$myWindow1 = new Window(array('title'=>'Calendar','name'=>'eyeCalendarWin1','father' => 'eyeApps','y'=>35,'type'=>FIXED_WINDOW,'sendResizeMsg'=>1,'sigResize'=>'mainResize','x'=>0,'cent'=>2,'width'=>$windowWidth,'height'=>$windowHeight));
-		$myWindow1->show();
-		eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_eyeCalendarWin1_Content").style.overflow = "hidden";'));
-		//No window border
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_eyeCalendarWin1_Content").style.top="0px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedAppsLeft").style.zIndex="0";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedAppsRight").style.zIndex="0";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("minimizedApps").style.zIndex="0";'));
-	}else{
-		$windowWidth = 864;
-		$windowHeight = 550;
-		$myWindow1 = new Window(array('title'=>'Calendar','name'=>'eyeCalendarWin1','father' => 'eyeApps',
-		'y'=>35,'type'=>NORMAL_WINDOW,'sendResizeMsg'=>1,'sigResize'=>'mainResize','x'=>0,'cent'=>2,'width'=>$windowWidth,'height'=>$windowHeight,'savePosition' => 1));
-		$myWindow1->show();
-		eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_eyeCalendarWin1_Content").style.overflow = "hidden";'));
-		$windowHeight = 535;
-	}
+	$windowWidth = 864;
+	$windowHeight = 550;
+	$myWindow1 = new Window(array('title'=>'Calendar','name'=>'eyeCalendarWin1','father' => 'eyeApps',
+	'y'=>35,'type'=>NORMAL_WINDOW,'sendResizeMsg'=>1,'sigResize'=>'mainResize','x'=>0,'cent'=>2,'width'=>$windowWidth,'height'=>$windowHeight,'savePosition' => 1));
+	$myWindow1->show();
+	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_eyeCalendarWin1_Content").style.overflow = "hidden";'));
+	$windowHeight = 535;
 	
 	
 	$myWindow1->setCss(array('display'=>'inline'));
@@ -109,13 +96,13 @@ function eyeCalendar_run($params = null)
 	if($fullScreen == true){
 		$myToolbar->addItem('fullScreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Window mode');
 	}else{
-		$myToolbar->addItem('fullScreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen');
+		$myToolbar->addItem('fullScreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
 	}
 	
-	$myContainer = new Simplebox(array('name'=>'container','father'=>'eyeCalendarWin1_Content','x'=>0,'y'=>58,'width'=>$windowWidth-2,'height'=>$windowHeight-82,'border'=>0));
+	$myContainer = new Simplebox(array('name'=>'container','father'=>'eyeCalendarWin1_Content','x'=>0,'y'=>58,'width'=>$windowWidth-2,'height'=>$windowHeight-62,'border'=>0));
 	$myContainer->show(0);
 	
-	$myLine = new Line(array('name'=>'verticalPanel','father'=>'eyeCalendarWin1_Content','x'=>160,'y'=>59,'width'=>5,'height'=>$windowHeight-103));
+	$myLine = new Line(array('name'=>'verticalPanel','father'=>'eyeCalendarWin1_Content','x'=>160,'y'=>59,'width'=>5,'height'=>$windowHeight-83));
 	$myLine->show(0);
 	$myLine->setCss(array('backgroundColor'=>'#AEc9E2',
 						'borderLeft'=>'1px #5c8dbf solid',
@@ -126,7 +113,7 @@ function eyeCalendar_run($params = null)
 	$sendEvent = 'sendMsgParam = sendMsg('.$checknum.',\'hideLeftPanel\');';
 	$myLine->addEvent('onclick',$sendEvent);
 	
-	$calendarContents = new Simplebox(array('name'=>'calendarsContainer','father'=>'container','x'=>0,'y'=>0,'width'=>158,'height'=>$windowHeight-82-148-20,'border'=>0));
+	$calendarContents = new Simplebox(array('name'=>'calendarsContainer','father'=>'container','x'=>0,'y'=>0,'width'=>158,'height'=>$windowHeight-62-148-20,'border'=>0));
 	$calendarContents->show(0);
 	
 	//Calendar widget.
@@ -136,7 +123,7 @@ function eyeCalendar_run($params = null)
 					'width'=>158,
 					'height'=>148,
 					'x'=>0,
-					'y'=>20,
+					'y'=>5,
 					'vert'=>1,
 					'drawOnClick'=>1,
 					'drawServerDate'=>1,
@@ -144,16 +131,16 @@ function eyeCalendar_run($params = null)
 					));
 	$myCalendarWidget->show();
 	
-	$myLine = new Line(array('name'=>'horizPanel','father'=>'container','x'=>0,'y'=>170,'vert'=>1,'width'=>170,'height'=>1));
+	$myLine = new Line(array('name'=>'horizPanel','father'=>'container','x'=>0,'y'=>155,'vert'=>1,'width'=>160,'height'=>1));
 	$myLine->show(0);
 	
-	$myLine = new Line(array('name'=>'horizBottom','father'=>'container','x'=>0,'y'=>20,'vert'=>1,'width'=>$windowWidth-2,'height'=>1));
+	$myLine = new Line(array('name'=>'horizBottom','father'=>'container','x'=>0,'y'=>19,'vert'=>1,'width'=>$windowWidth-2,'height'=>1));
 	$myLine->show(0);
 	
 	
 	//Scroll box
 	//FF: 180
-	$height = $windowHeight-104;
+	$height = $windowHeight-83;
 	if(IE == 6){
 		$width = $windowWidth-185;
 	}elseif(IE == 7){
@@ -178,6 +165,7 @@ function eyeCalendar_run($params = null)
 	}
 	$calendarView = new Hidden(array('name'=>'calendarView','text'=>''));
 	reqLib('eyeWidgets','serialize',array($calendarView));
+	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 	//The weekPlanner is loaded in launch event
 	if(!isset($_SESSION['eyeCalendarJs']) || $_SESSION['eyeCalendarJs'] < $_SESSION['SCREEN']['refresh']){
 		$_SESSION['eyeCalendarJs'] = $_SESSION['SCREEN']['refresh'];
@@ -188,6 +176,7 @@ function eyeCalendar_run($params = null)
 }
 
 function eyeCalendar_end($params=null) {
+	removeListenerServiceCall('eyex','resizedbrowser');
 	reqLib('eyeWidgets','unserialize');
 }
 

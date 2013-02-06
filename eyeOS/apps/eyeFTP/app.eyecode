@@ -1,31 +1,30 @@
 <?php
 /*
-                                  ____   _____ 
+                                  ____   _____
                                  / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
+                  ___ _   _  ___| |  | | (___
+                 / _ \ | | |/ _ \ |  | |\___ \
                 |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.7
+                 \___|\__, |\___|\____/|_____/
+                       __/ |
+                      |___/              1.8
 
                      Web Operating System
                            eyeOS.org
 
-             eyeOS Engineering Team - eyeOS.org/whoarewe
+             eyeOS Engineering Team - www.eyeos.org/team
 
      eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
              or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
-
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.1.0
- * @updated 24-May-2008
+ * @version 3.2.0
+ * @updated 07-Dec-2008
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
@@ -43,6 +42,7 @@ define('EYEFTP_IMG_TOOLBAR_DELETE', 'index.php?version='.EXTERN_CACHE_VERSION.'&
 define('EYEFTP_IMG_TOOLBAR_DOWNLOAD', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/download.png');
 define('EYEFTP_IMG_TOOLBAR_UPLOAD', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/upload.png');
 define('EYEFTP_IMG_TOOLBAR_HELP', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=images/toolbar/help.png&theme=1');
+define('EYEFTP_IMG_TOOLBAR_FULLSCREEN', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=images/toolbar/fullScreen.png&theme=1');
 
 define('EYEFTP_IMG_LOCALVIEW_HOME', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/managehosts.png');
 define('EYEFTP_IMG_REMOTEVIEW_HOME', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/managehosts.png');
@@ -188,7 +188,7 @@ function eyeFTP_run($params=null) {
 		'y' => 4,
 		'width' => 80,
 		'text' => 'eyeftp@eyeos.org',
-		'password' => 1
+		'password' => 2
 	));
 	$passwordTextbox->show();
 	
@@ -545,7 +545,16 @@ function eyeFTP_run($params=null) {
 	$toolbar->addItem(
 		'eyeFTP_help_ITM',
 		EYEFTP_IMG_TOOLBAR_HELP,
-		'Help'
+		'Help',
+		'',
+		1
+	);
+	$toolbar->addItem(
+		'fullscreen',
+		EYEFTP_IMG_TOOLBAR_FULLSCREEN,
+		'Full Screen',
+		'',
+		1
 	);
 
 	
@@ -586,6 +595,12 @@ function eyeFTP_run($params=null) {
 		'text' => '0'
 	));
 	reqLib('eyeWidgets','serialize',array($isConnectionActive));
+	$listA = new Hidden(array(
+		'name' => 'eyeFTP_listA_HID',
+		'father' => 'eyeFTP_WND_Content',
+		'text' => '1'
+	));
+	reqLib('eyeWidgets','serialize',array($listA));
 	$currentLocalDir = new Hidden(array(
 		'name' => 'eyeFTP_currentLocalDir_HID',
 		'father' => 'eyeFTP_WND_Content',
@@ -610,7 +625,10 @@ function eyeFTP_run($params=null) {
 	if(!vfs('real_fileExists',array($confDir))) {
 		vfs('real_mkdir',array($confDir));
 	}
-	
+
+	//Listener service call to resize the app when browser is resized
+	addListenerServiceCall('fullResized','eyex','resizedbrowser');
+
 	eyeX('rawjs',array('js' => 'sendMsg('.$checknum.',"eyeFTP_initComplete","");'));
 	
 	//CSS
