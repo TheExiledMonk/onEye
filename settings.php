@@ -38,6 +38,7 @@ define('APP_DIR','apps');
 define('USERS_DIR','users');
 define('CONF_USER_DIR','conf');
 define('FILES_USER_DIR','files');
+define('TMP_USER_DIR','tmp');
 define('SHARE_USER_DIR','share');
 define('PUBLIC_USER_DIR','public');
 define('THEMES_DIR',APP_DIR.'/'.'eyeX'.'/'.'themes'); //DEPRECATED
@@ -68,7 +69,7 @@ define('REAL_ROOTUSER','root');
 //Extras
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('EYEOS_VERSION','1.8.0.3');
+define('EYEOS_VERSION','1.8.0.4');
 
 //eyeDialog that defines should be moved to another place desinged for it.
 define('EYEDIALOG_TYPE_OPENFILE', 0);

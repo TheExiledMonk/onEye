@@ -179,7 +179,7 @@ function service_um_retrieveUser($params = null){
 }
 
 function service_um_retriveUser($params = '') {
-	return service_um_retriveUser($params);
+	return service_um_retrieveUser($params);
 }
 
 function service_um_UserIsAdmin($params=null) {

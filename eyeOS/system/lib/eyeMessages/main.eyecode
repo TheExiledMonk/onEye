@@ -22,7 +22,7 @@
 */
 
 function lib_eyeMessages_start($params=null) {
-	$msgDir = um('getCurrentUserDir').'conf/eyeMessages/';
+	$msgDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/';
 	
 	vfs('real_mkDir', array($msgDir));
 	vfs('real_mkDir', array($msgDir.'read/'));
@@ -66,7 +66,7 @@ function lib_eyeMessages_sendMessage($params) {
 	);
 	
 	$hash = md5(uniqid(time()));
-	$sentDir = um('getCurrentUserDir').'conf/eyeMessages/sent/';
+	$sentDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/sent/';
 	while(vfs('real_fileExists',array($sentDir.$hash.'.msgSwap'))) {
 		$hash = md5(uniqid(time()));
 	}
@@ -91,9 +91,13 @@ function lib_eyeMessages_openMessage($params) {
 	if(empty($folder)) { //The message is not in one of eyeMessage's folders
 		$msg = reqLib('eyeSwap', 'read', array($hash, 'eyeMessages'));
 		
+		if(!is_array($msg)) {
+			return false;
+		}
+		
 		reqLib('eyeSwap', 'delete', array($hash, 'eyeMessages'));
 		
-		$readDir = um('getCurrentUserDir').'conf/eyeMessages/read/';
+		$readDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/read/';
 		$xml = array(
 			'swapMessage' => array($msg)
 		);
@@ -106,7 +110,7 @@ function lib_eyeMessages_openMessage($params) {
 		vfs('real_create', array($readDir.$hash.'.msgSwap'));
 		eyeXML('setXMLfile', array($readDir.$hash.'.msgSwap', $xml));
 	} else {
-		$msg = um('getCurrentUserDir').'conf/eyeMessages/'.$folder.'/'.$hash.'.msgSwap';
+		$msg = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/'.$folder.'/'.$hash.'.msgSwap';
 		$msg = eyeXML('getXMLfile', array($msg));
 		$msg = $msg['swapMessage'][0];
 	}
@@ -143,7 +147,7 @@ function lib_eyeMessages_deleteMessage($params) {
 		
 		reqLib('eyeSwap', 'delete', array($hash, 'eyeMessages'));
 		
-		$trashDir = um('getCurrentUserDir').'conf/eyeMessages/trash/';
+		$trashDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/trash/';
 		$xml = array(
 			'swapMessage' => array($msg)
 		);
@@ -156,8 +160,8 @@ function lib_eyeMessages_deleteMessage($params) {
 		vfs('real_create', array($trashDir.$hash.'.msgSwap'));
 		eyeXML('setXMLfile', array($trashDir.$hash.'.msgSwap', $xml));
 	} else {		
-		$dir = um('getCurrentUserDir').'conf/eyeMessages/'.$folder.'/'.$hash;
-		$trashDir = um('getCurrentUserDir').'conf/eyeMessages/trash/';
+		$dir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/'.$folder.'/'.$hash;
+		$trashDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/trash/';
 
 		if($folder == "sent") {
 			vfs('real_delete', array($dir.'.msgSwap'));
@@ -191,7 +195,7 @@ function lib_eyeMessages_empty($params=null) {
 		if($section == "inbox") {
 			$section = "read";
 		}
-		$dir = um('getCurrentUserDir').'conf/eyeMessages/'.$section;
+		$dir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/'.$section;
 		
 		$list = vfs('real_getDirContent', array($dir));
 		
@@ -215,8 +219,8 @@ function lib_eyeMessages_restoreMessage($params) {
 	}
 
 	$hash = $params[0];
-	$trashDir = um('getCurrentUserDir').'conf/eyeMessages/trash/';
-	$readDir = um('getCurrentUserDir').'conf/eyeMessages/read/';
+	$trashDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/trash/';
+	$readDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/read/';
 	_move_message($trashDir.$hash, $readDir);
 }
 
@@ -226,7 +230,7 @@ function lib_eyeMessages_getUnread($params=null) {
 }
 
 function lib_eyeMessages_getRead($params=null) {
-	$readDir = um('getCurrentUserDir').'conf/eyeMessages/read/';
+	$readDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/read/';
 
 	$list = vfs('real_getDirContent', array($readDir, '*.msgSwap'));
 
@@ -249,7 +253,7 @@ function lib_eyeMessages_getInbox($params=null) {
 }
 
 function lib_eyeMessages_getTrash($params=null) {
-	$trashDir =	um('getCurrentUserDir').'conf/eyeMessages/trash/';
+	$trashDir =	um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/trash/';
 	
 	$list = vfs('real_getDirContent', array($trashDir, '*.msgSwap'));
 
@@ -267,7 +271,7 @@ function lib_eyeMessages_getTrash($params=null) {
 }
 
 function lib_eyeMessages_getSent($params=null) {
-	$sentDir = um('getCurrentUserDir').'conf/eyeMessages/sent/';
+	$sentDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/sent/';
 
 	$list = vfs('real_getDirContent', array($sentDir, '*.msgSwap'));
 	

@@ -243,7 +243,7 @@ $myLabel->show();
 $myCheckbox_registration = new Checkbox(array(
 	'name' => 'eyeControl_system_permissions_checkbox_registration',
 	'father' => $permissionsTab,
-	'x' => 160,
+	'x' => 320,
 	'y' => $ContentY,
 	'text' => ' ',
 	'checked' => ALLOW_USER_REGISTER
@@ -262,7 +262,7 @@ $myLabel->show();
 $myCheckbox_publicdirs = new Checkbox(array(
 	'name' => 'eyeControl_system_permissions_checkbox_publicdirs',
 	'father' => $permissionsTab,
-	'x' => 160,
+	'x' => 320,
 	'y' => $ContentY,
 	'text' => ' ',
 	'checked' => ALLOW_PUBLIC_DIRS
@@ -281,7 +281,7 @@ $myLabel->show();
 $myCheckbox_webupload = new Checkbox(array(
 	'name' => 'eyeControl_system_permissions_checkbox_webupload',
 	'father' => $permissionsTab,
-	'x' => 160,
+	'x' => 320,
 	'y' => $ContentY,
 	'text' => ' ',
 	'checked' => WEB_UPLOAD

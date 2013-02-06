@@ -442,8 +442,13 @@ function service_vfs_copyDir($params) {
 		return false;
 	}
 	
-	dircopy($orig,$dest);
-	return true;
+	$orig_real = realpath($orig . '/');
+	if (utf8_substr(realpath($dest . '/'),0,utf8_strlen($orig_real)) == $orig_real) {
+		dircopy($orig,$dest);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 
@@ -914,6 +919,7 @@ function service_vfs_checkPermissions($params) {
 				if (is_array($xml['eyeUser'][0]['maintain']) && in_array($key,$xml['eyeUser'][0]['maintain'])) {
 					return true;
 				}
+				//File names comes from line 793
 				if($filename) {
 					$myFile = $file_path.'/'.$filename;
 					$myRealName = vfs('getRealName',array($myFile));
@@ -959,7 +965,6 @@ function service_vfs_checkPermissions($params) {
 			return false;
 		}		
 	}
-	
 	if (0 === utf8_strpos($file_path,$userdir_path)) {
 		return true;
 	} elseif ($currentUser == ROOTUSER) {
@@ -1246,8 +1251,13 @@ function service_vfs_real_copyDir($params) {
 		return false;
 	}
 	
-	dircopy($orig,$dest);
-	return true;
+	$orig_real = realpath($orig . '/');
+	if (utf8_substr(realpath($dest . '/'),0,utf8_strlen($orig_real)) == $orig_real) {
+		dircopy($orig,$dest);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 

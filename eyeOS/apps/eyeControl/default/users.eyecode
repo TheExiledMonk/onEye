@@ -91,7 +91,7 @@ foreach ($allUsers as $user) {
 	$userXML = um('retrieveUser',array($user));
 	$userXML = $userXML['eyeUser'][0];
 	($userXML['fullname'][0]) ? $fullname = $userXML['fullname'][0] : $fullname = ' ';
-	$groups = ' ';
+	$groups = '';
 	foreach ($userXML['group'] as $group) {
 		($groups) ? $groups = $groups . ', ' . $group : $groups = $group;
 	}

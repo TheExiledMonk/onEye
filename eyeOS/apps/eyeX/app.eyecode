@@ -31,11 +31,7 @@ function eyeX_run($params = '') {
 	}
 	define('EXTERN_CACHE_VERSION',$version);
 	
-	if ($_SESSION[LTABLE]) {
-		if (!$_SESSION[LTABLE]['eyeApps']) {
-			$_SESSION[LTABLE]['eyeApps'] = ' ';
-		}
-	} else {
+	if (!$_SESSION[LTABLE]['eyeApps']) {
 		$_SESSION[LTABLE]['eyeApps'] = ' ';
 	}
 	

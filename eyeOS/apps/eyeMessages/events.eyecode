@@ -47,6 +47,10 @@ function eyeMessages_on_open($params) {
 		return;
 	}
 
+	if(empty($folder)) {
+		eyeMessages_on_gotosection();
+	}
+	
 	$msg = reqLib('eyeMessages', 'openMessage', array($hash, $folder));
 	
 	if(!is_array($msg)) {

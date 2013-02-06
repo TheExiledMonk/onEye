@@ -69,7 +69,6 @@ function eyeDocs_run($params=null) {
 
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
 		reqLib('eyeWidgets','serialize',array($myHidden));
-		fclose($fp);
 	}
 	$myWindow = new Window(array('name'=>'eyeDocsWND','father'=>'eyeApps',
 	'cent'=>1,'width'=>600,'height'=>500,'title'=>'Word Processor','sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>0,'savePosition' => 1,'minWidth'=>600,'minHeight'=>500));

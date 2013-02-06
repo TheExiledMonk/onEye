@@ -245,7 +245,9 @@ function service_proc_close($params) {
 	//Get the appName and check if app is running.
 	$appName = proc('findNameByPid',array($pid));
 
-	
+ 	if(empty($appName)){
+		return false;
+ 	}
 	//Calling the _end funciton if it exists
 	include_once(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/app'.EYE_CODE_EXTENSION);
 	if(function_exists($appName.'_end')) {

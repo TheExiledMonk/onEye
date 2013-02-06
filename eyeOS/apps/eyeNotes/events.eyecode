@@ -121,6 +121,7 @@ function eyeNotes_on_SelectFileSave($params=null) {
 		fclose($fp);
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
 		reqLib('eyeWidgets','serialize',array($myHidden));
+		$GLOBALS['eyeNotesWND']->setTitle(utf8_basename($file.' - '.i18n('translate',array('Text Editor'))));
 		eyeFiles('update',array(dirname($file)));
 		service('eyex','messageBox',array('content'=>'File saved successfully.'));
 	}
