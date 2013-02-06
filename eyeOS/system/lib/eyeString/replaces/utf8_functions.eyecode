@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -619,7 +619,8 @@ function utf8_wordwrap($str,$width=75,$break='\n',$cut=false){
 	
 	$y = 1;
 	for($x=0;$x < utf8_strlen($str);$x++){			
-		if($str{$x} == ' '){
+		$newString .= utf8_substr($str,$x,1);
+		if($str{$x} == ' '){			
 			if($y >= $width){
 				$newString .= $break;	
 				$y = 1;
@@ -632,36 +633,47 @@ function utf8_wordwrap($str,$width=75,$break='\n',$cut=false){
 	return $newString;
 }
 
-function utf8_pathinfo($string,$op=''){		
-	$info['basename'] = utf8_basename($string,null,$op);
+function utf8_pathinfo($string){		
+	$info['basename'] = utf8_basename($string);
 	$info['dirname'] = dirname($string);
 	$info['filename'] = utf8_getFileName($string);
 	$info['extension'] = utf8_getExtension($string);
 	
 	return $info;
 }
-function utf8_basename($string,$suffix='',$op=''){	
+function utf8_basename($string,$suffix=''){	
 	//Checking if path are from windows...\	
 	if(utf8_strpos($string,'\\') !== false){
 		//Replacing all \ with /
 		$string = utf8_ireplace('\\','/',$string);
 	}
-	if(utf8_strpos($string,'/') === false){
-		//Replacing all \ with /
-		return $string;
-	}	
 	
-	if(!$suffix){
-		return utf8_substr($string,utf8_strrpos($string,'/')+1,utf8_strlen($string));	
-	}else{
-		$string = utf8_substr($string,utf8_strrpos($string,'/')+1,utf8_strlen($string));
+	//Remove the last character if it is a slash
+	if(utf8_strrpos($string,'/') == utf8_strlen($string)-1){
+		$string = utf8_substr($string,0,utf8_strlen($string)-1);		
+	}	
+	//TODO: check if dirname is more speed than utf8_str*** functions.
+	//If is a directory	
+	if(utf8_strpos($string,'/') && utf8_strrpos($string,'/') == utf8_strlen($string)-1){		
+		while(utf8_strrpos($string,'/') == utf8_strlen($string)-1){			
+			$string = utf8_substr($string,0,utf8_strrpos($string,'/'));
+		}		
+	}
+	
+	if(utf8_strpos($string,'/') !== false){
+		$string =  utf8_substr($string,utf8_strrpos($string,'/')+1,utf8_strlen($string));	
+	}
+		
+	if($suffix != ''){
 		$pos = utf8_strrpos($string,$suffix);
-		if($pos !== false){
+		if($pos === false){
 			return $string;
 		}else{
-			utf8_substr($string,0,utf8_strrpos($string,$suffix)-1);
+			return utf8_substr($string,0,utf8_strrpos($string,$suffix));
 		}
 	}
+	
+	return $string;
 }
 function utf8_getFileName($string){
 	$name = utf8_basename($string);

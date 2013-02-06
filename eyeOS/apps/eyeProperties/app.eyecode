@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -33,9 +33,10 @@ function eyeProperties_run($params=null) {
 	$myWindow->show();
 	$mime = getConfig('mime','mime.xml');
 	$info = utf8_pathinfo($file);
+	$extension = utf8_strtolower($info['extension']);
 	$icon='unknown';
 	foreach($mime['mimeTypes'][0]['mime'] as $value) {
-		if($value['extension'][0] == $info['extension']) {
+		if($value['extension'][0] == $extension) {
 			$icon = $value['type'][0];
 		}
 	} 
@@ -76,7 +77,7 @@ function eyeProperties_run($params=null) {
 	);
 		
 	$myImage = new Imagebox(array('name'=>'image','father'=>'prop_Content',
-		'url'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
+		'url'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/48x48/filetypes/'.$icon.'.png',
 		'x'=>15,'y'=>15));
 	$myImage->show();
 

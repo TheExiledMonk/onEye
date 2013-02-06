@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -38,6 +38,7 @@ $myTextbox_username = new Textbox(array(
 	'y' => $ContentY
 ));
 $myTextbox_username->show();
+$myTextbox_username->focus();
 $ContentY = $ContentY + 30;
 // Password
 $myLabel = new Label(array(
@@ -92,13 +93,13 @@ $myTextbox_fullname = new Textbox(array(
 ));
 $myTextbox_fullname->show();
 $ContentY = $ContentY + 30;
-// Email
+// E-mail
 $myLabel = new Label(array(
 	'name' => 'eyeControl_newuser_label_email',
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
-	'text' => 'Email'
+	'text' => 'E-mail'
 ));
 $myLabel->show();
 $myTextbox_email = new Textbox(array(
@@ -158,7 +159,7 @@ $myButton = new Button(array(
 // Add all groups as Checkbox to $myWindow
 $ContentY_win = 0;
 $dir = EYE_ROOT . '/' . GROUPS_DIR . '/';
-$openDir = vfs('real_getDirContent',array($dir));
+$openDir = vfs('real_getDirContent',array($dir,'*',2));
 foreach ($openDir as $group) {
 	if (is_dir($group)) {
 		$group = utf8_basename($group);

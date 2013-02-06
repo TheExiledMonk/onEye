@@ -6,16 +6,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License (GPL)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -154,6 +154,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myContent.style.position = 'absolute';
 	} else {
 		var myButton = document.createElement('button');
+		myButton.setAttribute('id',name);
 		caption = tinyMCE.entityDecode(caption);
 		theText=document.createTextNode(caption);
 		myButton.appendChild(theText);
@@ -165,17 +166,17 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	if(myWidth > 0) {
 		if(myImg != "") {
-			myContainer.style.width = myWidth;
+			myContainer.style.width = myWidth+'px';			
 		} else {
-			myButton.style.width = myWidth;
+			myButton.style.width = myWidth+'px';			
 		}
 	} 
 	
 	if(myHeight > 0) {
 		if(myImg != "") {
-			myContainer.style.height = myHeight;
+			myContainer.style.height = myHeight+'px';
 		} else {
-			myButton.style.height = myHeight;
+			myButton.style.height = myHeight+'px';
 		}
 	}
 	
@@ -198,7 +199,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			myContainer.onclick = function(){sendMsg(checknum,sig,myParam)};				
 		}
 	}
-	myButton.setAttribute('id',name);
+	
 	myContainer.appendChild(myButton);
 	if(myContent) {
 		myContainer.appendChild(myContent);
@@ -385,7 +386,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		for(x=0;x<5;x++)
 		{
 			var weekMonth = document.createElement('div');
-			weekMonth.style.width = '100%';
+			weekMonth.style.width = '99%';
 			weekMonth.style.height = '16%';
 			weekMonth.style.position = 'absolute';
 			weekMonth.style.top = top+'%';
@@ -404,9 +405,8 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 				weekDay.style.position = 'absolute';
 				weekDay.style.left = left+'%';
 				weekDay.style.width = '9%';
-				weekDay.style.height = '100%';
 				weekDay.style.textAlign = 'center';
-				weekDay.style.height = '100%';
+				weekDay.style.height = '90%';
 				weekDay.style.fontSize = '10px';				
 				weekDay.style.fontFamily = 'verdana';
 				weekDay.style.color = dayColors[count];
@@ -619,6 +619,13 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
 	var flashParamsNames = getArrayArg(params["flashParamsNames"]);
 	var flashParamsValues = getArrayArg(params["flashParamsValues"]);
+	var flashvars = '';
+	
+	for(key in flashParamsNames){
+		if (flashParamsNames[key].toLowerCase() == "flashvars") {
+			flashvars = "?"+flashParamsValues[key];
+		}
+	}
 	
 	if (IEversion == 0) {
 		var myFlash = document.createElement("object");
@@ -642,13 +649,47 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myFlash.setAttribute('id', name);
 		myFlash.setAttribute('width',width);
 		myFlash.setAttribute('height',height);
-		myFlash.innerHTML = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="'+width+'" height="'+height+'" data="'+src+'" type="application/x-shockwave-flash">';
-		myFlash.innerHTML += '<param name="movie" value ="'+src+'">';	
+		
+		//FIXME! NON STANDARD METHOD (<embed> tag is deprecated)
+		//Should be replaced by an <object> element as soon as it is easily possible in IE...
+		var myEmbedObject = document.createElement("embed");
+		myEmbedObject.setAttribute('src', src+flashvars);
+		myEmbedObject.setAttribute('quality', 'high');
+		myEmbedObject.setAttribute('width', width);
+		myEmbedObject.setAttribute('height', height);
+		myEmbedObject.setAttribute('type', 'application/x-shockwave-flash');
+		myEmbedObject.setAttribute('style', 'position: absolute; top: 0; right: 0;');
+		myFlash.appendChild(myEmbedObject);
+		
+		/*var myFlashObject = document.createElement("object");
+		myFlash.appendChild(myFlashObject);
+		myFlashObject.setAttribute('classid', 'clsid:d27cdb6e-ae6d-11cf-96b8-444553540000');
+		myFlashObject.setAttribute('codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0');
+		myFlashObject.setAttribute('width', width);
+		myFlashObject.setAttribute('height', height);
+		myFlashObject.setAttribute('data', src);
+		myFlashObject.setAttribute('type', 'application/x-shockwave-flash');
+		
+		var myTempParam = document.createElement("param");
+		myTempParam.setAttribute('name', 'movie');
+		myTempParam.setAttribute('value', src);
+		myFlashObject.appendChild(myTempParam);
+		for(key in flashParamsNames){
+			myTempParam = document.createElement("param");
+			myTempParam.setAttribute('name', flashParamsNames[key]);
+			myTempParam.setAttribute('value', flashParamsValues[key]);
+			myFlashObject.appendChild(myTempParam);
+		}
+		*/		
+		
+		//PREVIOUS METHOD [eyeOS 1.0-1.5] (WITH MISTAKES => UNABLE TO PASS PARAMETERS TO THE APPLET)
+		/*myFlash.innerHTML = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="'+width+'" height="'+height+'" data="" type="application/x-shockwave-flash">';
+		myFlash.innerHTML += '<param name="movie" value ="'+src+flashvarsValue+'">';	
 		for(key in flashParamsNames){
 			myFlash.innerHTML += '<param name="'+flashParamsNames[key]+'" value="'+flashParamsValues[key]+'">';
 		}	
 		myFlash.innerHTML += '<embed src="'+src+'" quality="high" width="'+width+'" height="'+height+'" type="application/x-shockwave-flash" style="position: absolute; top: 0; right: 0;"></embed>';
-		myFlash.innerHTML += '</object>';
+		myFlash.innerHTML += '</object>';*/
 	}
 	createWidget(name+'_Container',father,myFlash,horiz,vert,x,y,width,height,"eyeFlash",cent);
 }
@@ -678,6 +719,9 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	var myOnLoad = params["myonload"];
 	var realname = params["realname"];
 	var overBorder = params["overBorder"];
+	var overBorderBackground = params["overBorderBg"];
+	var overBorderColor = params["overBorderColor"];
+	var textColor = params["textColor"];		
 	
 	var myGlobalContainer = document.createElement('div');
 	myGlobalContainer.style.width='65px';
@@ -702,7 +746,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	myIconText.className = 'eyeIcon_Text';
 	myIconText.setAttribute('align','center');
 	myIconText.setAttribute('id',name+'_text');
-	myIconText.style.width = '65px';
+	myIconText.style.width = '65px';	
 	
 	text = tinyMCE.entityDecode(text);
 	var theText = document.createTextNode(text);
@@ -720,8 +764,8 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	realname = tinyMCE.entityDecode(realname);
 	if(overBorder != 0) {
 		myGlobalContainer.onmouseover = function() {
-			myGlobalContainer.style.border = '1px solid #9ec8fb';
-			myGlobalContainer.style.backgroundColor = '#c7ddf8';
+			myGlobalContainer.style.backgroundColor = overBorderBackground;
+			myGlobalContainer.style.border = overBorderColor;
 			myIconText.innerHTML = "";
 			myIconText.appendChild(document.createTextNode(realname));
 		}
@@ -731,14 +775,17 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 			myGlobalContainer.style.backgroundColor = 'transparent';
 			myIconText.innerHTML = "";
 			myIconText.appendChild(document.createTextNode(text));
-		}
+		}		
 		myGlobalContainer.style.border = '1px solid transparent';
 	}
 	
 	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0);
-	if (draggable==1) {
-		makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
-	}	
+	var globalContainer = xGetElementById(name+'_Container');
+	globalContainer.checknum = checknum;
+	globalContainer.style.color = textColor;
+	if (draggable==1) {			
+			makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
+	}
 	if(onclick==1){
 		myGlobalContainer.onclick = function(){
 			var myContent = getArrayArg(content); 
@@ -750,6 +797,375 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 		}
 	}
 }
+widgetDrop_behaviours = [];
+widgetDrops_ie = [];
+dropIndex = 400;
+function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
+	//I don't know how it works under ie 8
+	if(IEversion > 1 && IEversion < 8){		
+		if(!widgetDrops_ie[checknum]){
+			widgetDrops_ie[checknum] = [];
+		}		
+		widgetDrops_ie[checknum].push(father);		
+	}
+	
+	var widget = xGetElementById(father);
+	var cOrder = params['cOrder'];
+	var callback = params['callback'];
+	var signal = params['signal'];	
+	var sender = params['sender'];
+	var mySelf = params['mySelf'];
+	
+	//This is a wrapper function for handle the differents options when drop happens
+	var widgetDrop = function widgetDrop(drop,drag,x,y,event){				
+		//If cOrder is 1 or 3, callback is called before send the msg.
+		if(drag.id && drop.id){
+			 if(drag.id == drop.id && mySelf == false){
+			 	return true;
+			 }
+		}
+		if((cOrder == 1 || cOrder == 3) && callback){			
+			_execDropCallback(callback,drop,drag,x,y,event,checknum,1);			
+		}
+		//If sendMsg is true, a msg will be send
+		if(signal){
+			if(drop.content){				
+				var myContent = getArrayArg(drop.content); 
+				var result = '';
+				for (var i in myContent) {
+					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
+				}					
+				sendMsg(checknum,signal,result);
+			}
+		}
+		if(sender){
+			if(drag.content){
+				var myContent = getArrayArg(drag.content); 
+				var result = '';
+				for (var i in myContent) {
+					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
+				}
+				sendMsg(drag.checknum,sender,result);
+			}	
+		}
+		if(widgetDrop_behaviours[name]){			
+			try{
+				eval("var behaviour = new "+widgetDrop_behaviours[name][0]+"('"+name+"');");
+				behaviour.start(drop,drag,x,y,event,checknum);
+			}catch(err){
+				//waiting to eyeOS debug system
+			}
+		}
+		//If cOrder is 2 or 3, callback is called after sendMsg
+		if((cOrder == 2 || cOrder == 3) && callback){			
+			_execDropCallback(callback,drop,drag,x,y,event,checknum,2);
+		}
+	}
+	function _execDropCallback(callback,drop,drag,x,y,event,checknum,num){		
+		if(typeof(callback) == 'string'){
+			try{
+				eval(callback);					
+			}catch(err){								
+			}
+		}else{
+			callback(drop,drag,x,y,event,checknum,num);
+		}
+	}
+	xEnableDrop(widget,widgetDrop);
+}
+
+function addDropBehaviour(params,name,type){		
+	//Adding the behaviour to behaviour array		
+	try{
+		//NOTE: I eval the classes directly for javascript load problems (in each browser is different)				
+		widgetDrop_behaviours[name] = [];		
+		widgetDrop_behaviours[name][0] = type;
+		widgetDrop_behaviours[name][1] = params;
+	}catch(err){
+		//Waiting to eyeOS debug 
+		try{
+			console.log(err);
+		}catch(err){
+			//none
+		}
+	}
+}
+
+function widgetDrop_simpleMenu(name){
+	this.params = widgetDrop_behaviours[name][1];
+	this.start = function start(drop,drag,x,y,event,checknum){
+		this.action(drop,drag,x,y,event,checknum);
+	}
+	this.action = function (drop,drag,x,y,event,checknum){
+		//If drag have content
+		if(drop.father == drag.father){
+			return false;
+		}
+		var result = '';
+		var i = 1;
+		if(drag.content){
+			var myContent = getArrayArg(drag.content);
+			for (var x in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+				i++;
+			}	
+		}		
+		//if simpleMenu behaviour
+		if(this.params['content']){
+			var myContent = getArrayArg(this.params['content']);
+			for (var x in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+				i++;
+			}
+		}
+		sendMsg(checknum,this.params['signal'],result);
+		//mostramos menu
+		showSimpleMenu(event,this.params['widgetId']);
+	}
+}
+
+function widgetDrop_simpleMsg(name){
+	this.params = widgetDrop_behaviours[name][1];
+	this.start = function start(drop,drag,x,y,event,checknum){
+		this.action(drop,drag,x,y,event,checknum);
+	}
+	this.action = function (drop,drag,x,y,event,checknum){
+		//If drag have content
+		if(drop.father == drag.father || !drag.myPid){		
+			return false;
+		}
+		var result = '';
+		var i = 0;
+		if(drag.content){
+			var myContent = getArrayArg(drag.content);
+			for (var x in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+				i++;
+			}	
+		}		
+		if(this.params['content']){						
+			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params['content']));
+			i++;
+		}		
+		sendMsg(checknum,this.params['signal'],result);
+	}
+}
+
+function moveAndClick(name){		
+	this.params = widgetDrop_behaviours[name][1];	
+	this.start = function start(drop,drag,x,y,event,checknum){		
+		if(!drag.myPid){			
+			return false;
+		}
+		var dropPid = this.params['pid'];
+		var iconPid = drag.myPid;		
+		//If drag is an eyeFiles icon child, only move it
+		//If not is a child, trhow th emenu		
+		if(dropPid == iconPid){		
+			this.moveAction(drop,drag,x,y,event,checknum);
+		}else{
+			this.menuAction(drop,drag,x,y,event,checknum);
+		}
+	}	
+	this.moveAction = function moveAction(drop,drag,x,y,event,checknum){
+		this.moveUpdate(drag.id,xLeft(drag),xTop(drag),drag.diffX,drag.diffY,drag.checknum,drag.content);
+		drag.style.left = drag.diffX+'px';
+		drag.style.top = drag.diffY+'px';
+	}
+	this.menuAction = function menuAction(drop,drag,x,y,event,checknum){		
+		var result = '';
+		var i = 0;				
+		if(drag.content){			
+			var myContent = getArrayArg(drag.content);
+			for (var x in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
+				i++;
+			}	
+		}		
+		if(this.params['content']){						
+			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params['content']));
+			i++;
+		}
+		
+		sendMsg(checknum,this.params['signal'],result);
+	}
+	this.moveUpdate = function moveUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
+		var minDiff = 0;//hardcoded at the moment
+		var movedX = newX - ancientX;
+		var movedY = newY - ancientY;
+		var myContent = getArrayArg(content);
+				
+		/*var result="";
+		for (var i in myContent) {
+			result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
+		}*/
+		
+		if ((movedX > minDiff || movedX < (minDiff)) || ((movedY > minDiff || movedY < minDiff))) {
+			var sendxml = eyeParam('eyeArg',eyeParam('content',myContent[0])+eyeParam('newX',newX)+eyeParam('newY',newY),1);
+			sendMsg(checknum,'Icon_Moved',sendxml);
+		}
+	}
+}
+
+
+//Handle drag and drop callbacks
+
+	
+//ele = the element that the callback will be applied
+//dragWidget = the widget that will be moved with drag & drop action
+//contnet = the information that will recive the drop object
+//checknum = checknum, needed for sendMsg
+//clickCallback = if the user only click, it can activate a callback
+//clickSignal = if the user only click, a msg is send
+//cursor = the cursor that will be setted on global father (eyeapps)
+//cursorPos = 0: natural position, 1: the mouse is in the top-left corner.
+//overload = When overload is true, only the *Back functions are called. 
+//params,name,father,x,y,horiz,vert,checknum
+
+function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){	
+	//Initialing some local vars, needed in some browsers for share it between subfunctions	
+	var widget= xGetElementById(father);
+	
+	var dragWidget = xGetElementById(father).cloneNode(true);
+	var dragCssNames = getArrayArg(params['dragCssNames']);
+	var dragCssContent = getArrayArg(params['dragCssContent']);
+	
+	var content = params['content'];
+	var clickCallback = params['clickCallback']; 
+	var clickSignal = params['clickSignal']; 
+	var cursor = params['cursor']; 
+	var cursorPos = params['cursorPos'];
+	var dragAlpha = params['dragAlpha'];
+	var myPid = params['myPid'];
+		
+	widget.myPid = myPid;
+	widget.drag = dragWidget;
+	widget.father = father;
+	widget.content = content;
+	
+	var startX = 0;
+	var startY = 0; 
+	var cursorBack = '';
+	
+	var xBack = widget.style.left;
+	var yBack = widget.style.top;	
+	
+	var dragStarted = false;
+	
+	//This is called when user mousedown in a drag element
+	var widgetDragStart = function widgetDragStart(ele,mouseX,mouseY,event){			
+		//If overLoad is true, call only the start callback function		
+		//Restarting the initial values
+		
+		dragWidget.style.left = xBack;
+		dragWidget.style.top = yBack;		
+						
+		startX = 0;
+		startY = 0;
+		widget.diffX = xLeft(widget);
+		widget.diffY = xTop(widget);
+		
+		//The drag don't start if the mouse isn't moved
+		dragStarted = false;		
+		
+		//Respect where de user click in the drag object
+		
+		try{
+			var left = xGetElementById('eyeApps').style.marginLeft;
+			left = left.substr(0,left.length - 2);
+		}catch(err){
+			var left = null;
+		}
+		if(cursorPos == 0 && !left){
+			startX = mouseX-event.offsetX;
+			startY = mouseY-event.offsetY;
+		//Position the mouse in the corner
+		}else if(cursorPos == 0 && left){
+			startX = mouseX-event.offsetX;
+			startX = startX -left;
+			startY = mouseY-event.offsetY;
+		}else if(cursorPos == 1){
+			startX = mouseX;
+			startY = mouseY;
+		}
+	}
+	
+	//Called when dragWidget is moved (onmousemove)
+	var widgetDragMove = function widgetDragMove(ele,mouseDX,mouseDY,bWithinRect,xEventObj){		
+		
+		//If the drag isn't started, start it. Set some vars and create the real dragWidget		
+		if(dragStarted == false){			
+			dragStarted = true;//Now drag is started because mouse is moved 
+												
+			var eyeApps = xGetElementById('eyeApps');//Getting global father
+			
+			//Setting the style
+			eyeApps.style.cursor = cursor;
+			dragWidget.style.cursor = cursor
+			
+			//Moving the dragWidget to start position		
+			xMoveTo(dragWidget,startX,startY);
+					
+			//Adding it to global father
+			dragWidget.setAttribute('id',father+'_drag');//Setting a unique id			 
+			eyeApps.appendChild(dragWidget);
+			xZIndex(dragWidget, zindex);zindex++;//Moving  it on top of layers
+			//updating the css style if it is set
+			if(dragCssNames){
+				for (var i in dragCssNames) {						
+					updateCss(dragWidget.id,dragCssNames[i],dragCssContent[i]);
+				}
+			}
+			if(dragAlpha){
+				updateOpacityOnce(dragAlpha,dragWidget.id);
+			}
+			
+		//If drag is started, only move the dragWidget		
+		}else{									
+			//Moving seamless
+			widget.diffX +=  mouseDX;
+			widget.diffY +=  mouseDY;
+			xMoveTo(dragWidget,xLeft(dragWidget)+mouseDX,xTop(dragWidget)+mouseDY);
+		}
+	}
+	//This is called when user "mouseup" the cursor.
+	var widgetDragEnd = function widgetDragEnd(ele,mouseX,mouseY,xEventObj){		
+		//If drag isn't started, only simulate a click with a custom function.		
+		if(dragStarted == false){			
+			//If callback is passed as argument, call it
+			if(clickCallback){
+				_execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj);
+			}		
+			
+			var myContent = getArrayArg(content);
+			var result = '';
+			for (var i in myContent) {
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
+			}
+			if(clickSignal){
+				sendMsg(checknum,clickSignal,result);
+			}
+		//If drag started, restart the initial values
+		}else{			
+			dragWidget.parentNode.removeChild(dragWidget);			
+		}
+		xGetElementById('eyeApps').style.cursor=cursorBack;
+	}
+	
+	xEnableDrag(widget,widgetDragStart,widgetDragMove,widgetDragEnd,'eyeApps');	
+}
+
+function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){
+	if(typeof(callback) == 'string'){
+		try{
+			eval(callback);					
+		}catch(err){								
+		}
+	}else{
+		callback(ele,mouseX,mouseY,xEventObj);
+	}
+}
+
 function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
 	var movedX = newX - ancientX;
 	var movedY = newY - ancientY;
@@ -876,10 +1292,6 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	createWidget(name+'_Container',father,myDiv,horiz,vert,x,y,-1,-1,"eyeRadio",cent);
 }
-function SDI_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var docType = params["docType"];
-	Window_show(params,name,father,x,y,horiz,vert,checknum,cent);
-}
 function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
 	var mywidth = params["width"];
@@ -898,7 +1310,8 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		mySelect.style.width = mywidth+'px';	
 	}
 	mySelect.setAttribute('id',name);
-	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"eyeSelect",cent);
+	mySelect.className = 'eyeSelect';
+	createWidget(name+'_Container',father,mySelect,horiz,vert,x,y,-1,-1,"",cent);
 }
 function Slider_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var minValue = params["minValue"];
@@ -1516,6 +1929,7 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var sortypes = getArrayArg(params["sortypes"]);
 	var master = params["master"];
 	var realName = params["realName"];
+	var tBorder = params["border"];
 	var oTable = document.createElement("TABLE");
 	var oTHead = document.createElement("THEAD");
 	var oTBody = document.createElement("TBODY");
@@ -1523,6 +1937,10 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	widget.style.width=width+sizeUnit;
 	widget.style.height=height+sizeUnit;
 	widget.className='sort-table-container';
+	widget.setAttribute('id',name+'_generalContainer');
+	if(tBorder != 1) {
+		widget.style.border = '0px';
+	}
 	var oRow, oCell;
 	var i,j;
 	var myRows;
@@ -2234,14 +2652,21 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var Wwidth = params["width"];
 	var Hheight = params["height"];
 	var rich = params["rich"];
+	var code = params["code"];
+	var lang = params["lang"];
 	var rows = params["rows"];
 	var cols = params["cols"];
 	var enabled = params["enabled"];
 	var CcssClass = params["cssClass"];
 
 	var myTextarea = document.createElement('textarea');
-	myTextarea.setAttribute('id',name);
-	myTextarea.setAttribute('name',name);
+	if(code == 1) {
+		myTextarea.id = name + '_cp';
+		myTextarea.name = name + '_cp';
+	} else {
+		myTextarea.setAttribute('id',name);
+		myTextarea.setAttribute('name',name);
+	}
 	if (rows) {
 		myTextarea.setAttribute('rows',rows);
 	}
@@ -2270,6 +2695,11 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	if (rich == 1) {
 		tinyMCE.execCommand('mceAddControl', false, name);
+	} else if(code == 1) {
+			myTextarea.className ='codepress '+lang;
+			eval("cp_"+name+" = new CodePress('"+myTextarea.id+"');");
+			CodePress.path = 'index.php?extern=libs/eyeWidgets/codepress/';
+			myTextarea.parentNode.insertBefore(eval("cp_"+name), myTextarea);
 	}
 }function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = tinyMCE.entityDecode(params["text"]);
@@ -2311,7 +2741,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent);
 }activeWindow = "";
-zwindows = 10;
+
 min_apps_width = 100;
 min_apps_height = 70;
 minspace=new Array();
@@ -2345,16 +2775,38 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var saveFunc = params["saveFunc"];
 	var xChecknum = params["xChecknum"];	
 	var sigClose = params["sigClose"];
+	var dragBgColor = params["dragBgColor"];
+	var dragBgAlpha = params["dragBgAlpha"];
+	var showDragContent = params["showDragContent"];
+	var noZindex = params['noZindex'];
+	var allDrag = params['allDrag'];
+	
+	//Css classes for each window part	
+	var wCssMain = params['wMain'];
+	var wCssTitle = params['wTitle'];
+	var wCssTitleRight = params['wTitleRight'];
+	var wCssTitleLeft = params['wTitleLeft'];
+	var wCssTitleCenter = params['wTitleCenter'];
+	var wCssTitleText = params['wTitleText'];
+	var wCssBottomCenter = params['wBottomCenter'];
+	var wCssBottomRight = params['wBottomRight'];
+	var wCssBottomLeft = params['wBottomLeft'];
+	var wCssLeft = params['wLeft'];
+	var wCssRight = params['wRight'];
+	var wCssContent = params['wContent'];
+	
 	var theText = document.createTextNode('');
-	createWidget(name,father,theText,horiz,vert,x,y,width,height,"eyeWindowMain",cent);
-	
-	//createWidget (widgetid,father,content,horiz,vert,wx,wy,wwidth,wheight,wclass)
-	
+	var createdWindow = createWidget(name,father,theText,horiz,vert,x,y,width,height,wCssMain,cent);
+
+	createdWindow.dragBgColor = dragBgColor;
+	createdWindow.dragBgAlpha = dragBgAlpha;
+	createdWindow.showDragContent = showDragContent;
+	//Getting window for set a few properties
 	title = tinyMCE.entityDecode(title);
 	
 	if (type == 2) {
 		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
-		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
+		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex);
 	} else if ((type == 3 || type == 4) && background != "") {
 		var myImage = document.createElement('img');
 		myImage.setAttribute('id',name+'_background');
@@ -2364,9 +2816,9 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myDiv.appendChild(myImage);
 		createWidget(name+"_Content",name,myDiv,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
 		if(type == 3) {
-			makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
+			makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag);
 		} else {
-			makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
+			makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag);
 		}
 		
 		if (IEversion != 0) {
@@ -2374,21 +2826,21 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		}
 	} else {
 		/* CreateWidgets for Title Bar */
-		createWidget(name+"_WindowTitle",name,theText,0,0,-1,-1,-1,-1,"eyeWindowTitle",0);
-		createWidget(name+"_WindowTitle_border_right",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_border_right",0);
-		createWidget(name+"_WindowTitle_border_left",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_border_left",0);
-		createWidget(name+"_WindowTitle_center",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,"eyeWindowTitle_center",0);
-		createWidget(name+"_WindowTitle_text",name+"_WindowTitle",document.createTextNode(title),0,0,-1,-1,-1,-1,"eyeWindowTitle_text",0);
+		createWidget(name+"_WindowTitle",name,theText,0,0,-1,-1,-1,-1,wCssTitle,0);
+		createWidget(name+"_WindowTitle_border_right",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,wCssTitleRight,0);
+		createWidget(name+"_WindowTitle_border_left",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,wCssTitleLeft,0);
+		createWidget(name+"_WindowTitle_center",name+"_WindowTitle",theText,0,0,-1,-1,-1,-1,wCssTitleCenter,0);
+		createWidget(name+"_WindowTitle_text",name+"_WindowTitle",document.createTextNode(title),0,0,-1,-1,-1,-1,wCssTitleText,0);
 		/* CreateWidgets for Window Bottom */
-		createWidget(name+"_WindowBottom_center",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_center",0);
-		createWidget(name+"_WindowBottom_right",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_right",0);
-		createWidget(name+"_WindowBottom_left",name,theText,0,0,-1,-1,-1,-1,"eyeWindowBottom_left",0);
+		createWidget(name+"_WindowBottom_center",name,theText,0,0,-1,-1,-1,-1,wCssBottomCenter,0);
+		createWidget(name+"_WindowBottom_right",name,theText,0,0,-1,-1,-1,-1,wCssBottomRight,0);
+		createWidget(name+"_WindowBottom_left",name,theText,0,0,-1,-1,-1,-1,wCssBottomLeft,0);
 		/* Left */
-		createWidget(name+"_WindowLeft",name,theText,0,0,-1,-1,-1,-1,"eyeWindowLeft",0);
+		createWidget(name+"_WindowLeft",name,theText,0,0,-1,-1,-1,-1,wCssLeft,0);
 		/* Right */
-		createWidget(name+"_WindowRight",name,theText,0,0,-1,-1,-1,-1,"eyeWindowRight",0);
+		createWidget(name+"_WindowRight",name,theText,0,0,-1,-1,-1,-1,wCssRight,0);
 		/* CreateWidgets for Window Content */
-		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContent",0);
+		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,wCssContent,0);
 		
 		if (showtitle == 0) {
 			showtitle = null;
@@ -2457,11 +2909,11 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			nodrag = 0;
 		}
 		
-		makeWindow(name,title,father,"",checknum,max,resize,showtitle,close,min,listed,nodrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
+		makeWindow(name,title,father,"",checknum,max,resize,showtitle,close,min,listed,nodrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag);
 	}
 }
 
-function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose) {	
+function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag) {	
 	var widget = xGetElementById(widgetid);
 	if (!widget) {
 		return;
@@ -2542,8 +2994,8 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 					widget.style.display = 'none';
 					barWin.className = "eyeWindowOnBar_Off";
 				}else{
-					xZIndex(widget, zwindows);
-					zwindows++;
+					xZIndex(widget, zindex);
+					zindex++;
 					activeWindow = this.id;
 				}
 			} else {
@@ -2551,6 +3003,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 				widget.style.display = 'block';
 				barWin.className = "eyeWindowOnBar_On";
 				activeWindow = this.id;
+				xZIndex(widget, zindex);zindex++;
 			}
 		}
 		barWin.onclick = barWinOnClick;	
@@ -2611,7 +3064,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 		}
 		cBtn.onclick = closeOnClick;
 	}
-	
+		
 	if (rBtn){
 		if(sendResizeMsg==1) {
 			xEnableDrag(rBtn, wndsresize, resOnDrag, wndresize);
@@ -2619,32 +3072,44 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	}
 	
 	function wndsresize() {
-		document.getElementById(widgetid+'_Content').style.display = 'none';
+		if(!xGetElementById(widgetid).showDragContent){
+			widgetDragStart(widgetid);
+		}		
 	}
 	
 	function wndresize() {
-		document.getElementById(widgetid+'_Content').style.display = 'block';
+		widgetDragEnd(widgetid);
 		var wWidth = xWidth(widgetid);
 		var wHeight = xHeight(widgetid);
 		var myParams = eyeParam('arg',wWidth)+eyeParam('arg',wHeight);
 		sendMsg(checknum,sigResize,myParams);
 	}
 
-	if (barId) {
+	if (barId && !notDrag && !allDrag) {
 		xEnableDrag(barId, begindrag, barOnDrag, callafterfunction);
-	} else if(!notDrag) {
-		xEnableDrag(widget,null,barOnDrag, callafterfunction);
 	}
-	
+	if (allDrag && !notDrag) {
+		xEnableDrag(widget, begindrag, barOnDrag, callafterfunction);
+	}	
 	function begindrag() {
-		//document.getElementById(widgetid+'_Content').style.display = 'none';
+		if(!xGetElementById(widgetid).showDragContent){
+			widgetDragStart(widgetid);
+		}
 	}
 	
 	function GoToTop()
 	{
 		activeWindow = this.id; //Set window active.
-		xZIndex(widget, zwindows);
-		zwindows++;
+		if(!noZindex){
+			xZIndex(widget, zindex);
+			zindex++;
+			if(widgetDrops_ie[checknum]){
+				for (var x in widgetDrops_ie[checknum]){
+					var widgetX = xGetElementById(widgetDrops_ie[checknum][x]);
+					xZIndex(widgetX, dropIndex);dropIndex++;
+				}
+			}
+		}		
 	}
 	
 	function barOnDrag(e, mdx, mdy)
@@ -2669,7 +3134,10 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	}
 	
 	function callafterfunction()
-	{
+	{		
+		if(!xGetElementById(widgetid).showDragContent){
+			widgetDragEnd(widgetid);
+		}
 		if(savePosition == 1){
 			if(saveFunc != ''){
 				try{
@@ -2693,6 +3161,19 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	xShow(widget);
 }
 
+function widgetDragStart(widgetid){
+	document.getElementById(widgetid+'_Content').style.display = 'none';	
+	var window = document.getElementById(widgetid);
+	window.style.backgroundColor = window.dragBgColor;
+	updateOpacityOnce(window.dragBgAlpha, window)
+}
+function widgetDragEnd(widgetid){
+	document.getElementById(widgetid+'_Content').style.display = 'block';
+	xShow(widgetid+'_Content');
+	var window = document.getElementById(widgetid);
+	window.style.backgroundColor = 'transparent';
+	updateOpacityOnce(100, window)
+}
 function slideClose(fatherid,widgetid) {
 	
 	if (fatherid != "eyeApps" && fatherid != "minimizedAppsIn" && fatherid != "minimizedApps") {
@@ -2806,24 +3287,37 @@ function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myBar = document.createElement('div');
 	myBar.setAttribute('id',name);
 	myBar.className = 'blockbar';
+	myBar.paintClick = params['paintOnClick'];	
+	myBar.select = params['select'];
 	obj.appendChild(myBar);
 }
 
-function addLineToBar(mibarra) {
-//c7c7c7
-	var obj = document.getElementById(mibarra);
+function addLineToBar(myToolbar) {
+	var obj = document.getElementById(myToolbar);
 	var container = document.createElement('div');	
 	container.className = 'blockbarline';
 	container.innerHTML = '&nbsp;';
 	obj.appendChild(container);
 }
 
-function addItemToBar(mibarra,itemName,itemImg,itemText,sync,checknum) {
-	var obj = document.getElementById(mibarra);
+function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum) {
+	var obj = document.getElementById(myToolbar);
+	var paintClick = obj.paintClick;
+	var select = obj.select;
+		
 	var container = document.createElement('div');
 	var myFriends = Base64.decode(sync);
 	container.setAttribute('id',itemName+'_Container');
 	container.className = 'blockbarItem';
+	
+	if(paintClick == 1){		
+		container.onmousedown = function(){			
+			container.className = 'blockbarItemPress';			
+		}
+		container.onmouseup = function(){
+			container.className = 'blockbarItem';
+		}
+	}		
 	
 	var myImg = document.createElement('img');
 	myImg.setAttribute('id',itemName+'_img');
@@ -2856,11 +3350,11 @@ nodeBulletClass="liBullet";
 nodeLinkClass="bullet";
 preProcessTrees=true;
 
-function Tree(padre, signal, checknum, nombre, alto, ancho, x, y, clickTree,sync) {
-	this.father = padre;
-	this.name = nombre;
-	this.myHeight = alto;
-	this.myWidth = ancho;
+function Tree(father, signal, checknum, name, height, width, x, y, clickTree,sync) {
+	this.father = father;
+	this.name = name;
+	this.myHeight = height;
+	this.myWidth = width;
 	this.h = x;
 	this.v = y;
 	this.mySignal = signal;
@@ -2932,6 +3426,20 @@ Tree.prototype.getValue = function(e) {
 
 Tree.prototype.listOnClick = function(e) {
 	var el = e.target || e.srcElement;
+	var itemName;
+	this.selectItem(el);
+	var myValue = this.getValue();
+	if(this.myClickTree == 1) {
+		//send the path to the clicked element + its internal name
+		if (el.tagName == 'LI')
+			itemName = el.id.substring(6,el.id.length);							//simple item
+		else
+			itemName = el.parentNode.id.substring(6,el.parentNode.id.length);	//sublist
+		sendMsg(this.myChecknum,this.mySignal,eval(this.mySync)+eyeParam('itemName',itemName));
+	}
+}
+
+Tree.prototype.selectItem = function(el) {
 	if(el.tagName != "LI" && el.tagName != 'SPAN') {
 		return true;
 	}
@@ -2943,10 +3451,21 @@ Tree.prototype.listOnClick = function(e) {
 	}
 	this.lastClick = el;
 	el.style.backgroundColor = '#99CCFF';
-	var myValue = this.getValue();
-	if(this.myClickTree == 1) {
-		sendMsg(this.myChecknum,this.mySignal,eval(this.mySync));	
+}
+
+function selectTreeItem(list,name) {
+	var item = document.getElementById(name);
+	if (item == null) { return false; }
+	if(item.className == 'liOpen' || item.className == 'liClosed') {
+		for(var i=0; i<item.childNodes.length; i++) {
+			if (item.childNodes[i].tagName == 'SPAN') {
+				item = item.childNodes[i];
+				break;
+			}	
+		}
 	}
+	expandToItem(list,name);
+	eval('tree_'+list+'.selectItem(item)');
 }
 
 function addSubList(list,name) {
@@ -2995,26 +3514,41 @@ function expandToItem(treeId,itemId) {
 // b) Collapse all nodes
 // c) Expand all nodes to reach a certain ID
 function expandCollapseList(ul,cName,itemId) {
-	if (!ul.childNodes || ul.childNodes.length==0) { return false; }
-	// Iterate LIs
-	for (var itemi=0;itemi<ul.childNodes.length;itemi++) {
-		var item = ul.childNodes[itemi];
-		if (itemId!=null && item.id==itemId) { return true; }
+	if (!ul.childNodes || ul.childNodes.length == 0) { return false; }
+	// Iterate UL's children
+	for (var i=0;i<ul.childNodes.length;i++) {
+		var item = ul.childNodes[i];
+		// Searched item has been reached
+		if (itemId != null && item.id == itemId) { return true; }
+		
+		// Current item is a LI
 		if (item.nodeName == "LI") {
 			// Iterate things in this LI
-			var subLists = false;
-			for (var sitemi=0;sitemi<item.childNodes.length;sitemi++) {
-				var sitem = item.childNodes[sitemi];
-				if (sitem.nodeName=="UL") {
-					subLists = true;
-					var ret = expandCollapseList(sitem,cName,itemId);
+			var itemHasSubList = false;
+			var nbOfSubItems = 0;
+			for (var j=0; j<item.childNodes.length; j++) {
+				var subItem = item.childNodes[j];
+				// Current sub item is a potential list
+				if (subItem.nodeName=="UL") {
+					// The sublist has children items
+					if (subItem.childNodes.length > 0) {
+						nbOfSubItems = subItem.childNodes.length;
+					}
+					itemHasSubList = true;
+					var ret = expandCollapseList(subItem,cName,itemId);
 					if (itemId!=null && ret) {
 						item.className=cName;
 						return true;
 					}
 				}
+				else {
+					// The sub item is a final node
+					if (subItem.nodeName == "LI") {
+						nbOfSubItems = 1;
+					}
+				}
 			}
-			if (subLists && itemId==null) {
+			if (nbOfSubItems != 0 && itemHasSubList && itemId==null) {
 				item.className = cName;
 			}
 		}
@@ -3067,6 +3601,82 @@ function processList(ul) {
 	}
 }
 
+function SimpleMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var sFather = params["sFather"];
+	var myFather = params["mFather"];
+	var rFather = params['rFather'];
+	var obj = document.getElementById(father);	
+	if(!obj) { 		
+		return false;
+	}
+	
+	var myMenu = document.createElement('div');
+	myMenu.setAttribute('id',name);
+	myMenu.className = 'eyeContextMenu';
+	myMenu.style.display = 'none';
+	if(IEversion == 6){
+		myMenu.style.position = 'absolute';	
+	}else{
+		myMenu.style.position = 'fixed';	
+	}	
+	myMenu.style.zIndex = 9000000;
+	if(myFather) {
+		document.getElementById(myFather).appendChild(myMenu);
+	} else {
+		obj.appendChild(myMenu);
+	}
+	var openedDiv = name;
+	var codeClick = "hideSimpleMenu('"+name+"');";
+	addClickHandler(openedDiv,codeClick);
+}
+
+function showSimpleMenu(e,menuName,rFather) {
+	if(lastMenu != "") {
+		hideSimpleMenu(lastMenu);
+	}
+	lastMenu = menuName;
+	var top = e.pageY;
+	var left = e.pageX;
+	if(IEversion == 6){
+		var father = document.getElementById(rFather);		
+		top = e.offsetY;
+		left = e.offsetX;
+		top += xTop(father);
+		left += xLeft(father);		
+	}
+	myMenu = document.getElementById(menuName);
+	myMenu.style.top = top+'px';
+	myMenu.style.left = left+'px';
+	myMenu.style.display = 'block';
+}
+
+function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params) {
+	var obj = document.getElementById(menuName);
+	if(!obj) {
+		return false;
+	}
+	
+	var myEntry = document.createElement('div');
+	myEntry.setAttribute('id',entryName);
+	myEntry.className = 'eyeContextMenuEntry';
+	myEntry.innerHTML = text;
+	myEntry.onclick = function() { sendMsg(checknum,signal,params);};
+	myEntry.onmouseover = function () {
+		myEntry.style.backgroundColor = '#3B7CEF';
+	}
+	myEntry.onmouseout = function () {
+		myEntry.style.backgroundColor = 'white';
+	}
+	obj.appendChild(myEntry);
+}
+
+function hideSimpleMenu(menuName) {
+	obj = document.getElementById(menuName);
+	if(!obj) {
+		return;
+	}
+	document.getElementById(menuName).style.display='none';
+}
 
 function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var sFather = params["sFather"];

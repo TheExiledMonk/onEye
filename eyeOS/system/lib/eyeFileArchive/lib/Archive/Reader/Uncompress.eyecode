@@ -79,7 +79,7 @@ class File_Archive_Reader_Uncompress extends File_Archive_Reader_Relay
     var $baseDirCompressionLevel = null;
 
     /**
-     * @var int We are selecting utf8_substr($baseDir, 0, $baseDirProgression)
+     * @var int We are selecting substr($baseDir, 0, $baseDirProgression)
      */
     var $baseDirProgression = 0;
 
@@ -118,7 +118,7 @@ class File_Archive_Reader_Uncompress extends File_Archive_Reader_Relay
         // Check the extension of the file (maybe we need to uncompress it?)
         $filename  = $this->source->getFilename();
 
-        $extensions = explode('.', utf8_strtolower($filename));
+        $extensions = explode('.', strtolower($filename));
 
         $reader =& $this->source;
         $nbUncompressions = 0;
@@ -139,7 +139,7 @@ class File_Archive_Reader_Uncompress extends File_Archive_Reader_Relay
         } else {
             $this->readers[count($this->readers)] =& $this->source;
             unset($this->source);
-            $this->source = new File_Archive_Reader_Addutf8_basename(
+            $this->source = new File_Archive_Reader_AddBaseName(
                 $filename, $reader
             );
             return true;
@@ -157,7 +157,7 @@ class File_Archive_Reader_Uncompress extends File_Archive_Reader_Relay
 
         do {
             do {
-                $selection = utf8_substr($this->baseDir, 0, $this->baseDirProgression);
+                $selection = substr($this->baseDir, 0, $this->baseDirProgression);
                 if ($selection === false) {
                     $selection = '';
                 }
@@ -178,23 +178,23 @@ class File_Archive_Reader_Uncompress extends File_Archive_Reader_Relay
             } while (!$error);
 
             $filename = $this->source->getFilename();
-            if (utf8_strlen($filename) < utf8_strlen($this->baseDir)) {
-                $goodFile = (strncmp($filename, $this->baseDir, utf8_strlen($filename)) == 0 &&
-                             $this->baseDir{utf8_strlen($filename)} == '/');
+            if (strlen($filename) < strlen($this->baseDir)) {
+                $goodFile = (strncmp($filename, $this->baseDir, strlen($filename)) == 0 &&
+                             $this->baseDir{strlen($filename)} == '/');
                 if ($goodFile) {
-                    if (utf8_strlen($filename) + 2 < utf8_strlen($this->baseDirProgression)) {
-                        $this->baseDirProgression = utf8_strpos($this->baseDir, '/', utf8_strlen($filename)+2);
+                    if (strlen($filename) + 2 < strlen($this->baseDirProgression)) {
+                        $this->baseDirProgression = strpos($this->baseDir, '/', strlen($filename)+2);
                         if ($this->baseDirProgression === false) {
-                            $this->baseDirProgression = utf8_strlen($this->baseDir);
+                            $this->baseDirProgression = strlen($this->baseDir);
                         }
                     } else {
-                        $this->baseDirProgression = utf8_strlen($this->baseDir);
+                        $this->baseDirProgression = strlen($this->baseDir);
                     }
                 }
             } else {
-                $goodFile = (strncmp($filename, $this->baseDir, utf8_strlen($this->baseDir)) == 0);
+                $goodFile = (strncmp($filename, $this->baseDir, strlen($this->baseDir)) == 0);
                 if ($goodFile) {
-                    $this->baseDirProgression = utf8_strlen($this->baseDir);
+                    $this->baseDirProgression = strlen($this->baseDir);
                 }
             }
         } while ($goodFile && $this->push());
@@ -210,9 +210,9 @@ class File_Archive_Reader_Uncompress extends File_Archive_Reader_Relay
     function setBaseDir($baseDir)
     {
         $this->baseDir = $baseDir;
-        $this->baseDirProgression = utf8_strpos($baseDir, '/');
+        $this->baseDirProgression = strpos($baseDir, '/');
         if ($this->baseDirProgression === false) {
-            $this->baseDirProgression = utf8_strlen($baseDir);
+            $this->baseDirProgression = strlen($baseDir);
         }
 
         $error = $this->next();
@@ -223,7 +223,7 @@ class File_Archive_Reader_Uncompress extends File_Archive_Reader_Relay
         }
 
         $this->currentFileNotDisplayed = true;
-        return utf8_strlen($this->getFilename())>utf8_strlen($baseDir);
+        return strlen($this->getFilename())>strlen($baseDir);
     }
     /**
      * @see File_Archive_Reader::select()

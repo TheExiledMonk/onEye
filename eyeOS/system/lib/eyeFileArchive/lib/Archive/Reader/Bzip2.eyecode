@@ -104,11 +104,11 @@ class File_Archive_Reader_Bzip2 extends File_Archive_Reader_Archive
     function getFilename()
     {
         $name = $this->source->getFilename();
-        $pos = utf8_strrpos($name, ".");
+        $pos = strrpos($name, ".");
         if ($pos === false || $pos === 0) {
             return $name;
         } else {
-            return utf8_substr($name, 0, $pos);
+            return substr($name, 0, $pos);
         }
     }
     /**
@@ -122,21 +122,21 @@ class File_Archive_Reader_Bzip2 extends File_Archive_Reader_Archive
                 $newData = bzread($this->bzfile);
                 $data .= $newData;
             } while ($newData != '');
-            $this->filePos += utf8_strlen($data);
+            $this->filePos += strlen($data);
         } else if ($length == 0) {
             return '';
         } else {
             $data = '';
 
             //The loop is here to correct what appears to be a bzread bug
-            while (utf8_strlen($data) < $length) {
-                $newData = bzread($this->bzfile, $length - utf8_strlen($data));
+            while (strlen($data) < $length) {
+                $newData = bzread($this->bzfile, $length - strlen($data));
                 if ($newData == '') {
                     break;
                 }
                 $data .= $newData;
             }
-            $this->filePos += utf8_strlen($data);
+            $this->filePos += strlen($data);
         }
 
         return $data == '' ? null : $data;

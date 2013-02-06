@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -40,7 +40,10 @@ class Toolbar {
 	var $vert;
 	var $cent;
 	
-	var $showed = 0;
+	var $paintOnClick;
+	var $select;
+	
+	var $showed = 0;	
 	
 	function Toolbar($params) {	
 		global $myPid;
@@ -52,6 +55,8 @@ class Toolbar {
 		//generic widget options with default
 		isset($params['vert']) ? $this->vert = $params['vert'] : $this->vert = 0;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 0;
+		isset($params['paintOnClick']) ? $this->paintOnClick = $params['paintOnClick'] : $this->paintOnClick = 1;
+		isset($params['select']) ? $this->select = $params['select'] : $this->select = 0;
 	}
 	
 	//event handling
@@ -65,11 +70,12 @@ class Toolbar {
 	}
 
 	function show() {
-		if($this->title) {
+		/*if($this->title) {
 			$this->title = i18n('translate',array($this->title));
-		}
+		}*/
 		$widgetsparams = array(
-			'foo'=>'foo'
+			'paintOnClick'=>$this->paintOnClick,
+			'select'=>$this->select
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		

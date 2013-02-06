@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -84,8 +84,8 @@ class Imagebox {
 		isset($params['cssClass']) ? $this->myClass = $params['cssClass'] : $this->myClass = '';
 		isset($params['disableMsg']) ? $this->disableMsg = $params['disableMsg'] : $this->disableMsg = 1;
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;
-		if(strstr($params['url'],'index.php?extern=') && IE == 6) {
-			$realName = utf8_substr($params['url'],utf8_strlen("index.php?extern="));
+		if(strstr($params['url'],'extern=') && IE == 6) {
+			$realName = eyex('getRealFromExtern',array($params['url']));
 			$realName = EYE_ROOT.'/'.EXTERN_DIR.'/'.$realName;
 			$info = @getimagesize($realName);
 			$this->width = $info[0];

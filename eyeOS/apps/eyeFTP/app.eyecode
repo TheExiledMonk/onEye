@@ -7,24 +7,25 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
-/**
+
+/** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.0
- * @updated 12-Jan-2008
+ * @version 3.0.2
+ * @updated 22-Apr-2008
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);
@@ -51,12 +52,14 @@ define('EYEFTP_IMG_LOCALCMN_SENDTORIGHT', 'index.php?extern=apps/eyeFTP/gfx/tori
 define('EYEFTP_IMG_LOCALCMN_RENAME', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/rename.png');
 define('EYEFTP_IMG_LOCALCMN_DELETE', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png');
 
-define('EYEFTP_IMG_LOCALCMN_CREATEFOLDER', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/newfolder.png');
-define('EYEFTP_IMG_LOCALCMN_SENDTOLEFT', 'index.php?extern=apps/eyeFTP/gfx/toleft.png');
-define('EYEFTP_IMG_LOCALCMN_RENAME', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/rename.png');
-define('EYEFTP_IMG_LOCALCMN_DELETE', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png');
+define('EYEFTP_IMG_REMOTECMN_CREATEFOLDER', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/newfolder.png');
+define('EYEFTP_IMG_REMOTECMN_SENDTOLEFT', 'index.php?extern=apps/eyeFTP/gfx/toleft.png');
+define('EYEFTP_IMG_REMOTECMN_RENAME', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/rename.png');
+define('EYEFTP_IMG_REMOTECMN_DELETE', 'index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png');
 /*********************************************************************************************/
 
+define('EYEFTP_WINSIZE_WIDTH', 800);
+define('EYEFTP_WINSIZE_HEIGHT', 600);
 
 function eyeFTP_run($params=null) {
 	global $checknum, $myPid;
@@ -71,11 +74,12 @@ function eyeFTP_run($params=null) {
 	$mainWindow = new Window(array(
 		'name' => 'eyeFTP_WND',
 		'father' => 'eyeApps',
-		'type' => NORESIZE_WINDOW,
 		'cent' => 1,
-		'width' => 800,
-		'height' => 600,
-		'title' => 'eyeFTP'
+		'width' => EYEFTP_WINSIZE_WIDTH,
+		'height' => EYEFTP_WINSIZE_HEIGHT,
+		'title' => 'eyeFTP',
+		'sigResize' => 'windowResize',
+		'sendResizeMsg' => 1
 	));
 	$mainWindow->show();
 	
@@ -267,7 +271,7 @@ function eyeFTP_run($params=null) {
 	$localFilesTable->setCss(array('white-space' => 'nowrap'));
 	
 	
-	/* CONTAINER (LOCAL BROWSER / LEFT) */
+	/* CONTAINER (REMOTE BROWSER / RIGHT) */
 	$remoteBrowserContainer = new Container(array(
 		'name' => 'eyeFTP_remoteBrowser_CTNR',
 		'father' => 'eyeFTP_WND_Content',
@@ -276,7 +280,8 @@ function eyeFTP_run($params=null) {
 		'width' => 380,
 		'height' => 400
 	));
-	$remoteBrowserContainer->show();
+	$remoteBrowserContainer->show(0);
+	reqLib('eyeWidgets','serialize',array($remoteBrowserContainer));
 	
 	/* LOCAL HOME IMAGE BUTTON */
 	$remoteHomeButton = new Imagebox(array(
@@ -339,7 +344,7 @@ function eyeFTP_run($params=null) {
 		'signal' => 'eyeFTP_transferToRight_IMG',
 		'alt' => 'Transfer selected file to right'
 	));
-	$transferToRightButton->show();
+	$transferToRightButton->show(0);
 	$transferToRightButton->setCss(array('cursor'=>'Pointer'));
 	$transferToRightButton->addFriend($localFilesTable);
 	
@@ -353,7 +358,7 @@ function eyeFTP_run($params=null) {
 		'signal' => 'eyeFTP_transferToLeft_IMG',
 		'alt' => 'Download selected file to current local folder'
 	));
-	$transferToLeftButton->show();
+	$transferToLeftButton->show(0);
 	$transferToLeftButton->setCss(array('cursor'=>'Pointer'));
 	$transferToLeftButton->addFriend($remoteFilesTable);
 	
@@ -410,25 +415,25 @@ function eyeFTP_run($params=null) {
 	
 	//NEW FOLDER
 	$remoteFilesContextMenu->addEntry(
-		'<img src="'.EYEFTP_IMG_LOCALCMN_CREATEFOLDER.'" /> &nbsp; Create folder',
+		'<img src="'.EYEFTP_IMG_REMOTECMN_CREATEFOLDER.'" /> &nbsp; Create folder',
 		'eyeFTP_remoteFiles_CMN_createFolder_ENT',
 		'eyeFTP_remoteFiles_CMN_createFolder_ENT'
 	);
 	//DOWNLOAD
 	$remoteFilesContextMenu->addEntry(
-		'<img src="'.EYEFTP_IMG_LOCALCMN_SENDTOLEFT.'" /> &nbsp; Send to left',
+		'<img src="'.EYEFTP_IMG_REMOTECMN_SENDTOLEFT.'" /> &nbsp; Send to left',
 		'eyeFTP_remoteFiles_CMN_download_ENT',
 		'eyeFTP_remoteFiles_CMN_download_ENT'
 	);
 	//RENAME/MOVE
 	$remoteFilesContextMenu->addEntry(
-		'<img src="'.EYEFTP_IMG_LOCALCMN_RENAME.'" /> &nbsp; Rename/Move',
+		'<img src="'.EYEFTP_IMG_REMOTECMN_RENAME.'" /> &nbsp; Rename/Move',
 		'eyeFTP_remoteFiles_CMN_renameMove_ENT',
 		'eyeFTP_remoteFiles_CMN_renameMove_ENT'
 	);
 	//DELETE
 	$remoteFilesContextMenu->addEntry(
-		'<img src="'.EYEFTP_IMG_LOCALCMN_DELETE.'" /> &nbsp; Delete',
+		'<img src="'.EYEFTP_IMG_REMOTECMN_DELETE.'" /> &nbsp; Delete',
 		'eyeFTP_remoteFiles_CMN_delete_ENT',
 		'eyeFTP_remoteFiles_CMN_delete_ENT'
 	);*/

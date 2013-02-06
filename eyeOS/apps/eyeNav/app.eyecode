@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -33,16 +33,6 @@ function eyeNav_run($params = '') {
 	if (!vfs('fileExists',array(um('getCurrentUserDir') . 'conf/eyeNav/conf.xml'))) {
 		vfs('real_copy',array(EYE_ROOT . '/' . SYSTEM_DIR . '/conf/skel/' . CONF_USER_DIR . '/eyeNav/conf.xml',um('getCurrentUserDir') . 'conf/eyeNav/conf.xml'));
 	}
-	$config = eyeXML('getXMLconfig',array('eyeNav','conf.xml'));
-	
-	if ($params[0]) {
-		$startpage = $params[0];
-	} else {
-		$startpage = $config['eyeNav'][0]['home'][0];
-	}
-	if (!utf8_stristr($startpage,':')) {
-		$startpage = 'http://' . $startpage;
-	}
 	
 	$myWindow = new Window(array(
 		'name' => 'eyeNav_window',
@@ -52,7 +42,8 @@ function eyeNav_run($params = '') {
 		'width' => 800,
 		'height' => 600,
 		'sendResizeMsg' => 1,
-		'sigResize' => 'Resize'
+		'sigResize' => 'Resize',
+		'showDragContent'=>1
 	));
 	$myWindow->show();
 	
@@ -71,7 +62,7 @@ function eyeNav_run($params = '') {
 		'caption' => '',
 		'x' => 20,
 		'y' => $myY,
-		'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/save.png'
+		'img' => eyex('getThemeImage',array('icons/16x16/save.png',1))
 	));
 	$myButton->show();
 	
@@ -93,6 +84,7 @@ function eyeNav_run($params = '') {
 		'padding-top' => '3px'
 	));
 	$myTextbox->addEnterEventMsg('OpenURL');
+	$GLOBALS['eyeNav_url'] = $myTextbox;
 	
 	$myImage = new Imagebox(array(
 		'name' => 'eyeNav_image_url_left',
@@ -147,28 +139,34 @@ function eyeNav_run($params = '') {
 		'x' => $myWindow_box->width + 20,
 		'y' => $myWindow_box->y,
 		'height' => $myWindow_box->height,
-		'width' => $myWindow->width - ($myWindow_box->width + 35),
-		'url' => $startpage
+		'width' => $myWindow->width - ($myWindow_box->width + 35)
 	));
 	$myIframe->show();
+	$GLOBALS['eyeNav_frame'] = $myIframe;
 	
 	$myToolbar = new Toolbar(array(
 		'name' => 'eyeNav_toolbar',
 		'father' => 'eyeNav_window_Content'
 	));
 	$myToolbar->show();
-	$myToolbar->addItem('Back','index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/images/toolbar/previous.png','Back',array($myIframe));
-	$myToolbar->addItem('Forward','index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/images/toolbar/next.png','Forward',array($myIframe));
+	$myToolbar->addItem('Back',eyex('getThemeImage',array('images/toolbar/previous.png',1)),'Back',array($myIframe));
+	$myToolbar->addItem('Forward',eyex('getThemeImage',array('images/toolbar/next.png',1)),'Forward',array($myIframe));
 	$myToolbar->addLine();
-	$myToolbar->addItem('Startpage','index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/images/toolbar/home.png','Startpage',array($myTextbox,$myIframe));
+	$myToolbar->addItem('Startpage',eyex('getThemeImage',array('images/toolbar/home.png',1)),'Startpage',array($myTextbox,$myIframe));
 	$myToolbar->addLine();
-	$myToolbar->addItem('Bookmarks','index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/images/toolbar/bookmark.png','Bookmarks');
-	$myToolbar->addItem('Search','index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/images/toolbar/search.png','Search');
+	$myToolbar->addItem('Bookmarks',eyex('getThemeImage',array('images/toolbar/bookmark.png',1)),'Bookmarks');
+	$myToolbar->addItem('Search',eyex('getThemeImage',array('images/toolbar/search.png',1)),'Search');
 	$myToolbar->addLine();
-	$myToolbar->addItem('Settings','index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/images/toolbar/lin_agt_wrench.png','Settings');
+	$myToolbar->addItem('Settings',eyex('getThemeImage',array('images/toolbar/lin_agt_wrench.png',1)),'Settings');
 	
 	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeNav/libs.eyecode');
-	ShowBookmarks();
+	eyeNav_lib_ShowBookmarks();
+	
+	if ($params[0]) {
+		eyeNav_lib_doUrl(array('page' => array($params[0])));
+	} else {
+		eyeNav_lib_doUrl();
+	}
 }
 
 function eyeNav_end($params = '') {

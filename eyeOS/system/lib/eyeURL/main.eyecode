@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -25,7 +25,7 @@
 	uniform resource locator abstraction library for eyeOS
 */
 
-function lib_eyeURL_getHTTPClient($params) {
+function lib_eyeURL_getHTTPClient($params=null) {
 	return new HTTP_Request();
 }
 
@@ -1960,8 +1960,19 @@ class HTTP_Response
     }
 } 
 
-//DEPRECATED BUT STILL HERE FOR RETROCOMPATIBILITY
+//DEPRECATED BUT STILL HERE FOR BACKWARDS COMPATIBILITY
 
+/**
+* Given an absolute URL to a file, getRawFile makes a HTTP request via
+* the specified port to retrieve the contents of the file.
+* 
+* @param $params array(url)
+* @param $url Url to the file to retrieve.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @date 2008/03/11
+*/
 function lib_eyeURL_getRawFile($params) {
 	$url = $params['url'];
 	if(!$url) {
@@ -1996,6 +2007,29 @@ function lib_eyeURL_getRawFile($params) {
 	return $bufer;
 }
 
+/**
+* Makes an HTTP request to get the content of a remote file, allowing
+* the possibility to specify the HTTP method, the presence of extra
+* parameters in the header or the maximum size (in bytes) to read.
+* 
+* @param $params array(host,path,[data],[port],[maxsize],[method])
+* @param $host String containing the name of the host.
+* @param $path String containing the path to the file inside the host.
+* @param $data Extra HTTP parameters included in the request.
+* @param $port Natural number specifying in which port the request must be
+*	made. The default port value is 80.
+* @param $maxsize Natural number specifying, in bytes, the maximum file size
+*	to read. Default value is specified by the MAX_READ_SIZE
+*	constant.
+* @param $method Valid HTTP method used to retrieve the file. The default
+*	method is 'GET'.
+* @return If the function succeeds, returns the content of the file
+*	read from the host. Else, if the system cannot establish a
+*	connection with the host to get the file, the response
+*	header size is larger than the 'maxsize' parameter or the
+*	server error code is not 200 (OK), returns false.
+* @date 2008/03/11
+*/
 function lib_eyeURL_doRequest($params) {
 	if(!isset($params['host']) || !isset($params['path'])) {
 		return false; //TODO: ERROR HANDLER

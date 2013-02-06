@@ -73,7 +73,7 @@ class System_SharedMemory_Shmop extends System_SharedMemory_Common
         $this->_options = $this->_default($options, array
         (
             'size' => 1048576,
-            'tmp'  => sys_get_temp_dir(),
+            'tmp'  => get_tmp_dir(),
             'project' => 's'
         ));
 

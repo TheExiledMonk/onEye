@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -40,6 +40,9 @@ class Textbox {
 	var $horiz;
 	var $vert;
 	var $cent;
+	
+	//friends abstraction
+	var $friends="''";
 	
 	var $showed = 0;
 	//custom widget options
@@ -121,6 +124,17 @@ class Textbox {
 		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 	
+	//friends handler 
+	function addFriend($friend) {
+		if(method_exists($friend,'getSyncString')) {
+			if($this->friends == "''") {
+				$this->friends = $friend->getSyncString();				
+			} else {
+				$this->friends .= '+'.$friend->getSyncString();
+			}
+		}
+	}
+	
 	//comunication functions
 	function getSyncString() {
 		global $myPid;
@@ -170,7 +184,7 @@ class Textbox {
 	function addEnterEventMsg($msg) {
 		global $checknum;
 		global $myPid;
-		$this->addEnterEvent("sendMsg('$checknum','$msg',".$this->getSyncString().");");
+		$this->addEnterEvent("sendMsg('$checknum','$msg',".$this->getSyncString()."+".$this->friends.");");
 	}
 	
 	function focus() {

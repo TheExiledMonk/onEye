@@ -6,16 +6,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -103,11 +103,9 @@ function init_login(pid,checknum) {
 	var objPwd = document.getElementById(pid+'_eyeLogin_Password');
 	if(objImg) {
 		objImg.onclick = function () {launch_newuserwnd(pid);};
-		objImg.className = "cPointer";
 		objImg.style.zIndex = '10000';
 		var objTxt = document.getElementById(pid+'_eyeLogin_Label3_Container');
 		objTxt.onclick = function () {launch_newuserwnd(pid);};
-		objTxt.className = "cPointer";
 		objTxt.style.zIndex = '10000';
 	}
 	if(objUsr) {
@@ -134,7 +132,9 @@ function init_login(pid,checknum) {
 	
 	if (objUsr2 && objImg2) {
 		objUsr2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
+		objUsr2.style.zIndex = '10000';
 		objImg2.onclick = function () {sendMsg(checknum,'doLogin',eyeParam('eyeLogin_Username',document.getElementById(pid+'_eyeLogin_Username').value)+eyeParam('eyeLogin_Password',document.getElementById(pid+'_eyeLogin_Password').value));};
+		objImg2.style.zIndex = '10000';
 	}
 }
 

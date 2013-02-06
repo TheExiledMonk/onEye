@@ -19,8 +19,14 @@
 	</plugin>
 	<plugin>
 		<appName>eyeMkDir</appName>
-		<label>Create folder</label>
+		<label>New folder</label>
 		<icon>index.php?extern=apps/eyeX/themes/default/icons/16x16/newfolder.png</icon>
+		<context>current</context>
+	</plugin>
+	<plugin>
+		<appName>newFile</appName>
+		<icon>index.php?extern=apps/eyeX/themes/default/icons/16x16/new.png</icon>
+		<label>New file</label>
 		<context>current</context>
 	</plugin>
 	<plugin>
@@ -52,5 +58,11 @@
 		<icon>index.php?extern=apps/eyeX/themes/default/icons/16x16/properties.png</icon>
 		<label>Properties</label>
 		<context>select</context>
+	</plugin>
+	<plugin>
+		<appName>eyePaste</appName>
+		<icon>index.php?extern=apps/eyeX/themes/default/icons/16x16/paste.png</icon>
+		<label>Paste</label>
+		<context>dnd</context>
 	</plugin>
 </eyeFiles>

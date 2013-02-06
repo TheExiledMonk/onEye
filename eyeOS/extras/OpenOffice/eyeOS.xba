@@ -2,6 +2,7 @@
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
 <script:module xmlns:script="http://openoffice.org/2000/script" script:name="eyeOS" script:language="StarBasic">
 &apos;thanks to DannyB from http://www.oooforum.org/forum/ for this idea and code
+&apos;distributed under the terms of GNU Affero General Public License (AGPL) (c) eyeOS 2007-2008
 Sub ConvertAny(cFile,newName,myFilter)
 On Error Resume Next 
    cURL = ConvertToURL( cFile )

@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -43,29 +43,24 @@
 //
 
 global $charBlackList;
-$charBlackList = array("/","\\");
+$charBlackList = array("/","\\","<",">");
 
 
-/***
+/**
+* Creates an abstract file, with the possibility to specify
+* which app created it.
 * 
-* Description: Make a secure name with NAME_ID.extension. Make 2 files:
-* 			   	eyeInfo: Store some info (see eyeInfo example).
-* 			   	eyeFile: Empty file.
-* 
-* Arguments:
-* 	+ file: string containing the filename to create. 
-* 	- creationApp: string containing which eyeApp is creating this file.
-* 
-* Return: If the user has permissions and file doest not exist, return a fp to save data into it.
-* 		  If argument are incorrect return INCORRECT_PARAMS (see errorCodes).
-* 		  If fileExists or checkPermissions return error, create return ir.
-* 
-* Notes:
-* 		fileExists and checkPermissions will only check one file since they are virtually
-* 		the same
-* 
-* Last update 2007-06-1 
-***/
+* @param $params array(file,[creationApp])
+* @param $file Path to the new file.
+* @param $creationApp Name of the application that creates the file.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS The file parameter has not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to create the file.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a file with the same name as the new one.
+* @date 2008/03/11
+*/
 function service_vfs_create($params) {
 	
 	if($params == null || count($params) < 1){
@@ -118,23 +113,21 @@ function service_vfs_create($params) {
 	return true;
 }
 
-/***
+
+/**
+* Deletes a virtual file.
 * 
-* Description: delete abstract file including the eyeInfo and the eyeFile files
-*
-*
-* Arguments:
-* 	+ file: abstract file to delete
-* 
-* Return: if insuffcient permissions, return the errorcodes from checkPermissions,
-*		if file does not exist, return the errorcodes from fileExists and if
-*		an error occurs on deleting, returns PHP_ERROR_ON_DELETE
-*
-*		when file is deleted correctly, returns true
-*
-* 
-* Last update 2007-06-1
-***/
+* @param $params array(file)
+* @param $file Path to the file to delete
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to delete the file.
+* @exception VFS_FILE_NOT_EXISTS The file does not exist.
+* @exception PHP_ERROR_ON_UNLINK There is a PHP error deleting the file.
+* @date 2008/03/11
+*/
 function service_vfs_delete($params) {
 	
 	if($params == null || count($params) < 1){
@@ -142,7 +135,11 @@ function service_vfs_delete($params) {
 		return false;
 	}
 	
-	$file = $params[0];	
+	$file = $params[0];
+	
+	if(is_dir($file)) {
+		return vfs('rmdir',$params);
+	}
 	
 	if($params[1]) {
 		$sendToTrash = 1;
@@ -198,21 +195,23 @@ function service_vfs_delete($params) {
 	}	
 }
 
-/***
+
+/**
+* Opens a virtual file and returns a handler to work with.
 * 
-* Description: open an abstract file
-*
-*
-* Arguments:
-* 	+ file: file to open
-*	+ mode: mode to use (same for the fopen native php function)
-* 
-* Return: return false if error, fopen otherwise
-*
-* Note: in this function we can't know the content of a valid result, do not use errorcodes
-* 
-* Last update 2007-06-1
-***/
+* @param $params array(file,mode)
+* @param $file Path to the file to open.
+* @param $mode Mode used to open the file. It is the same format as the PHP
+*	fopen() native function.
+* @return If the file is opened correctly, returns a handler of the
+*	file. Otherwise, returns false, and if some error has
+*	occurred, sets the error code according to the type of error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both parameters have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to open the file.
+* @exception VFS_FILE_NOT_EXISTS The file does not exist.
+* @date 2008/03/11
+*/
 function service_vfs_open($params) {
 	
 	if($params == null || count($params) < 2){
@@ -237,20 +236,21 @@ function service_vfs_open($params) {
 	return $fp;
 }
 
-/***
+
+/**
+* Deletes the contents of a virtual file, leaving it blank.
 * 
-* Description: remove all the content of a given abstract file
-*
-* Arguments:
-* 	+ file: file to erase
-* 
-* Return: return checkPermissions errorcodes when permissions are incorrect, 
-*		return fileExists errorcodes when file does not exist,
-*		return true when file is erased correctly
-*
-* 
-* Last update 2007-06-1
-***/
+* @param $params array(file)
+* @param $file Path to the file to erase.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to erase the file.
+* @exception VFS_FILE_NOT_EXISTS The file does not exist.
+* @exception PHP_ERROR_ON_UNLINK There is a PHP error erasing the file.
+* @date 2008/03/11
+*/
 function service_vfs_erase($params) {
 
 	if($params == null || count($params) < 1){
@@ -260,13 +260,12 @@ function service_vfs_erase($params) {
 	
 	$file = $params[0];
 			
-	if (!service('vfs','real_checkPermissions',array($file))) {		
+	if (!service('vfs','checkPermissions',array($file))) {		
 		return false;
 	}
 	
-	$file = service('vfs','getRealName',array($file));//Get the real name
 	if (service('vfs','fileExists',array($file))) {			
-		$ferase = fopen($file, "w");
+		$ferase = vfs('open',array($file, "w"));
 		fwrite($ferase, "");
 		fclose($ferase);
 		return true;
@@ -276,23 +275,23 @@ function service_vfs_erase($params) {
 	}
 }
 
-/***
-*
-* Description: copy an abstract file
-*
-*
-* Arguments:
-*       + orig: file to copy
-*       + dest: name of the copy
-*
-* Return: return checkPermissions errorcodes when permissions of both files are incorrect,
-*               return fileExists errorcodes if one of the files does not exist,
-*               return PHP_ERROR_ON_COPY if copy fails,
-*               return true when file is correctly copied
-*
-*
-* Last update 2007-06-1
-***/
+
+/**
+* Copies a virtual file to a specified destination.
+* 
+* @param $params array(orig,dest)
+* @param $orig Path to the original file.
+* @param $dest Directory where to copy the file.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both parameters have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to perform the copy.
+* @exception VFS_FILE_NOT_EXISTS The original file does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS The destination file already exists.
+* @exception PHP_ERROR_ON_COPY There was a PHP error copying the file.
+* @date 2008/03/11
+*/
 function service_vfs_copy($params) {
 	
 	if($params == null || count($params) < 2){
@@ -346,6 +345,22 @@ function service_vfs_copy($params) {
 	}
 }
 
+
+/**
+* Copies a directory and its contents.
+* 
+* @param $params array(orig,dest)
+* @param $orig Path to the directory to copy.
+* @param $dest URL of the new directory.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both arguments have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to copy the directory.
+* @exception VFS_FILE_NOT_EXISTS The origin directory does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS The destination directory already exists.
+* @date 2008/03/11
+*/
 function service_vfs_copyDir($params) {
 	
 	if($params == null || count($params) < 2){
@@ -381,49 +396,24 @@ function service_vfs_copyDir($params) {
 	return true;
 }
 
-function dircopy($srcdir, $dstdir) {
-	mkdir($dstdir);
-	if($curdir = opendir($srcdir)) {
-		while($file = readdir($curdir)) {
-			if($file != '.' && $file != '..') {
-				$srcfile = $srcdir . '\\' . $file;
-				$dstfile = $dstdir . '\\' . $file;
-				if(is_file($srcfile)) {
-					if(is_file($dstfile)) $ow = filemtime($srcfile) - filemtime($dstfile); else $ow = 1;
-					if($ow > 0) {
-						if(copy($srcfile, $dstfile)) {
-							touch($dstfile, filemtime($srcfile)); $num++;
-						} else {
-							return false;
-						}
-					}                  
-				} else if(is_dir($srcfile)) {
-					dircopy($srcfile, $dstfile, $verbose);
-				}
-			}
-		}
-		closedir($curdir);
-	}
-}
 
-/***
+/**
+* Moves a virtual file.
 * 
-* Description: move an abstract file
-*
-*
-* Arguments:
-* 	+ orig: file to move
-*	+ dest: where to move the file
-* 
-* Return: return checkPermissions errorcodes when permissions are incorrect, 
-*	  	return fileExists errorcodes when file does not exist,
-*		return PHP_ERROR_ON_UNLINK if unlink fails,
-*		return PHP_ERROR_ON_COPY if copy fails,
-*		return true when file is correctly moved
-*
-* 
-* Last update 2007-06-1
-***/
+* @param $params array(orig,dest)
+* @param $orig Path to the file to move.
+* @param $dest Destination path where the file must be moved.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both parameters have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to move the file.
+* @exception VFS_FILE_NOT_EXISTS The file to move does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a file in the same path as the destination file.
+* @exception PHP_ERROR_ON_UNLINK There is a PHP error moving the file.
+* @exception PHP_ERROR_ON_COPY There is a PHP error moving the file.
+* @date 2008/03/11
+*/
 function service_vfs_move($params) {
 	
 	if($params == null || count($params) < 2){
@@ -480,22 +470,23 @@ function service_vfs_move($params) {
 	}
 }
 
-/***
-*
-* Description: rename an abstract file
-*
-*
-* Arguments:
-*       + orig: file to rename
-*       + dest: file's new name
-*
-* Return: return checkPermissions errorcodes when permissions are incorrect,
-*               return fileExists errorcodes when file does not exist,
-*               return true when file is correctly renamed
-*
-*
-* Last update 2007-06-1
-***/
+
+/**
+* Changes the name of an abstract file.
+* 
+* @param $params array(orig,dest)
+* @param $orig Path to the file or directory to rename.
+* @param $dest New name of the file.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both parameters have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to rename the file.
+* @exception VFS_FILE_NOT_EXISTS The file to rename does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a file with the same name as the destination file.
+* @exception PHP_ERROR_ON_MOVE There is a PHP error renaming the file..
+* @date 2008/03/11
+*/
 function service_vfs_rename($params) {
 	
 	if($params == null || count($params) < 2){
@@ -531,19 +522,20 @@ function service_vfs_rename($params) {
 	return true;
 }
 
-/***
+
+/**
+* Calculates the size of an abstract file.
 * 
-* Description: get the filesize of a file
-*
-*
-* Arguments:
-* 	+ file: file to check filesize from
-* 
-* Return: file size
-* 
-* Last update 2007-06-1
-*
-***/
+* @param $params array(file)
+* @param $file Path to the file to check.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to check the file's size.
+* @exception VFS_FILE_NOT_EXISTS The file does not exist.
+* @date 2008/03/11
+*/
 function service_vfs_filesize($params) {
 	
 	if($params == null || count($params) < 1){
@@ -567,22 +559,19 @@ function service_vfs_filesize($params) {
 	return filesize($file);
 }
 
-/***
+
+/**
+* Checks if an abstract file exists.
 * 
-* Description: check if an abstract file exists
-*
-*
-* Arguments:
-* 	+ file: file to check
-* 
-* Return: return checkPermissions errorcodes when permissions are incorrect, 
-*			return false if file does not exist,
-*			return true if file exists
-*
-* Notes: a file exists when it's really a file and it can be read or written
-* 
-* Last update 2007-06-1
-***/
+* @param $params array(file)
+* @param $file File to check.
+* @return If file exists and there are enough permissions on the file,
+*	returns true. Otherwise, returns false. If for some reason
+*	there is an error checking the file, returns false and sets
+*	the error code according to the error occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @date 2008/03/11
+*/
 function service_vfs_fileExists($params) {
 	
 	if($params == null || count($params) < 1){
@@ -621,19 +610,20 @@ function service_vfs_fileExists($params) {
 	}
 }
 
-/***
-*
-* Description: gets the eyeInfo part of a file
-*
-* Arguments:
-*       + file: the file from to get the info
-*
-* Return: If have a correct permissions and file does not exist, return a fp for save data into it.
-*                 If argument are incorrect return INCORRECT_PARAMS (see errorCodes).
-*                 If fileExists or checkPermissions return error, create return ir.
-*
-* Last update 2007-06-1
-***/
+
+/**
+* Reads a virtual file's info part and returns its contents as
+* an array.
+* 
+* @param $params array(file)
+* @param $file Path to the virtual file to read.
+* @return If the function succeeds, returns an array (using the output
+*	returned by the eyeXML's xml2array() function) with the
+*	contents of the file. Otherwise, it returns false and sets
+*	the error code according to the error occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @date 2008/03/11
+*/
 function service_vfs_readInfo($params)
 {	
 	if($params == null || count($params) < 1){
@@ -659,23 +649,22 @@ function service_vfs_readInfo($params)
 //
 //
 
-/***
-* 
-* Description: make new directory
-*
-*
-* Arguments:
-* 	+ newdir: string containing the filepath to create
-* 
-* Return: return checkPermissions errorcodes when permissions are incorrect, 
-*		return PHP_ERROR_ON_DELETE if error while creating the directory,
-*		return true when the directory is created correctly
-*
-* 
-* Last update 2007-06-1
-***/
-function service_vfs_mkdir($params) {
 
+
+/**
+* Creates a directory in the user's abstract files.
+* 
+* @param $params array(dir)
+* @param $dir Name of the directory to create.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No directory is specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to create the directory.
+* @exception PHP_ERROR_ON_MKDIR There is a PHP error creating the directory.
+* @date 2008/03/11
+*/
+function service_vfs_mkdir($params) {
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -695,9 +684,24 @@ function service_vfs_mkdir($params) {
 			reqLib('errorCodes','setErrorCode',array(PHP_ERROR_ON_MKDIR));
 			return false;
 		}
-	}	
+	}else{
+		reqLib('errorCodes','setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
+		return false;
+	}
 }
 
+
+/**
+* Checks if a given path points to a directory.
+* 
+* @param $params array(file)
+* @param $file Path to check.
+* @return If the file provided is a directory returns true, otherwise
+*	returns false. If there is any error, sets the error code
+*	accordingly.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @date 2008/03/11
+*/
 function service_vfs_isdir($params) {
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -707,22 +711,22 @@ function service_vfs_isdir($params) {
 	return is_dir($file);
 }
 
-/***
-*
-* Description: removes a directory
-*
-*
-* Arguments:
-*       + dir: the direcory to delete
-*
-* Return: return checkPermissions errorcodes when permissions are incorrect,
-*                       return false if file does not exist,
-*                       return true if file exists
-*
-* Notes: a file exists when it's really a file and it can be read or written
-*
-* Last update 2007-06-1
-***/
+
+
+/**
+* Deletes a directory and its content.
+* 
+* @param $params array(dir,[trash])
+* @param $dir Directory to delete.
+* @param $trash If set (to any value), moves the directory to the user's
+*	trash instead of deleting it directly.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No directory has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to delete the directory.
+* @date 2008/03/11
+*/
 function service_vfs_rmdir($params) {
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -746,8 +750,7 @@ function service_vfs_rmdir($params) {
 		$myUserDir = service('um','getCurrentUserDir');
 		$trashDir = $myUserDir.'/'.TRASH_USER_DIR.'/';
 		$name = uniqid(srand(time()));
-		dircopy($dir,$trashDir.$name);
-		deleteDirContent($dir);
+		rename($dir,$trashDir.$name);
 		service('vfs','real_create',array($trashDir.$name.'.'.EYEOS_TRASH_EXT));
 		$data = array(
 			'eyeTrash' => array( 
@@ -767,21 +770,19 @@ function service_vfs_rmdir($params) {
 }
 
 
-
-
-/***
-*
-* Description: check permissions of a file
-*
-*
-* Arguments:
-*       + file: the file to check permissions from
-*
-* Return: return false if the current user doesn't have permissions on the file,
-*                       return true otherwise
-*
-* Last update 2007-06-1
-***/
+/**
+* Checks the permissions of a file.
+* 
+* @param $params array(file,[mode])
+* @param $file URL to the file.
+* @param $mode Mode of the check.
+* @return If there are enough permissions on the file, returns true.
+*	Otherwise, returns false and sets the error code according
+*	to the error occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions on the file.
+* @date 2008/03/11
+*/
 function service_vfs_checkPermissions($params) {
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -806,7 +807,7 @@ function service_vfs_checkPermissions($params) {
 	
 	$groups = service('um','getCurrentGroups');
 	foreach($groups as $key=>$value) {
-		$groupDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/';
+		$groupDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.FILES_GROUP_DIR.'/';
 		$groupDir = realpath($groupDir);
 		if($groupDir) {
 			if(realpath($params[0]) == $groupDir && $params[1] == 'e') {
@@ -820,7 +821,7 @@ function service_vfs_checkPermissions($params) {
 					$eyeInfo = utf8_substr($eyeFile,0,utf8_strrpos($eyeFile,'.'));
 					$eyeInfo .= '.'.EYEOS_INFO_EXT;
 					$eyeInfo = realpath($eyeInfo);
-					if($eyeFile && $eyeInfo) {
+					if($eyeFile && $eyeInfo && $myRealName) {
 						$mode = $params[1];
 						if($mode == 'r' || $mode == 'R') {
 							return true;
@@ -835,7 +836,7 @@ function service_vfs_checkPermissions($params) {
 							}
 						} 
 					} else {
-						if($params[1] == 'e' || $params[1] == 'd') {
+						if(is_dir($file_path) || $params[1] == 'e' || $params[1] == 'd') {
 							if(ALLOW_PUBLIC_DIRS == 0) {
 								return false;
 							}
@@ -843,7 +844,7 @@ function service_vfs_checkPermissions($params) {
 						return true;
 					}
 				} else {
-					if($params[1] == 'e' || $params[1] == 'd') {
+					if(is_dir($file_path) || $params[1] == 'e' || $params[1] == 'd') {
 						if(ALLOW_PUBLIC_DIRS == 0) {
 							return false;
 						}
@@ -868,23 +869,27 @@ function service_vfs_checkPermissions($params) {
 	}
 }
 
-/***
+
+
+/**
+* Returns a list of the virtual files found in a directory
+* under the specified search pattern.
 * 
-* Description: read the contents of a given directory
-*
-*
-* Arguments:
-* 	+ dirToRead: directory to get contents from
-*	- exp: expression to handle the directory contents
-* 
-* Return: return checkPermissions errorcodes when permissions are incorrect, 
-*			return VFS_DIR_NOT_EXISTS if directory not exist,
-*			return an array with the content of the directory if read is correctly executed
-*
-* Notes: The default expresion is *.
-* 
-* Last update 2007-06-1
-***/
+* @param $params array(dirToRead,[exp])
+* @param $dirToRead Path to the directory to search.
+* @param $exp Pattern to determine which files to get. It has the same
+*	form as the expression used in the native glob() PHP
+*	function. In case no pattern is specified, this function
+*	will list all the virtual files found in the directory.
+* @return If the function succeeds, returns an indexed array
+*	containing the names of the virtual files found. Otherwise,
+*	it returns false and sets the error code according to the
+*	error occurred.
+* @exception INCORRECT_PARAMS No directory has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to search the directory.
+* @exception VFS_DIR_NOT_EXISTS The directory does not exist.
+* @date 2008/03/11
+*/
 function service_vfs_getDirContent($params) {
 	
 	if($params == null || count($params) < 1){
@@ -931,7 +936,21 @@ function service_vfs_getDirContent($params) {
 	return $dirFiles;
 }
 
-//FIXME: make a description
+
+/**
+* Returns the real filename in which a virtual file is stored.
+* 
+* @param $params array(file)
+* @param $file Path to the file.
+* @return If the function succeeds, returns the name of the file that
+*	has the contents of the given virtual file. Else, returns
+*	false and sets the error code according to the type of error
+*	gotten.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to read the directory that contains the file.
+* @exception VFS_FILE_NOT_FOUND The specified file does not exist.
+* @date 2008/03/11
+*/
 function service_vfs_getRealName($params)
 {	
 	if($params == null || count($params) < 1){
@@ -955,6 +974,20 @@ function service_vfs_getRealName($params)
 	return $file.'.'.EYEOS_FILE_EXT;
 }
 
+
+
+/**
+* Returns the content of a file.
+* 
+* @param $params array(file)
+* @param $file Path to the file.
+* @return If the function succeeds, returns its content. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to open the file.
+* @date 2008/03/11
+*/
 function service_vfs_printFile($params) {
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -968,29 +1001,62 @@ function service_vfs_printFile($params) {
 	readfile($file);
 }
 
+
+function service_vfs_readFile($params) {
+	if($params == null || count($params) < 1){
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}	
+	$file = $params[0];
+	//Check the permissions.	
+	if(!service('vfs','checkPermissions',array($file))) {
+		return false;
+	}	
+	readfile(vfs('getRealName',array($file)));
+}
+
+
+
+function service_vfs_writeFile($params) {
+	if($params == null || count($params) < 1){
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}	
+	$file = $params[0];
+	$content = $params[1];
+	
+	if(!vfs('checkQuota',array(strlen($content),1))) {
+		return false;
+	}
+	
+	//Check the permissions.	
+	if(!service('vfs','checkPermissions',array($file))) {
+		return false;
+	}	
+	file_put_contents(vfs('getRealName',array($file)),$content);
+	return true;
+}
+
 //
 //
 //Real file functions
 //
 //
 
-/***
+
+/**
+* Creates a blank real file.
 * 
-* Description: create a file in physic file system (does not create the eyeInfo part)
-* 
-* Arguments:
-* 	+ file: string containing a filename to create
-* 	- creationApp: string containing which eyeApp is creating this file
-* 
-* Return: If have a correct permissions and file not exists, return a fp for save data into it.
-* 		  If argument are incorrect return INCORRECT_PARAMS (see errorCodes).
-* 		  If fileExists or checkPermissions return error, create return ir.
-* 
-* Notes:
-* 		In fileExists and checkPermissions only check one File because virtually are the same.
-* 
-* Last update 2007-06-1 
-***/
+* @param $params array(file)
+* @param $file Path including the file to create.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to create the file.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a file with the same name as the new one.
+* @date 2008/03/11
+*/
 function service_vfs_real_create($params) {
 
 	if($params == null || count($params) < 1){
@@ -1014,6 +1080,24 @@ function service_vfs_real_create($params) {
 	}
 }
 
+
+
+/**
+* Copies a file to the specified destination.
+* 
+* @param $params array(orig)
+* @param $orig Path to the file to copy.
+* @param $dest Destination path where to copy the file.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both parameters have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to copy the file.
+* @exception VFS_FILE_NOT_EXISTS The file to copy does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a file in the same place as the destination file.
+* @exception PHP_ERROR_ON_COPY There is a PHP error when copying the file.
+* @date 2008/03/11
+*/
 function service_vfs_real_copyDir($params) {
 	
 	if($params == null || count($params) < 2){
@@ -1032,7 +1116,7 @@ function service_vfs_real_copyDir($params) {
 		return false;
 	}
 	
-	if(!vfs('checkQuota',array($file))) {
+	if(!vfs('checkQuota',array($orig))) {
 		return false;
 	}
 	
@@ -1050,23 +1134,22 @@ function service_vfs_real_copyDir($params) {
 	return true;
 }
 
-/***
-*
-* Description: delete abstract file including the eyeInfo and the eyeFile files
-*
-*
-* Arguments:
-*       + file: real file to delete
-*
-* Return: if insuffcient permissions, return the errorcodes from checkPermissions,
-*               if file does not exist, return the errorcodes from fileExists and if
-*               an error occur on deleting, returns PHP_ERROR_ON_DELETE
-*
-*               when file is deleted correctly, returns true
-*
-*
-* Last update 2007-06-1
-***/
+
+
+/**
+* Deletes a real file.
+* 
+* @param $params array(file)
+* @param $file Path to the file to delete.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to delete the file.
+* @exception VFS_FILE_NOT_EXISTS The file to delete does not exist.
+* @exception PHP_ERROR_ON_UNLINK There is a PHP error deleting the file.
+* @date 2008/03/11
+*/
 function service_vfs_real_delete($params) {
 	
 	if($params == null || count($params) < 1){
@@ -1092,19 +1175,22 @@ function service_vfs_real_delete($params) {
 	}
 }
 
-/***
-*
-* Description: open a file, in real mode
-*
-*
-* Arguments:
-*       + file: file to open
-*       + mode: mode to use (same for the fopen native php function)
-*
-* Return: return false if error, fopen otherwise
-*
-* Last update 2007-06-1
-***/
+
+/**
+* Returns a handler to work with a file.
+* 
+* @param $params array(file,mode)
+* @param $file Path to the file to open.
+* @param $mode Mode used to open the file. It is the same notation as used
+*	in the PHP native fopen() function.
+* @return If the function succeeds, returns a handler of the file.
+*	Otherwise, it returns false and sets the error code
+*	according to the error occurred.
+* @exception INCORRECT_PARAMS No file or mode have been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to open the file.
+* @exception VFS_FILE_NOT_FOUND The file to open does not exist.
+* @date 2008/03/11
+*/
 function service_vfs_real_open($params) {
 	
 	if($params == null || count($params) < 2){
@@ -1127,6 +1213,8 @@ function service_vfs_real_open($params) {
 	return fopen($file,$mode);
 }
 
+
+
 function service_vfs_real_getFileContent($params) {
 	
 	if($params == null || count($params) < 1){
@@ -1140,23 +1228,26 @@ function service_vfs_real_getFileContent($params) {
 		return false;
 	}
 			
-	return file_get_contents($file);
+	if($result = file_get_contents($file)){
+		return $result;
+	}	
 }
 
-/***
-*
-* Description: remove all the content of a given file
-*
-* Arguments:
-*       + file: file to erase
-*
-* Return: return checkPermissions errorcodes when permissions are incorrect,
-*               return fileExists errorcodes when file doe not exist,
-*               return true when file is erased correctly
-*
-*
-* Last update 2007-06-1
-***/
+
+/**
+* Blanks a real file.
+* 
+* @param $params array(file)
+* @param $file Path to the file to erase.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to blank the file.
+* @exception VFS_FILE_NOT_EXISTS The file to erase does not exist.
+* @exception PHP_ERROR_ON_FOPEN There is a PHP error erasing the file.
+* @date 2008/03/11
+*/
 function service_vfs_real_erase($params) {
 	
 	if($params == null || count($params) < 1){
@@ -1185,25 +1276,22 @@ function service_vfs_real_erase($params) {
 }
 
 
-
-/***
-*
-* Description: moves a file, in real mode
-*
-*
-* Arguments:
-*       + orig: file to move
-*	+ dest: destination of the moved file 
-*
-* Return: return checkPermissions errorcodes if permissions of some file are incorrect,
-*			return fileExist errors if some file does not exist
-*			return PHP_ERROR_ON_UNLINK if unlink fails
-*			return PHP_ERROR_ON_COPY if copy fails
-*			return true if the file is moved correctly
-*			
-*
-* Last update 2007-06-1
-***/
+/**
+* Changes the location of a real file from one location to
+* another.
+* 
+* @param $params array(orig,dest)
+* @param $orig Path to the file to move.
+* @param $dest Destination path where to move the file.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both parameters have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to move the file.
+* @exception VFS_FILE_NOT_EXISTS The file to move does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a file in the same place as the destination file.
+* @date 2008/03/11
+*/
 function service_vfs_real_move($params) {
 	
 	if($params == null || count($params) < 2){
@@ -1237,6 +1325,24 @@ function service_vfs_real_move($params) {
 	}
 }
 
+
+
+/**
+* Copies a file to the specified destination.
+* 
+* @param $params array(orig)
+* @param $orig Path to the file to copy.
+* @param $dest Destination path where to copy the file.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS One or both parameters have not been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to copy the file.
+* @exception VFS_FILE_NOT_EXISTS The file to copy does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a file in the same place as the destination file.
+* @exception PHP_ERROR_ON_COPY There is a PHP error when copying the file.
+* @date 2008/03/11
+*/
 function service_vfs_real_copy($params) {
 	if($params == null || count($params) < 2){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -1244,6 +1350,10 @@ function service_vfs_real_copy($params) {
 	}
 	$orig = $params[0];
 	$dest = $params[1];
+	
+	if(!vfs('checkQuota',array($orig))) {
+		return false;
+	}
 	
 	if(!service('vfs','real_checkPermissions',array($orig))) {		
 		return false;
@@ -1272,22 +1382,20 @@ function service_vfs_real_copy($params) {
 	}
 }
 
-//XXX: No rename function
 
-/***
-*
-* Description: get the filesize of a file, in real mode
-*
-*
-* Arguments:
-*       + file: the file to get the filesize from
-*
-* Return: return checkPermissions errorcodes when permissions are incorrect,
-*                       return false if file does not exist,
-*                       otherwise, return the file size
-*
-* Last update 2007-06-1
-***/
+/**
+* Returns the size of a file.
+* 
+* @param $params array(file)
+* @param $file Path to the file to get the filesize from.
+* @return If the function succeeds, returns an integer with the file's
+*	size. Otherwise, it returns false and sets the error code
+*	according to the error occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to check the file's size.
+* @exception VFS_FILE_NOT_FOUND The file to check does not exit.
+* @date 2008/03/11
+*/
 function service_vfs_real_filesize($params) {
 	
 	if($params == null || count($params) < 1){
@@ -1308,22 +1416,18 @@ function service_vfs_real_filesize($params) {
 	return filesize($file);
 }
 
-/***
-*
-* Description: check if a file exists
-*
-*
-* Arguments:
-*       + file: file to check
-*
-* Return: return checkPermissions errorcodes when permissions are incorrect,
-*                       return false if file does not exist,
-*                       return true if file exists
-*
-* Notes: a file exists when it's really a file and it can be read or written
-*
-* Last update 2007-06-1
-***/
+
+/**
+* Checks if a specified real file exists or not.
+* 
+* @param $params array(file)
+* @param $file Path to the file to check.
+* @return If the file exists, returns true. Otherwise, returns false
+*	and in case there is some error, sets the error code
+*	according to the error occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @date 2008/03/11
+*/
 function service_vfs_real_fileExists($params) {
 
 	if($params == null || count($params) < 1){
@@ -1339,19 +1443,21 @@ function service_vfs_real_fileExists($params) {
 	}
 }
 
-/***
-*
-* Description: check permissions of a file, in real mode
-*
-*
-* Arguments:
-*       + file: the file to check permissions from
-*
-* Return: return false if the current user doesn't have permissions on the file,
-*			return true otherwise
-*
-* Last update 2007-06-1
-***/
+
+
+/**
+* Checks whether there are enough permissions with a
+* non-virtual file.
+* 
+* @param $params array(file)
+* @param $file Path to the file to check.
+* @return If there are enough permissions on the file, returns true.
+*	Otherwise, returns false and sets the error code in case
+*	some error occurs.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions on the file.
+* @date 2008/03/11
+*/
 function service_vfs_real_checkPermissions($params) {
 
 	if($params == null || count($params) < 1){
@@ -1366,7 +1472,9 @@ function service_vfs_real_checkPermissions($params) {
 		reqLib('errorCodes','setErrorCode',array(VFS_INVALID_CHARS));
 		return false;
 	}
-	$read = $params[1];
+	if(isset($params[1])){
+		$read = $params[1];	
+	}	
 	
 	if ($file == service('um','getUserFilePath',array($currentUser))) {
 		return true;
@@ -1386,20 +1494,27 @@ function service_vfs_real_checkPermissions($params) {
 	}
 }
 
-/***
-*
-* Description: read the contents of a given directory, in real mode
-*
-*
-* Arguments:
-*       + dirToRead: dir from to get the contents
-*
-* Return: return checkPermissions errorcodes when permissions are incorrect,
-*                       return VFS_DIR_NOT_EXISTS if directory does not exist,
-*                       return an array with the content of the directory if read is correctly executed
-*
-* Last update 2007-06-1
-***/
+
+
+/**
+* Searches the real files in a directory matching a given
+* search pattern.
+* 
+* @param $params array(dirToRead,[exp])
+* @param $dirToRead Path to the directory to search.
+* @param $exp Pattern to determine which files to get. It has the same
+*	form as the expression used in the native glob() PHP
+*	function. In case no pattern is specified, this function
+*	will list all the files found in the directory.
+* @return If the function succeeds, returns an indexed array
+*	containing the names of the files found. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No directory has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to search in the directory.
+* @exception VFS_DIR_NOT_EXISTS The specified directory does not exist.
+* @date 2008/03/11
+*/
 function service_vfs_real_getDirContent($params) {
 	
 	if($params == null || count($params) < 1){
@@ -1429,6 +1544,27 @@ function service_vfs_real_getDirContent($params) {
 	return $dirFiles;
 }
 
+
+
+/**
+* Searches the real files in a directory matching a given
+* search pattern.
+* 
+* @param $params array(dirToRead,[exp])
+* @param $dirToRead Path to the directory to search.
+* @param $exp Pattern to determine which files to get. It has the same
+*	form as the expression used in the native glob() PHP
+*	function. In case no pattern is specified, this function
+*	will list all the files found in the directory.
+* @return If the function succeeds, returns an indexed array
+*	containing the names of the files found. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No directory has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to search in the directory.
+* @exception VFS_DIR_NOT_EXISTS The specified directory does not exist.
+* @date 2008/03/11
+*/
 function service_vfs_real_getDirContent_group($params) {
 	
 	if($params == null || count($params) < 1){
@@ -1448,7 +1584,7 @@ function service_vfs_real_getDirContent_group($params) {
 		reqLib('errorCodes','setErrorCode',array(VFS_DIR_NOT_EXISTS));
 		return false;
 	}	
-	
+	//If we don't have regular expresion param, set * as default.
 	isset($params[1]) ? $exp = $params[1] : $exp = '*';
 	$dirFiles = array();
 	
@@ -1458,7 +1594,21 @@ function service_vfs_real_getDirContent_group($params) {
 	return $dirFiles;
 }
 
-//FIXME: make a description
+
+/**
+* Creates a directory.
+* 
+* @param $params array(dir)
+* @param $dir Path including the directory to create.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No directory has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to create the directory.
+* @exception PHP_ERROR_ON_MKDIR There is a PHP error creating the directory.
+* @exception VFS_FILE_ALREADY_EXISTS The path already exists as file or directory
+* @date 2008/03/11
+*/
 function service_vfs_real_mkDir($params) {
 
 	if($params == null || count($params) < 1){
@@ -1471,7 +1621,6 @@ function service_vfs_real_mkDir($params) {
 		return false;
 	}
 
-	//TODO: check if pre-directory is writable?
 	if (!is_dir($dir) && !is_file($dir))
 	{
 		if (mkdir($dir,0777)) {
@@ -1480,10 +1629,25 @@ function service_vfs_real_mkDir($params) {
 			reqLib('errorCodes','setErrorCode',array(PHP_ERROR_ON_MKDIR));
 			return false;
 		}
-	}	
+	}else{
+		reqLib('errorCodes','setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
+		return false;
+	}
 }
 
-//FIXME: make a description
+
+/**
+* Deletes a directory and its content.
+* 
+* @param $params array(dir)
+* @param $dir Path to the directory to delete.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No directory is specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to delete the directory.
+* @date 2008/03/11
+*/
 function service_vfs_real_rmdir($params) {
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -1502,7 +1666,21 @@ function service_vfs_real_rmdir($params) {
 
 
 
-
+/**
+* Makes a virtual file out of a real one without deleting it.
+* 
+* @param $params array(file,[creationApp])
+* @param $file Path to the real file to transform.
+* @param $creationApp Name of the application that makes the transformation.
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to transform the file.
+* @exception VFS_FILE_NOT_EXISTS The file to transform does not exist.
+* @exception VFS_FILE_ALREADY_EXISTS There already exists a virtual file with the same name.
+* @date 2008/03/11
+*/
 function service_vfs_realToVirtual($params=null){
 	if($params == null || count($params) < 1){
 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
@@ -1547,12 +1725,7 @@ function service_vfs_realToVirtual($params=null){
 	
 	//converting array to xml.		
 	$xml = reqLib('eyeXML','array2xml',array($data,1));	
-	//Create the 2 files, info and file.
-	if(!vfs('real_create',array($fileToCreate.'.'.EYEOS_INFO_EXT))){		
-		//Don't set any error code because real_crate function already setted
-		return false;
-	}
-	$fcreate = vfs('real_open',array($fileToCreate.'.'.EYEOS_INFO_EXT,'w'));	
+	$fcreate = fopen($fileToCreate.'.'.EYEOS_INFO_EXT,'w');	
 	fwrite($fcreate, $xml);
 	fclose($fcreate);	
 			
@@ -1560,13 +1733,29 @@ function service_vfs_realToVirtual($params=null){
 	//move real name to new name						
 		
 	//Moving it
-	if(!vfs('real_move',array($file,$fileToCreate.'.'.EYEOS_FILE_EXT))){
+	if(!rename($file,$fileToCreate.'.'.EYEOS_FILE_EXT)){
 		//Don't set any error code because real_crate function already setted
 		return false; 	
 	}
 	return true;
 }
 
+
+
+/**
+* Transforms a directory's files to virtual mode. Each real
+* file found will have in the same directory an equivalent
+* file in virtual mode.
+* 
+* @param $params array(dir)
+* @param $dir Path to the directory to transform.
+* @return If the function succeeds, returns the number of files
+*	transformed to virtual. Otherwise, it returns false and sets
+*	the error code according to the error occurred.
+* @exception INCORRECT_PARAMS No path has been given, or the path does not point to a directory.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to transform the directory.
+* @date 2008/03/11
+*/
 function service_vfs_realToVirtualDir($params=null){
 	$num = 0;
 	if($params == null || count($params) < 1){
@@ -1598,6 +1787,18 @@ function service_vfs_realToVirtualDir($params=null){
 	return $num;	
 }
 
+
+/**
+* Checks whether a file has the same extension as the one used
+* for storing a virtual file's content (defined by the
+* EYEOS_FILE_EXT constant).
+* 
+* @param $params array(path)
+* @param $path Path to the file.
+* @return If the file has the EYEOS_FILE_EXT, returns this extension.
+*	Otherwise, it returns false.
+* @date 2008/03/11
+*/
 function service_vfs_real_getExtension($params){		
 	if(!isset($params[0]) && empty($params[0])){
 		return false;	
@@ -1625,6 +1826,18 @@ function service_vfs_real_getExtension($params){
 	return $extension;
 }
 
+
+/**
+* Checks whether a virtual file has the same extension as the
+* one used for storing a virtual file's content (defined by
+* the EYEOS_FILE_EXT constant).
+* 
+* @param $params array(path)
+* @param $path Path to the file.
+* @return If the file has the EYEOS_FILE_EXT, returns this extension.
+*	Otherwise, it returns false.
+* @date 2008/03/11
+*/
 function service_vfs_getExtension($params){		
 	if(!isset($params[0]) || empty($params[0])){
 		return false;
@@ -1639,6 +1852,16 @@ function service_vfs_getExtension($params){
 	//TODO: put error lib
 }
 
+
+/**
+* Gets the real name of a virtual file.
+* 
+* @param $params array(file)
+* @param $file Path to the file.
+* @return If the function succeeds, returns the name of the virtual
+*	file. Otherwise, it returns false.
+* @date 2008/03/11
+*/
 function service_vfs_getVirtualName($params){
 	if(!isset($params[0]) || empty($params[0])){
 		return false;
@@ -1647,6 +1870,16 @@ function service_vfs_getVirtualName($params){
 	
 }
 
+
+/**
+* Empties a user's temporal directory.
+* 
+* @return If the function succeeds, returns true. Otherwise, it
+*	returns false and sets the error code according to the error
+*	occurred.
+* @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to delete
+* @date 2008/03/11
+*/
 function service_vfs_cleanTemp() {
 	$udir = um('getCurrentUserDir').'/tmp/';
 	if(!vfs('real_checkPermissions',array($udir))){
@@ -1662,7 +1895,11 @@ function service_vfs_cleanTemp() {
 	vfs('real_mkdir',array($udir));
 }
 
+//
+//
 //Private functions
+//
+//
 function _getExtension($path){
 	$preExtensions = array('tar'=>array('gz','bz2'));
 	$info = utf8_pathinfo($path);
@@ -1723,6 +1960,30 @@ function getRealFileName($file) {
 	return $file;
 }
 
+function dircopy($srcdir, $dstdir) {
+	mkdir($dstdir);
+	if($curdir = opendir($srcdir)) {
+		while($file = readdir($curdir)) {
+			if($file != '.' && $file != '..') {
+				$srcfile = $srcdir . '/' . $file;
+				$dstfile = $dstdir . '/' . $file;
+				if(is_file($srcfile)) {
+					if(is_file($dstfile)) $ow = filemtime($srcfile) - filemtime($dstfile); else $ow = 1;
+					if($ow > 0) {
+						if(copy($srcfile, $dstfile)) {
+							touch($dstfile, filemtime($srcfile)); $num++;
+						} else {
+							return false;
+						}
+					}                  
+				} else if(is_dir($srcfile)) {
+					dircopy($srcfile, $dstfile, $verbose);
+				}
+			}
+		}
+		closedir($curdir);
+	}
+}
 
 function service_vfs_getDirSize($params){
 	$dir = $params[0];
@@ -1763,10 +2024,14 @@ function service_vfs_checkQuota($params) {
 		return true;
 	}
 	$filename = $params[0];
-	if(is_dir($filename)) {
-		$size = vfs('getDirSize',array($filename));
+	if(!isset($params[1])) {
+		if(is_dir($filename)) {
+			$size = vfs('getDirSize',array($filename));
+		} else {
+			$size = filesize($filename);
+		}
 	} else {
-		$size = filesize($filename);
+		$size = $filename;
 	}
 	$home = um('getCurrentUserDir');
 	$dirsize = vfs('getDirSize',array($home));
@@ -1777,6 +2042,15 @@ function service_vfs_checkQuota($params) {
 	}
 }
 
+/**
+* Checks if a file has illegal characters in its name.
+* 
+* @param $params array(file)
+* @param $file Path to check.
+* @return If the file name is valid returns true, otherwise returns
+*	false.
+* @date 2008/03/11
+*/
 function service_vfs_checkSpecialChars($params){
 	$fileName = $params[0];	
 	global $charBlackList;
@@ -1787,4 +2061,135 @@ function service_vfs_checkSpecialChars($params){
 	}
 	return true;
 }
+
+function service_vfs_isGroupDir($params) {
+	if(!is_dir($dir)) {
+		$dir = dirname($params[0]);
+	} else {
+		$dir = $params[0];
+	}
+	$group = realpath(EYE_ROOT.'/'.GROUPS_DIR.'/');
+	$check = realpath($dir);
+	if (0 === utf8_strpos($check,$group)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+/**
+ * @param array($path, $referenceDirectory, [$returnReferenceDirectoryRelative = false], [$groupName])
+ * @param string $path The path of a FOLDER to resolve (do NOT pass a file)
+ *                                         (e.g. '/Documents/Images/..',
+ *                                           or  './users/jn4/john/files/Documents/Images/..',
+ *                                           or  '/home/john/eyeos/users/jn4/john/files/Documents/Images/..',
+ *                                           or  'C:\My Documents\john\eyeos\users\jn4\john\files\Documents\Images\..')
+ * @param string $referenceDirectory 'user_files' for current user's files directory
+ * 									 'group_files' for groups files directory
+ * @param bool $returnReferenceFolderRelative FALSE to get a resolved path from eyeOS root directory
+ *                                              	(e.g. ./users/jn4/john/files/Documents)
+ * 												TRUE to get a resolved path in the reference folder (e.g. '/Documents')
+ * @param string $groupName The name of the group if $referenceDirectory is set to 'group_files'
+ *                                        
+ * @return mixed The resolved path or FALSE if the given path is not in the reference directory or if an error occured
+ * @exception INCORRECT_PARAMS No file has been specified.
+ */
+function service_vfs_resolvePath($params) {
+	if (!is_array($params) || count($params) < 1) {
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$path = $params[0];
+	$groupName = '';
+	if ($params[1] == 'user_files') {
+		$referenceDirectory = um('getCurrentUserDir').FILES_USER_DIR;
+	}
+	elseif ($params[1] == 'group_files') {
+		if ($params[3]) {
+			$groupName = utf8_basename($params[3]);
+			$referenceDirectory = EYE_ROOT.'/'.GROUPS_DIR.'/'.$groupName.'/'.FILES_GROUP_DIR;
+		}
+		else {
+			reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+			return false;
+		}
+	}
+	else {
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	if (is_bool($params[2])) {
+		$returnReferenceFolderRelative = $params[2];
+	}
+	else {
+		$returnReferenceFolderRelative = false;
+	}
+	
+	$resolvedPath = '';
+	//$path is a realpath
+	// UN*X: /home/john/eyeos/users/jn4/john/files/Documents
+	// WIN:  C:\My Documents\john\eyeos\users\jn4\john\files\Documents
+	if (stripos($path, realpath($referenceDirectory)) === 0)
+	{
+		$relativePath = utf8_substr(realpath($path),utf8_strlen(realpath($referenceDirectory)));
+		$resolvedPath = service_vfs_resolvePath(array($relativePath,$params[1],$returnReferenceFolderRelative,$groupName));
+	}
+	//$path is a relative path in the eyeOS root directory
+	elseif (stripos($path,$referenceDirectory) === 0) {
+		$relativePath = utf8_substr($path,utf8_strlen($referenceDirectory));
+		$resolvedPath = service_vfs_resolvePath(array($relativePath,$params[1],$returnReferenceFolderRelative,$groupName));
+	}
+	//$path is a relative path in the user files directory
+	else
+	{
+		//designated path is NOT in the user files folder => ERROR
+		if (stripos(realpath($referenceDirectory.dirname($path)),
+							realpath($referenceDirectory)) === false) {
+			return false;
+		}
+		if ($returnReferenceFolderRelative) {
+			$resolvedPath = '/'.utf8_substr(realpath($referenceDirectory.'/'.$path),
+							utf8_strlen(realpath($referenceDirectory).'/'));
+		}
+		else {
+			$resolvedPath = '.'.utf8_substr(realpath($referenceDirectory.'/'.$path),
+							utf8_strlen(realpath('.')));
+		}
+	}
+	//replace backslashes by slashes (Windows servers)
+	$resolvedPath = str_replace('\\','/',$resolvedPath);
+	return $resolvedPath;
+}
+
+/*
+ * xml-rpc functions. 
+ * 
+ * this functions are normal vfs functions, can be used from any program, but are thinked to be executed remotely.
+ * 
+ */
+
+function service_vfs_appendToFileBinary($params) {
+	$file = $params[0];
+	$content = base64_decode($params[1]);
+	
+	if(!vfs('checkQuota',array(strlen($content),1))) {
+		return false;
+	}
+	
+	$fp = vfs('open',array($file,'a'));
+	if(!$fp) {
+		return false;
+	}
+	
+	while(!flock($fp, LOCK_EX)) {
+		usleep(200);
+	}
+	
+	fwrite($fp,$content);
+	fclose($fp);
+	return true;
+}
+
 ?>

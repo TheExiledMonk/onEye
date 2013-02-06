@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -31,32 +31,13 @@ function eyeVisor_on_Edit($params=null) {
 	$ext = utf8_strtolower($info['extension']);
 
 	if ($ext == 'xls' || $ext == 'ods') {
-		service('eyex','messageBox',array(
-			'content' => 'Edition of Microsoft Excel and OpenOffice sheets is still experimental (in beta stage). Continue?',
-			'type' => 3,
-			'title' => 'System alert',
-			'win_name' => 'eyeVisorWND_SysAlert',
-			'btn1_capt' => 'Yes',
-			'btn1_name' => 'yes',
-			'btn2_capt' => 'No',
-			'btn2_name' => 'no',
-			'hidden_text' => $file,
-			'hidden_name' => 'editionCallback',
-			'img' => '!'
-		));
+		proc('launch',array('eyeSheets',$file));
 	} else {
 		proc('launch',array('eyeDocs',$file));
-		proc('end');
 	}
-}
-function eyeVisor_on_yes($params=null) {
-	$file = $GLOBALS['editionCallback']->text;
-	proc('launch',array('eyeSheets',$file));
 	proc('end');
 }
-function eyeVisor_on_no($params=null) {
-	proc('end');
-}
+
 function eyeVisor_on_Resize($params=null) {
 	global $myPid;
 	$width = $params['arg'][0];

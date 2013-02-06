@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -85,7 +85,7 @@ function eyeDock_on_Launch() {
 
 	$myWindowContent = new Window(array('name'=>'eyeDockContent',
 		'father'=>'eyeApps',
-		'cent'=>2,
+		'cent'=>0,
 		'y'=>0,
 		'x'=>0,
 		'type'=>100,
@@ -93,11 +93,15 @@ function eyeDock_on_Launch() {
 		'height'=>$barHeight+8));
 		
 	$myWindowContent->show();
+		
+	$halfWidth = $barWidth / 2;
+	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_eyeDockContent").style.left="50%"'));
+	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_eyeDockContent").style.marginLeft="-'.$halfWidth.'px"'));
 	
 	eyeX('createDiv',array('name'=>'DockLeftBackground', 'father' => 'eyeDockContent','class'=>'eyeDock_left'));
 	eyeX('createDiv',array('name'=>'DockRightBackground', 'father' => 'eyeDockContent','class'=>'eyeDock_right'));
 	eyeX('createDiv',array('name'=>'DockContentBackground', 'father' => 'eyeDockContent','class'=>'eyeDock_center'));
-
+	$menuNum = 0;
 	foreach($myArray['eyeDock'][0]['Group'] as $value) {
 		$key = $value['name'][0];
 		$icon = utf8_basename($value['icon'][0]);
@@ -114,9 +118,9 @@ function eyeDock_on_Launch() {
 		eyeX('createDiv',array('name'=>'menu_text_items_'.$key,'father'=>'eyeApps','class'=>'eyeDockMenuTitle'));
 		
 		eyeX('rawjs',array('js'=>"dockCenter('menu_items_".$key."',$myPid)"));
-		eyeX('rawjs',array('js'=>"dockAdvanceXIcon('menu_items_".$key."',$x,$myPid)"));
+		eyeX('rawjs',array('js'=>"dockAdvanceXIcon('menu_items_".$key."',$x,$myPid,$menuNum)"));
 		eyeX('rawjs',array('js'=>"dockCenter('menu_text_items_".$key."',$myPid)"));		
-		eyeX('rawjs',array('js'=>"dockAdvanceXIcon('menu_text_items_".$key."',$x,$myPid)"));
+		eyeX('rawjs',array('js'=>"dockAdvanceXIcon('menu_text_items_".$key."',$x,$myPid,$menuNum)"));
 		
 		eyeX('setDiv',array('name' => 'menu_text_items_'.$key,'content' =>i18n("translate",array($key))));
 		
@@ -185,6 +189,7 @@ function eyeDock_on_Launch() {
 		eyeX('rawjs',array('js'=>"dockMenuHeight('menu_items_".$key."',$menuHeight+8,$myPid)"));
 		eyeX('setDiv',array('name' => 'eyeDockMenuContent_'.$key,'content' => $content));
 		$x += $iconWidth + $spacer;	
+		$menuNum++;
 		}
 }
 function eyeDock_on_App_Clicked($params=null) {

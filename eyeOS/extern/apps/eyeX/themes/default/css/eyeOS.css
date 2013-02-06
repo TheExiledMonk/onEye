@@ -59,7 +59,7 @@
 .eyeMenuButton {
 	position: absolute;
 	left: 50%;
-	margin-left: -65px;
+	margin-left: -85px;
 	width: 138px;
 	bottom: 70px;
 	height: 38px;
@@ -362,8 +362,7 @@
 .eyeTab {
 	
 }
-.eyeTabHeader {
-	border-top:1px solid #acacac;
+.eyeTabHeader {	
 	border-bottom: 1px solid #acacac;
 	position:absolute;
 	top:0px;
@@ -457,7 +456,6 @@
 
 }
 .eyeIcon_Text {
-  color: #ffffff;
 }
 .eyeIcon_Image {
 	margin-left: 8px;
@@ -481,6 +479,14 @@
 	margin-top: 18px;
 	font-size: 10pt;
 	color: #fff;
+}
+
+/* eyeSelect */
+.eyeSelect {
+	background-color: white;
+	border: 1px solid #bcbcbc;
+	padding-left: 2px;
+	font-size: 11px;
 }
 
 /* slider */
@@ -826,7 +832,7 @@
 .blockbar {
 	height:58px;
 	width:100%;
-	border-bottom:1px solid grey;
+	border-bottom:1px solid #808080;
 	background-color: #F6F6F6;	
 }
 
@@ -862,17 +868,17 @@
 
 .blockbarItemPress {
 	text-align:center;
-	background-color: #EDEDED;
+	background-color: #E0E0E0;
 	width:auto;
 	float:left;
 	padding: 5px;
 	cursor:Pointer;
-	margin-top:5px;
-	margin-left:10px;
-	border-right: 1px #A1C6F3 solid;
-	border-bottom: 1px #A1C6F3 solid;
-	border-left: 1px #6FA1E0 solid;
-	border-top: 1px #6FA1E0 solid;
+	margin-top:4px;
+	margin-left:6px;
+	border-right: 1px #94B8EF solid;
+	border-bottom: 1px #94B8EF solid;
+	border-left: 1px #628ED7 solid;
+	border-top: 1px #628ED7 solid;
 }
 
 .blockbarImg {
@@ -926,4 +932,5 @@ ul.mktree  li ul li ul li ul li { font-size: 11px; /*font-family:Verdana,Tahoma;
 	padding-left:5px;
 	padding-right:5px;
 	padding-bottom:5px;
+	color:black;
 }

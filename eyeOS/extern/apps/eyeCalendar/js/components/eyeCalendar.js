@@ -6,16 +6,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/
                        __/ |
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -62,7 +62,6 @@ function weekPlanner_class(params,name,father,x,y,horiz,vert,checknum,cent){
 	this.numDays = (this.dayEven-this.dayFrom);	//Simply for not recalcule it
 	this.pixelPart = (this.rowHeight+1) / this.parts;	
 	
-	//Hardcoded ! this will be removed in eyeOS 1.4
 	this.calendarsFather = xGetElementById(this.pid+'_calendarsContainer_Container');	
 	
 	this.noteHeaderColors = new Array();
@@ -109,7 +108,7 @@ function weekPlanner_calendars(weekPlanner){
 	
 	this.cleanCalendars = function cleanCalendars(){				
 		var container = document.getElementById(this.father.pid+'_calendarsEntryContainer');		
-		container.parentNode.removeChild(container);
+		//container.parentNode.removeChild(container);
 		this.draw();
 	}
 	this.hiddenNotes = function hiddenNotes(e){
@@ -118,22 +117,27 @@ function weekPlanner_calendars(weekPlanner){
 		}		
 		var checkBox = e.target;
 		var num = checkBox.num;
+				
+		//If calendar is showed
 		if(checkBox.checked == true){
 			this.calendarInfo[num]['show'] = 1;
 			this.father.notes.jsEvent_showCalendarNotes(num);
 		}else{
+			//If calendar is selected, show it always
 			if(this.calendarInfo[num]['selected'] == 1){
 				checkBox.checked = true;
 				return false;
 			}
+			//If calendar isn't showed
 			this.calendarInfo[num]['show'] = 0;
+			//Show it
 			this.father.notes.jsEvent_hiddenCalendarNotes(num);
 		}
 		
 		sendMsgParam = eyeParam('showed',checkBox.checked);
 		sendMsgParam = sendMsgParam + eyeParam('calendar',num);
 		sendMsg(this.father.checknum,'calendarShow',sendMsgParam);
-	}	
+	}
 	this.selectCalendar = function selectCalendar(e){
 		//Removing	selected img from old selected calendar			
 		var len = this.calendarInfo.length;
@@ -146,39 +150,8 @@ function weekPlanner_calendars(weekPlanner){
 		if(target.id == 'textContainer'){
 			target = target.parentNode;
 		}
-		var num = target.num;
-		
-		if(this.father.selectedCalendar != 'noCalendar'){
-			this.calendarInfo[this.father.selectedCalendar]['selected'] = 0;	
-		}		
-		this.calendarInfo[num]['selected'] = 1;
-		if(this.calendarInfo[num]['show'] == 0){
-			var checkBox = document.getElementById(this.father.pid+'_calendarCheck_'+num);
-			checkBox.checked = true;			
-			this.calendarInfo[num]['show'] =1;
-			this.father.notes.jsEvent_showCalendarNotes(num);			
-			sendMsgParam = eyeParam('showed',checkBox.checked);
-			sendMsgParam = sendMsgParam + eyeParam('calendar',num);
-			sendMsg(this.father.checknum,'calendarShow',sendMsgParam);
-		}
-		this.calendarInfo[num]['selected'] = 1;
-		this.father.selectedCalendar = num;
-		
-		//selected image
-		var imageContainer = document.createElement('div');
-		imageContainer.setAttribute('id',this.father.pid+'_selectedImg');
-		imageContainer.style.position = 'relative';
-		imageContainer.style.cssFloat = 'right'
-		imageContainer.style.styleFloat = 'right'
-		imageContainer.style.width = '5px';
-		imageContainer.style.height = '7px';
-			var image = document.createElement('img');
-			image.src = 'index.php?extern=apps/eyeCalendar/gfx/widget/selected.png';
-		 imageContainer.appendChild(image);
-		 target.appendChild(imageContainer);
-
-		sendMsgParam = eyeParam('calendar',num);
-		sendMsg(this.father.checknum,'selectCalendar',sendMsgParam);
+		var num = target.num;				
+		this.genSelectCalendar(true,target,num);
 	}
 	this.phpSelectCalendar = function phpSelectCalendar(num){
 		//Removing	selected img from old selected calendar
@@ -186,36 +159,56 @@ function weekPlanner_calendars(weekPlanner){
 		if(len > 0){		
 			var oldCalendar = xGetElementById(this.father.pid+'_selectedImg');
 			oldCalendar.parentNode.removeChild(oldCalendar);
-		}		 
+		}		 						
+		var entry = document.getElementById(this.father.pid+'_contentName_'+num);
+		this.genSelectCalendar(false,entry,num);		 
+	}
+	//Generic select calendar
+	this.genSelectCalendar = function genSelectCalendar(local,content,num){
+		//Usually always a calendar is selected
+		if(this.father.selectedCalendar != 'noCalendar'){
+			this.calendarInfo[this.father.selectedCalendar]['selected'] = 0;	
+		}						
 		
-		this.calendarInfo[this.father.selectedCalendar]['selected'] = 0;
 		this.calendarInfo[num]['selected'] = 1;
+		//If calendar is selected but isn't showed, force it
 		if(this.calendarInfo[num]['show'] == 0){
+			//Getting checkbox
 			var checkBox = document.getElementById(this.father.pid+'_calendarCheck_'+num);
-			checkBox.checked = true;			
+			checkBox.checked = true;
+			//Setting it as showed
 			this.calendarInfo[num]['show'] = 1;
-			this.father.notes.jsEvent_showCalendarNotes(num);			
+			//showing the notes
+			this.father.notes.jsEvent_showCalendarNotes(num);
+						
 			sendMsgParam = eyeParam('showed',checkBox.checked);
 			sendMsgParam = sendMsgParam + eyeParam('calendar',num);
 			sendMsg(this.father.checknum,'calendarShow',sendMsgParam);
 		}
+		//Set is as selected
 		this.calendarInfo[num]['selected'] = 1;
+		//Setting this calendar as selected calendar
 		this.father.selectedCalendar = num;
-				
 		//selected image
+		//TODO: remove duplicate code
+		var imageContainer = this.drawSelectRow();
+		 content.appendChild(imageContainer);
+		
+		if(local==true){
+			sendMsgParam = eyeParam('calendar',num);
+			sendMsg(this.father.checknum,'selectCalendar',sendMsgParam);
+		}		
+	}	
+	this.drawSelectRow = function drawSelectRow(){
 		var imageContainer = document.createElement('div');
 		imageContainer.setAttribute('id',this.father.pid+'_selectedImg');
-		imageContainer.style.position = 'relative';
-		imageContainer.style.cssFloat = 'right'
-		imageContainer.style.styleFloat = 'right'
-		imageContainer.style.width = '5px';
-		imageContainer.style.height = '7px';
+		imageContainer.style.position = 'absolute';
+		imageContainer.style.height = '100%';
+		imageContainer.style.right = '5px';
 			var image = document.createElement('img');
 			image.src = 'index.php?extern=apps/eyeCalendar/gfx/widget/selected.png';
 		 imageContainer.appendChild(image);
-		 
-		 var entry = document.getElementById(this.father.pid+'_contentName_'+num);		 
-		 entry.appendChild(imageContainer);
+		 return imageContainer;
 	}
 	this.drawCalendar = function drawCalendar(name,num,show){
 		var fatherContainer = this.father.calendarsFather;
@@ -283,16 +276,7 @@ function weekPlanner_calendars(weekPlanner){
 				if(this.father.selectedCalendar == num){
 					this.calendarInfo[num]['selected'] = 1;
 					//selected image
-					var imageContainer = document.createElement('div');
-					imageContainer.setAttribute('id',this.father.pid+'_selectedImg');
-					imageContainer.style.position = 'relative';
-					imageContainer.style.cssFloat = 'right'
-					imageContainer.style.styleFloat = 'right'
-					imageContainer.style.width = '5px';
-					imageContainer.style.height = '7px';
-						var image = document.createElement('img');
-						image.src = 'index.php?extern=apps/eyeCalendar/gfx/widget/selected.png';
-					imageContainer.appendChild(image);
+					var imageContainer = this.drawSelectRow();
 					contentName.appendChild(imageContainer);
 				}else{
 					this.calendarInfo[num]['selected'] = 0;
@@ -507,17 +491,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 					}					
 					part.evenType = 'default';
 					weekDay.appendChild(part);						
-				}			
-								
-					/*
-					var halfHour = document.createElement('div');
-					halfHour.setAttribute('id','halfHour');
-					halfHour.style.position = 'absolute';
-					halfHour.style.top = (this.father.rowHeight/2)+'px';
-					halfHour.style.width = '100%';
-					halfHour.style.height = '1px';
-					halfHour.style.background = 'repeat-x';
-					halfHour.style.backgroundImage ='url(index.php?extern=apps/eyeCalendar/gfx/dotted.png)';*/
+				}												
 				//Filling the week day
 				weekDay.appendChild(part);
 			}
@@ -645,7 +619,7 @@ function weekPlanner_notes(weekPlanner){
 		
 		var num = target.num;
 		//Now I can draw the note in his parent (hour).
-		var cid = this.notes.length;		
+		var cid = this.notes.length;
 		var note = this.draw_newNote(num,2,calendar,cid);//Creating the note object
 		this.father.base.daysContainer.style.cursor = 's-resize';	
 				
@@ -657,9 +631,11 @@ function weekPlanner_notes(weekPlanner){
 		note.fromParts = target.num;
 		note.startPart = target.num;
 		note.day = target.day;
+		
 		//Drawing title
 		this.draw_title(note);
 		this.draw_event(note,this.father.defaultEvenText);
+		
 		//Resize hack		
 		if(IEversion == 6 || IEversion == 7){
 			note.style.zIndex = 0;
@@ -686,7 +662,7 @@ function weekPlanner_notes(weekPlanner){
 		params['sFather'] = 1;
 		ContextMenu_show(params,note.cid+'_noteMenu',note.id,20,20,0,0,this.father.checknum,0);
 		//addContextEntry(menuName,text,entryName,signal,checknum,params
-		addContextEntry(note.cid+'_noteMenu','<img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png"/> &nbsp;&nbsp;Delete',note.cid+'_delete','delNote',this.father.checknum,'<id>'+note.cid+'</id><calendar>'+note.calendar+'</calendar>');	
+		addContextEntry(note.cid+'_noteMenu','<img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png"/> &nbsp;&nbsp;$Delete',note.cid+'_delete','delNote',this.father.checknum,'<id>'+note.cid+'</id><calendar>'+note.calendar+'</calendar>');	
 	}
 	this.jsEvent_deleteNote = function jsEvent_deleteNote(e){
 		var note = e.target.parentNode;
@@ -759,13 +735,7 @@ function weekPlanner_notes(weekPlanner){
 		popupDiv.inputText.focus();
 		popupDiv.inputText.select();
 	}	
-	this.jsEvent_setEvent = function jsEvent_setEvent(e){
-		var noteId = this.father.tmpNote.cid;
-		var inputText = document.getElementById(noteId+'_inputEvent');
-		if(!inputText){
-			return false;
-		}
-
+	this.draw_editBox = function draw_editBox(text){
 		var textContainer = document.createElement('div');
 		textContainer.setAttribute('id','eventCotnainer');		
 		textContainer.className = 'eyeCalendar_hover';
@@ -778,11 +748,21 @@ function weekPlanner_notes(weekPlanner){
 		textContainer.style.cursor = 'pointer';	
 		textContainer.evenType = 'editEvent'
 		textContainer.style.zIndex = '999';
-		textContainer.pid = this.father.pid;
-
-		textContainer.pid = this.father.pid;	
-			var text = document.createTextNode(inputText.value);
+		textContainer.pid = this.father.pid;			
+			var text = document.createTextNode(text);
 		textContainer.appendChild(text);
+		xAddEventListener(textContainer,'click',mouseClick);
+		return textContainer;
+	}
+	this.jsEvent_setEvent = function jsEvent_setEvent(e){
+		var noteId = this.father.tmpNote.cid;
+		var inputText = document.getElementById(noteId+'_inputEvent');
+		if(!inputText){
+			return false;
+		}
+				
+		var textContainer = this.draw_editBox(inputText.value);
+		
 		xAddEventListener(textContainer,'click',mouseClick);
 		if(this.father.tmpNote.noteBody.firstChild){
 			var first = this.father.tmpNote.noteBody.firstChild;
@@ -1162,23 +1142,8 @@ function weekPlanner_notes(weekPlanner){
 		note.noteBody.style.height = height-this.father.pixelPart+'px';		
 	}
 	this.draw_event = function draw_event(note,event){
-		var textContainer = document.createElement('div');
-		textContainer.setAttribute('id','eventCotnainer');		
-		textContainer.className = 'eyeCalendar_hover';
-		textContainer.style.position = 'relative';
-		textContainer.style.paddingLeft = '1px';
-		textContainer.style.paddingRight = '1px';
-		textContainer.style.width = 'auto';
-		textContainer.style.height = 'auto';
-		textContainer.style.color = 'white';
-		textContainer.style.cursor = 'pointer';	
-		textContainer.evenType = 'editEvent'
-		textContainer.style.zIndex = '999';
-		textContainer.pid = this.father.pid;
-			var text = document.createTextNode(event);		
-		textContainer.appendChild(text);		
-		note.noteBody.appendChild(textContainer);		
-		xAddEventListener(textContainer,'click',mouseClick);
+		var textContainer = this.draw_editBox(event);
+		note.noteBody.appendChild(textContainer);
 	}
 	this.draw_editPopup = function draw_editPopup(id,text){
 		//Calculing the popup position

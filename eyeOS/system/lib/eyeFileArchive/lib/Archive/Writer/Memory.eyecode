@@ -62,7 +62,7 @@ class File_Archive_Writer_Memory extends File_Archive_Writer
     function File_Archive_Writer_Memory(&$data, $seek = 0)
     {
         $this->data =& $data;
-        $this->data = utf8_substr($data, 0, $seek);
+        $this->data = substr($data, 0, $seek);
     }
 
     function writeData($d) { $this->data .= $d; }

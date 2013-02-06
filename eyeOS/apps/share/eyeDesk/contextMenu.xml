@@ -11,6 +11,11 @@
 		<icon>newfolder</icon>
 	</entry>
 	<entry>
+		<text>New File</text>
+		<signal>newFile</signal>
+		<icon>new</icon>
+	</entry>
+	<entry>
 		<text>New Launcher</text>
 		<signal>launcher</signal>
 		<icon>launcher</icon>

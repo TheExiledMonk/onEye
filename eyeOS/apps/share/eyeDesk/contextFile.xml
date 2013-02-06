@@ -16,6 +16,11 @@
 		<icon>copy</icon>
 	</entry>
 	<entry>
+		<text>Rename</text>
+		<signal>rename</signal>
+		<icon>rename</icon>
+	</entry>
+	<entry>
 		<text>Properties</text>
 		<signal>properties</signal>
 		<icon>properties</icon>

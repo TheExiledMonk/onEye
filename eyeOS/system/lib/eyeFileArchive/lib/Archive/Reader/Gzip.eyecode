@@ -106,13 +106,13 @@ class File_Archive_Reader_Gzip extends File_Archive_Reader_Archive
     function getFilename()
     {
         $name = $this->source->getFilename();
-        $slashPos = utf8_strrpos($name, '/');
+        $slashPos = strrpos($name, '/');
         if ($slashPos !== false) {
-            $name = utf8_substr($name, $slashPos+1);
+            $name = substr($name, $slashPos+1);
         }
-        $dotPos = utf8_strrpos($name, '.');
+        $dotPos = strrpos($name, '.');
         if ($dotPos !== false && $dotPos > 0) {
-            $name = utf8_substr($name, 0, $dotPos);
+            $name = substr($name, 0, $dotPos);
         }
 
         return $name;
@@ -136,7 +136,7 @@ class File_Archive_Reader_Gzip extends File_Archive_Reader_Archive
             $data = gzread($this->gzfile, $length);
         }
 
-        $this->filePos += utf8_strlen($data);
+        $this->filePos += strlen($data);
         return $data == '' ? null : $data;
     }
 
@@ -149,7 +149,7 @@ class File_Archive_Reader_Gzip extends File_Archive_Reader_Archive
             do
             {
                 $tmp = gzread($this->gzfile, 8192);
-                $this->filePos += utf8_strlen($tmp);
+                $this->filePos += strlen($tmp);
             } while ($tmp != '');
         } else {
             if (@gzseek($this->gzfile, $this->filePos + $length) === -1) {

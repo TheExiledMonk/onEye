@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -33,7 +33,8 @@ $myTable = new Sortabletable(array(
 	'x' => 0,
 	'y' => 30,
 	'width' => 560,
-	'height' => 375
+	'height' => 375,
+	'dblsignal' => 'eyesoft_edit'
 ));
 $myTable->show();
 $nMirrors = 0;
@@ -51,7 +52,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 10,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/new.png'
+	'img' => eyex('getThemeImage',array('icons/16x16/new.png',1))
 ));
 $myButton->show();
 // Edit
@@ -63,7 +64,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 90,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/paste.png'
+	'img' => eyex('getThemeImage',array('icons/16x16/paste.png',1))
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -76,7 +77,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 170,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/properties.png'
+	'img' => eyex('getThemeImage',array('icons/16x16/properties.png',1))
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -89,21 +90,9 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 250,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/delete.png'
+	'img' => eyex('getThemeImage',array('icons/16x16/delete.png',1))
 ));
 $myButton->addFriend($myTable);
-$myButton->show();
-// Launch eyeSoft
-$myButton = new Button(array(
-	'name' => 'eyeControl_eyesoft_button_launch',
-	'father' => $eyeContainer,
-	'signal' => 'eyesoft_launch',
-	'caption' => 'Launch eyeSoft',
-	'width' => 110,
-	'x' => 330,
-	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeControl/gfx/eyesoft.png'
-));
 $myButton->show();
 // x mirror (s)
 $myLabel = new Label(array(

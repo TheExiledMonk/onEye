@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License (GPL)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -82,6 +82,9 @@ if (isset($_GET['extern'])) {
 		//call to extern to throw the file
 		reqLib('eyeSessions','startSession');
 		service('extern','getFile',array($myExtern,$type),1);
+} elseif(isset($_GET['api'])) {
+	require_once(EYE_ROOT.'/xml-rpc/server.eyecode');
+	xmlrpc_parseRequest();
 } else {
 	//Loading eyeWidgets definitions
 	reqLib('eyeWidgets','loadWidgets');

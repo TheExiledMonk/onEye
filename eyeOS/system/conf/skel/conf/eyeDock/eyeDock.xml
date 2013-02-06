@@ -6,18 +6,18 @@
 		<icon>favorites.png</icon> 
 		<items>
 			<item>
-				<name>eyeFiles</name>
-				<desc>File Manager</desc>
-				<text>Upload, manage and work with your files in eyeOS</text>
-				<icon>home.png</icon>
-				<exec>eyeFiles</exec>
-			</item>
-			<item>
 				<name>eyeDocs</name>
 				<desc>Word Processor</desc>
 				<text>Create and edit rich text documents</text>
 				<icon>eyeDocs.png</icon>
 				<exec>eyeDocs</exec>
+			</item>
+			<item>
+				<name>eyeCalendar</name>
+				<desc>Calendar</desc>
+				<text>Create and edit events and be organized</text>
+				<icon>eyeCalendar.png</icon>
+				<exec>eyeCalendar</exec>
 			</item>
 			<item>
 				<name>eyeMessages</name>
@@ -27,11 +27,11 @@
 				<exec>eyeMessages</exec>
 			</item>
 			<item>
-				<name>eyeCalendar</name>
-				<desc>Calendar</desc>
-				<text>Create and edit events to be completely organized</text>
-				<icon>eyeCalendar.png</icon>
-				<exec>eyeCalendar</exec>
+				<name>eyeFeeds</name>
+				<desc>RSS Feed Reader</desc>
+				<text>Stay tuned to the latest news from your favorite blogs</text>
+				<icon>RSS.png</icon>
+				<exec>eyeFeeds</exec>
 			</item>
 		</items>
 	</Group>
@@ -55,8 +55,8 @@
 			</item>
 			<item>
 				<name>eyeSheets</name>
-				<desc>Spreadsheets</desc>
-				<text>Create and edit spreadsheets (currently in beta)</text>
+				<desc>Spreadsheet</desc>
+				<text>Create and edit rich sheets</text>
 				<icon>eyeSheets.png</icon>
 				<exec>eyeSheets</exec>
 			</item>
@@ -70,13 +70,13 @@
 			<item>
 				<name>eyeCalendar</name>
 				<desc>Calendar</desc>
-				<text>Create and edit events to be completely organized</text>
+				<text>Create and edit events and be organized</text>
 				<icon>eyeCalendar.png</icon>
 				<exec>eyeCalendar</exec>
 			</item>
 			<item>
 				<name>eyeContacts</name>
-				<desc>Contacts</desc>
+				<desc>Contact Manager</desc>
 				<text>Manage and import/export your contacts</text>
 				<icon>eyeContacts.png</icon>
 				<exec>eyeContacts</exec>
@@ -111,7 +111,7 @@
 			<item>
 				<name>eyeMail</name>
 				<desc>Mail Client</desc>
-				<text>Send and receive e-mails with your usual mail accounts</text>
+				<text>Send and receive e-mails with your usual POP3 mail accounts</text>
 				<icon>eyeMail.png</icon>
 				<exec>eyeMail</exec>
 			</item>
@@ -123,16 +123,16 @@
 				<exec>eyeNav</exec>
 			</item>
 			<item>
-				<name>eyeRSS</name>
-				<desc>RSS Feed reader</desc>
-				<text>Stay tuned to the latest news from your favorite blogs</text>
-				<icon>eyeRSS.png</icon>
-				<exec>eyeRSS</exec>
+				<name>eyeFeeds</name>
+				<desc>RSS Feed Reader</desc>
+				<text>Stay tuned to the latest news from your favorite sources</text>
+				<icon>RSS.png</icon>
+				<exec>eyeFeeds</exec>
 			</item>
 		</items>
 	</Group>
 	<Group>
-		<name>Accesories</name>
+		<name>Accessories</name>
 		<icon>accesories.png</icon>
 		<items>
 			<item>
@@ -143,10 +143,34 @@
 			</item>
 			<item>
 				<name>eyeNotes</name>
-				<desc>Quick Notes</desc>
-				<text>Save quick notes and edit text files</text>
+				<desc>Text Editor</desc>
+				<text>Save quick notes and edit text and source files</text>
 				<icon>eyeNotes.png</icon>
 				<exec>eyeNotes</exec>
+			</item>
+			<item>
+				<name>miniActions</name>
+				<desc>Actions widget</desc>
+				<icon>miniActions.png</icon>
+				<exec>miniActions</exec>
+			</item>
+			<item>
+				<name>miniMessages</name>
+				<desc>Messages widget</desc>
+				<icon>miniMessages.png</icon>
+				<exec>miniMessages</exec>
+			</item>
+			<item>
+				<name>miniCalendar</name>
+				<desc>Calendar widget</desc>
+				<icon>miniCalendar.png</icon>
+				<exec>miniCalendar</exec>
+			</item>
+			<item>
+				<name>miniHome</name>
+				<desc>Home widget</desc>
+				<icon>miniHome.png</icon>
+				<exec>miniHome</exec>
 			</item>
 		</items>
 	</Group>
@@ -160,6 +184,12 @@
 				<icon>eyeChess.png</icon>
 				<exec>eyeChess</exec>
 			</item>
+			<item>
+				<name>eyeTetravex</name>
+				<desc>Tetravex Game</desc>
+				<icon>eyeTetravex.png</icon>
+				<exec>eyeTetravex</exec>
+			</item>
 		</items>
 	</Group>
 	<Group>
@@ -169,7 +199,7 @@
 			<item>
 				<name>eyeProcess</name>
 				<desc>Process Manager</desc>
-				<text>See which process are running in your session and kill them</text>
+				<text>See which processes are running in your session and kill them</text>
 				<icon>eyeProcess.png</icon>
 				<exec>eyeProcess</exec>
 			</item>

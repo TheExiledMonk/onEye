@@ -7,45 +7,37 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
-	eyeOs logging service.
-*/
-
-/*
-	this service intercept service calls and log it into one or more log files
+	eyeOs logging service. This service intercepts service calls and logs them
+	into one or more log files.
 */
 
 /*EYEOS_LOG TYPES: (related to where the logs are stored)
  * 0 = LOG OFF.
- * 1 = SAVE ALL in /log/all/trace.log, save  ServiceName ServiceFunction User Ip Date.
+ * 1 = SAVE ALL in /log/all/trace.log, save ServiceName ServiceFunction User Ip Date.
  * 2 = SAVE ALL in /log/userAcronim/user/ServiceName/trace.log
  * 3 = 1 + 2 types, save in /log/all and /log/user....
  */
 
-/***
-* 
-* Description: check EYEOS_LOG value
-*
-* Arguments: none
-* 
-* Return: If EYEOS_LOG is incorrect, return false, if all ok, return true
-* 
-* Last update 2007-02-20
-***/
+/**
+* Initializes the logging service, and checks its state.
+* @return True if the logging variable has a correct value, false otherwise.
+* @date 2007-02-20
+*/
 function service_log_init(){
 	if(EYEOS_LOG != 1 && EYEOS_LOG != 2){
 		reqLib('errorCodes','setErrorCode',array(EYEOS_LOG_BAD_VALUE));
@@ -54,24 +46,26 @@ function service_log_init(){
 	return true;
 }
 
-/*--------------------------------------------------------------------*/
-/* LOG add function.
-/*--------------------------------------------------------------------*/
-/***
+/**
+* Appends a line to the log file every. This function is called when the
+* functions of certain services are called.
 * 
-* Description: append a log line in the log files
-*
-* Arguments:
-* 	+ serviceName: name of the called service
-*	+ serviceFunction: name of the called function
-*	- serviceArgs: arguments passed to the called function
-* 
-* Return: return EYEOS_LOG_SERVICE_IGNORED if service is in the list of ignored services
-*		  and EYEOS_LOG_BAD_VALUE if log service is incorrectly configured
-* 
-* Last update 2007-02-19
-***/
+* @param $params array(serviceName,serviceFunction,[serviceArgs])
+* @param $serviceName Name of the service called. The 'mmap', 'extern' or 'eyex'
+*	services function calls are never logged (they are ignored).
+* @param $serviceFunction Name of the function of the service.
+* @param $serviceArgs Parameters passed to the called function.
+* @return If the function succeeds, returns true, otherwise returns
+*	false.
+* @exception EYEOS_LOG_SERVICE_IGNORED The service to log is ignored.
+* @exception EYEOS_LOG_BAD_VALUE The logging type has an incorrect value.
+* @date 2008/03/11
+*/
 function service_log_addLog($params) {
+	if(!$params[0] || !$params[1]) {
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
 	
 	$serviceName = $params[0];
 	$serviceFunction = $params[1];
@@ -88,7 +82,7 @@ function service_log_addLog($params) {
 	}
 	
 	global $currentUser;
-	$remoteIp = $_SERVER['REMOTE_ADDR'];//Get addres by service? maybe...
+	$remoteIp = $_SERVER['REMOTE_ADDR'];//Get address by service? maybe...
 	$time = time();
 	
 	
@@ -97,7 +91,7 @@ function service_log_addLog($params) {
 		{
 			if(is_array($serviceArgs))
 			{
-				//If are a valid service save the params.
+				//If it is a valid service save the params
 				foreach ($serviceArgs as $param)
 				{
 					$serviceParams .= "$param ";	
@@ -111,7 +105,7 @@ function service_log_addLog($params) {
 	//Making the string
 	$log = $serviceName."\t"."\t".$serviceFunction."\t"."\t"."\t".$serviceParams."\t"."\t".$currentUser."\t"."\t".$remoteIp."\t"."\t".$time."\n";
 	
-	//Every EYEOS_LOG types have a function.
+	//Every EYEOS_LOG type has a function
 	if(EYEOS_LOG == 1)
 	{
 		saveOne(array($log));
@@ -129,48 +123,38 @@ function service_log_addLog($params) {
 /*--------------------------------------------------------------------*/
 /* LOG SEMAHORE funtions.
 /*--------------------------------------------------------------------*/
-/***
+
+/**
+* Disables logging.
 * 
-* Description: disable logging
-*
-* Arguments: none
-* 
-* Return: none
-* 
-* Last update 2007-02-19
-***/
+* @return This function does not return any value.
+* @date 2008/03/11
+*/
 function service_log_lock()
 {
 	global $logRunning;
 	$logRunning = true;
 }
 
-/***
+/**
+* Enables logging.
 * 
-* Description: enable logging
-*
-* Arguments: none
-* 
-* Return: none
-* 
-* Last update 2007-02-19
-***/
+* @return This function does not return any value.
+* @date 2008/03/11
+*/
 function service_log_unlock()
 {
 	global $logRunning;
 	$logRunning = false;	
 }
 
-/***
+/**
+* Checks whether the logging status is enabled or disabled.
 * 
-* Description: return the enabled or disabled log status
-*
-* Arguments: none
-* 
-* Return: return true when logging is locked and false when logging is unlocked
-*
-* Last update 2007-02-19
-***/
+* @return Returns true if the logging is locked (disabled), false
+*	otherwise.
+* @date 2008/03/11
+*/
 function service_log_checkLog()
 {
 	global $logRunning;
@@ -182,9 +166,8 @@ function service_log_checkLog()
 /*--------------------------------------------------------------------*/
 
 /***
-* 
-* Description: write a log entry when log value is set to 1, and backup the log if
-*		it's bigger than MAX_SIZE
+* Writes a log entry when the log value is set to 1, and backup it
+* if it's bigger than MAX_SIZE
 *
 * Arguments:
 * 	+ log: string of the log entry to write
@@ -223,8 +206,7 @@ function saveOne($params){
 }
 
 /***
-* 
-* Description: write a log entry in a service's log dir
+* Writes a log entry in a service's log dir
 *
 * Arguments:
 * 	+ log: string containing the log information

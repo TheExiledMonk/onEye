@@ -6,16 +6,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -60,7 +60,13 @@ function init_eyeFiles(pid,checknum) {
 		}
 	}
 	xDisableDrag(myName,true);
+	function startEyeFilesResize(){
+		var windowNameId = pid+'_WND_1';
+		widgetDragStart(windowNameId);		
+	}
 	function onEyeFilesResize () {
+		var windowNameId = pid+'_WND_1';
+		widgetDragEnd(windowNameId);
 		var wWidget = xWidth(pid+'_WND_1');
 		var wHeight = xHeight(pid+'_WND_1');
 		
@@ -108,16 +114,19 @@ function init_eyeFiles(pid,checknum) {
 				myy = myy+imgH+separation;
 			}
 			ele = xGetElementById(pid+'_eyeFiles_icon_'+i+'_Container');
-		}
+		}		
 	}
-	xEnableDrag(myName, null, resOnDrag, onEyeFilesResize);
+	xEnableDrag(myName, startEyeFilesResize, resOnDrag, onEyeFilesResize);	
 	var mBtn = document.getElementById(pid+'_WND_1_WindowMaxButton');
+	var title = document.getElementById(pid+'_WND_1_WindowTitle');
 	mBtn.onclick = maximize;
+	title.ondblclick = maximize;
 	function minimize () {
 		maximized = false;
 		xResizeTo(widget, w, h);
 		xMoveTo(widget, x, y);
 		mBtn.onclick = maximize;
+		title.ondblclick = maximize;
 		onEyeFilesResize();
 	}
 	function maximize (){
@@ -129,6 +138,7 @@ function init_eyeFiles(pid,checknum) {
 		xResizeTo(widget, xWidth(father)-leftBorder-rightBorder, xHeight(father)-barX_height-barX_height-spaceBetweenApps-spaceBetweenApps-55);
 		xMoveTo(widget,leftBorder,barX_height+spaceBetweenApps+30);
 		mBtn.onclick = minimize;
+		title.ondblclick = minimize;
 		onEyeFilesResize();
 	}
 }
@@ -154,4 +164,3 @@ function eyeFiles_reloadFiles(pid,checknum,path) {
 		sendMsg(checknum,'Icon_Clicked',eyeParam('arg0',document.getElementById(pid+'_eyeFilesText').value)+eyeParam('arg1',myW));	
 	}
 }
-

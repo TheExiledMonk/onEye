@@ -6,16 +6,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -90,12 +90,14 @@ function dockCenter(id,pid) {
 	}
 }
 
-function dockAdvanceXIcon(id,intx,pid) {
-	var dockIconLeft = document.getElementById(pid+'_'+id).style;
-	newX = dockIconLeft.left.substring(0,dockIconLeft.left.length-2);
-	newX = parseInt(newX);  
-	newX = newX + intx;
-	dockIconLeft.left = newX+"px";
+function dockAdvanceXIcon(id,intx,pid,menuNum) {
+	var dockIconLeft = document.getElementById(pid+'_'+id);
+	var margin = 110;
+	var toRest = 31*menuNum;
+	margin = margin-toRest;
+	margin = margin*(-1);	
+	dockIconLeft.style.left = "50%";
+	dockIconLeft.style.marginLeft = margin+"px";	
 }
 
 function dockMenuHeight(id,inty,pid) {

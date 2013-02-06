@@ -1,7 +1,7 @@
 <package>
 	<name>eyeFTP</name>
 	<category>Utilities</category>
-	<version>3.0.0</version>
+	<version>3.0.2</version>
 	<description>FTP client for eyeOS.</description>
 	<author>Nanawel [nanawel@eyeos.org]</author>
 	<license>GPL</license>

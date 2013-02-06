@@ -204,7 +204,7 @@ class File_Archive_Reader_Ar extends File_Archive_Reader_Archive
             if (PEAR::isError($data)) {
                 return $data;
             }
-            if (utf8_strlen($data) != $length) {
+            if (strlen($data) != $length) {
                 return PEAR::raiseError('Unexpected end of Ar archive');
             }
             return $data;

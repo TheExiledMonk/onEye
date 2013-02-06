@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -48,17 +48,16 @@ function eyeControl_on_desktop_select($params = '') {
 }
 
 function eyeControl_on_desktop_select_now($params=null) {
-	global $checknum;
 	$file = $params['arg'][0];
 	if ($file) {
-		$fileX = service('um','getCurrentUserDir') . '/' . FILES_USER_DIR . '/' . $file;
+		$fileX = eyeControl_lib_getConfigUserPath() . '/' . FILES_USER_DIR . '/' . $file;
 		if (vfs('filesize',array($fileX)) > 0 && in_array(utf8_strtolower(utf8_substr($file,-4)),array('.jpg','.gif','.bmp','.png','.tif'))) {
 			$GLOBALS['eyeControl_desktop_textbox_select']->setText($file);
 			$GLOBALS['eyeControl_desktop_checkbox_use']->check();
 		} elseif (!in_array(utf8_strtolower(utf8_substr($file,-4)),array('.jpg','.gif','.bmp','.png','.tif'))) {
 			eyex('messageBox',array('content' => 'Sorry, this file is not allowed to be a wallpaper.'));
 		} else {
-			eyex('messageBox',array('content' => 'Sorry, but the file doesn\'t exist.'));
+			eyex('messageBox',array('content' => 'Sorry, but the file does not exist.'));
 		}
 	}
 }
@@ -66,16 +65,16 @@ function eyeControl_on_desktop_select_now($params=null) {
 function eyeControl_on_desktop_save($params=null) {
 	global $checknum;
 	global $myPid;
-	$config = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
+	$config = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 	if ($GLOBALS['eyeControl_desktop_checkbox_use']->checked) {
-		$file = service('um','getCurrentUserDir') . '/' . FILES_USER_DIR . '/' . $GLOBALS['eyeControl_desktop_textbox_select']->text;
+		$file = eyeControl_lib_getConfigUserPath() . '/' . FILES_USER_DIR . '/' . $GLOBALS['eyeControl_desktop_textbox_select']->text;
 		if (vfs('filesize',array($file)) > 0 && in_array(utf8_strtolower(utf8_substr($file,-4)),array('.jpg','.gif','.bmp','.png','.tif'))) {
 			$config['eyeDesk'][0]['wallpaper'][0] = $file;
 		} elseif (!in_array(utf8_strtolower(utf8_substr($file,-4)),array('.jpg','.gif','.bmp','.png','.tif'))) {
 			eyex('messageBox',array('content' => 'Sorry, the file is not allowed to be a wallpaper.'));
 			return;
 		} else {
-			eyex('messageBox',array('content' => 'Sorry, but the file doesn\'t exist.'));
+			eyex('messageBox',array('content' => 'Sorry, but the file does not exist.'));
 			return;
 		}
 	} else {
@@ -85,13 +84,13 @@ function eyeControl_on_desktop_save($params=null) {
 	$center = $GLOBALS['eyeControl_desktop_checkbox_center']->checked;
 	$config['eyeDesk'][0]['wallpaperRepeat'][0] = $repeat;
 	$config['eyeDesk'][0]['wallpaperCenter'][0] = $center;
-	$config = eyeXML('setXMLconfig',array('eyeDesk','conf.xml',$config));
-	eyex('setWallpaper',array('path' => 'index.php?checknum=' . $checknum . '&msg=getWallpaper','repeat' => $repeat,'center' => $center));
+	$config = eyeControl_lib_setXMLconfig(array('eyeDesk','conf.xml',$config));
+	eyex('setWallpaper',array('path' => 'index.php?checknum=' . $checknum . '&msg=getWallpaper&' . time(),'repeat' => $repeat,'center' => $center));
 	eyex('messageBox',array('content' => 'New wallpaper successfully set.'));
 }
 
 function eyeControl_on_getWallpaper($params = '') {
-	$config = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
+	$config = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 	$url = $config['eyeDesk'][0]['wallpaper'][0];
 	if ($url != '') {
 		$length = vfs('filesize',array($url));

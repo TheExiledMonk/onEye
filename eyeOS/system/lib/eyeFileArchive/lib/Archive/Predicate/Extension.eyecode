@@ -57,10 +57,10 @@ class File_Archive_Predicate_Extension extends File_Archive_Predicate
     function isTrue(&$source)
     {
         $filename = $source->getFilename();
-        $pos = utf8_strrpos($filename, '.');
+        $pos = strrpos($filename, '.');
         $extension = "";
         if ($pos !== FALSE) {
-            $extension = utf8_strtolower(utf8_substr($filename, $pos+1));
+            $extension = strtolower(substr($filename, $pos+1));
         }
         $result = in_array($extension, $this->extensions);
 

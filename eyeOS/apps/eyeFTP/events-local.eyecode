@@ -7,25 +7,25 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 
-/**
+/** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.0
- * @updated 12-Jan-2008
+ * @version 3.0.2
+ * @updated 29-Jan-2008
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/lib-global'.EYE_CODE_EXTENSION);

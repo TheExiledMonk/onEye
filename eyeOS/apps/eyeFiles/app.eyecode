@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -45,6 +45,10 @@ function eyeFiles_run($params=null) {
 		'width'=>$myWindow->width-($myWindow3->width+18),'height'=>$myWindow->height-60,
 		'x'=>$myWindow3->width+10,'y'=>32));
 	$myWindow2->show();
+	eyex('rawjs',array('js'=>'var winContent = xGetElementById("'.$myPid.'_WND_2_Content");
+							  winContent.style.backgroundImage="url(index.php?extern=apps/eyeFiles/gfx/eyefilesbg.png)";
+							  winContent.style.backgroundPosition="bottom right";
+							  winContent.style.backgroundRepeat="no-repeat";'));	
 	service('eyex','rawjs',array('js'=>'document.getElementById("'.$myPid.'_WND_2").onmousedown="";'));
 	
 	//places box
@@ -76,6 +80,7 @@ function eyeFiles_run($params=null) {
 	$myTree->addSubList('home_item','home_list');
 	drawTree($myTree,'home_list',$myUdir);
 	$myTree->processList();
+	$myTree->expandTree();
 	
 	//places box
 	$myBox2 = new Box(array('name'=>'BOX_2','father'=>'WND_3_Content','x'=>6,'y'=>262,

@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License (GPL)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -39,6 +39,7 @@ define('USERS_DIR','users');
 define('CONF_USER_DIR','conf');
 define('FILES_USER_DIR','files');
 define('SHARE_USER_DIR','share');
+define('PUBLIC_USER_DIR','public');
 define('THEMES_DIR',APP_DIR.'/'.'eyeX'.'/'.'themes'); //DEPRECATED
 define('SYSTEM_CONF_DIR','conf');
 define('APP_CONF_SHARE','share');
@@ -47,7 +48,7 @@ define('TRASH_USER_DIR','trash');
 define('ACCOUNT_DIR','accounts');
 define('GROUPS_DIR','groups');
 define('FILES_GROUP_DIR','files');
-
+define('CONF_GROUP_DIR','conf');
 //eyeOS file extensions
 define('EYEOS_INFO_EXT','eyeInfo');
 define('EYEOS_FILE_EXT','eyeFile');
@@ -63,7 +64,8 @@ define('UM_MODULE','eyeos');
 
 //Extras
 define('FORCE_NOUTF8',0);
+define('EYEOS_TMP_DIR','tmp');
 define('ROOTUSER','root');
-define('EYEOS_VERSION','1.5.0.0');
+define('EYEOS_VERSION','1.6.0.0');
 
 ?>

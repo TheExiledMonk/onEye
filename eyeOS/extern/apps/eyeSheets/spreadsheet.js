@@ -18,142 +18,6 @@
 *  Foundation, Inc., 59 Temple Place - Suite 330, Boston,                  *
 *  MA  02111-1307, USA.                                                    *
 \**************************************************************************/
-//base64 class from webtoolkit
-Base64 = {
-
-	// private property
-	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-	// public method for encoding
-	encode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = Base64._utf8_encode(input);
-
-		while (i < input.length) {
-
-			chr1 = input.charCodeAt(i++);
-			chr2 = input.charCodeAt(i++);
-			chr3 = input.charCodeAt(i++);
-
-			enc1 = chr1 >> 2;
-			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-			enc4 = chr3 & 63;
-
-			if (isNaN(chr2)) {
-				enc3 = enc4 = 64;
-			} else if (isNaN(chr3)) {
-				enc4 = 64;
-			}
-
-			output = output +
-			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
-			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
-
-		}
-
-		return output;
-	},
-
-	// public method for decoding
-	decode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3;
-		var enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-		while (i < input.length) {
-
-			enc1 = this._keyStr.indexOf(input.charAt(i++));
-			enc2 = this._keyStr.indexOf(input.charAt(i++));
-			enc3 = this._keyStr.indexOf(input.charAt(i++));
-			enc4 = this._keyStr.indexOf(input.charAt(i++));
-
-			chr1 = (enc1 << 2) | (enc2 >> 4);
-			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-			chr3 = ((enc3 & 3) << 6) | enc4;
-
-			output = output + String.fromCharCode(chr1);
-
-			if (enc3 != 64) {
-				output = output + String.fromCharCode(chr2);
-			}
-			if (enc4 != 64) {
-				output = output + String.fromCharCode(chr3);
-			}
-
-		}
-
-		output = Base64._utf8_decode(output);
-
-		return output;
-
-	},
-
-	// private method for UTF-8 encoding
-	_utf8_encode : function (string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
-
-		for (var n = 0; n < string.length; n++) {
-
-			var c = string.charCodeAt(n);
-
-			if (c < 128) {
-				utftext += String.fromCharCode(c);
-			}
-			else if((c > 127) && (c < 2048)) {
-				utftext += String.fromCharCode((c >> 6) | 192);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-			else {
-				utftext += String.fromCharCode((c >> 12) | 224);
-				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-
-		}
-
-		return utftext;
-	},
-
-	// private method for UTF-8 decoding
-	_utf8_decode : function (utftext) {
-		var string = "";
-		var i = 0;
-		var c = c1 = c2 = 0;
-
-		while ( i < utftext.length ) {
-
-			c = utftext.charCodeAt(i);
-
-			if (c < 128) {
-				string += String.fromCharCode(c);
-				i++;
-			}
-			else if((c > 191) && (c < 224)) {
-				c2 = utftext.charCodeAt(i+1);
-				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-				i += 2;
-			}
-			else {
-				c2 = utftext.charCodeAt(i+1);
-				c3 = utftext.charCodeAt(i+2);
-				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-				i += 3;
-			}
-
-		}
-
-		return string;
-	}
-
-}
 
 // Translations implemented by Sophie Lee.
 
@@ -419,8 +283,8 @@ function display() {
   	
   	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="load(init_data); return false;" class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/filenew.png"/>';
-	out += '	<div class="blockbarText"><a href="#" onclick="load(init_data); return false;" accesskey="n">'+trans('New')+'</a></div>';
+	out += '	<img onclick="load(init_data); resetPath(); return false;" class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/filenew.png"/>';
+	out += '	<div class="blockbarText"><a href="#" onclick="load(init_data); resetPath(); return false;" accesskey="n">'+trans('New')+'</a></div>';
 	out += '</div>';
 	
 	
@@ -429,6 +293,15 @@ function display() {
 	out += '	<div class="blockbarText"><a href="#" onclick="loadCode(); return false;">'+trans('Open')+'</a></div>';
 	out += '</div>';
 	
+	out += '<div class="blockbarItem">';
+	out += '	<img onclick="saveCode(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/filesave.png"/>';
+	out += '	<div class="blockbarText"><a href="#" onclick="saveCode(); return false;">'+trans('Save')+'</a></div>';
+	out += '</div>';
+	
+	out += '<div class="blockbarItem">';
+	out += '	<img onclick="saveAs(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/filesaveas.png"/>';
+	out += '	<div class="blockbarText"><a href="#" onclick="saveAs(); return false;">'+trans('Save As')+'</a></div>';
+	out += '</div>';
 	
 	out += '<div class="blockbarItem">';
 	out += '	<img onclick="insertRow(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/newrow.png"/>';
@@ -594,8 +467,6 @@ function previewValue() {
 	
     if (value.indexOf("html:")==0 && getObj("multiline").src.indexOf("tinymce/index.html")==-1) {
 	  getObj("multiline").src = "tinymce/index.html";
-	} else if (value.indexOf("html:")!=0 && getObj("multiline").src.indexOf("editor.htm")==-1) {
-	  getObj("multiline").src = "editor.htm";
 	} else if (getObj("multiline").contentWindow.update) {
 	  getObj("multiline").contentWindow.update();
 	}
@@ -815,6 +686,7 @@ function save(format) {
 
 function cellsToJS() {
   var out = "";
+  var mX=0,mY=0;
   out += "dbCells = [\n";
   for (var i=-2; i<cells.length; i++) {
     if (cells[i]) {
@@ -825,6 +697,8 @@ function cellsToJS() {
 		if (cells[i][i2][2] && isNaN(cells[i][i2][2])) out += ",\""+strescape(cells[i][i2][2])+"\"";
 		  else if (cells[i][i2][2]) out += ","+cells[i][i2][2];
 		out += "], // "+buildColName(i2)+(i+1)+"\n";
+		if(i>mX) mX=i;
+		if(i2>mY)mY=i2;
       }
 	  out += "\n";
 	}
@@ -841,7 +715,7 @@ function cellsToJS() {
     }
     out = out.substring(0,out.length-2);
   }
-  return out;
+  return mX+','+mY+','+out;
 }
 
 function cellsToCSV() {
@@ -928,8 +802,20 @@ function loadSheetFromUrl(location) {
   document.getElementsByTagName("head").item(0).appendChild(script);
 }
 
+function resetPath() {
+	window.parent.sendMsg($checknum,'resetPath','');
+}
+
 function loadCode() {
 	window.parent.sendMsg($checknum,'openFile','');
+}
+
+function saveCode() {
+	window.parent.sendMsg($checknum,'saveFile','<arg1>'+Base64.encode(cellsToJS())+'</arg1>');
+}
+
+function saveAs() {
+	window.parent.sendMsg($checknum,'saveAs','');
 }
 
 function print() {
@@ -1745,5 +1631,142 @@ function avg(arr) {
 function count(arr) {
   var result = 0;
   return arr.length;
+}
+
+//base64 class from webtoolkit
+Base64 = {
+
+	// private property
+	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+	// public method for encoding
+	encode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+		var i = 0;
+
+		input = Base64._utf8_encode(input);
+
+		while (i < input.length) {
+
+			chr1 = input.charCodeAt(i++);
+			chr2 = input.charCodeAt(i++);
+			chr3 = input.charCodeAt(i++);
+
+			enc1 = chr1 >> 2;
+			enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+			enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+			enc4 = chr3 & 63;
+
+			if (isNaN(chr2)) {
+				enc3 = enc4 = 64;
+			} else if (isNaN(chr3)) {
+				enc4 = 64;
+			}
+
+			output = output +
+			this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+			this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+		}
+
+		return output;
+	},
+
+	// public method for decoding
+	decode : function (input) {
+		var output = "";
+		var chr1, chr2, chr3;
+		var enc1, enc2, enc3, enc4;
+		var i = 0;
+
+		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+		while (i < input.length) {
+
+			enc1 = this._keyStr.indexOf(input.charAt(i++));
+			enc2 = this._keyStr.indexOf(input.charAt(i++));
+			enc3 = this._keyStr.indexOf(input.charAt(i++));
+			enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+			chr1 = (enc1 << 2) | (enc2 >> 4);
+			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+			chr3 = ((enc3 & 3) << 6) | enc4;
+
+			output = output + String.fromCharCode(chr1);
+
+			if (enc3 != 64) {
+				output = output + String.fromCharCode(chr2);
+			}
+			if (enc4 != 64) {
+				output = output + String.fromCharCode(chr3);
+			}
+
+		}
+
+		output = Base64._utf8_decode(output);
+
+		return output;
+
+	},
+
+	// private method for UTF-8 encoding
+	_utf8_encode : function (string) {
+		string = string.replace(/\r\n/g,"\n");
+		var utftext = "";
+
+		for (var n = 0; n < string.length; n++) {
+
+			var c = string.charCodeAt(n);
+
+			if (c < 128) {
+				utftext += String.fromCharCode(c);
+			}
+			else if((c > 127) && (c < 2048)) {
+				utftext += String.fromCharCode((c >> 6) | 192);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+			else {
+				utftext += String.fromCharCode((c >> 12) | 224);
+				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+				utftext += String.fromCharCode((c & 63) | 128);
+			}
+
+		}
+
+		return utftext;
+	},
+
+	// private method for UTF-8 decoding
+	_utf8_decode : function (utftext) {
+		var string = "";
+		var i = 0;
+		var c = c1 = c2 = 0;
+
+		while ( i < utftext.length ) {
+
+			c = utftext.charCodeAt(i);
+
+			if (c < 128) {
+				string += String.fromCharCode(c);
+				i++;
+			}
+			else if((c > 191) && (c < 224)) {
+				c2 = utftext.charCodeAt(i+1);
+				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+				i += 2;
+			}
+			else {
+				c2 = utftext.charCodeAt(i+1);
+				c3 = utftext.charCodeAt(i+2);
+				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+				i += 3;
+			}
+
+		}
+
+		return string;
+	}
+
 }
 

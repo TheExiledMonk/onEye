@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -121,7 +121,7 @@ function eyeMessages_on_new($params) {
 		'x' => $tboxAttach->width+70,
 		'y' => 59,
 		'caption' => 'Add file',
-		'width' => 50,
+		'width' => 94,
 		'disablemsg' => 0
 	));
 	$bttnAddAttach->show();
@@ -201,8 +201,11 @@ function eyeMessages_on_sendMsg($params) {
 	
 	$GLOBALS['sendMessage_WND']->close();
 	
-	reqLib('eyeSwap', 'send', array($to, $subject, $content, $attach));
-	eyeX('messageBox', array('content' => 'Message sent'));
+	if(!reqLib('eyeSwap', 'send', array($to, $subject, $content, 'eyeMessages', $attach))){
+		eyeX('messageBox', array('content' => 'Error sending message'));	
+	}else{
+		eyeX('messageBox', array('content' => 'Message sent'));	
+	}	
 	
 	//Save a copy of the message into the sent directory. The attach is NOT saved here
 	$xml = array(
@@ -246,9 +249,9 @@ function eyeMessages_on_open($params) {
 	}
 
 	if(!utf8_strpos($hash, ',')) { //The message is not in one of eyeMessage's folders
-		$msg = reqLib('eyeSwap', 'read', array($hash));
+		$msg = reqLib('eyeSwap', 'read', array($hash, 'eyeMessages'));
 		
-		reqLib('eyeSwap', 'delete', array($hash));
+		reqLib('eyeSwap', 'delete', array($hash, 'eyeMessages'));
 		
 		$readDir = um('getCurrentUserDir').'conf/eyeMessages/read/';
 		$xml = array(
@@ -280,7 +283,7 @@ function eyeMessages_on_open($params) {
 		'removepid' => 0,
 		'style' => TITLE + MIN + CLOSE,
 		'width' => 410,
-		'height' => 400,
+		'height' => 410,
 		'title' => 'Read Message',
 		'cent' => 1
 	));
@@ -343,7 +346,7 @@ function eyeMessages_on_open($params) {
 	
 	if(is_array($msg['header'][0]['attach'])) {
 		$fileHash = $msg['header'][0]['attach'][0];
-		$swapDir = um('getCurrentUserDir').'swap/';
+		$swapDir = um('getCurrentUserDir').'swap/eyeMessages/';
 
 		$info = eyeXML('getXMLfile', array($swapDir.$fileHash.'.infoSwap'));
 		
@@ -451,7 +454,7 @@ function eyeMessages_on_SelectFileSave($params=null) {
 	if($file && $hash) {
 		$file = um('getCurrentUserDir').FILES_USER_DIR.'/'.$file;
 
-		if(reqLib('eyeSwap', 'getFile', array($hash.'.fileSwap', $file))) {
+		if(reqLib('eyeSwap', 'getFile', array($hash.'.fileSwap', $file, 'eyeMessages'))) {
 			eyex('messageBox',array('content'=>'File saved successfully.'));
 		}
 	}
@@ -466,7 +469,7 @@ function eyeMessages_on_empty_trash($params=null) {
 		foreach($list as $msg) {
 			$xml = eyeXML('getXMLfile', array($msg));
 			if(is_array($xml['swapMessage'][0]['header'][0]['attach'])) {
-				reqLib('eyeSwap', 'deleteFile', array($xml['swapMessage'][0]['header'][0]['attach'][0]));
+				reqLib('eyeSwap', 'deleteFile', array($xml['swapMessage'][0]['header'][0]['attach'][0], 'eyeMessages'));
 			}
 			vfs('real_delete', array($msg));
 		}
@@ -519,9 +522,9 @@ function eyeMessages_on_delete($params=null) {
 	}
 
 	if(!utf8_strpos($hash, ',')) { //The message is still in the swap directory
-		$msg = reqLib('eyeSwap', 'read', array($hash));
+		$msg = reqLib('eyeSwap', 'read', array($hash, 'eyeMessages'));
 		
-		reqLib('eyeSwap', 'delete', array($hash));
+		reqLib('eyeSwap', 'delete', array($hash, 'eyeMessages'));
 		
 		$trashDir = um('getCurrentUserDir').'conf/eyeMessages/trash/';
 		$xml = array(
@@ -559,14 +562,20 @@ function eyeMessages_on_goto_trash($params=null) {
 	global $myPid;
 	
 	eyeX('removeWidget',array('name'=> 'myBar'));
-	eyeX('removewidget', array('name' => 'table_1'));
+	if(is_object($GLOBALS['table_1'])) {
+		$GLOBALS['table_1']->remove();
+	}
 	eyeX('rawjs',array('js'=>"document.getElementById('".$myPid."_trash_container').className = 'eyeHighlighted';document.getElementById('".$myPid."_trash_container').style.backgroundColor='#579AFF';"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_inbox_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_inbox_container').className = '';document.getElementById('".$myPid."_inbox_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_sent_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_sent_container').className = '';document.getElementById('".$myPid."_sent_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_read_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_read_container').className = '';document.getElementById('".$myPid."_read_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_unread_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_unread_container').className = '';document.getElementById('".$myPid."_unread_container').style.backgroundColor='#FFFFFF';}"));
 	
-	$myHidden = new Hidden(array('name' => 'section', 'father' => 'eyeMessagesWND', 'text' => 'trash'));
+	$myHidden = new Hidden(array(
+		'name' => 'section',
+		'father' => 'eyeMessagesWND',
+		'text' => 'trash'
+	));
 	eyeWidgets('serialize', array($myHidden));
 
 	$trashDir =	um('getCurrentUserDir').'conf/eyeMessages/trash/';
@@ -574,9 +583,18 @@ function eyeMessages_on_goto_trash($params=null) {
 	$sortypes = array("String","String","Date","Hidden");
 	$myHeader = array('From','Subject','Date','hash');
 	
-	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeMessagesWND_Content',
-	 'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>141,'y'=>59,'width'=>555,'height'=>415,
-	 'master' => 3,'dblsignal' => 'open'));
+	$myTable = new Sortabletable(array(
+		'name'=>'table_1',
+		'father'=>'msgContainer',
+		'sortypes'=>$sortypes,
+		'theader'=>$myHeader,
+		'x'=>0,
+		'y'=>0,
+		'width'=>554,
+		'height'=>414,
+		'master' => 3,
+		'dblsignal' => 'open'
+	));
 	$myTable->show();
 	eyeX('rawjs', array('js' => "document.getElementById('".$myPid."_table_1').parentNode.className='';"));
 	
@@ -614,7 +632,9 @@ function eyeMessages_on_goto_inbox($params=null) {
 	global $myPid;
 	
 	eyeX('removeWidget',array('name'=> 'myBar'));
-	eyeX('removewidget', array('name' => 'table_1'));
+	if(is_object($GLOBALS['table_1'])) {
+		$GLOBALS['table_1']->remove();
+	}
 	eyeX('rawjs',array('js'=>"document.getElementById('".$myPid."_inbox_container').className = 'eyeHighlighted';document.getElementById('".$myPid."_inbox_container').style.backgroundColor='#579AFF';"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_trash_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_trash_container').className = '';document.getElementById('".$myPid."_trash_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_sent_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_sent_container').className = '';document.getElementById('".$myPid."_sent_container').style.backgroundColor='#FFFFFF';}"));
@@ -627,13 +647,22 @@ function eyeMessages_on_goto_inbox($params=null) {
 	$sortypes = array("String","String","Date","Hidden");
 	$myHeader = array('From','Subject','Date','hash');
 	
-	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeMessagesWND_Content',
-	 'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>141,'y'=>59,'width'=>555,'height'=>415,
-	 'master' => 3,'dblsignal' => 'open'));
+	$myTable = new Sortabletable(array(
+		'name'=>'table_1',
+		'father'=>'msgContainer',
+		'sortypes'=>$sortypes,
+		'theader'=>$myHeader,
+		'x'=>0,
+		'y'=>0,
+		'width'=>554,
+		'height'=>414,
+		'master' => 3,
+		'dblsignal' => 'open'
+	));
 	$myTable->show();
 	eyeX('rawjs', array('js' => "document.getElementById('".$myPid."_table_1').parentNode.className='';"));
 	
-	$list = reqLib('eyeSwap','list');
+	$list = reqLib('eyeSwap','list', array('eyeMessages'));
 	
 	//Read both read and unread folders
 	$readDir = um('getCurrentUserDir').'conf/eyeMessages/read/';
@@ -672,7 +701,9 @@ function eyeMessages_on_goto_sent($params=null) {
 	global $myPid;
 	
 	eyeX('removeWidget',array('name'=> 'myBar'));
-	eyeX('removewidget', array('name' => 'table_1'));
+	if(is_object($GLOBALS['table_1'])) {
+		$GLOBALS['table_1']->remove();
+	}
 	eyeX('rawjs',array('js'=>"document.getElementById('".$myPid."_sent_container').className = 'eyeHighlighted';document.getElementById('".$myPid."_sent_container').style.backgroundColor='#579AFF';"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_inbox_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_inbox_container').className = '';document.getElementById('".$myPid."_inbox_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_trash_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_trash_container').className = '';document.getElementById('".$myPid."_trash_container').style.backgroundColor='#FFFFFF';}"));
@@ -687,9 +718,18 @@ function eyeMessages_on_goto_sent($params=null) {
 	$sortypes = array("String","String","Date","Hidden");
 	$myHeader = array('To','Subject','Date','hash');
 	
-	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeMessagesWND_Content',
-	 'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>141,'y'=>59,'width'=>555,'height'=>415,
-	 'master' => 3,'dblsignal' => 'open'));
+	$myTable = new Sortabletable(array(
+		'name'=>'table_1',
+		'father'=>'msgContainer',
+		'sortypes'=>$sortypes,
+		'theader'=>$myHeader,
+		'x'=>0,
+		'y'=>0,
+		'width'=>554,
+		'height'=>414,
+		'master' => 3,
+		'dblsignal' => 'open'
+	));
 	$myTable->show();
 	eyeX('rawjs', array('js' => "document.getElementById('".$myPid."_table_1').parentNode.className='';"));
 	
@@ -727,7 +767,9 @@ function eyeMessages_on_goto_read($params=null) {
 	global $myPid;
 	
 	eyeX('removeWidget',array('name'=> 'myBar'));
-	eyeX('removewidget', array('name' => 'table_1'));
+	if(is_object($GLOBALS['table_1'])) {
+		$GLOBALS['table_1']->remove();
+	}
 	eyeX('rawjs',array('js'=>"document.getElementById('".$myPid."_read_container').className = 'eyeHighlighted';document.getElementById('".$myPid."_read_container').style.backgroundColor='#579AFF';"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_inbox_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_inbox_container').className = '';document.getElementById('".$myPid."_inbox_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_trash_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_trash_container').className = '';document.getElementById('".$myPid."_trash_container').style.backgroundColor='#FFFFFF';}"));
@@ -742,10 +784,18 @@ function eyeMessages_on_goto_read($params=null) {
 	$sortypes = array("String","String","Date","Hidden");
 	$myHeader = array('From','Subject','Date','hash');
 	
-	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeMessagesWND_Content',
-	 'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>141,'y'=>59,'width'=>555,'height'=>415,
-	 'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>141,'y'=>59,'width'=>555,'height'=>415,
-	 'master' => 3,'dblsignal' => 'open'));
+	$myTable = new Sortabletable(array(
+		'name'=>'table_1',
+		'father'=>'msgContainer',
+		'sortypes'=>$sortypes,
+		'theader'=>$myHeader,
+		'x'=>0,
+		'y'=>0,
+		'width'=>554,
+		'height'=>414,
+		'master' => 3,
+		'dblsignal' => 'open'
+	));
 	$myTable->show();
 	eyeX('rawjs', array('js' => "document.getElementById('".$myPid."_table_1').parentNode.className='';"));
 	
@@ -782,7 +832,9 @@ function eyeMessages_on_goto_unread($params=null) {
 	global $myPid;
 	
 	eyeX('removeWidget', array('name' => 'myBar'));
-	eyeX('removewidget', array('name' => 'table_1'));
+	if(is_object($GLOBALS['table_1'])) {
+		$GLOBALS['table_1']->remove();
+	}
 	eyeX('rawjs',array('js'=>"document.getElementById('".$myPid."_unread_container').className = 'eyeHighlighted';document.getElementById('".$myPid."_unread_container').style.backgroundColor='#579AFF';"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_inbox_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_inbox_container').className = '';document.getElementById('".$myPid."_inbox_container').style.backgroundColor='#FFFFFF';}"));
 	eyeX('rawjs',array('js'=>"if(document.getElementById('".$myPid."_trash_container').className == 'eyeHighlighted') {document.getElementById('".$myPid."_trash_container').className = '';document.getElementById('".$myPid."_trash_container').style.backgroundColor='#FFFFFF';}"));
@@ -797,13 +849,22 @@ function eyeMessages_on_goto_unread($params=null) {
 	$sortypes = array("String","String","Date","Hidden");
 	$myHeader = array('From','Subject','Date','hash');
 	
-	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeMessagesWND_Content',
-	 'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>141,'y'=>59,'width'=>555,'height'=>415,
-	 'master' => 3,'dblsignal' => 'open'));
+	$myTable = new Sortabletable(array(
+		'name'=> 'table_1',
+		'father'=> 'msgContainer',
+		'sortypes'=> $sortypes,
+		'theader'=>$myHeader,
+		'x'=> 0,
+		'y'=> 0,
+		'width'=> 554,
+		'height'=> 414,
+		'master' => 3,
+		'dblsignal' => 'open'
+	));
 	$myTable->show();
 	eyeX('rawjs', array('js' => "document.getElementById('".$myPid."_table_1').parentNode.className='';"));
 	
-	$list = reqLib('eyeSwap', 'list');
+	$list = reqLib('eyeSwap', 'list', array('eyeMessages'));
 	
 	if(is_array($list)) {
 		$myArray = date_sort($list);

@@ -1,7 +1,7 @@
 <package>
 	<name>addLink</name>
 	<category>Utilities</category>
-	<version>1.0</version>
+	<version>1.6</version>
 	<description>Utility for adding links</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>

@@ -1,7 +1,7 @@
 <package>
 	<name>eyeControl</name>
 	<category>Utilities</category>
-	<version>1.5</version>
+	<version>1.6</version>
 	<description>Control panel for managing and customizing eyeOS</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>

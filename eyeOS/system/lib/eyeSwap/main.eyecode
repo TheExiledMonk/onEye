@@ -7,51 +7,74 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 
 function lib_eyeSwap_send($params) {
-	//0: user to
-	//1: text
-	global $currentUser;
+	if(!isset($params[0]) || !isset($params[1]) || !isset($params[2]) || !isset($params[3])){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
 	$to = utf8_basename($params[0]);
-	$text = $params[2];
 	$subject = $params[1];
-	$file = $params[3];
+	$text = $params[2];	
+	$directory = utf8_basename($params[3]);
+	$file = $params[4];
 	
 	if(!um('userExist',array($to)) || empty($text)) {
+		return false;
+	}
+	
+	if(empty($directory)) {
+		return false;
+	}
+
+	if(!reqLib('eyeSwap','start',array($to, $directory))){
 		return false;
 	}
 
 	if(!vfs('fileExists', array($file)) || vfs('isdir', array($file))) {
 		$filehash = "";
 	} else {
-		$filehash = reqLib('eyeSwap', 'copyFile', array($to, $file));
+		$filehash = reqLib('eyeSwap', 'copyFile', array($to, $file, $directory));
 	}
 
 	$hash = md5(uniqid(time())); //new hash for the file
 	
-	$swapDir = um('getUserDir',array($to)).'/swap/';
+	$swapDir = um('getUserDir',array($to));
 	
+	//if the user dir not exists, the user not exists
+	if(!vfs('isdir',array($swapDir))) {
+		reqLib('errorCodes','setErrorCode',array(UM_USER_NOT_EXISTS));
+		return false;
+	}
+	
+	$swapDir = $swapDir.'/swap/'.$directory.'/';
+
 	while(vfs('real_fileExists',array($swapDir.$hash.'.msgSwap'))) {
 		$hash = md5(uniqid(time()));
 	}
 	
 	$time = time();
+
+	global $currentUser;
+	
 	$oldUser = $currentUser;
-	$currentUser = ROOTUSER;
+	$currentUser = $to;
+	
 	vfs('real_create',array($swapDir.$hash.'.msgSwap'));
 	$xml = array(
 		'swapMessage' => array(
@@ -79,11 +102,14 @@ function lib_eyeSwap_send($params) {
 }
 
 function lib_eyeSwap_copyFile($params) {
-	//0: user to
-	//1: orig filepath
-
+	if(!isset($params[0]) || !isset($params[1]) || !isset($params[2])){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
 	$to = $params[0];
 	$orig = $params[1];
+	$directory = utf8_basename($params[2]);
 	
 	global $currentUser;
 	
@@ -91,23 +117,33 @@ function lib_eyeSwap_copyFile($params) {
 		return false;
 	}
 
+	if(empty($directory)) {
+		return false;
+	}
+	
 	if(!vfs('fileExists',array($orig))) {
 		return false;
 	}
 	$name = utf8_basename($orig);
 	$hash = md5(uniqid(time())); //new hash for the file
 	
-	$swapDir = um('getUserDir',array($to)).'/swap/';
-	
+	$swapDir = um('getUserDir',array($to));
+	//if the user dir not exists, the user not exists
+	if(!vfs('isdir',array($swapDir))) {
+		reqLib('errorCodes','setErrorCode',array(UM_USER_NOT_EXISTS));
+		return false;
+	}
+	$swapDir = $swapDir.'/swap/'.$directory.'/';
+
 	while(vfs('real_fileExists',array($swapDir.$hash.'.fileSwap'))) {
 		$hash = md5(uniqid(time()));
 	}
 
 	$forig = vfs('getRealName',array($orig));
-	
 	if(!vfs('real_checkPermissions',array($forig))) {
 		return false;
 	}
+	
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;	
 	vfs('real_copy', array($forig,$swapDir.$hash.'.fileSwap'));
@@ -130,12 +166,20 @@ function lib_eyeSwap_copyFile($params) {
 }
 
 function lib_eyeSwap_getFile($params) {
-	global $currentUser;
+	if(!isset($params[0]) || !isset($params[1]) || !isset($params[2])){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
 	
 	$hash = $params[0];
 	$dest = $params[1];
+	$directory = utf8_basename($params[2]);
 	
-	$swapDir = um('getCurrentUserDir').'/swap/';
+	if(empty($directory)) {
+		return false;
+	}
+	
+	$swapDir = um('getCurrentUserDir').'/swap/'.$directory.'/';
 	vfs('create',array($dest));
 	$fp = vfs('open',array($dest,'wb'));
 	$fpo = vfs('real_open',array($swapDir.$hash,'rb'));
@@ -154,14 +198,19 @@ function lib_eyeSwap_getFile($params) {
 }
 
 function lib_eyeSwap_deleteFile($params) {
-	$hash = $params[0];
-	
-	if(!$hash) {
+	if(!isset($params[0]) || !isset($params[1])){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	
-	$swapDir = um('getCurrentUserDir').'swap/';
+	$hash = $params[0];
+	$directory = utf8_basename($params[1]);
 	
+	if(empty($directory)) {
+		return false;
+	}
+	
+	$swapDir = um('getCurrentUserDir').'swap/'.$directory.'/';	
 	$file = $swapDir.$hash;
 
 	if(!vfs('real_fileExists',array($file.'.infoSwap'))) {
@@ -173,8 +222,19 @@ function lib_eyeSwap_deleteFile($params) {
 	return true;
 }
 
-function lib_eyeSwap_list($params=null) {
-	$swapDir = um('getCurrentUserDir').'/swap/';
+function lib_eyeSwap_list($params) {
+	if(!isset($params[0])) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$directory = utf8_basename($params[0]);
+
+	if(empty($directory)) {
+		return false;
+	}
+	
+	$swapDir = um('getCurrentUserDir').'/swap/'.$directory.'/';
 	
 	$content = vfs('real_getDirContent', array($swapDir, '*.msgSwap'));
 
@@ -196,9 +256,18 @@ function lib_eyeSwap_list($params=null) {
 }
 
 function lib_eyeSwap_read($params) {
+	if(!isset($params[0]) || !isset($params[1])){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
 	$hash = $params[0];
+	$directory = utf8_basename($params[1]);
+
+	if(empty($directory)) {
+		return false;
+	}
 	
-	$swapDir = um('getCurrentUserDir').'/swap/';
+	$swapDir = um('getCurrentUserDir').'/swap/'.$directory.'/';
 	
 	$xml = eyeXML('getXMLfile', array($swapDir.$hash.'.msgSwap'));
 	$xmlfinal = $xml['swapMessage'][0];
@@ -206,16 +275,83 @@ function lib_eyeSwap_read($params) {
 }
 
 function lib_eyeSwap_delete($params) {
-	$hash = $params[0];
-	
-	if(empty($hash)) {
+	if(!isset($params[0]) || !isset($params[1])){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	
-	$swapDir = um('getCurrentUserDir').'/swap/';
+	$hash = $params[0];
+	$directory = utf8_basename($params[1]);
+	
+	$swapDir = um('getCurrentUserDir').'/swap/'.$directory.'/';
 	
 	vfs('real_delete', array($swapDir.$hash.'.msgSwap'));
 	return true;
 }
 
+function lib_eyeSwap_start($params){
+	if(!isset($params[0]) || !isset($params[1])){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$to = $params[0];
+	$directory = utf8_basename($params[1]);
+
+	if(empty($directory)) {
+		return false;
+	}
+	
+	//get the user dir
+	$swapDir = um('getUserDir',array($to));
+	
+	//if the user dir does not exist, then the user does not exist
+	if(!vfs('isdir',array($swapDir))) {
+		reqLib('errorCodes','setErrorCode',array(UM_USER_NOT_EXISTS));
+		return false;
+	}
+	
+	//swap dir to be created
+	$swapDir = $swapDir.'/swap/';
+	
+	//only if swap not exists
+	if(!vfs('isdir',array($swapDir))){
+		global $currentUser;
+		//this suid is needed because in some situations
+		//this function creates swap dirs for other users.
+		$oldUser = $currentUser;
+		//suid to the destination user
+		$currentUser = $to;	
+
+		if(!vfs('real_mkDir',array($swapDir))){
+			$currentUser = $oldUser;
+			return false;
+		}
+		vfs('real_mkDir', array($swapDir.$directory));
+		
+		$currentUser = $oldUser;
+	} else if(!vfs('isdir', array($swapDir.$directory))) {
+		global $currentUser;
+		$oldUser = $currentUser;
+		$currentUser = $to;
+		
+		if(!vfs('real_mkDir', array($swapDir.$directory))) {
+			$currentUser = $oldUser;
+			return false;
+		}
+		
+		//Move the existing messages to the folder, if any
+		if($dir = opendir($swapDir)) {
+			while(($file = readdir($dir)) !== false) {
+				if(!$file[0] != '.') {
+					vfs('real_move', array($swapDir.$file, $swapDir.$directory.'/'.$file));
+				}
+			}
+		}
+		
+		$currentUser = $oldUser;
+	}
+	
+	return true;
+}
 ?>

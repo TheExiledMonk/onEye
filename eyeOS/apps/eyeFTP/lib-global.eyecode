@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -24,8 +24,8 @@
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.0
- * @updated 12-Jan-2008
+ * @version 3.0.2
+ * @updated 29-Jan-2008
  */
 
 /*********************************************************************************************/
@@ -51,7 +51,7 @@ function eyeFTP_bounceRequest($params="") {
 		if ($key != '__signal')
 			$sendMsgParams .= 'eyeParam("'.$key.'","'.$value.'")+';
 	}
-	$sendMsgParams .= 'eyeParam("__bounce","1")';;
+	$sendMsgParams .= 'eyeParam("__bounce","1")';
 	
 	eyeX('rawjs',array('js' => 'sendMsg('.$checknum.',"'.$params['__signal'].'",'.$sendMsgParams.');'));
 }
@@ -60,7 +60,7 @@ function eyeFTP_bounceRequest($params="") {
  * Checks if the calling function was called from a "bounced" request
  * 
  * @param mixed $params Arguments given to the calling function when called 
- * @return boolean TRUE if the arguments indicates that the function is called from a "bounced" request,
+ * @return boolean TRUE if the arguments indicate that the function is called from a "bounced" request,
  *                 FALSE otherwise
  */
 function eyeFTP_isFromBouncedRequest($params="") {
@@ -202,13 +202,13 @@ function eyeFTP_setActiveView($view) {
 		case 'remote':
 			$GLOBALS['eyeFTP_selectedView_HID']->setText('remote');
 			$GLOBALS['eyeFTP_remoteFiles_TAB']->setContainerCss(array('border' => 'thin solid #19427f'));
-			$GLOBALS['eyeFTP_localFiles_TAB']->setContainerCss(array('border' => 'thin none #000000'));
+			$GLOBALS['eyeFTP_localFiles_TAB']->setContainerCss(array('border' => 'thin solid #FFFFFF'));
 			return;
 		
 		default:
 			$GLOBALS['eyeFTP_selectedView_HID']->setText('local');
 			$GLOBALS['eyeFTP_localFiles_TAB']->setContainerCss(array('border' => 'thin solid #19427f'));
-			$GLOBALS['eyeFTP_remoteFiles_TAB']->setContainerCss(array('border' => 'thin none #000000'));
+			$GLOBALS['eyeFTP_remoteFiles_TAB']->setContainerCss(array('border' => 'thin solid #FFFFFF'));
 			return;
 	}
 }

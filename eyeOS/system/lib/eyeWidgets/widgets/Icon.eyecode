@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -48,7 +48,7 @@ class Icon {
 	var $image;
 	var $text;
 	var $content;
-	var $myOnLoad;
+	var $myOnLoad;	
 	
 	var $width;
 	var $height;
@@ -60,6 +60,9 @@ class Icon {
 	var $events;
 	var $fixIE=0;
 	var $overBorder;
+	var $overBorderBg;
+	var $overBorderColor;
+	var $textColor;
 	
 	function Icon($params) {
 		global $myPid;
@@ -76,6 +79,7 @@ class Icon {
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		
 		isset($params['text']) ? $this->text = $params['text'] : $this->text = $this->name;
+		isset($params['textColor']) ? $this->textColor = $params['textColor'] : $this->textColor = '#FFF';
 		isset($params['image']) ? $this->image = $params['image'] : $this->image = 0; //TODO: SET A DEFAULT ICON
 		isset($params['content']) ? $this->content = $params['content'] : $this->content = 0;
 		isset($params['draggable']) ? $this->draggable = $params['draggable'] : $this->draggable = 1;
@@ -83,8 +87,11 @@ class Icon {
 		isset($params['myonload']) ? $this->myOnLoad = $params['myonload'] : $this->myOnLoad = '';
 		isset($params['breaktext']) ? $this->breaktext = $params['breaktext'] : $this->breaktext = 1;
 		isset($params['overBorder']) ? $this->overBorder = $params['overBorder'] : $this->overBorder = 0;
-		if(strstr($params['image'],'index.php?extern=') && IE == 6) {
-			$realName = utf8_substr($params['image'],utf8_strlen("index.php?extern="));
+		isset($params['overBorderBg']) ? $this->overBorderBg = $params['overBorderBg'] : $this->overBorderBg = '#c7ddf8';
+		isset($params['overBorderColor']) ? $this->overBorderColor = $params['overBorderColor'] : $this->overBorderColor = '1px solid #9ec8fb';
+		isset($params['moveout']) ? $this->moveout = $params['moveout'] : $this->moveout = 0;
+		if(strstr($params['image'],'extern=') && IE == 6) {
+			$realName = eyex('getRealFromExtern',array($params['image']));
 			$realName = EYE_ROOT.'/'.EXTERN_DIR.'/'.$realName;
 			$info = @getimagesize($realName);
 			$this->width = $info[0];
@@ -96,37 +103,6 @@ class Icon {
 		}
 	}
 	
-		
-	//event handling
-	function addEvent($eventName,$eventFunc,$args="") {
-		global $myPid;
-		$name = $myPid.'_'.$this->name;
-		if($this->showed == 0) {
-			$this->show();
-		}
-		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
-	}
-	
-	function setCss($params) {
-		global $myPid;
-		if(is_array($params)) {
-			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name.'_Container','property' => $key,'value' => $value));
-			}
-		}
-	}
-	
-		
-	function setCssText($params) {
-		global $myPid;
-		if(is_array($params)) {
-			foreach($params as $key => $value) {
-				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name.'_text','property' => $key,'value' => $value));
-			}
-		}
-	}
-	
-
 	function show() {
 		global $myPid;
 		$eventString = "";
@@ -152,10 +128,8 @@ class Icon {
 			$this->text = utf8_substr($this->text,0,50);
 			$this->text .= '...';
 		}
-		
-		$this->text = $this->text;
-		$realname = $realname;
-
+				
+		$realname = utf8_wordwrap($realname,9," ",true);
 		$widgetsparams = array(
 			'content' => $this->content,
 			'image' => $this->image,
@@ -166,10 +140,12 @@ class Icon {
 			'height' => $this->height,
 			'myonload' => $this->myOnLoad,
 			'realname' => $realname,
-			'overBorder' => $this->overBorder
+			'overBorder' => $this->overBorder,
+			'overBorderBg'=>$this->overBorderBg,
+			'overBorderColor'=>$this->overBorderColor,
+			'textColor'=>$this->textColor
 		);
-		$widgetsparams = service("mmap","array2js",array($widgetsparams));
-		
+		$widgetsparams = service("mmap","array2js",array($widgetsparams));		
 		$myButton = array(
 			'name' => $this->name,
 			'x' => $this->x,
@@ -178,7 +154,7 @@ class Icon {
 			'vert' => $this->vert,
 			'father' => $this->father,
 			'widgetname' => 'Icon',
-			'params' => $widgetsparams
+			'params' => $widgetsparams			
 		);
 		service('eyex','createWidget',$myButton);
 		$this->showed=1;
@@ -200,6 +176,34 @@ class Icon {
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
 	}
+		
+	//event handling
+	function addEvent($eventName,$eventFunc,$args="") {
+		global $myPid;
+		$name = $myPid.'_'.$this->name;
+		if($this->showed == 0) {
+			$this->show();
+		}
+		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
+	}
+	
+	function setCss($params) {
+		global $myPid;
+		if(is_array($params)) {
+			foreach($params as $key => $value) {
+				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name.'_Container','property' => $key,'value' => $value));
+			}
+		}
+	}
+		
+	function setCssText($params) {
+		global $myPid;
+		if(is_array($params)) {
+			foreach($params as $key => $value) {
+				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name.'_text','property' => $key,'value' => $value));
+			}
+		}
+	}	
 	
 	function setX($x) {
 		global $myPid;

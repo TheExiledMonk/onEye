@@ -10,6 +10,11 @@ a:link, a:visited, a:hover{
 	text-decoration: none;
 	border: 0;
 }
+
+#background {
+	overflow: hidden;
+}
+
 #eyeScreen{
 	position: absolute;
 	width: 100%;

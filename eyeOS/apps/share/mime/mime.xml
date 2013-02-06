@@ -96,6 +96,46 @@
 		<extension>php</extension>
 	</mime>
 	<mime>
+		<type>source_cs</type>
+		<extension>cs</extension>
+	</mime>
+	<mime>
+		<type>source_css</type>
+		<extension>css</extension>
+	</mime>
+	<mime>
+		<type>source_html</type>
+		<extension>html</extension>
+	</mime>
+	<mime>
+		<type>source_java</type>
+		<extension>java</extension>
+	</mime>
+	<mime>
+		<type>source_js</type>
+		<extension>js</extension>
+	</mime>
+	<mime>
+		<type>source_pl</type>
+		<extension>pl</extension>
+	</mime>
+	<mime>
+		<type>source_rb</type>
+		<extension>rb</extension>
+	</mime>
+	<mime>
+		<type>source_sql</type>
+		<extension>sql</extension>
+	</mime>
+	<mime>
+		<type>source_vbs</type>
+		<extension>vbs</extension>
+	</mime>
+	<mime>
+		<type>source_xsl</type>
+		<extension>xsl</extension>
+	</mime>
+	<mime>
 		<type>document</type>
 		<extension>eyecode</extension>
 	</mime>

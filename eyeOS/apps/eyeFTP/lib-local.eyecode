@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -24,8 +24,8 @@
 
 /** 
  * @author Nanawel (nanawel@eyeos.org)
- * @version 3.0.0
- * @updated 12-Jan-2008
+ * @version 3.0.2
+ * @updated 22-Apr-2008
  */
 
 /*********************************************************************************************/
@@ -38,10 +38,36 @@
  * Removes all rows from the local files table
  */
 function eyeFTP_emptyLocalFilesTable() {
-	$conf = eyeFTP_getConf();
-	foreach($conf['listedLocalFilesData'] as $id => $fileInfos) {
-		$GLOBALS['eyeFTP_localFiles_TAB']->delRow($id);
+	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/app'.EYE_CODE_EXTENSION);
+	global $checknum, $myPid;
+	if ($GLOBALS['eyeFTP_localFiles_TAB']) {
+		$GLOBALS['eyeFTP_localFiles_TAB']->remove();
 	}
+	
+	/* TABLE FOR LOCAL FILES LIST */
+	$localFilesTable = new Sortabletable(array(
+		'name' => 'eyeFTP_localFiles_TAB',
+		'father' => 'eyeFTP_localBrowser_CTNR',
+		'x' => 0,
+		'y' => 24,
+		'width' => ($GLOBALS['eyeFTP_WND']->width / 2) - 25,
+		'height' => $GLOBALS['eyeFTP_WND']->height - 225,
+		'sortypes' => array('Hidden','Html','String','String','String','String'),
+		'master' => 0,
+		'theader' => array('id',' ','Filename','Filesize','Date','Author'),
+		'signal' => 'eyeFTP_localFilesClick',
+		'dblsignal' => 'eyeFTP_localFilesDblClick'
+	));
+	$localFilesTable->show();
+	service('eyex','addEvent',array(
+		'name' => $myPid.'_eyeFTP_localFiles_TAB_Container',
+		'action' => 'sendMsg('.$checknum.',"eyeFTP_localFilesClick","")',
+		'event' => 'onclick',
+		'args'=>''
+	));
+	$localFilesTable->setCss(array('white-space' => 'nowrap'));	
+	eyeFTP_setActiveView($GLOBALS['eyeFTP_selectedView_HID']->text);
+	
 	$GLOBALS['eyeFTP_serializedLocalFilesData_HID']->setText(serialize(array()));
 	$GLOBALS['eyeFTP_localPath_TXTBOX']->setText("");
 }
@@ -53,8 +79,10 @@ function eyeFTP_browseLocal($path = '/') {
 	eyeFTP_emptyLocalFilesTable();
 	
 	$path = eyeFTP_resolvePathInUserDir($path);
-	if ($path === false)
+	if ($path === false) {
+		eyeFTP_logConsole('Error while trying to browse local folder!');
 		return;
+	}
 	
 	$fullPath = eyeFTP_resolvePathInUserDir($path,false);
 	$filesData = eyeFTP_listDir($fullPath);
@@ -176,7 +204,8 @@ function eyeFTP_listDir($dir) {
 }
 
 /**
- * @param string $path The path to resolve (e.g. '/Documents/Images/..',
+ * @param string $path The path of a FOLDER to resolve (do NOT pass a file)
+ *                                         (e.g. '/Documents/Images/..',
  *                                           or  './users/jn4/john/files/Documents/Images/..',
  *                                           or  '/home/john/eyeos/users/jn4/john/files/Documents/Images/..',
  *                                           or  'C:\My Documents\john\eyeos\users\jn4\john\files\Documents\Images\..')
@@ -186,41 +215,7 @@ function eyeFTP_listDir($dir) {
  * @return mixed The resolved path or FALSE if the given path is not in the user files directory
  */
 function eyeFTP_resolvePathInUserDir($path,$returnUserFilesRelative = true) {
-	$resolvedPath = '';
-	//$path is a realpath
-	// UN*X: /home/john/eyeos/users/jn4/john/files/Documents
-	// WIN:  C:\My Documents\john\eyeos\users\jn4\john\files\Documents
-	if (stripos($path, realpath(um('getCurrentUserDir').FILES_USER_DIR)) === 0)
-	{
-		$relativePath = substr(realpath($path),strlen(realpath(um('getCurrentUserDir').FILES_USER_DIR)));
-		$resolvedPath = eyeFTP_resolvePathInUserDir($relativePath);
-	}
-	//$path is a relative path in the eyeOS root directory
-	elseif (stripos($path,um('getCurrentUserDir').FILES_USER_DIR) === 0) {
-		$relativePath = substr($path,strlen(um('getCurrentUserDir').FILES_USER_DIR));
-		$resolvedPath = eyeFTP_resolvePathInUserDir($relativePath);
-	}
-	//$path is a relative path in the user files directory
-	else
-	{
-		//designated path is NOT in the user files folder => ERROR
-		if (stripos(realpath(um('getCurrentUserDir').FILES_USER_DIR.$path),
-							realpath(um('getCurrentUserDir').FILES_USER_DIR)) === false) {
-			return false;
-		}
-		if ($returnUserFilesRelative) {
-			$resolvedPath = '/'.substr(realpath(um('getCurrentUserDir').FILES_USER_DIR.$path),
-							strlen(realpath(um('getCurrentUserDir').FILES_USER_DIR).'/'));
-		}
-		else {
-			$resolvedPath = '.'.substr(realpath(um('getCurrentUserDir').FILES_USER_DIR.$path),
-							strlen(realpath('.')));
-		}
-	}
-	//replace backslashes by slashes (Windows servers)
-	$resolvedPath = str_replace('\\','/',$resolvedPath);
-	//eyeFTP_logConsole($path.' => '.$resolvedPath);
-	return $resolvedPath;
+	return vfs('resolvePath', array($path, 'user_files', $returnUserFilesRelative));
 }
 
 ?>

@@ -163,7 +163,7 @@ class File_Archive_Reader_Cache extends File_Archive_Reader
     function skip($length = -1)
     {
         if ($this->fromSource) {
-            return utf8_strlen($this->getData($length));
+            return strlen($this->getData($length));
         } else {
             if ($length >= 0 && $this->pos+1 < count($this->files)) {
                 $maxSize = $this->files[$this->pos+1]['pos'] - ftell($this->tmpFile);

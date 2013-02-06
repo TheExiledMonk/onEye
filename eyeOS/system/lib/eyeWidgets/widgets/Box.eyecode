@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
@@ -80,7 +80,7 @@ class Box {
 		service('eyex','addEvent',array('name' => $name, 'action' => $eventFunc, 'event' => $eventName,'args'=>$args));
 	}
 
-	function show() {
+	function show($noserialize=1) {
 		if($this->title) {
 			$this->title = i18n('translate',array($this->title));
 		}
@@ -106,8 +106,17 @@ class Box {
 		);
 		$this->showed=1;
 		service('eyex','createWidget',$myBox);
+		if($noserialize == 0) {
+			reqLib('eyeWidgets','serialize',array($this));
+		}
 	}
 	
+	function setTitle($newTitle) {
+		global $myPid;
+		$this->title = $newTitle;
+		$tokens[] = $this->title;		
+		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'supText").innerHTML= %s ','tokens'=>$tokens));	
+	}
 		
 	function setCss($params) {
 		global $myPid;
@@ -133,15 +142,13 @@ class Box {
 	function setWidth($width) {
 		global $myPid;
 		$this->width = intval($width);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").firstChild.style.width="'.$this->width.'px";'));
 	}
 	
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").firstChild.style.height="'.$this->height.'px";'));
 	}
 	
 	function setX($x) {

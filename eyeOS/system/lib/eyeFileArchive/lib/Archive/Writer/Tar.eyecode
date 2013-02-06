@@ -72,13 +72,13 @@ class File_Archive_Writer_Tar extends File_Archive_Writer_Archive
         }
 
         $filePrefix = '';
-        if (utf8_strlen($filename) > 255) {
+        if (strlen($filename) > 255) {
             return PEAR::raiseError(
                 "$filename is too long to be put in a tar archive"
             );
-        } else if (utf8_strlen($filename) > 100) {
-            $filePrefix = utf8_substr($filename, 0, utf8_strlen($filename)-100);
-            $filename = utf8_substr($filename, -100);
+        } else if (strlen($filename) > 100) {
+            $filePrefix = substr($filename, 0, strlen($filename)-100);
+            $filename = substr($filename, -100);
         }
 
         $blockbeg = pack("a100a8a8a8a12a12",
@@ -102,12 +102,12 @@ class File_Archive_Writer_Tar extends File_Archive_Writer_Archive
             $filePrefix,
             "");
 
-        $checksum = 8*utf8_ord(" ");
+        $checksum = 8*ord(" ");
         for ($i = 0; $i < 148; $i++) {
-            $checksum += utf8_ord($blockbeg{$i});
+            $checksum += ord($blockbeg{$i});
         }
         for ($i = 0; $i < 356; $i++) {
-            $checksum += utf8_ord($blockend{$i});
+            $checksum += ord($blockend{$i});
         }
 
         $checksum = pack("a8",sprintf("%6s ",decoct($checksum)));
@@ -135,7 +135,7 @@ class File_Archive_Writer_Tar extends File_Archive_Writer_Archive
     {
         if ($this->filename !== null) {
             if ($this->useBuffer) {
-                $this->stats[7] = utf8_strlen($this->buffer);
+                $this->stats[7] = strlen($this->buffer);
 
                 $this->innerWriter->writeData(
                     $this->tarHeader($this->filename, $this->stats)
@@ -217,7 +217,7 @@ class File_Archive_Predicate_TARCompatible extends File_Archive_Predicate
 {
     function isTrue($source)
     {
-        return utf8_strlen($source->getFilename()) <= 255;
+        return strlen($source->getFilename()) <= 255;
     }
 }
 

@@ -7,16 +7,16 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
@@ -28,15 +28,18 @@ function addLink_on_Message($params = '') {
 function addLink_on_create($params = '') {
 	global $currentUser;
 	$linkName = $GLOBALS['addLink_textbox']->text;
-	$linkName = utf8_basename($linkName);	
+	$linkName = utf8_basename($linkName);
+	$callback = $GLOBALS['addLink_hidden']->text;
 	$file = service('um','getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/' . $linkName . '.eyeLink';
 	if ($linkName && !vfs('real_fileExists',array($file))) {
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		$xml = getConfig('addLink','default.eyeLink');
 		eyeXML('setXMLfile',array($file,$xml));
-		clearstatcache();
-		proc('launch',array('editLink',$file));
+		if ($callback) {
+			eyex('rawjs',array('js' => $callback));
+		}
+		proc('launch',array('editLink',array($file,$callback)));
 		proc('end');
 	} else {
 		eyeX('messageBox',array('content' => 'Please type a correct filename.'));

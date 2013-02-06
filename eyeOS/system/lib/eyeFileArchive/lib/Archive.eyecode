@@ -45,7 +45,7 @@ function File_Archive_cleanCache($file, $group)
     $group = $file[1];
 
     //clean the cache only for files in File_Archive groups
-    return utf8_substr($group, 0, 11) == 'FileArchive' &&
+    return substr($group, 0, 11) == 'FileArchive' &&
            !file_exists($name); //and only if the related file no longer exists
 }
 
@@ -293,26 +293,26 @@ class File_Archive
         $std = File_Archive_Reader::getStandardURL($URL);
 
         //Modify the symbolic name if necessary
-        $slashPos = utf8_strrpos($std, '/');
+        $slashPos = strrpos($std, '/');
         if ($symbolic === null) {
             if ($slashPos === false) {
                 $realSymbolic = $std;
             } else {
-                $realSymbolic = utf8_substr($std, $slashPos+1);
+                $realSymbolic = substr($std, $slashPos+1);
             }
         } else {
             $realSymbolic = $symbolic;
         }
         if ($slashPos !== false) {
-            $baseFile = utf8_substr($std, 0, $slashPos+1);
-            $lastFile = utf8_substr($std, $slashPos+1);
+            $baseFile = substr($std, 0, $slashPos+1);
+            $lastFile = substr($std, $slashPos+1);
         } else {
             $baseFile = '';
             $lastFile = $std;
         }
 
-        if (utf8_strpos($lastFile, '*')!==false ||
-            utf8_strpos($lastFile, '?')!==false) {
+        if (strpos($lastFile, '*')!==false ||
+            strpos($lastFile, '?')!==false) {
             //We have to build a regexp here
             $regexp = str_replace(
                 array('\*', '\?'),
@@ -356,7 +356,7 @@ class File_Archive
                 if ($symbolic === null) {
                     $realSymbolic = '';
                 }
-                $tmp =& new File_Archive_Reader_Addutf8_basename(
+                $tmp =& new File_Archive_Reader_AddBaseName(
                     $realSymbolic,
                     $result
                 );
@@ -365,7 +365,7 @@ class File_Archive
             }
 
         //If the URL can be interpreted as a file, and we are reading from the file system
-        } else if (is_file($URL) && utf8_substr($URL, -1)!='/' && $source === null) {
+        } else if (is_file($URL) && substr($URL, -1)!='/' && $source === null) {
             require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeFileArchive/lib/Archive/Reader/File'.EYE_CODE_EXTENSION;
             $result = new File_Archive_Reader_File($URL, $realSymbolic);
 			
@@ -379,23 +379,23 @@ class File_Archive
             // (to manage URLs like archive.tar/directory/file)
             $pos = 0;
             do {
-                if ($pos+1<utf8_strlen($realPath)) {
-                    $pos = utf8_strpos($realPath, '/', $pos+1);
+                if ($pos+1<strlen($realPath)) {
+                    $pos = strpos($realPath, '/', $pos+1);
                 } else {
                     $pos = false;
                 }
                 if ($pos === false) {
-                    $pos = utf8_strlen($realPath);
+                    $pos = strlen($realPath);
                 }
 
-                $file = utf8_substr($realPath, 0, $pos);
-                $baseDir = utf8_substr($realPath, $pos+1);
-                $dotPos = utf8_strrpos($file, '.');
+                $file = substr($realPath, 0, $pos);
+                $baseDir = substr($realPath, $pos+1);
+                $dotPos = strrpos($file, '.');
                 $extension = '';
                 if ($dotPos !== false) {
-                    $extension = utf8_substr($file, $dotPos+1);
+                    $extension = substr($file, $dotPos+1);
                 }                
-            } while ($pos < utf8_strlen($realPath) &&
+            } while ($pos < strlen($realPath) &&
                 (!File_Archive::isKnownExtension($extension) ||
                  (is_dir($file) && $source==null)));
 
@@ -435,7 +435,7 @@ class File_Archive
                 $tmp = new File_Archive_Reader_Filter(
                     new File_Archive_Predicate(
                         $directoryDepth +
-                        utf8_substr_count(utf8_substr($std, $pos+1), '/')
+                        substr_count(substr($std, $pos+1), '/')
                     ),
                     $result
                 );
@@ -447,7 +447,7 @@ class File_Archive
                 require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Reader/ChangeName".EYE_CODE_EXTENSION;
 
                 //Change the base name to the symbolic one if necessary
-                $tmp = new File_Archive_Reader_Changeutf8_basename(
+                $tmp = new File_Archive_Reader_ChangeBaseName(
                     $std,
                     $realSymbolic,
                     $result
@@ -636,7 +636,7 @@ function isKnownExtension($extension)
                }
 			$eqTypes = File_Archive::getOption('eqTypes');
 			
-			$lowerExt = utf8_strtolower($extension);
+			$lowerExt = strtolower($extension);
 			if($eqTypes[$lowerExt]){
 				return $eqTypes[$lowerExt];               
 			}
@@ -969,10 +969,10 @@ function isKnownExtension($extension)
      * Here are different ways to create a predicate that keeps only files
      * with names shorter than 100 chars
      * <sample>
-     *  File_Archive::predCustom("return utf8_strlen($name)<100;")
-     *  File_Archive::predCustom("utf8_strlen($name)<100;")
-     *  File_Archive::predCustom("utf8_strlen($name)<100")
-     *  File_Archive::predCustom("utf8_strlen($source->getFilename())<100")
+     *  File_Archive::predCustom("return strlen($name)<100;")
+     *  File_Archive::predCustom("strlen($name)<100;")
+     *  File_Archive::predCustom("strlen($name)<100")
+     *  File_Archive::predCustom("strlen($source->getFilename())<100")
      * </sample>
      *
      * @param string $expression String containing an expression that evaluates
@@ -1109,17 +1109,17 @@ function isKnownExtension($extension)
         $eqTypes = File_Archive::getOption('eqTypes');
         
         if ($type === null) {
-            $extensions = utf8_strtolower($filename);
+            $extensions = strtolower($filename);
         } else {
-            $extensions = utf8_strtolower($type);
+            $extensions = strtolower($type);
         }
         
-        $extension = utf8_substr(strrchr($extensions, "."),1);
+        $extension = substr(strrchr($extensions, "."),1);
         
         $eqTypes = File_Archive::getOption('eqTypes');       	        
         if(isset($eqTypes[$extension])){
-        	//Getting the dirname+utf8_basename
-        	$extensions = utf8_substr($extensions,0,utf8_strrpos($extensions,'.')+1);
+        	//Getting the dirname+basename
+        	$extensions = substr($extensions,0,strrpos($extensions,'.')+1);
         	//put the extension
         	$extensions .= $eqTypes[$extension]; 
         }
@@ -1127,7 +1127,7 @@ function isKnownExtension($extension)
         
         //Creating an extension array with alle extension this is a eyeOS code for fix some bugs.        
         
-        $extInfo = utf8_pathinfo($extensions);//Getting info
+        $extInfo = pathinfo($extensions);//Getting info
         
         $extensions = array();//Parse it to array		
         
@@ -1340,8 +1340,8 @@ function isKnownExtension($extension)
             PEAR::popErrorHandling();
 
             if (PEAR::isError($result)) {
-                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Addutf8_basename".EYE_CODE_EXTENSION;
-                $result = new File_Archive_Writer_Addutf8_basename(
+                require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/AddBaseName".EYE_CODE_EXTENSION;
+                $result = new File_Archive_Writer_AddBaseName(
                                        $baseDir, $writer);
                 if (PEAR::isError($result)) {
                     return $result;
@@ -1383,7 +1383,7 @@ function isKnownExtension($extension)
         if ($URL === null) {
             $result = &$source;
         } else {
-            if (utf8_substr($URL, -1) !== '/') {
+            if (substr($URL, -1) !== '/') {
                 $URL .= '/';
             }
             $result = File_Archive::readSource($source, $URL);
@@ -1420,7 +1420,7 @@ function isKnownExtension($extension)
         if (PEAR::isError($source)) {
             return $source;
         }
-        if ($URL !== null && utf8_substr($URL, -1) != '/') {
+        if ($URL !== null && substr($URL, -1) != '/') {
             $URL .= '/';
         }
 

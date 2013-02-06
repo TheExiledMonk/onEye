@@ -50,7 +50,7 @@ class File_Archive_Writer_Files extends File_Archive_Writer
         if ($base === null || $base == '') {
             $this->basePath = '';
         } else {
-            if (utf8_substr($base, -1) == '/') {
+            if (substr($base, -1) == '/') {
                 $this->basePath = $base;
             } else {
                 $this->basePath = $base.'/';
@@ -82,9 +82,9 @@ class File_Archive_Writer_Files extends File_Archive_Writer
         }
 
         // Crawl up the directory tree
-        $next_pathname = utf8_substr(
+        $next_pathname = substr(
                     $pathname,
-                    0, utf8_strrpos($pathname, "/"));
+                    0, strrpos($pathname, "/"));
         $error = $this->mkdirr($next_pathname);
         if (PEAR::isError($error)) {
             return $error;
@@ -147,7 +147,7 @@ class File_Archive_Writer_Files extends File_Archive_Writer
                 if ($keep) {
                     while ($length > 0 &&
                            ($data = fread($read, min($length, 8192))) != '') {
-                        $length -= utf8_strlen($data);
+                        $length -= strlen($data);
                         fwrite($this->handle, $data);
                     }
                 } else {
@@ -177,9 +177,9 @@ class File_Archive_Writer_Files extends File_Archive_Writer
         $this->stat = $stat;
         $this->filename = $this->getFilename($filename);
 
-        $pos = utf8_strrpos($this->filename, "/");
+        $pos = strrpos($this->filename, "/");
         if ($pos !== false) {
-            $error = $this->mkdirr(utf8_substr($this->filename, 0, $pos));
+            $error = $this->mkdirr(substr($this->filename, 0, $pos));
             if (PEAR::isError($error)) {
                 return $error;
             }
@@ -201,9 +201,9 @@ class File_Archive_Writer_Files extends File_Archive_Writer
     {
         $this->filename = filename;
         $complete = $this->getFilename($filename);
-        $pos = utf8_strrpos($complete, "/");
+        $pos = strrpos($complete, "/");
         if ($pos !== false) {
-            $error = $this->mkdirr(utf8_substr($complete, 0, $pos));
+            $error = $this->mkdirr(substr($complete, 0, $pos));
             if (PEAR::isError($error)) {
                 return $error;
             }

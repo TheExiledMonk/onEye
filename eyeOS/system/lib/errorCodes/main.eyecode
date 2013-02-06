@@ -7,22 +7,22 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.5
+                      |___/              1.6
 
                      Web Operating System
                            eyeOS.org
 
              eyeOS Engineering Team - eyeOS.org/whoarewe
 
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
+     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
             provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
+             or via web at gnu.org/licenses/agpl-3.0.txt
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
-	Error code library for eyeos
+	Error code library for eyeOS
 */
 
 function lib_errorCodes_loadCodes($params=null){
@@ -67,15 +67,35 @@ function lib_errorCodes_loadCodes($params=null){
 	define('PHP_ERROR_ON_MKDIR',503);
 }
 
+/**
+* Sets the error code to a given value.
+* 
+* @param $params array(ecode)
+* @param $ecode Numerical value of the new error code.
+* @return If no error code is specified, returns false. Else, this
+*	function does not return any value.
+* @date 2008/03/11
+*/
 function lib_errorCodes_setErrorCode($params) {
-	global $errorCode;
-	$ecode = $params[0];
-	if(!$ecode) {
+	
+	if(!is_array($params) || !isset($params[0])) {
 		return false;
 	}
-	$errorCode = $ecode;
+	
+	global $errorCode;
+	$errorCode = $params[0];
+	
+	return true;
 }
 
+/**
+* Gets the numerical value of the last error occurred.
+* 
+* @return This function always returns the value of the global
+*	'errorCode' variable. It can be null if no error has been
+*	raised or an integer number otherwise.
+* @date 2008/03/11
+*/
 function lib_errorCodes_getErrorCode($params=null) {
 	global $errorCode;
 	return $errorCode;
