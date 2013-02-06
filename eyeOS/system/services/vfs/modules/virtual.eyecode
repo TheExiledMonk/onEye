@@ -387,7 +387,8 @@ function service_vfs_copyDir($params) {
 	}
 	
 	$orig_real = realpath($orig . '/');
-	if (utf8_substr(realpath($dest . '/'),0,utf8_strlen($orig_real)) == $orig_real) {
+	$orig_dest = realpath(dirname($dest) . '/');
+	if(strpos($orig_dest,$orig_real) !== 0){
 		dircopy($orig,$dest);
 		return true;
 	} else {
@@ -1141,8 +1142,8 @@ function service_vfs_real_copyDir($params) {
 		return false;
 	}
 	
-	$orig_real = realpath($orig . '/');
-	if (utf8_substr(realpath($dest . '/'),0,utf8_strlen($orig_real)) == $orig_real) {
+	$orig_dest = realpath(dirname($dest) . '/');
+	if(strpos($orig_dest,$orig_real) !== 0){
 		dircopy($orig,$dest);
 		return true;
 	} else {

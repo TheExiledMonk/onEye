@@ -57,7 +57,7 @@ function _WeekView($date,$num){
 		'y'=>0,
 		'date'=>$date,
 		'selectedCalendar'=>$num,
-		'startMonday'=>$i10n['startDay'][0]
+		'startMonday'=>$i10n['startDay']
 	));
 	return $myWeekPlanner;
 }

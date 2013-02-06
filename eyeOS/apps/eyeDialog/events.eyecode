@@ -134,6 +134,12 @@ function eyeDialog_on_filename_TXTBOX_change($params=null) {
 
 //FILETYPE SELECTOR
 function eyeDialog_on_filetype_SEL_change($params=null) {
+	$myHiddenFileType = new Hidden(array(
+		'name' => 'selectedFileType',
+		'father' => 'eyeDialog_WND_Content',
+		'text' => $params['filetype'][0]
+	));
+	eyeWidgets('serialize',array($myHiddenFileType));
 	$GLOBALS['currentFiletypeFilter_HID']->setText($params['filetype'][0]);
 	if ($GLOBALS['filename_TXTBOX']->text) {
 		$GLOBALS['filename_TXTBOX']->setText(eyeDialog_autoSetExtensionToFilename($GLOBALS['filename_TXTBOX']->text, true));
@@ -205,8 +211,8 @@ function eyeDialog_on_cancel_BTN($params=null) {
 //REPLACE FILE DIALOG CONFIRMATION
 function eyeDialog_on_confirmFileReplace_DLG_yes_BTN($params=null) {
 	$params = unserialize($GLOBALS['confirmFileReplace_DLG_params_HID']->text);
-	eyeDialog_saveAs($params[0], $params[1]);
 	$GLOBALS['confirmFileReplace_DLG']->close();
+	eyeDialog_saveAs($params[0], $params[1], true);
 }
 function eyeDialog_on_confirmFileReplace_DLG_no_BTN($params=null) {
 	$GLOBALS['confirmFileReplace_DLG']->close();

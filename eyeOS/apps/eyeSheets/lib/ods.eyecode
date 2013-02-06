@@ -331,7 +331,14 @@ function saveOds($obj,$file,$convert=0) {
 	mkdir($tmp.'/'.$uid.'/Configurations2/progressbar/');
 	mkdir($tmp.'/'.$uid.'/Configurations2/toolbar/');
 	file_put_contents($tmp.'/'.$uid.'/META-INF/manifest.xml',$obj->getManifest());
-	file_put_contents($file,simpleZip('createZip',array($tmp . '/' . $uid,1,1)));
+	//We are working in a tmp dir, that maybe is out the user directory, so at the moment a suid is a good workaround
+	//TODO: clean this library
+	global $currentUser;
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	$content = simpleZip('createZip',array($tmp . '/' . $uid,1,1));
+	$currentUser = $oldUser;
+	file_put_contents($file,$content);
 	if($convert == 1) {
 		eyeConverter('convert', array($file, $file, 'MS Excel 97', 1));
 	}

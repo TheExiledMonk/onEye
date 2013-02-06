@@ -69,7 +69,7 @@ define('REAL_ROOTUSER','root');
 //Extras
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('EYEOS_VERSION','1.8.0.4');
+define('EYEOS_VERSION','1.8.0.5');
 
 //eyeDialog that defines should be moved to another place desinged for it.
 define('EYEDIALOG_TYPE_OPENFILE', 0);

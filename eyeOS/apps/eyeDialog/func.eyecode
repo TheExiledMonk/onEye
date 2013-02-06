@@ -49,7 +49,7 @@ function eyeDialog_selectFolder($folderPath) {
 	//eyeX('messageBox',array('content'=> 'Select folder OK: '.$folderPath));
 	eyeDialog_closeDialog();
 }
-function eyeDialog_saveAs($folderPath, $filename) {
+function eyeDialog_saveAs($folderPath, $filename, $overwrite=false) {
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
 	$callback = $dialogParams[1];
 	$callback_checknum = $dialogParams[2];
@@ -65,13 +65,13 @@ function eyeDialog_saveAs($folderPath, $filename) {
 	//eyeX('rawjs', array('js' => 'console.log("'.eyeDialog_resolvePath($folderPath).'/'.$filename.'")'));
 	$filenameExtension = eyeDialog_getFilenameAndExtension($filename);
 	$filenameExtension = $filenameExtension[1];
-	if (vfs('fileExists', array(eyeDialog_resolvePath($folderPath).'/'.$filename))) {
+	if (!$overwrite && vfs('fileExists', array(eyeDialog_resolvePath($folderPath).'/'.$filename))) {
 		eyeDialog_confirmFileReplace($folderPath, $filename);
 		return;
 	}
 	
 	if($callback && $callback_checknum) {
-		service('eyex','rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$filePath.'")+eyeParam("ext","'.$filenameExtension.'"));'));
+		service('eyex','rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$callback.'",eyeParam("arg","'.$filePath.'")+eyeParam("ext","'.$filenameExtension.'")+eyeParam("fileType","'.$GLOBALS['selectedFileType']->text.'"));'));
 	}
 	//eyeX('messageBox',array('content'=> 'Save as OK: '.$filePath));
 	eyeDialog_closeDialog();

@@ -212,7 +212,7 @@ class Split {
 	function remove() {
 		global $myPid;
 		$name = $this->name;
-		service('eyex','removeWidget',array('name'=>$name));
+		service('eyex','removeWidget',array('name'=>$name.'_Container'));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 	

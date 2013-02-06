@@ -147,6 +147,10 @@ class Tab {
 		$this->width = intval($width);
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_header").style.width="'.$this->width.'px";'));
+		foreach($this->myTabs as $key=>$value) {
+			service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$key.'").style.width="'.$this->width.'px";'));
+		}
 	}
 	
 	function setHeight($height) {
