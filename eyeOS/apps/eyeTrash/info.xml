@@ -1,5 +1,5 @@
 <package>
-	<name>eyeTrash</name>
+	<name>Trash</name>
 	<category>File Management</category>
 	<version>1.9</version>
 	<description>Utility linking to trash:///</description>

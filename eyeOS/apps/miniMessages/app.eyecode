@@ -43,7 +43,16 @@ function miniMessages_run($params=null) {
 	));
 	$myWindow->show();
 	eyeX('updateCSS', array('name' => $myPid.'_miniMessagesWND_Content', 'property' => 'overflow', 'value' => 'hidden'));
-	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_miniMessagesWND_Content").style.top = "0px";'));
+
+	/**
+	*@Todo if Windows Widget gets class fix this
+	*/
+	eyeX('rawjs',array('js'=>
+		'document.getElementById("'.$myPid.'_' . $myWindow->name . '").className = "miniWND";
+		document.getElementById("'.$myPid.'_' . $myWindow->name . '_Content").className = "miniWND";
+		'
+	));
+
 	$myImage = new Imagebox(array(
 		'name' => 'imgLaunch',
 		'father' => 'miniMessagesWND_Content',
@@ -65,7 +74,7 @@ function miniMessages_run($params=null) {
 		'disablemsg' => 0
 	));
 	$myLabel->show();
-	$myLabel->setCss(array('cursor' => 'Pointer', 'color' => '#155D9A', 'fontWeight' => 'bold'));
+	$myLabel->setCss(array('cursor' => 'Pointer'));
 
 	$myImage1 = new Imagebox(array(
 		'name' => 'imgClose',
@@ -156,6 +165,16 @@ function miniMessages_run($params=null) {
 			$count++;
 		}
 	}
+	eyex('rawjs',array('js' =>
+		'document.getElementById("' . $myPid . '_' . $myLabel->name . '").className = "miniAppTitle";
+		'
+	));
+
+	//CSS
+	eyex('loadCss',array(
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniApps/miniApps.css&type=css',
+		'id' => 'miniApps'
+	));
 }
 
 function date_sort($list) {

@@ -28,7 +28,7 @@ eyex('createDiv',array(
 ));
 eyex('runjs',array(
 	'js' => 'document.getElementById("' . $myPid . '_eyeDock_' . $type . '_' . $place . '_' . $id . '").innerHTML = %s;',
-	'tokens' => array($element[0]['text'][0])
+	'tokens' => array(i18n('translate', array($element[0]['text'][0])))
 ));
 
 $myContextMenu = new ContextMenu(array(

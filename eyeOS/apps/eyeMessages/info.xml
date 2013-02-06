@@ -1,5 +1,5 @@
 <package>
-	<name>eyeMessages</name>
+	<name>Internal Messaging</name>
 	<category>Networking</category>
 	<version>1.9</version>
 	<description>Application to send internal messages</description>

@@ -31,8 +31,9 @@
 	Entry point for exit app, this function is called when the app exit is launched,
 	the only two actions performed by this application are:
 
-	1. Delete the current session via eyeSessions lib
-	2. refresh the page using service eyex, function rawjs
+	1. Play logout sound or not
+	2. Delete the current session via eyeSessions lib
+	3. refresh the page using service eyex, function rawjs
 */
 function exit_run($params=null) {
 	eyex('systemSound', array('logout'));

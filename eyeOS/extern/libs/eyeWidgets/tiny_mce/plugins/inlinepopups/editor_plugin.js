@@ -13,7 +13,7 @@
 			// Replace window manager
 			ed.onBeforeRenderUI.add(function() {
 				ed.windowManager = new tinymce.InlineWindowManager(ed);
-				DOM.loadCSS("index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=css/tiny_mce/inlinepopup.css");
+				DOM.loadCSS("index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=css/tiny_mce/inlinepopup.css"); // eyeOS
 			});
 		},
 

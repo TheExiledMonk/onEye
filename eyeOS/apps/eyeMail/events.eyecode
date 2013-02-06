@@ -20,6 +20,7 @@
 
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/preferences'.EYE_CODE_EXTENSION);
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/mail'.EYE_CODE_EXTENSION);
 
@@ -218,6 +219,7 @@ function eyeMail_on_changeFocus($params=null) {
 	));
 	eyeWidgets('serialize',array($myHidden));
 }
+
 function eyeMail_on_contactsMail($params=null) {
 	/**
 	$field = $GLOBALS['focused']->text;
@@ -643,5 +645,4 @@ function decode_qprint($str) {
     $str = utf8_encode($str);
     return $str;
 }
-
 ?>

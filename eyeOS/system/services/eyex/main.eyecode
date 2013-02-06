@@ -42,7 +42,7 @@ function service_eyex_init() {
 
 /**
 * Embeds the specified content inside of an existing layer.
-* 
+*
 * @param $params array(name,content)
 * @param $name Name of the layer.
 * @param $content Code (or text) to insert inside the layer.
@@ -80,7 +80,7 @@ function service_eyex_setDiv($params) {
 
 /**
 * Loads a JS script from a specified URL in the extern folder.
-* 
+*
 * @param $params array(url)
 * @param $url URL of the script. The script must be loaded via the extern
 *	service.
@@ -113,7 +113,7 @@ function service_eyex_loadScript($params=null) {
 
 /**
 * Loads a CSS file from a specified directory inside the extern folder.
-* 
+*
 * @param $params array(url,id)
 * @param $url URL of the file inside the extern directory. The CSS
 *	resources contained in this directory must be loaded via the
@@ -152,7 +152,7 @@ function service_eyex_loadCSS($params) {
 
 /**
 * Eliminates a loaded CSS resource.
-* 
+*
 * @param $params array(id)
 * @param $id ID attribute of the CSS to delete.
 * @return If no id is specified, returns false and sets the error code
@@ -185,7 +185,7 @@ function service_eyex_removeCSS($params) {
 
 /**
 * Changes the wallpaper of the screen.
-* 
+*
 * @param $params array(path,[repeat],[center])
 * @param $path Path to the new background image.
 * @param $repeat Specifies whether or not the background image must be
@@ -240,7 +240,7 @@ function service_eyex_setWallpaper($params) {
 
 /**
 * Checks whether the image is available for that theme or not.
-* 
+*
 * @param $params array(path,extension)
 * @param $path Path in any format.
 * @param $extend If 1 the index.php?extern= path will be added before
@@ -350,7 +350,7 @@ function eyex_returnWrongPath($path,$extend) {
 
 /**
 * Returns the real path of an image from an url for the extern service.
-* 
+*
 * @param $params array(path)
 * @param $path Path for the extern service.
 * @return Returns the real path of an image from an url for the extern service.
@@ -383,7 +383,7 @@ function service_eyex_getRealFromExtern($params) {
 /**
 * Draws a new layer on the screen, without serializing it in the eyeX
 * layer table.
-* 
+*
 * @param $params array(name,father,[class],[removepid],[nopid])
 * @param $name Name of the new layer.
 * @param $father Name of the container element of the new layer.
@@ -407,7 +407,7 @@ function service_eyex_createDiv($params) {
 	$father = $params['father'];
 
 	if(!isset($params['class'])) {
-		$class = ' '; 
+		$class = ' ';
 	}else{
 		$class = $params['class'];
 	}
@@ -441,7 +441,7 @@ function service_eyex_createDiv($params) {
 
 /**
 * Draws a new widget in the screen.
-* 
+*
 * @param $params array(name,father,[widgetname],[params],[horiz],[vert],[removepid],[center],[x],[y])
 * @param $name Name of the widget.
 * @param $father Name of the father (containing) element of the widget.
@@ -547,7 +547,7 @@ function service_eyex_createWidget($params) {
 
 /**
 * Eliminates a widget from the user's session.
-* 
+*
 * @param $params array(name)
 * @param $name Name of the widget to delete.
 * @return If no name is specified, returns false and sets the error
@@ -559,7 +559,7 @@ function service_eyex_removeWidget($params) {
 	if(!$params['name']) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
-	} 
+	}
 	global $procInfo;
 	$name = $procInfo['pid'].'_'.$params['name'];
 	$atribs = array(
@@ -580,7 +580,7 @@ function service_eyex_removeWidget($params) {
 
 /**
 * Displays a dialog to the user with the specified message.
-* 
+*
 * @param $params array(content,[tokens],[type],[title],[win_name],[win_style],[win_removepid],[btn1_name],[btn1_capt],[btn2_name],[btn2_capt],[btn3_name],[btn3_capt],[hidden_name],[hidden_text],[hidden1_name],[hidden1_text],[hidden2_name],[hidden2_text],[hidden3_name],[hidden3_text],[father],[img],[textbox_name],[textbox_text],[textbox_password],[textbox_event],[select_name],[select_event])
 * @param $content String containing the message to be displayed.
 * @param $tokens Indexed array containing the value of the tokens appearing
@@ -591,7 +591,7 @@ function service_eyex_removeWidget($params) {
 *	a JavaScript alert window, while a value of 3 uses a Window
 *	to display a dialog box. The dialog options can be
 *	configured with the following parameters. Its default value
-*	is 1. 
+*	is 1.
 * @param $title Sets the title of the displayed window message.
 * @param $win_name Name of the Window of the dialog box.
 * @param $win_style Specifies the properties of the Window of the dialog. To set
@@ -849,7 +849,7 @@ function service_eyex_messageBox($params = '') {
 
 /**
 * Changes the value of a widget.
-* 
+*
 * @param $params array(name,value)
 * @param $name Name of the element.
 * @param $value New value of the element.
@@ -892,7 +892,7 @@ function service_eyex_setValue($params) {
 /**
 * Changes the value of a widget. The given value is supposed to be
 * encoded in base 64.
-* 
+*
 * @param $params array(name,value)
 * @param $name Name of the widget.
 * @param $value New value to set, in base 64.
@@ -934,7 +934,7 @@ function service_eyex_setValueB64($params) {
 /**
 * Concatenates to the value property of a widget an specified text. The
 * specified value is encoded in base 64 until it is set.
-* 
+*
 * @param $params array(name,value)
 * @param $name Name of the widget.
 * @param $value Text to append.
@@ -976,7 +976,7 @@ function service_eyex_concatValueB64($params) {
 
 /**
 * Concatenates to the value property of a widget an specified text.
-* 
+*
 * @param $params array(name,value)
 * @param $name Name of the widget.
 * @param $value Text to append.
@@ -1019,7 +1019,7 @@ function service_eyex_concatValue($params) {
 
 /**
 * Concatenates to the value property of a div element an specified content.
-* 
+*
 * @param $params array(name,value)
 * @param $name Name of the widget.
 * @param $value Content to append.
@@ -1062,7 +1062,7 @@ function service_eyex_concatDiv($params) {
 /**
 * Executes a specified JS code. We recommend to use the runjs()
 * function, which has a better content handling.
-* 
+*
 * @param $params array(js)
 * @param $js JavaScript code to be evaluated.
 * @return If no code is specified, returns false and sets the error
@@ -1098,10 +1098,10 @@ function service_eyex_rawjs($params) { //useful for widgets
 
 /**
 * Executes a specified JS code.
-* 
+*
 * @param $params array(js,[Array])
 * @param $js JavaScript code to be evaluated.
-* @param $Array 
+* @param $Array
 * @return If no code is specified, returns false and sets the error
 *	code accordingly. Otherwise, it does not return any value.
 * @exception INCORRECT_PARAMS No code is specified.
@@ -1155,7 +1155,7 @@ function service_eyex_runjs($params) { //util for widgets
 
 /**
 * Changes a widget's position.
-* 
+*
 * @param $params array(name,x,y)
 * @param $name Name of the widget.
 * @param $x New horizontal position of the widget, expressed in pixels.
@@ -1198,7 +1198,7 @@ function service_eyex_moveWidget($params) {
 /**
 * Changes the size of an existing widget to the specified width and
 * height.
-* 
+*
 * @param $params array(name,width,height)
 * @param $name Name of the widget.
 * @param $width New width of the widget, expressed in pixels.
@@ -1239,7 +1239,7 @@ function service_eyex_resizeWidget($params) {
 
 /**
 * Makes a widget draggable by the user.
-* 
+*
 * @param $params array(name,father)
 * @param $name Name of the widget.
 * @param $father Name of the's father (containing) element.
@@ -1276,7 +1276,7 @@ function service_eyex_makeDrag($params) {
 
 /**
 * Sets a CSS property of an element.
-* 
+*
 * @param $params array(name,property,value)
 * @param $name Name of the element.
 * @param $property Name of the CSS property to modify.
@@ -1322,7 +1322,7 @@ function service_eyex_updateCss($params)
 /**
 * Specifies which JavaScript code must be executed every time a widget
 * triggers a JS event.
-* 
+*
 * @param $params array(name,action,event,[args])
 * @param $name Name of the widget where to apply the event.
 * @param $action JS code to be executed when the event is triggered.
@@ -1368,7 +1368,7 @@ function service_eyex_addEvent($params)
 
 /**
 * Sends a signal to the current application.
-* 
+*
 * @param $params array(message,[params])
 * @param $message Name of the signal to send.
 * @param $params Additional parameters passed to the event.
@@ -1384,7 +1384,7 @@ function service_eyex_sendMessage($params) {
 	}
 
 	if(!empty($params['checknum'])){
-		$checknum = $params['checknum']; 
+		$checknum = $params['checknum'];
 	}else{
 		global $checknum;
 	}
@@ -1416,7 +1416,7 @@ function service_eyex_sendMessage($params) {
 
 /**
 * Draws a new layer and serializes it into the eyeX layer table.
-* 
+*
 * @param $params array(name,[class])
 * @param $name Name used to identify the layer.
 * @param $class Name used to identify the layer.
@@ -1433,16 +1433,16 @@ function service_eyex_createLayer($params=''){
  	}
  	if(!$_SESSION[LTABLE]){
  		eyeSessions('makeArrayVar',array(LTABLE));
- 	} 
- 
- 	$name = $params['name']; 
+ 	}
+
+ 	$name = $params['name'];
  	if($params['class']){
  		$class = $params['class'];
  	}else{
  		$class = 'newLayer';
  	}
  	$father = 'eyeScreen';
- 
+
  	$atribs = array(
 		'task' => array('createLayer'),
 		'name' => array($name),
@@ -1464,7 +1464,7 @@ function service_eyex_createLayer($params=''){
 
 /**
 * Removes a layer from the user's session.
-* 
+*
 * @param $params array(name)
 * @param $name Name of the layer.
 * @return If no layer name is specified, returns false and sets the
@@ -1479,7 +1479,7 @@ function service_eyex_removeLayer($params){
  		return false;
  	}
  	$name = $params['name'];
- 
+
  	$atribs = array(
 		'task' => array('removeLayer'),
 		'name' => array($name),
@@ -1498,7 +1498,7 @@ function service_eyex_removeLayer($params){
 /**
 * Makes a layer visible and displays it on top of any other layers or
 * windows in the screen.
-* 
+*
 * @param $params array(name)
 * @param $name Name of the layer.
 * @return If no layer name is specified, returns false and sets the
@@ -1527,10 +1527,10 @@ function service_eyex_showLayer($params){
 	mmap('addToBuffer',array($myAction));
 	return true;
  }
- 
+
 /**
 * Makes a layer invisible.
-* 
+*
 * @param $params array(name)
 * @param $name Name of the layer.
 * @return If no layer name is specified, returns false and sets the
@@ -1562,7 +1562,7 @@ function service_eyex_hideLayer($params){
 
 /**
 * Unhides a layer applying a gradual fade in effect.
-* 
+*
 * @param $params array(name,[time],[startAlpha],[endAlpha])
 * @param $name Name of the layer to unhide.
 * @param $time Time, expressed in milliseconds, to apply completely the
@@ -1607,7 +1607,7 @@ function service_eyex_fadeOutLayer($params){
 
 /**
 * Hides a layer applying a gradual fade to black effect.
-* 
+*
 * @param $params array(name,[time],[startAlpha],[endAlpha])
 * @param $name Name of the layer.
 * @param $time Time, expressed in milliseconds, to apply completely the
@@ -1649,10 +1649,10 @@ function service_eyex_fadeInLayer($params){
 	mmap('addToBuffer',array($myAction));
 	return true;
 }
- 
+
 /**
 * Checks whether a layer exists or not.
-* 
+*
 * @param $params array(name)
 * @param $name Name of the layer.
 * @return If no layer name is specified, returns false and sets the
@@ -1675,10 +1675,10 @@ function service_eyex_isLayer($params=''){
  	}
  	return false;
  }
- 
+
 /**
 * Runs, when the browser was resized
-* 
+*
 * @param $params array(height,width)
 * @exception INCORRECT_PARAMS
 * @date 2008/09/28
@@ -1700,7 +1700,7 @@ function service_eyex_print($params='') {
  		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
- 
+
 	if(INDEX_TYPE == 'browser') {
 		global $procInfo;
 		$text = $params[0];
@@ -1741,16 +1741,18 @@ function service_eyex_jscolor($params = '') {
 		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
 		return false;
 	}
-	$prop = 'adjust: false, caps: false, hash: true, required: false';
-	echo $url = eyex('getThemeImage', array(THEME_CONF_DIR . '/jscolor.xml', 2));
+	
 	global $currentUser;
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
 	$xml = eyeXML('getXMLfile', array($url));
 	$currentUser = $oldUser;
+	
+	$prop = 'adjust: false, caps: false, hash: true, required: false';
 	foreach ($xml['jscolor'][0] as $key => $value) {
 		$prop .= ', ' . $key . ': ' . $value[0];
 	}
+	
 	if (isset($params[1]) && is_array($params[0])) {
 		foreach ($params[1] as $key => $value) {
 			$prop .= ', ' . $key . ': ' . $value;
@@ -1758,7 +1760,7 @@ function service_eyex_jscolor($params = '') {
 	}
 	eyex('runjs', array('js' => 'new jscolor.color(document.getElementById(%s), {' . $prop . '});', 'tokens' => array($params[0])));
 }
- 
+
 /**
 * Camelcases a string.
 

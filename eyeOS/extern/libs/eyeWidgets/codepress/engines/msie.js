@@ -74,10 +74,10 @@ CodePress = {
 			window.clipboardData.setData('Text',window.clipboardData.getData('Text').replace(/\t/g,'\u2008'));
 		 	top.setTimeout(function(){CodePress.syntaxHighlight('paste');},10);
 		}
-		else if(keyCode==67 && evt.ctrlKey)  { // handle cut
+		/*else if(keyCode==67 && evt.ctrlKey)  { // handle cut
 			// window.clipboardData.setData('Text',x[0]);
 			// code = window.clipboardData.getData('Text');
-		}
+		}*/
 	},
 
 	// put cursor back to its original position after every parsing

@@ -624,7 +624,6 @@ function eyeMail_compose($to="",$sbj="",$body="",$recv=0,$attachments="") {
 	}
 }
 
-
 function eyeMail_drawBoxes() {
 	global $myPid;
 	global $checknum;
@@ -795,5 +794,4 @@ function eyeMail_drawContacts() {
 		'horiz' => 1
 	));
 }
-
 ?>

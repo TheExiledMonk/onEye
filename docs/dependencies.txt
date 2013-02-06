@@ -13,8 +13,8 @@ eyeOS/extern/apps/eyeX/js/eyeX.js                         | htmlspecialchars (PH
 eyeOS/extern/apps/eyeX/js/eyeX.js                         | get_html_translation_table (PHP.JS) | 909.322        | http://phpjs.org/functions/get_html_translation_table:416       | 10/2009    | 
 eyeOS/extern/apps/eyeX/js/eyeX.js                         | md5 (PHP.JS)                        | 909.322        | http://phpjs.org/functions/md5:469                              | 10/2009    | 
 eyeOS/extern/apps/eyeX/js/eyeX.js                         | utf8_encode (PHP.JS)                | 909.322        | http://phpjs.org/functions/utf8_encode:577                      | 10/2009    | 
-eyeOS/extern/apps/eyeX/js/eyeX.js                         | xLibrary                            | 4.19*          | http://cross-browser.com/x/                                     | 08/2009    | yes
-eyeOS/extern/libs/eyeSound/                               | SoundManager 2                      | 2.95a.20090717 | http://schillmania.com/projects/soundmanager2/                  | 08/2009    | marked
+eyeOS/extern/apps/eyeX/js/eyeX.js                         | xLibrary                            | 4.21           | http://cross-browser.com/                                       | 02/2010    | yes
+eyeOS/extern/libs/eyeSound/                               | SoundManager 2                      | 2.95b.20100101 | http://schillmania.com/projects/soundmanager2/                  | 02/2010    | marked
 eyeOS/extern/libs/eyeWidgets/codepress/                   | CodePress                           | 0.9.6          | http://codepress.sf.net/                                        | no         | yes
 eyeOS/extern/libs/eyeWidgets/jscolor/                     | jscolor                             | 1.3.0          | http://jscolor.com/                                             | 10/2009    | 
 eyeOS/extern/libs/eyeWidgets/tiny_mce/                    | TinyMCE                             | 3.2.7          | http://tinymce.moxiecode.com/                                   | 10/2009    | yes

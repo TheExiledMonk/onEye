@@ -149,6 +149,18 @@ function eyeControl_on_desktop_save($params=null) {
 	eyex('messageBox',array('content' => 'Changes successfully saved.'));
 }
 
+function eyeControl_on_desktop_Soundclicks($params = '') {
+	global $currentUser;
+	$xml = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
+	if ($params['selected'][0] == 'false') {
+		$xml['eyeDesk'][0]['systemSounds'][0] = '1';
+	} else {
+		$xml['eyeDesk'][0]['systemSounds'][0] = '0';
+	}
+	eyeControl_lib_setXMLconfig(array('eyeDesk','conf.xml',$xml));
+	eyex('messageBox',array('content' => 'Changes successfully saved.'));
+}
+
 function eyeControl_on_getWallpaper($params = '') {
 	$config = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 	$url = $config['eyeDesk'][0]['wallpaper'][0];

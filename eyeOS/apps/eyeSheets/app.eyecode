@@ -22,6 +22,19 @@
 */
 
 function eyeSheets_run($params=null) {
+	
+	if (stripos($_SERVER['HTTP_USER_AGENT'], 'webkit') !== false) {
+		eyex('messageBox', array(
+			'content' => 'Sorry, eyeSheets does not support Webkit browsers.',
+			'img' => 'x',
+			'title' => 'eyeSheets',
+			'type' => 3,
+			'win_name' => 'eyeSheets_Window',
+			'win_style' => CLOSE + LISTED + MIN + TITLE
+		));
+		return proc('end');
+	}
+	
 	global $myPid;
 	global $checknum;
 

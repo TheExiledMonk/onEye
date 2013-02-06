@@ -1,5 +1,5 @@
 <package>
-	<name>eyeFeeds</name>
+	<name>RSS Feed Reader</name>
 	<category>Networking</category>
 	<version>1.2-3</version>
 	<description>RSS feeds reader for eyeOS.</description>

@@ -482,7 +482,7 @@ function  weekPlanner_base(weekPlanner,dayFrom,dayEven) {
 			for(var x=0;x < this.notes.length;x++){
 				//Special case
 				var numOfLevels = this.notes[x].startPartObj.numOfLevels();
-				this.notes[x]
+				// this.notes[x]
 				if(this.notes[x].level == 0 || numOfLevels == 1){
 					//0 is a special case to be showed correctly
 					this.notes[x].style.width = 50+'%';
@@ -1007,8 +1007,8 @@ function weekPlanner_notes(weekPlanner){
 		var target = e.target;
 		var part = 0;
 		//In what part I clicked?
+		part = Math.floor((target.num)/this.father.parts);
 		if(target.num > 3){
-			part = Math.floor((target.num)/this.father.parts);
 			part = target.num -part*this.father.parts;
 		}else{
 			part = target.num;
@@ -1301,8 +1301,8 @@ function weekPlanner_notes(weekPlanner){
 		this.father.tmpNote.day = day;
 		var partParent = document.getElementById(this.father.pid+'_day_'+day);
 		var part = 0;
+		part = Math.floor((target.num)/this.father.parts);
 		if(target.num > 3){
-			part = Math.floor((target.num)/this.father.parts);
 			part = target.num -part*this.father.parts;
 		}else{
 			part = target.num;
@@ -1340,8 +1340,8 @@ function weekPlanner_notes(weekPlanner){
 		this.father.tmpNote.day = day;
 		var partParent = document.getElementById(this.father.pid+'_day_'+day);
 		var part = 0;
+		part = Math.floor((target.num)/this.father.parts);
 		if(target.num > 3){
-			part = Math.floor((target.num)/this.father.parts);
 			part = target.num -part*this.father.parts;
 		}else{
 			part = target.num;

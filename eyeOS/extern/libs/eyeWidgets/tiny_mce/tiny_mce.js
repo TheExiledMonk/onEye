@@ -12426,7 +12426,7 @@ var tinyMCE = window.tinyMCE = tinymce.EditorManager;
 				if (sc.childNodes.length == 0 || (sc.childNodes.length == 1 && sc.firstChild.nodeName == 'BR')) {
 					// Find previous block element
 					n = sc;
-					while ((n = n.previousSibling) && !ed.dom.isBlock(n)) ;
+					while ((n = n.previousSibling) && !ed.dom.isBlock(n)) {}; // eyeOS
 
 					if (n) {
 						if (sc != b.firstChild) {

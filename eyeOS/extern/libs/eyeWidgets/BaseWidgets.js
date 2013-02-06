@@ -296,12 +296,12 @@ function Listbox_sort(mypid,name,type) {
 	}
 	// Fill up all the values in the items array
 
-	if (type=='ad') {
+	/*if (type=='ad') {
 	} else if (type=='aa') {
 	} else if (type=='na') {
 	} else if (type=='nd') {
 	} else if (type=='random') {
-	}
+	}*/
 
 	// items array sorted, now sort the DOM elements
 
@@ -1845,7 +1845,7 @@ SortableTable.prototype.updateHeaderArrows = function () {
 
 SortableTable.prototype.getSelectValue = function(i) {
 	if(this.lastClick) {
-		return this.lastClick.childNodes.item(i).innerHTML;
+		return html_entity_decode(this.lastClick.childNodes.item(i).innerHTML);
 	} else {
 		return "";
 	}
@@ -3621,6 +3621,14 @@ function addItem(list, name, content) {
 	item.setAttribute('id',name);
 	item.innerHTML = content;
 	father.appendChild(item);
+}
+
+function removeItem(sItem) {
+	var oItem = document.getElementById(sItem);
+	if (!oItem) {
+		return false;
+	}
+	oItem.parentNode.removeChild(oItem);
 }
 
 // Full expands a tree with a given ID

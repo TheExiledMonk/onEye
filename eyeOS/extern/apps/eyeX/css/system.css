@@ -7,7 +7,7 @@ ul.mktree li {
 	list-style: none;
 }
 
-ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li ul li ul li{
+ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li ul li ul li {
 	font-size: 11px;
 }
 
@@ -48,7 +48,7 @@ ul.mktree li.liClosed ul {
 	display: none;
 }
 
-a:hover, a:link, a:visited {
+a: hover, a: link, a: visited {
 	border: 0;
 	text-decoration: none;
 }
@@ -82,7 +82,7 @@ body, html {
 	overflow: hidden;
 }
 
-body, html, #background, #eyeApps, #eyeScreen, #eyecursor, #eyeWallpaper, #eyeWidgets{
+body, html, #background, #eyeApps, #eyeScreen, #eyecursor, #eyeWallpaper, #eyeWidgets {
 	bottom: 0px; left: 0px; right: 0px; top: 0px;
 	margin: 0;
 	padding: 0;
@@ -216,7 +216,7 @@ body, html, #background, #eyeScreen, #eyeWallpaper {
 
 .eyeChess_textarea {
 	border: 1px inset #808080;
-	height:450px;
+	height: 450px;
 }
 
 .eyeChess_TextUndo {
@@ -225,7 +225,7 @@ body, html, #background, #eyeScreen, #eyeWallpaper {
 	top: 460px;
 }
 
-.eyeHidden{
+.eyeHidden {
 	display: none;
 }
 
@@ -272,7 +272,7 @@ body, html, #background, #eyeScreen, #eyeWallpaper {
 /*
 	Z-index ing
 */
-#eyecursor{
+#eyecursor {
 	z-index: -100;
 }
 

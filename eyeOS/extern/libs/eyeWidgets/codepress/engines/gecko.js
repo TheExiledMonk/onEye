@@ -63,9 +63,9 @@ CodePress = {
 		else if(charCode==118 && evt.ctrlKey)  { // handle paste
 		 	top.setTimeout(function(){CodePress.syntaxHighlight('generic');},100);
 		}
-		else if(charCode==99 && evt.ctrlKey)  { // handle cut
+		/*else if(charCode==99 && evt.ctrlKey)  { // handle cut
 		 	//alert(window.getSelection().getRangeAt(0).toString().replace(/\t/g,'FFF'));
-		}
+		}*/
 
 	},
 

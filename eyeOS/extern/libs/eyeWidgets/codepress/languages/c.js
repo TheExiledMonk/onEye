@@ -19,7 +19,7 @@ Language.snippets = [
 	{ input : 'main', output : 'int main(char argc, char *argv[]) {\n\t$0\n}' },
 	{ input : 'inc', output : '#include &lt;$0.h&gt;' },
 	{ input : 'incl', output : '#include &lt;$0&gt;' },
-	{ input : 'using', output : 'using namespace $0' },
+	{ input : 'using', output : 'using namespace $0' }
 ]
 
 Language.complete = [

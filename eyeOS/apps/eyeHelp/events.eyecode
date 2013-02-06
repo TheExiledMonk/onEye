@@ -20,23 +20,25 @@
 
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+function eyeHelp_on_cancel($paramse=null) {
+	$GLOBALS["edit_wnd"]->close();
+}
 
 function eyeHelp_on_Message($params=null) {
 	eyeWidgets('updateContent',$params);
 }
 
 function eyeHelp_on_Resize($params = ''){
-	if(intval($params['arg'][0])>=300) $width = intval($params['arg'][0]);
-		else $width = 300;
-	if(intval($params['arg'][1])>=200) $height = intval($params['arg'][1]);
-		else $height = 200;
-	$GLOBALS['BOX_1']->setHeight($height - 100);
-	$GLOBALS['WND_3']->setHeight($height - 75);
-	$GLOBALS['WND_BOX_1']->setHeight($height - 110);
-	$GLOBALS['WND_1']->setHeight($height);
-	$GLOBALS['WND_1']->setWidth($width);
-	$GLOBALS['WND_2']->setHeight($height - 80);
-	$GLOBALS['WND_2']->setWidth($width - 225);
+	//main window
+	$GLOBALS['WND_1']->height = intval($params['arg'][1]);
+	$GLOBALS['WND_1']->width = intval($params['arg'][0]);
+	//body Text
+	$GLOBALS['WND_2']->setHeight($GLOBALS['WND_1']->height - $GLOBALS['WND_2']->y - 28);
+	$GLOBALS['WND_2']->setWidth($GLOBALS['WND_1']->width - 215);
+	//tree menu
+	$GLOBALS['WND_3']->setHeight($GLOBALS['WND_2']->height);
+	$GLOBALS['BOX_1']->setHeight($GLOBALS['WND_3']->height - 0);
+	$GLOBALS['WND_BOX_1']->setHeight($GLOBALS['WND_3']->height - 29);
 }
 
 function eyeHelp_getFolder($params=null){
@@ -51,6 +53,32 @@ function eyeHelp_getFolder($params=null){
 		$return .= '/'.$app;
 
 	return $return;
+}
+
+function getTitleTopic($params=null){
+	global $currentUser;
+	global $checknum,$myPid;
+
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	$myDir = $folder;
+	if(utf8_substr($myDir, -1)!='/')$myDir = $myDir.'/';
+	$myInfoFile = $myDir.'info.xml';
+	$size = vfs('real_filesize',array($myInfoFile));
+	if ($size > 0) {
+		$fp = vfs('real_open',array($myInfoFile,'r'));
+		$InfoContent = fread($fp,$size);
+		fclose($fp);
+	}
+	$currentUser = $oldUser;
+
+	$info = eyeXML('xml2array',array($InfoContent));
+	$info = $info['eyeHelp'][0];
+
+	if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
+		else $title = utf8_trim($info['title'][0]);
+	$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
+	if($title=="")$title = utf8_basename($myDir2);
 }
 
 function eyeHelp_on_goto($params=null){
@@ -99,7 +127,7 @@ function eyeHelp_on_goto($params=null){
 
 		eyeX('runjs',array('js'=>'document.getElementById("'.$myPid.'_label1").innerHTML="<h1>'.str_replace('"','\\"',$title).'</h1><hr />";'));
 
-		if(utf8_trim($info['HTML-only'][0])!=1)$IndexContent = eyeHelp_BBCode($IndexContent);
+		if(utf8_trim($info['HTML-only'][0])!=1)$IndexContent = eyeHelp_Code($IndexContent);
 		$IndexContent_array = explode('<br />[split]<br />',$IndexContent);
 
 		foreach($IndexContent_array as $value){
@@ -162,105 +190,18 @@ function eyeHelp_on_eyeNav($param) {
 	proc('launch',array('eyeNav',$param));
 }
 
-//BBcode 2 HTML was written by WAY2WEB.net (but a lot modified by me :P)
-function eyeHelp_BBCode($Text){
+function eyeHelp_Code($Text){
 	global $checknum;
+	global $currentUser;
 
-	// Convert new line chars to html <br /> tags
-	$Text = str_replace("\n",'<br />',$Text);
-	$Text = str_replace("\t",'&nbsp;&nbsp;&nbsp;&nbsp;',$Text);
-
-	// Set up the parameters for a URL search string
-	$URLSearchString = " a-zA-Z0-9\:\/\-\?\&\.\=\_\~\#\'";
-	// Set up the parameters for a MAIL search string
-	$MAILSearchString = $URLSearchString . " a-zA-Z0-9\.@";
-
-	// Perform GOTO Search
-	$Text = preg_replace("/\[goto\]([$URLSearchString]*)\[\/goto\]/", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'open\',\'$1\');">$1</span>', $Text);
-	$Text = preg_replace("(\[goto\=([$URLSearchString]*)\](.+?)\[/goto\])", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'open\',\'$1\');">$2</span>', $Text);
-
-	//Perform Get a GOTO Search for eyeHelp root folder 
-	$Text = preg_replace("(\[get\=([../$URLSearchString]*)\](.+?)\[/get\])", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'open\',\'$1\');">$2</span>', $Text);
-
-	// Perform URL Search
-	$Text = preg_replace("/\[url\]([$URLSearchString]*)\[\/url\]/", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'eyeNav\',\'$1\');">$1</span>', $Text);
-	$Text = preg_replace("(\[url\=([$URLSearchString]*)\](.+?)\[/url\])", '<span style="color:blue; cursor:pointer;" onclick="sendMsg(\''.$checknum.'\',\'eyeNav\',\'$1\');">$2</span>', $Text);
-	/*$Text = preg_replace("/\[url\]([$URLSearchString]*)\[\/url\]/", '<a href="$1" style="color:blue;" target="_blank">$1</a>', $Text);
-	$Text = preg_replace("(\[url\=([$URLSearchString]*)\](.+?)\[/url\])", '<a href="$1" style="color:blue;" target="_blank">$2</a>', $Text);*/
-         //$Text = preg_replace("(\[url\=([$URLSearchString]*)\]([$URLSearchString]*)\[/url\])", '<a href="$1" target="_blank">$2</a>', $Text);
-
-	// Perform MAIL Search
-	$Text = preg_replace("(\[mail\]([$MAILSearchString]*)\[/mail\])", '<a href="mailto:$1" style="color:blue; cursor:pointer;">$1</a>', $Text);
-	$Text = preg_replace("/\[mail\=([$MAILSearchString]*)\](.+?)\[\/mail\]/", '<a href="mailto:$1" style="color:blue; cursor:pointer;">$2</a>', $Text);
-         
-	// Check for bold text
-	$Text = preg_replace("(\[b\](.+?)\[\/b])is",'<span style="font-weight: bold;">$1</span>',$Text);
-
-	// Check for Italics text
-	$Text = preg_replace("(\[i\](.+?)\[\/i\])is",'<span style="font-style: italic;">$1</span>',$Text);
-
-	// Check for Underline text
-	$Text = preg_replace("(\[u\](.+?)\[\/u\])is",'<span style="text-decoration: underline;">$1</span>',$Text);
-
-	// Check for strike-through text
-	$Text = preg_replace("(\[s\](.+?)\[\/s\])is",'<span style="text-decoration: line-through;">$1</span>',$Text);
-
-	// Check for over-line text
-	$Text = preg_replace("(\[o\](.+?)\[\/o\])is",'<span style="text-decoration: overline;">$1</span>',$Text);
-
-	// Check for header text (applies a h2 and then a hr)
-	$Text = preg_replace("(\[h\](.+?)\[\/h\])is",'<h2>&nbsp;&nbsp;$1</h2><hr style="width:95%" />',$Text);
-
-	// Check for colored text
-	$Text = preg_replace("(\[color=(.+?)\](.+?)\[\/color\])is","<span style=\"color: $1\">$2</span>",$Text);
-
-	// Check for sized text
-	$Text = preg_replace("(\[size=(.+?)\](.+?)\[\/size\])is","<span style=\"font-size: $1px\">$2</span>",$Text);
-
-	// Check for list text
-	$Text = preg_replace("/\[list\](.+?)\[\/list\]/is", '<ul style="list-style-type: disc; list-style-position: inside;">$1</ul>' ,$Text);
-	$Text = preg_replace("/\[list=1\](.+?)\[\/list\]/is", '<ul style="list-style-type: decimal; list-style-position: inside;">$1</ul>' ,$Text);
-	$Text = preg_replace("/\[list=i\](.+?)\[\/list\]/s", '<ul style="list-style-type: lower-roman; list-style-position: inside;">$1</ul>' ,$Text);
-	$Text = preg_replace("/\[list=I\](.+?)\[\/list\]/s", '<ul style="list-style-type: upper-roman; list-style-position: inside;">$1</ul>' ,$Text);
-	$Text = preg_replace("/\[list=a\](.+?)\[\/list\]/s", '<ul style="list-style-type: lower-alpha; list-style-position: inside;">$1</ul>' ,$Text);
-	$Text = preg_replace("/\[list=A\](.+?)\[\/list\]/s", '<ul style="list-style-type: upper-alpha; list-style-position: inside;">$1</ul>' ,$Text);
-	$Text = str_replace("[*]", "<li>", $Text);
-
-	// Check for font change text
-	$Text = preg_replace("(\[font=(.+?)\](.+?)\[\/font\])","<span style=\"font-family: $1;\">$2</span>",$Text);
-
-	// Declare the format for [code] layout
-	$CodeLayout = '<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-		<tr>
-		<td style="font-family: Verdana, arial, helvetica, sans-serif; font-size: 12px; font-weight: bold;"> Code:</td>
-		</tr>
-	        <tr>
-		<td style="background-color: #FFFFFF; font-family: Courier new, courier, mono; font-size: 12px; color: #006600; border: 1px solid #BFBFBF">$1</td>
-		</tr>
-		</table>';
-	// Check for [code] text
-	$Text = preg_replace("/\[code\](.+?)\[\/code\]/is","$CodeLayout", $Text);
-
-	// Declare the format for [quote] layout
-	$QuoteLayout = '<table width="90%" border="0" align="center" cellpadding="0" cellspacing="0">
-		<tr>
-		<td style="font-family: Verdana, arial, helvetica, sans-serif; font-size: 12px; font-weight: bold;"> Quote:</td>
-		</tr>
-		<tr>
-		<td style="background-color: #FFFFFF; font-family: Courier new, courier, mono; font-size: 12px; color: #006600; border: 1px solid #BFBFBF">$1</td>
-		</tr>
-		</table>';
-	         
-	// Check for [quote] text
-	$Text = preg_replace("/\[quote\](.+?)\[\/quote\]/is","$QuoteLayout", $Text);
-         
-	// Images
-	// [img]pathtoimage[/img]
-	$Text = preg_replace("/\[img\](.+?)\[\/img\]/", '<img src="$1">', $Text);
-         
-	// [img=widthxheight]image source[/img]
-	$Text = preg_replace("/\[img\=([0-9]*)x([0-9]*)\](.+?)\[\/img\]/", '<img src="$3" height="$2" width="$1">', $Text);
-
+	$dir = EYE_ROOT . '/' . APP_DIR . '/eyeHelp/lib/';
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	$openDir = vfs('real_getDirContent',array($dir,'*' . EYE_CODE_EXTENSION));
+	$currentUser = $oldUser;
+	foreach ($openDir as $file) {
+		include_once($file);
+	}
 	return $Text;
 }
 

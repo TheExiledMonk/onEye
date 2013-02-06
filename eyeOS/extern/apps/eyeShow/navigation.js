@@ -101,7 +101,7 @@ SlimeyNavigation.prototype.saveCurrentSlide = function() {
 
 SlimeyNavigation.prototype.insertNewSlide = function(num, html, dom) {
 	if (!html) {
-		html = '<div style="font-size: 200%; font-weight: bold; font-family: sans-serif; position: absolute; left: 33%; top: 0%;">Edit Me!</div>';
+		html = '<div style="font-size: 200%; font-weight: bold; font-family: sans-serif; position: absolute; left: 33%; top: 0%;">' + lang('some text') + '</div>';
 	}
 
     var thisSpacer = this.divSpacers[num];
@@ -109,7 +109,7 @@ SlimeyNavigation.prototype.insertNewSlide = function(num, html, dom) {
     // shift all slides
     for (i=this.divSlides.length - 1; i >= num; i--) {
         this.divSlides[i + 1] = this.divSlides[i];
-        this.divSlides[i + 1].title = 'Slide ' + (i + 1);
+        this.divSlides[i + 1].title = lang('Slide') + ' ' + (i + 1);
         this.divSlides[i + 1].slideNumber = i + 1;
     }
 
@@ -212,11 +212,11 @@ SlimeyNavigation.prototype.moveSlide = function(num, to) {
     for (i=num; i != to; i+=diff) {
         this.divSlides[i] = this.divSlides[i + diff];
         this.divSlides[i].slideNumber = i;
-        this.divSlides[i].title = 'Slide' + i;
+        this.divSlides[i].title = lang('Slide') + ' ' + i;
     }
 	this.divSlides[to] = aux;
 	aux.slideNumber = to;
-	aux.title = 'Slide' + to;
+	aux.title = lang('Slide') + ' ' + to;
 	// shift all spacers
 	var aux = this.divSpacers[num];
     for (i=num; i != to; i+=diff) {
@@ -257,7 +257,7 @@ SlimeyNavigation.prototype.createSlideDiv = function(num) {
     slide.slideNumber = num;
     slide.slimey = this.slimey;
     slide.className = 'slidePreview';
-    slide.title = "Slide " + num;
+    slide.title = lang('Slide') + ' ' + num;
 	slide.style.position = 'relative';
     slide.innerHTML = this.slides[num];
     setEventHandler(slide, "click", function() {
@@ -288,7 +288,7 @@ SlimeyNavigation.prototype.createSpacerDiv = function(num) {
     spacer.spacerNumber = num;
     spacer.slimey = this.slimey;
     spacer.className = 'previewSpacer';
-    spacer.title = "Click to insert a new slide";
+    spacer.title = lang('Click to insert a new slide');
     setEventHandler(spacer, "click", function() {
 		var action = new SlimeyInsertSlideAction(this.slimey, this.spacerNumber);
 		this.slimey.editor.performAction(action);

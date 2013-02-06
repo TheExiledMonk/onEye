@@ -35,7 +35,7 @@ if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getCo
 
 // $myTable
 $sortypes = array('String','String','String','String','Date','Date', 'Date');
-$theader = array('Username','Full name','E-mail','Groups','Created on','Last login', 'Expiration Date');
+$theader = array('User Name','Full Name','E-mail','Groups','Created On','Last login', 'Expiration Date');
 
 $myTable = new Sortabletable(array(
 	'name' => 'eyeControl_users_sortabletable',

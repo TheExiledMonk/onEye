@@ -894,10 +894,10 @@ tinyMCE.entityDecode = function entityDecode(s) {
 	return !e.firstChild ? s : e.firstChild.nodeValue;
 };
 
-/* Compiled from X 4.18 by XC 1.07 on 28Nov09 */
+/* Compiled from X 4.21 by XC 1.07 on 12Feb10 */
+xLibrary={version:'4.21',license:'GNU LGPL',url:'http://cross-browser.com/'};
 // xEvent r11, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xEvent(evt) // object prototype
 {
   var e = evt || window.event;
@@ -924,10 +924,8 @@ function xEvent(evt) // object prototype
     }
   }
 }
-xLibrary={version:'4.18',license:'GNU LGPL',url:'http://cross-browser.com/'};
 // xAddClass r3, Copyright 2005-2007 Daniel Frechette - modified by Mike Foster
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xAddClass(e, c)
 {
   if ((e=xGetElementById(e))!=null) {
@@ -944,7 +942,6 @@ function xAddClass(e, c)
 }
 // xAddEventListener r8, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xAddEventListener(e,eT,eL,cap)
 {
   if(!(e=xGetElementById(e)))return;
@@ -972,7 +969,6 @@ function xBackground(e,c,i)
 }
 // xCamelize r1, Copyright 2007-2009 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xCamelize(cssPropStr)
 {
   var i, c, a, s;
@@ -983,6 +979,36 @@ function xCamelize(cssPropStr)
     s += a[i].replace(c, c.toUpperCase());
   }
   return s;
+}
+// xClientHeight r6, Copyright 2001-2008 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xClientHeight()
+{
+  var v=0,d=document,w=window;
+  if((!d.compatMode || d.compatMode == 'CSS1Compat') /* && !w.opera */ && d.documentElement && d.documentElement.clientHeight)
+    {v=d.documentElement.clientHeight;}
+  else if(d.body && d.body.clientHeight)
+    {v=d.body.clientHeight;}
+  else if(w.innerHeight && xDef(w.innerHeight)) {
+    v=w.innerHeight;
+    if(xDef(w.innerWidth,d.width) && d.width>w.innerWidth) v-=16;
+  }
+  return v;
+}
+// xClientWidth r5, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xClientWidth()
+{
+  var v=0,d=document,w=window;
+  if((!d.compatMode || d.compatMode == 'CSS1Compat') && !w.opera && d.documentElement && d.documentElement.clientWidth)
+    {v=d.documentElement.clientWidth;}
+  else if(d.body && d.body.clientWidth)
+    {v=d.body.clientWidth;}
+  else if(w.innerWidth && xDef(w.innerWidth)) {
+    v=w.innerWidth;
+    if(xDef(w.innerHeight,d.height) && d.height>w.innerHeight) v-=16;
+  }
+  return v;
 }
 // xColor r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
@@ -999,7 +1025,6 @@ function xColor(e,s)
 }
 // xDef r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xDef()
 {
   for(var i=0; i<arguments.length; ++i){if(typeof(arguments[i])=='undefined') return false;}
@@ -1007,23 +1032,19 @@ function xDef()
 }
 // xDisableDrag r3, Copyright 2005-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xDisableDrag(id)
 {
   xGetElementById(id).xDragEnabled = false;
 }
 // xDisableDrop r2, Copyright 2006-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xDisableDrop(id)
 {
   xGetElementById(id).xDropEnabled = false;
 }
 // xDisplay r3, Copyright 2003-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 // This was alternative 1:
-
 function xDisplay(e,s)
 {
   if ((e=xGetElementById(e)) && e.style && xDef(e.style.display)) {
@@ -1037,7 +1058,6 @@ function xDisplay(e,s)
 }
 // xDocSize r1, Copyright 2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xDocSize()
 {
   var b=document.body, e=document.documentElement;
@@ -1057,9 +1077,142 @@ function xDocSize()
 //  alert('compatMode: ' + document.compatMode + '\n\ndocumentElement.scrollHeight: ' + esh + '\ndocumentElement.offsetHeight: ' + eoh + '\nbody.scrollHeight: ' + bsh + '\nbody.offsetHeight: ' + boh + '\n\ndocumentElement.scrollWidth: ' + esw + '\ndocumentElement.offsetWidth: ' + eow + '\nbody.scrollWidth: ' + bsw + '\nbody.offsetWidth: ' + bow);
   return {w:Math.max(esw,eow,bsw,bow),h:Math.max(esh,eoh,bsh,boh)};
 }
+// xEnableDrag r8, Copyright 2002-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xEnableDrag(id,fS,fD,fE)
+{
+  var mx = 0, my = 0, el = xGetElementById(id);
+  if (el) {
+    el.xDragEnabled = true;
+    xAddEventListener(el, 'mousedown', dragStart, false);
+  }
+  // Private Functions
+  function dragStart(e)
+  {
+    if (el.xDragEnabled) {
+      var ev = new xEvent(e);
+      xPreventDefault(e);
+      mx = ev.pageX;
+      my = ev.pageY;
+      xAddEventListener(document, 'mousemove', drag, false);
+      xAddEventListener(document, 'mouseup', dragEnd, false);
+      if (fS) {
+        fS(el, ev.pageX, ev.pageY, ev);
+      }
+    }
+  }
+  function drag(e)
+  {
+    if (el && el.xDragEnabled) {
+    var ev, dx, dy;
+    xPreventDefault(e);
+    ev = new xEvent(e);
+    dx = ev.pageX - mx;
+    dy = ev.pageY - my;
+    mx = ev.pageX;
+    my = ev.pageY;
+    if (fD) {
+      fD(el, dx, dy, ev);
+    }
+    else {
+      xMoveTo(el, xLeft(el) + dx, xTop(el) + dy);
+    }
+    }
+  }
+  function dragEnd(e)
+  {
+    var ev = new xEvent(e);
+    xPreventDefault(e);
+    xRemoveEventListener(document, 'mouseup', dragEnd, false);
+    xRemoveEventListener(document, 'mousemove', drag, false);
+    if (fE) {
+      fE(el, ev.pageX, ev.pageY, ev);
+    }
+    if (xEnableDrag.drop) {
+      xEnableDrag.drop(el, ev);
+    }
+  }
+}
+
+xEnableDrag.drops = []; // static property
+// xEnableDrag2 r1, Copyright 2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xEnableDrag2(id,fS,fD,fE,x1,y1,x2,y2)
+{
+  var b = null; // boundary element
+  if (typeof x1 != 'undefined' && !x2) {
+    b = xGetElementById(x1);
+  }
+  xEnableDrag(id,
+    function (el, x, y, ev) { // dragStart
+      if (b) { // get rect from current size of ele
+        x1 = xPageX(b);
+        y1 = xPageY(b);
+        x2 = x1 + b.offsetWidth;
+        y2 = y1 + b.offsetHeight;
+      }
+      if (fS) fS(el, x, y, ev);
+    },
+    function (el, dx, dy, ev) { // drag
+      var x = xPageX(el) + dx; // absolute coords of target
+      var y = xPageY(el) + dy;
+      var mx = ev.pageX; // absolute coords of mouse
+      var my = ev.pageY;
+      if  (!(x < x1 || x + el.offsetWidth > x2) && !(mx < x1 || mx > x2)) {
+        el.style.left = (el.offsetLeft + dx) + 'px';
+      }
+      if (!(y < y1 || y + el.offsetHeight > y2) && !(my < y1 || my > y2)) {
+        el.style.top = (el.offsetTop + dy) + 'px';
+      }
+      if (fD) fD(el, dx, dy, ev);
+    },
+    function (el, x, y, ev) { // dragEnd
+      if (fE) fE(el, x, y, ev);
+    }
+  );
+}
+// xEnableDrop r3, Copyright 2006-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xEnableDrop(id, f)
+{
+  var e = xGetElementById(id);
+  if (e) {
+    e.xDropEnabled = true;
+    xEnableDrag.drops[xEnableDrag.drops.length] = {e:e, f:f};
+  }
+}
+
+xEnableDrag.drop = function (el, ev) // static method
+{
+  var i, hz = 0, d = null, da = xEnableDrag.drops;
+  for (i = 0; i < da.length; ++i) {
+    if (da[i] && xHasPoint(da[i].e, ev.pageX, ev.pageY)) {
+      var z = getZindex(da[i].e);
+      if (z >= hz) {
+        hz = z;
+        if (!da[i].e.xDropEnabled) {
+          d = null;
+        } else {
+          d = da[i];
+        }
+      }
+    }
+  }
+  if (d) {
+    d.f(d.e, el, ev.pageX, ev.pageY); // drop event
+  }
+}
+
+function getZindex(e) {
+	var z = 0;
+	while (e) {
+		if (e.style && parseInt(e.style.zIndex)) z += parseInt(e.style.zIndex);
+		e = e.parentNode ? e.parentNode : null;
+	}
+	return z;
+}
 // xFindAfterByClassName r1, Copyright 2005-2007 Olivier Spinelli
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xFindAfterByClassName( ele, clsName )
 {
   var re = new RegExp('\\b'+clsName+'\\b', 'i');
@@ -1067,7 +1220,6 @@ function xFindAfterByClassName( ele, clsName )
 }
 // xFindBeforeByClassName r1, Copyright 2005-2007 Olivier Spinelli
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xFindBeforeByClassName( ele, clsName )
 {
   var re = new RegExp('\\b'+clsName+'\\b', 'i');
@@ -1075,14 +1227,10 @@ function xFindBeforeByClassName( ele, clsName )
 }
 // xGetCSSRules r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
-//
 // xGetCSSRules - extracts CSS rules from the style sheet object (IE vs. DOM CSS level 2)
-//
 function xGetCSSRules(ss) { return ss.rules ? ss.rules : ss.cssRules; }
 // xGetComputedStyle r7, Copyright 2002-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xGetComputedStyle(e, p, i)
 {
   if(!(e=xGetElementById(e))) return null;
@@ -1100,19 +1248,17 @@ function xGetComputedStyle(e, p, i)
 
 // xGetElementById r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xGetElementById(e)
 {
-  if(typeof(e)=='string') {
-    if(document.getElementById) e=document.getElementById(e);
-    else if(document.all) e=document.all[e];
-    else e=null;
+  if (typeof(e) == 'string') {
+    if (document.getElementById) e = document.getElementById(e);
+    else if (document.all) e = document.all[e];
+    else e = null;
   }
   return e;
 }
 // xGetElementsByClassName r6, Copyright 2002-2009 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xGetElementsByClassName(c,p,t,f)
 {
   var r = [], re, e, i;
@@ -1129,7 +1275,6 @@ function xGetElementsByClassName(c,p,t,f)
 }
 // xGetElementsByTagName r5, Copyright 2002-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xGetElementsByTagName(t,p)
 {
   var list = null;
@@ -1147,15 +1292,11 @@ function xGetElementsByTagName(t,p)
 }
 // xGetStyleSheetFromLink r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
-//
 // xGetStyleSheetFromLink - extracts style sheet object from the HTML LINK object (IE vs. DOM CSS level 2)
-//
 function xGetStyleSheetFromLink(cl) { return cl.styleSheet ? cl.styleSheet : cl.sheet; }
 
 // xHasClass r3, Copyright 2005-2007 Daniel Frechette - modified by Mike Foster
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xHasClass(e, c)
 {
   e = xGetElementById(e);
@@ -1165,7 +1306,6 @@ function xHasClass(e, c)
 }
 // xHasPoint r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xHasPoint(e,x,y,t,r,b,l)
 {
   if (!xNum(t)){t=r=b=l=0;}
@@ -1177,8 +1317,6 @@ function xHasPoint(e,x,y,t,r,b,l)
 }
 // xHasStyleSelector r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
-//
 // xHasStyleSelector(styleSelectorString)
 //   checks whether any of the stylesheets attached to the document contain the definition of the specified
 //   style selector (simple string matching at the moment)
@@ -1186,7 +1324,6 @@ function xHasPoint(e,x,y,t,r,b,l)
 // returns:
 //   undefined  - style sheet scripting not supported by the browser
 //   true/false - found/not found
-//
 function xHasStyleSelector(ss) {
   if (! xHasStyleSheets()) return undefined ;
 
@@ -1197,16 +1334,12 @@ function xHasStyleSelector(ss) {
 }
 // xHasStyleSheets r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
-//
 // xHasStyleSheets - checks browser support for stylesheet related objects (IE or DOM compliant)
-//
 function xHasStyleSheets() {
   return document.styleSheets ? true : false ;
 }
 // xHeight r7, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xHeight(e,h)
 {
   var css, pt=0, pb=0, bt=0, bb=0, gcs;
@@ -1251,7 +1384,6 @@ function xHeight(e,h)
 }
 // xHex r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xHex(n, digits, prefix)
 {
   var p = '', n = Math.ceil(n);
@@ -1268,7 +1400,6 @@ function xHex(n, digits, prefix)
 function xHide(e){return xVisibility(e,0);}
 // xInsertRule r2, Copyright 2006-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xInsertRule(ss, sel, rule, idx)
 {
   if (!(ss=xGetElementById(ss))) return false;
@@ -1279,7 +1410,6 @@ function xInsertRule(ss, sel, rule, idx)
 }
 // xLeft r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xLeft(e, iX)
 {
   if(!(e=xGetElementById(e))) return 0;
@@ -1300,7 +1430,6 @@ function xLeft(e, iX)
 }
 // xMoveTo r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xMoveTo(e,x,y)
 {
   xLeft(e,x);
@@ -1308,7 +1437,6 @@ function xMoveTo(e,x,y)
 }
 // xNum r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xNum()
 {
   for(var i=0; i<arguments.length; ++i){if(isNaN(arguments[i]) || typeof(arguments[i])!='number') return false;}
@@ -1316,7 +1444,6 @@ function xNum()
 }
 // xOpacity r1, Copyright 2006-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xOpacity(e, o)
 {
   var set = xDef(o);
@@ -1340,9 +1467,53 @@ function xOpacity(e, o)
   }
   return isNaN(o) ? 1 : o; // if NaN, should this return an error instead of 1?
 }
-// xParent r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// xPageX r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xPageX(e)
+{
+  var x = 0;
+  e = xGetElementById(e);
+  while (e) {
+    if (xDef(e.offsetLeft)) x += e.offsetLeft;
+    try{
+      e = xDef(e.offsetParent) ? e.offsetParent : null;
+    } catch(err) {
+      e = null;
+    }
+  }
+  return x;
+}
+// xPageY r4, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xPageY(e)
+{
+  var y = 0;
+  e = xGetElementById(e);
+  while (e) {
+    if (xDef(e.offsetTop)) y += e.offsetTop;
+    try{
+      e = xDef(e.offsetParent) ? e.offsetParent : null;
+    } catch(err) {
+      e = null;
+    }
+  }
+  return y;
+}
+// xParent r2, Copyright 2001-2010 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+function xParent(e, s)
+{
+  e = xGetElementById(e);
+  if (e) {
+    e = e.parentNode;
+    if (s) {
+      while (e && e.nodeName.toLowerCase() != s) e = e.parentNode;
+    }
+  }
+  return e;
+}
 
+/* r1
 function xParent(e, bNode)
 {
   if (!(e=xGetElementById(e))) return null;
@@ -1352,9 +1523,9 @@ function xParent(e, bNode)
   else if (xDef(e.parentElement)) p=e.parentElement;
   return p;
 }
+*/
 // xParseColor r1, Copyright 2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xParseColor(c)
 {
   var o = {};
@@ -1384,7 +1555,6 @@ function xParseColor(c)
 }
 // xPreventDefault r1, Copyright 2004-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xPreventDefault(e)
 {
   if (e && e.preventDefault) e.preventDefault();
@@ -1392,7 +1562,6 @@ function xPreventDefault(e)
 }
 // xRemoveClass r3, Copyright 2005-2007 Daniel Frechette - modified by Mike Foster
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xRemoveClass(e, c)
 {
   if(!(e=xGetElementById(e))) return false;
@@ -1403,7 +1572,6 @@ function xRemoveClass(e, c)
 }
 // xRemoveEventListener r6, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xRemoveEventListener(e,eT,eL,cap)
 {
   if(!(e=xGetElementById(e)))return;
@@ -1414,7 +1582,6 @@ function xRemoveEventListener(e,eT,eL,cap)
 }
 // xResizeTo r2, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xResizeTo(e, w, h)
 {
   return {
@@ -1424,7 +1591,6 @@ function xResizeTo(e, w, h)
 }
 // xScrollLeft r4, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xScrollLeft(e, bWin)
 {
   var w, offset=0;
@@ -1442,7 +1608,6 @@ function xScrollLeft(e, bWin)
 }
 // xScrollTop r4, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xScrollTop(e, bWin)
 {
   var w, offset=0;
@@ -1464,7 +1629,6 @@ function xScrollTop(e, bWin)
 function xShow(e) {return xVisibility(e,1);}
 // xSlideTo r3, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xSlideTo(e, x, y, uTime)
 {
   if (!(e=xGetElementById(e))) return;
@@ -1506,7 +1670,6 @@ function _xSlideTo(e)
 
 // xStopPropagation r1, Copyright 2004-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xStopPropagation(evt)
 {
   if (evt && evt.stopPropagation) evt.stopPropagation();
@@ -1514,7 +1677,6 @@ function xStopPropagation(evt)
 }
 // xStr r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xStr(s)
 {
   for(var i=0; i<arguments.length; ++i){if(typeof(arguments[i])!='string') return false;}
@@ -1522,7 +1684,6 @@ function xStr(s)
 }
 // xStyle r1, Copyright 2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xStyle(sProp, sVal)
 {
   var i, e;
@@ -1536,7 +1697,6 @@ function xStyle(sProp, sVal)
 }
 // xToggleClass r2, Copyright 2005-2007 Daniel Frechette
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 /* Added by DF, 2005-10-11
  * Toggles a class name on or off for an element
  */
@@ -1549,7 +1709,6 @@ function xToggleClass(e, c) {
 }
 // xTop r2, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xTop(e, iY)
 {
   if(!(e=xGetElementById(e))) return 0;
@@ -1570,11 +1729,8 @@ function xTop(e, iY)
 }
 // xTraverseDocumentStyleSheets r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
-//
 // xTraverseDocumentStyleSheets(callback)
 //   traverses all stylesheets attached to a document (linked as well as internal)
-//
 function xTraverseDocumentStyleSheets(cb) {
   var ssList = document.styleSheets; if (!ssList) return undefined;
 
@@ -1586,8 +1742,6 @@ function xTraverseDocumentStyleSheets(cb) {
 }
 // xTraverseStyleSheet r1, Copyright 2006-2007 Ivan Pepelnjak (www.zaplana.net)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
-//
 // xTraverseStyleSheet (stylesheet, callback)
 //   traverses all rules in the stylesheet, calling callback function on each rule.
 //   recursively handles stylesheets imported with @import CSS directive
@@ -1597,7 +1751,6 @@ function xTraverseDocumentStyleSheets(cb) {
 //   undefined - problems with CSS-related objects
 //   true      - callback function returned true at least once
 //   false     - callback function always returned false
-//
 function xTraverseStyleSheet(ss,cb) {
   if (!ss) return false;
   var rls = xGetCSSRules(ss) ; if (!rls) return undefined ;
@@ -1617,7 +1770,6 @@ function xTraverseStyleSheet(ss,cb) {
 }
 // xVisibility r1, Copyright 2003-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xVisibility(e, bShow)
 {
   if(!(e=xGetElementById(e))) return null;
@@ -1627,7 +1779,6 @@ function xVisibility(e, bShow)
   }
   return null;
 }
-
 //function xVisibility(e,s)
 //{
 //  if(!(e=xGetElementById(e))) return null;
@@ -1655,7 +1806,6 @@ function xVisibility(e, bShow)
 //}
 // xWalkToFirst r1, Copyright 2005-2007 Olivier Spinelli
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xWalkToFirst( oNode, fnVisit, skip, data )
 {
   var r = null;
@@ -1670,7 +1820,6 @@ function xWalkToFirst( oNode, fnVisit, skip, data )
 }
 // xWalkToLast r1, Copyright 2005-2007 Olivier Spinelli
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xWalkToLast( oNode, fnVisit, skip, data )
 {
   var r = null;
@@ -1688,7 +1837,6 @@ function xWalkToLast( oNode, fnVisit, skip, data )
 }
 // xWalkTree2 r1, Copyright 2005-2007 Olivier Spinelli
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 // My humble contribution to the great cross-browser xLibrary file x_dom.js
 //
 // This function is compatible with Mike's but adds:
@@ -1697,7 +1845,6 @@ function xWalkToLast( oNode, fnVisit, skip, data )
 // - 'fnVisit' accept one optional 'data' parameter
 // - 'skip' is an optional element that will be ignored during traversal. It is often useful to skip
 // the starting node: when skip == oNode, 'fnVisit' is not called but, of course, child are processed.
-//
 function xWalkTree2( oNode, fnVisit, skip, data )
 {
   var r=null;
@@ -1707,10 +1854,7 @@ function xWalkTree2( oNode, fnVisit, skip, data )
 }
 // xWalkTreeRev r2, Copyright 2005-2007 Olivier Spinelli
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
-//
 // Same as xWalkTree2 except that traversal is reversed (last to first child).
-//
 function xWalkTreeRev( oNode, fnVisit, skip, data )
 {
   var r=null;
@@ -1720,7 +1864,6 @@ function xWalkTreeRev( oNode, fnVisit, skip, data )
 }
 // xWidth r7, Copyright 2001-2009 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xWidth(e,w)
 {
   var css, pl=0, pr=0, bl=0, br=0, gcs;
@@ -1765,7 +1908,6 @@ function xWidth(e,w)
 }
 // xZIndex r1, Copyright 2001-2007 Michael Foster (Cross-Browser.com)
 // Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
-
 function xZIndex(e,uZ)
 {
   if(!(e=xGetElementById(e))) return 0;
@@ -1774,207 +1916,6 @@ function xZIndex(e,uZ)
     uZ=parseInt(e.style.zIndex);
   }
   return uZ;
-}
-
-// The following functions has been improved by the eyeOS team.
-
-function xClientHeight()
-{
-  var v=0,d=document,w=window;
-  if((!d.compatMode || d.compatMode == 'CSS1Compat') /* && !w.opera */ && d.documentElement && d.documentElement.clientHeight)
-    {v=d.documentElement.clientHeight;}
-  else if(d.body && d.body.clientHeight)
-    {v=d.body.clientHeight;}
-  else if(w.innerHeight && xDef(w.innerHeight)) {
-    v=w.innerHeight;
-    if(xDef(w.innerWidth,d.width) && d.width>w.innerWidth) v-=16;
-  }
-  return v;
-}
-
-function xClientWidth()
-{
-  var v=0,d=document,w=window;
-  if((!d.compatMode || d.compatMode == 'CSS1Compat') && !w.opera && d.documentElement && d.documentElement.clientWidth)
-    {v=d.documentElement.clientWidth;}
-  else if(d.body && d.body.clientWidth)
-    {v=d.body.clientWidth;}
-  else if(w.innerWidth && xDef(w.innerWidth)) {
-    v=w.innerWidth;
-    if(xDef(w.innerHeight,d.height) && d.height>w.innerHeight) v-=16;
-  }
-  return v;
-}
-
-function getZindex(e) {
-	var z = 0;
-	while (e) {
-		if (e.style && parseInt(e.style.zIndex)) z += parseInt(e.style.zIndex);
-		e = e.parentNode ? e.parentNode : null;
-	}
-	return z;
-}
-
-function xEnableDrag(id,fS,fD,fE)
-{
-  var mx = 0, my = 0, el = xGetElementById(id);
-  if (el) {
-    el.xDragEnabled = true;
-    xAddEventListener(el, 'mousedown', dragStart, false);
-  }
-  // Private Functions
-  function dragStart(e)
-  {
-    if (el.xDragEnabled) {
-      var ev = new xEvent(e);
-      xPreventDefault(e);
-      mx = ev.pageX;
-      my = ev.pageY;
-      xAddEventListener(document, 'mousemove', drag, false);
-      xAddEventListener(document, 'mouseup', dragEnd, false);
-      if (fS) {
-        fS(el, ev.pageX, ev.pageY, ev);
-      }
-    }
-  }
-  function drag(e)
-  {
-    if (el && el.xDragEnabled) {
-      var ev, dx, dy;
-      xPreventDefault(e);
-      ev = new xEvent(e);
-      dx = ev.pageX - mx;
-      dy = ev.pageY - my;
-      mx = ev.pageX;
-      my = ev.pageY;
-      if (fD) {
-        fD(el, dx, dy, ev);
-      }
-      else {
-        xMoveTo(el, xLeft(el) + dx, xTop(el) + dy);
-      }
-    }
-  }
-  function dragEnd(e)
-  {
-    var ev = new xEvent(e);
-    xPreventDefault(e);
-    xRemoveEventListener(document, 'mouseup', dragEnd, false);
-    xRemoveEventListener(document, 'mousemove', drag, false);
-    if (fE) {
-      fE(el, ev.pageX, ev.pageY, ev);
-    }
-    if (xEnableDrag.drop) {
-      xEnableDrag.drop(el, ev);
-    }
-  }
-}
-
-xEnableDrag.drops = []; // static property
-
-function xEnableDrag2(id,fS,fD,fE,x1,y1,x2,y2)
-{
-  var b = null; // boundary element
-  if (typeof x1 != 'undefined' && !x2) {
-    b = xGetElementById(x1);
-  }
-  xEnableDrag(id,
-    function (el, x, y, ev) { // dragStart
-      if (b) { // get rect from current size of ele
-        x1 = xPageX(b);
-        y1 = xPageY(b);
-        x2 = x1 + b.offsetWidth;
-        y2 = y1 + b.offsetHeight;
-      }
-      if (fS) fS(el, x, y, ev);
-    },
-    function (el, dx, dy, ev) { // drag
-      var x = xPageX(el) + dx; // absolute coords of target
-      var y = xPageY(el) + dy;
-      var mx = ev.pageX; // absolute coords of mouse
-      var my = ev.pageY;
-      if  (!(x < x1 || x + el.offsetWidth > x2) && !(mx < x1 || mx > x2)) {
-        el.style.left = (el.offsetLeft + dx) + 'px';
-      }
-      if (!(y < y1 || y + el.offsetHeight > y2) && !(my < y1 || my > y2)) {
-        el.style.top = (el.offsetTop + dy) + 'px';
-      }
-      if (fD) fD(el, dx, dy, ev);
-    },
-    function (el, x, y, ev) { // dragEnd
-      if (fE) fE(el, x, y, ev);
-    }
-  );
-}
-
-function xEnableDrop(id, f)
-{
-  var e = xGetElementById(id);
-  if (e) {
-    e.xDropEnabled = true;
-    xEnableDrag.drops[xEnableDrag.drops.length] = {e:e, f:f};
-  }
-}
-
-xEnableDrag.drop = function (el, ev) // static method
-{
-  var i, hz = 0, d = null, da = xEnableDrag.drops;
-  for (i = 0; i < da.length; ++i) {
-    if (da[i] && xHasPoint(da[i].e, ev.pageX, ev.pageY)) {
-      var z = getZindex(da[i].e);
-      if (z >= hz) {
-        hz = z;
-        if (!da[i].e.xDropEnabled) {
-          d = null;
-        } else {
-          d = da[i];
-        }
-      }
-    }
-  }
-  if (d) {
-    d.f(d.e, el, ev.pageX, ev.pageY); // drop event
-  }
-}
-
-function getZindex(e)
-{
-  var z = 0;
-  while (e) {
-    if (e.style && parseInt(e.style.zIndex)) z += parseInt(e.style.zIndex);
-    e = e.parentNode ? e.parentNode : null;
-  }
-  return z;
-}
-
-function xPageX(e)
-{
-  var x = 0;
-  e = xGetElementById(e);
-  while (e) {
-    if (xDef(e.offsetLeft)) x += e.offsetLeft;
-    try{
-      e = xDef(e.offsetParent) ? e.offsetParent : null;
-    } catch(err) {
-      e = null;
-    }
-  }
-  return x;
-}
-
-function xPageY(e)
-{
-  var y = 0;
-  e = xGetElementById(e);
-  while (e) {
-    if (xDef(e.offsetTop)) y += e.offsetTop;
-    try{
-      e = xDef(e.offsetParent) ? e.offsetParent : null;
-    } catch(err) {
-      e = null;
-    }
-  }
-  return y;
 }
 
 /**
@@ -2118,6 +2059,46 @@ var Base64 = {
 		return string;
 	}
 
+}
+
+function html_entity_decode (string, quote_style) {
+    // http://kevin.vanzonneveld.net
+    // +   original by: john (http://www.jd-tech.net)
+    // +      input by: ger
+    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +    revised by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Onno Marsman
+    // +   improved by: marc andreu
+    // +    revised by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +      input by: Ratheous
+    // +   bugfixed by: Brett Zamir (http://brett-zamir.me)
+    // +      input by: Nick Kolosov (http://sammy.ru)
+    // +   bugfixed by: Fox
+    // -    depends on: get_html_translation_table
+    // *     example 1: html_entity_decode('Kevin &amp; van Zonneveld');
+    // *     returns 1: 'Kevin & van Zonneveld'
+    // *     example 2: html_entity_decode('&amp;lt;');
+    // *     returns 2: '&lt;'
+
+    var hash_map = {}, symbol = '', tmp_str = '', entity = '';
+    tmp_str = string.toString();
+    
+    if (false === (hash_map = this.get_html_translation_table('HTML_ENTITIES', quote_style))) {
+        return false;
+    }
+
+    // fix &amp; problem
+    // http://phpjs.org/functions/get_html_translation_table:416#comment_97660
+    delete(hash_map['&']);
+    hash_map['&'] = '&amp;';
+
+    for (symbol in hash_map) {
+        entity = hash_map[symbol];
+        tmp_str = tmp_str.split(entity).join(symbol);
+    }
+    tmp_str = tmp_str.split('&#039;').join("'");
+    
+    return tmp_str;
 }
 
 function htmlspecialchars (string, quote_style) {
@@ -2593,7 +2574,6 @@ var FlashDetect = new function(){
      * Extract the ActiveX version of the plugin.
      * 
      * @param {Object} The flash ActiveX object.
-     * @type String
      */
     var getActiveXVersion = function(activeXObj){
         var version = -1;
@@ -2607,7 +2587,6 @@ var FlashDetect = new function(){
      * 
      * @param {String} name The ActiveX object name lookup.
      * @return One of ActiveX object or a simple object having an attribute of activeXError with a value of true.
-     * @type Object
      */
     var getActiveXObject = function(name){
         var obj = -1;
@@ -2623,7 +2602,6 @@ var FlashDetect = new function(){
      * 
      * @param {String} str The ActiveX Object GetVariable($version) return value. 
      * @return An object having raw, major, minor, revision and revisionStr attributes.
-     * @type Object
      */
     var parseActiveXVersion = function(str){
         var versionArray = str.split(",");//replace with regex
@@ -2640,7 +2618,6 @@ var FlashDetect = new function(){
      * 
      * @param {String} str The enabledPlugin.description value.
      * @return An object having raw, major, minor, revision and revisionStr attributes.
-     * @type Object
      */
     var parseStandardVersion = function(str){
         var descParts = str.split(/ +/);
@@ -2658,7 +2635,6 @@ var FlashDetect = new function(){
      * Parse the plugin revision string into an integer.
      * 
      * @param {String} The revision in string format.
-     * @type Number
      */
     var parseRevisionStrToInt = function(str){
         return parseInt(str.replace(/[a-zA-Z]/g, ""), 10) || self.revision;
@@ -2667,7 +2643,6 @@ var FlashDetect = new function(){
      * Is the major version greater than or equal to a specified version.
      * 
      * @param {Number} version The minimum required major version.
-     * @type Boolean
      */
     self.majorAtLeast = function(version){
         return self.major >= version;
@@ -2676,7 +2651,6 @@ var FlashDetect = new function(){
      * Is the minor version greater than or equal to a specified version.
      * 
      * @param {Number} version The minimum required minor version.
-     * @type Boolean
      */
     self.minorAtLeast = function(version){
         return self.minor >= version;
@@ -2685,7 +2659,6 @@ var FlashDetect = new function(){
      * Is the revision version greater than or equal to a specified version.
      * 
      * @param {Number} version The minimum required revision version.
-     * @type Boolean
      */
     self.revisionAtLeast = function(version){
         return self.revision >= version;
@@ -2694,9 +2667,6 @@ var FlashDetect = new function(){
      * Is the version greater than or equal to a specified major, minor and revision.
      * 
      * @param {Number} major The minimum required major version.
-     * @param {Number} (Optional) minor The minimum required minor version.
-     * @param {Number} (Optional) revision The minimum required revision version.
-     * @type Boolean
      */
     self.versionAtLeast = function(major){
         var properties = [self.major, self.minor, self.revision];

@@ -31,18 +31,26 @@ function miniToDo_run($params = '') {
 		}
 	}
 
-	$window = new Window(array(
+	$myWindow = new Window(array(
 		'father' => 'eyeWidgets',
 		'name' => 'miniToDo_WND',
 		'width' => 420,
-		'height' => 250,
+		'height' => 225,
 		'title' => 'miniToDo',
 		'removeFatherPid' => 1,
 		'type'=>WIN_IMAGE_DRAGGABLE_NOTLISTED,
 		'background'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniToDo/bg.png',
 		'forceSavePosition'=>1,
 	));
-	$window->show();
+	$myWindow->show();
+	/**
+	*@Todo if Windows Widget gets class fix this
+	*/
+	eyeX('rawjs',array('js'=>
+		'document.getElementById("'.$myPid.'_' . $myWindow->name . '").className = "miniWND";
+		document.getElementById("'.$myPid.'_' . $myWindow->name . '_Content").className = "miniWND";
+		'
+	));
 
 	$myLabel = new Label(array(
 		'name' => 'Launch',
@@ -53,7 +61,6 @@ function miniToDo_run($params = '') {
 		'disablemsg' => 0
 	));
 	$myLabel->show();
-	$myLabel->setCss(array('color' => '#155D9A', 'fontWeight' => 'bold'));
 
 	$myImage = new Imagebox(array(
 		'name' => 'imgClose',
@@ -129,16 +136,25 @@ function miniToDo_run($params = '') {
 		vfs('real_mkDir', array($path));
 	}
 
-	//Leemos el archivo notes.xml y lo guardamos en la varieble $config
 	$config = eyeXML('getXMLconfig',array('miniToDo','notes.xml'));
-	//Vemos que no ha habido error leyendo el archivo
+
 	if($config){
-		//Nos situamos en la posicion que nos interesa del array para poder leer el Id y el Titulo
 		foreach($config['notes'][0]['note'] as $note) {
-			//Creamos la columna en la sortabletable que contiene el id (oculto) y el titulo de la nota
 			$mySortabletable->addRow(array($note['id'][0],$note['title'][0],$note['priority'][0]));
 		}
 	}
+
+	//set class for title
+	eyex('rawjs',array('js' =>
+		'document.getElementById("' . $myPid . '_' . $myLabel->name . '").className = "miniAppTitle";
+		'
+	));
+
+	//CSS
+	eyex('loadCss',array(
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniApps/miniApps.css&type=css',
+		'id' => 'miniApps'
+	));
 }
 
 function miniToDo_end($params=null) {

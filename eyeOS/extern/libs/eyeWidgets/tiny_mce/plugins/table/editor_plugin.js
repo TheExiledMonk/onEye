@@ -380,7 +380,7 @@
 						sd = getColRowSpan(td);
 
 						// All ready filled
-						for (xstart = x; grid[y] && grid[y][xstart]; xstart++) ;
+						for (xstart = x; grid[y] && grid[y][xstart]; xstart++) {};
 
 						// Fill box
 						for (y2=y; y2<y+sd['rowspan']; y2++) {

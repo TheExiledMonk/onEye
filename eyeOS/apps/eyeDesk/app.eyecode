@@ -50,7 +50,7 @@ function eyeDesk_run($params = '') {
 			unset($xml['eyeDesk'][0]['restoreDock'][0]);
 		}
 		// eyeos 1.9.0.0preview1
-		if (check_versions( $xml['eyeDesk'][0]['confVersion'][0], '1.9.0.0preview1') === 2) {
+		if (check_versions($xml['eyeDesk'][0]['confVersion'][0], '1.9.0.0preview1') === 2) {
 			foreach ($xml['eyeDesk'][0]['autolaunch'] as $key => $value) {
 				if (in_array($value, array('eyeBar', 'eyeDesk_extras', 'eyeDockText'))) {
 					unset($xml['eyeDesk'][0]['autolaunch'][$key]);
@@ -84,6 +84,10 @@ function eyeDesk_run($params = '') {
 			unset($navXml['eyeNav'][0]['bookmarks'][0]['category']);
 			$navXml['eyeNav'][0]['bookmarks'][0]['bookmark'] = $bookmarks;
 			eyeXML('setXMLconfig', array('eyeNav', 'conf.xml', $navXml));
+		} else if (check_versions($xml['eyeDesk'][0]['confVersion'][0], '1.9.0.1') === 2) {
+			if (in_array($xml['eyeDesk'][0]['theme'][0], array('default', 'defaultPlus'))) {
+				$xml['eyeDesk'][0]['theme'][0] = 'default';
+			}
 		}
 		$xml['eyeDesk'][0]['confVersion'][0] = EYEOS_VERSION;
 		eyeXML('setXMLconfig',array('eyeDesk', 'conf.xml', $xml));

@@ -7,8 +7,8 @@
 
 <html>
 <head>
-<title>Slime peview</title>
-<style type="text/css">
+<title>Slideshow</title>
+<style type='text/css'>
 body {
 	margin: 0px;
 	padding: 0px;
@@ -52,6 +52,8 @@ ul, ol {
 </style>
 <script>
 
+document.title = opener.lang('Slideshow');
+
 var isIE = navigator.appName == 'Microsoft Internet Explorer' ? 1 : 0;
 var isOp = navigator.userAgent.indexOf('Opera') > -1 ? 1 : 0;
 var isGe = navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('Safari') < 1 ? 1 : 0;
@@ -83,27 +85,27 @@ function none(from, to) {
 
 function scrollV(from, to) {
 	if (from <= to) {
-		slides[from].style.top = "-" + transitionValue + "%";
-		slides[to].style.top = (100 - transitionValue) + "%";
+		slides[from].style.top = '-' + transitionValue + '%';
+		slides[to].style.top = (100 - transitionValue) + '%';
 	} else {
-		slides[to].style.top = "-" + (100 - transitionValue) + "%";
-		slides[from].style.top = transitionValue + "%";
+		slides[to].style.top = '-' + (100 - transitionValue) + '%';
+		slides[from].style.top = transitionValue + '%';
 	}
 }
 
 function scrollH(from, to) {
 	if (from <= to) {
-		slides[from].style.left = "-" + transitionValue + "%";
-		slides[to].style.left = (100 - transitionValue) + "%";
+		slides[from].style.left = '-' + transitionValue + '%';
+		slides[to].style.left = (100 - transitionValue) + '%';
 	} else {
-		slides[to].style.left = "-" + (100 - transitionValue) + "%";
-		slides[from].style.left = transitionValue + "%";
+		slides[to].style.left = '-' + (100 - transitionValue) + '%';
+		slides[from].style.left = transitionValue + '%';
 	}
 }
 
 function fade(from, to) {
-	slides[from].style.filter = "alpha(opacity=" + (100 - transitionValue) + ")";
-	slides[to].style.filter = "alpha(opacity=" + transitionValue + ")";
+	slides[from].style.filter = 'alpha(opacity=' + (100 - transitionValue) + ')';
+	slides[to].style.filter = 'alpha(opacity=' + transitionValue + ')';
 	slides[from].style.opacity = ((100 - transitionValue) / 100);
 	slides[to].style.opacity = (transitionValue / 100);
 }
@@ -206,12 +208,12 @@ document.onkeyup = keyUp;
 
 <body>
 
-<div id="presentation">
+<div id='presentation'>
 </div>
 
 <script>
 	var slim = opener.slimContent;
-	document.getElementById('presentation').innerHTML = slim + '<div class="slide" style="background-color: black; text-align: center; color: white;">End of slideshow</div>';
+	document.getElementById('presentation').innerHTML = slim + '<div class="slide" style="background-color: black; text-align: center; color: white;">' + opener.lang('End of slideshow') + '</div>';
 </script>
 
 </body>

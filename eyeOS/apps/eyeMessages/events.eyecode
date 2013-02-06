@@ -87,7 +87,7 @@ function eyeMessages_on_open($params) {
 	$lblFrom->show();
 
 	$tboxFrom = new Textbox(array(
-		'name' => 'tboxFrom', 
+		'name' => 'tboxFrom',
 		'father' => 'openMessage_WND_Content',
 		'x' => 70,
 		'y' => 19,
@@ -113,7 +113,7 @@ function eyeMessages_on_open($params) {
 	$lblSubject->show();
 
 	$tboxSubject = new Textbox(array(
-		'name' => 'tboxSubject', 
+		'name' => 'tboxSubject',
 		'father' => 'openMessage_WND_Content',
 		'x' => 70,
 		'y' => 39,
@@ -155,7 +155,7 @@ function eyeMessages_on_open($params) {
 			$lblAttachment->show();
 
 			$tboxAttachment = new Textbox(array(
-				'name' => 'tboxAttachment', 
+				'name' => 'tboxAttachment',
 				'father' => 'openMessage_WND_Content',
 				'x' => 70,
 				'y' => $y,
@@ -383,6 +383,7 @@ function eyeMessages_on_mainResize($params=''){
 	$height = $GLOBALS['msgContainer']->height - $heightDiff;
 	$GLOBALS['msgContainer']->setWidth($width);
 	$GLOBALS['msgContainer']->setHeight($height);
+	$GLOBALS['verticalPanel']->setHeight($height);
 
 	$width = $GLOBALS['table_1']->width - $widthDiff;
 	$height = $GLOBALS['table_1']->height - $heightDiff;

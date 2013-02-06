@@ -255,8 +255,8 @@ if (eyeControl_lib_getConfigUser() == $currentUser) {
 	$myButton->show();
 }
 
-$ContentY = 20;
 // Windows
+$ContentY = 20;
 $myLabel = new Label(array(
 	'name' => 'eyeControl_desktop_label_windows',
 	'father' => $iconsTab,
@@ -268,8 +268,9 @@ $myLabel->show();
 $myLabel->setCss(array(
 	'font-weight' => 'bold'
 ));
-$ContentY += 30;
+
 // Save window positions
+$ContentY += 25;
 $xml = eyeControl_lib_getXMLconfig(array('eyex','eyeX.xml'));
 $myCheckbox = new Checkbox(array(
 	'name' => 'eyeControl_desktop_checkbox_savewinpos',
@@ -281,8 +282,9 @@ $myCheckbox = new Checkbox(array(
 ));
 $myCheckbox->show();
 $myCheckbox->addEvent('onclick','if (this.checked) { document.getElementById("' . $myPid . '_eyeControl_dektop_reset_windows_Container").style.display = "block"; } else { document.getElementById("' . $myPid . '_eyeControl_dektop_reset_windows_Container").style.display = "none"; } sendMsg(' . $checknum . ',"desktop_savewinpos",eyeParam("selected",this.checked));');
-$ContentY += 30;
+
 // Reset window positions
+$ContentY += 30;
 $myButton = new Button(array(
 	'name' => 'eyeControl_dektop_reset_windows',
 	'father' => $iconsTab,
@@ -295,8 +297,9 @@ $myButton = new Button(array(
 	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/refresh.png'
 ));
 $myButton->show();
-$ContentY += 50;
+
 // Desktop icons
+$ContentY += 30;
 $myLabel = new Label(array(
 	'name' => 'eyeControl_desktop_label_icons',
 	'father' => $iconsTab,
@@ -308,6 +311,8 @@ $myLabel->show();
 $myLabel->setCss(array(
 	'font-weight' => 'bold'
 ));
+
+//
 $ContentY += 25;
 $myRadioFixed = new Radio(array(
 	'checked' => isset($config['eyeDesk'][0]['loadIconPositions'][0]) && !$config['eyeDesk'][0]['loadIconPositions'][0],
@@ -319,7 +324,9 @@ $myRadioFixed = new Radio(array(
 	'y' => $ContentY
 ));
 $myRadioFixed->show();
-$ContentY += 20;
+
+//
+$ContentY += 25;
 $myRadioSmooth = new Radio(array(
 	'checked' => $config['eyeDesk'][0]['loadIconPositions'][0] != 2,
 	'father' => $iconsTab,
@@ -330,7 +337,9 @@ $myRadioSmooth = new Radio(array(
 	'y' => $ContentY
 ));
 $myRadioSmooth->show();
-$ContentY += 20;
+
+//
+$ContentY += 25;
 $myRadioFielded = new Radio(array(
 	'checked' => $config['eyeDesk'][0]['loadIconPositions'][0] == 2,
 	'father' => $iconsTab,
@@ -341,8 +350,9 @@ $myRadioFielded = new Radio(array(
 	'y' => $ContentY
 ));
 $myRadioFielded->show();
-$ContentY += 30;
+
 // Reset icon positions
+$ContentY += 30;
 $myButton = new Button(array(
 	'name' => 'eyeControl_dektop_reset_icons',
 	'father' => $iconsTab,
@@ -354,22 +364,9 @@ $myButton = new Button(array(
 	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/refresh.png'
 ));
 $myButton->show();
-$ContentY += 40;
-// Save changes
-$myButton = new Button(array(
-	'name' => 'eyeControl_dektop_save_icons',
-	'father' => $iconsTab,
-	'x' => 20,
-	'y' => $ContentY,
-	'caption' => 'Save Changes',
-	'signal' => 'desktop_save_icons'
-));
-$myButton->addFriend($myRadioFixed);
-$myButton->addFriend($myRadioSmooth);
-$myButton->addFriend($myRadioFielded);
-$myButton->show();
-$ContentY += 50;
+
 // Mouse
+$ContentY += 30;
 $myLabel = new Label(array(
 	'name' => 'eyeControl_desktop_label_mouse',
 	'father' => $iconsTab,
@@ -381,7 +378,7 @@ $myLabel->show();
 $myLabel->setCss(array(
 	'font-weight' => 'bold'
 ));
-$ContentY += 30;
+$ContentY += 25;
 // Use doubleclicks
 $xml = eyeControl_lib_getXMLconfig(array('eyeFiles','conf.xml'));
 $myCheckbox = new Checkbox(array(
@@ -394,4 +391,46 @@ $myCheckbox = new Checkbox(array(
 ));
 $myCheckbox->show();
 $myCheckbox->addEvent('onclick','sendMsg(' . $checknum . ',"desktop_savedblclicks",eyeParam("selected",this.checked));');
+
+// System Sound
+$ContentY += 30;
+$myLabel = new Label(array(
+	'name' => 'eyeControl_desktop_label_System_Sound',
+	'father' => $iconsTab,
+	'x' => 20,
+	'y' => $ContentY,
+	'text' => 'System Sound'
+));
+$myLabel->show();
+$myLabel->setCss(array(
+	'font-weight' => 'bold'
+));
+$ContentY += 25;
+// on/off
+$xml = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
+$myCheckbox = new Checkbox(array(
+	'name' => 'eyeControl_desktop_checkbox_Soundclicks',
+	'father' => $iconsTab,
+	'x' => 50,
+	'y' => $ContentY,
+	'text' => 'Turn system sound off',
+	'checked' => (isset($xml['eyeDesk'][0]['systemSounds'][0]) && !$xml['eyeDesk'][0]['systemSounds'][0])
+));
+$myCheckbox->show();
+$myCheckbox->addEvent('onclick','sendMsg(' . $checknum . ',"desktop_Soundclicks",eyeParam("selected",this.checked));');
+
+// Save changes
+$ContentY += 35;
+$myButton = new Button(array(
+	'name' => 'eyeControl_dektop_save_icons',
+	'father' => $iconsTab,
+	'x' => 20,
+	'y' => $ContentY,
+	'caption' => 'Save Changes',
+	'signal' => 'desktop_save_icons'
+));
+$myButton->addFriend($myRadioFixed);
+$myButton->addFriend($myRadioSmooth);
+$myButton->addFriend($myRadioFielded);
+$myButton->show();
 ?>

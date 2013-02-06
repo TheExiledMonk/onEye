@@ -73,7 +73,7 @@ Language.snippets = [
 	{ input : 'fudir', output: "\t$myUserDir = service('um','getCurrentUserDir').FILES_USER_DIR.'/';"},
 	{ input : 'cudir', output: "\t$myUserDir = service('um','getCurrentUserDir').CONF_USER_DIR.'/';"},
 	{ input : 'msgbox', output: "\tservice('eyex','messageBox',array('content' => '$0'));"},
-	{ input : 'sudo', output: "\tglobal $currentUser;\n\t$oldUser = $currentUser;\n\t$currentUser = ROOTUSER;\n\t$0\n\t$currentUser = $oldUser;"},
+	{ input : 'sudo', output: "\tglobal $currentUser;\n\t$oldUser = $currentUser;\n\t$currentUser = ROOTUSER;\n\t$0\n\t$currentUser = $oldUser;"}
 ]
 		 
 

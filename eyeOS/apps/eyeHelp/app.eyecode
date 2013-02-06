@@ -30,7 +30,9 @@ function eyeHelp_run($params=null) {
 	if($params[0]!=''){
 		if(utf8_strtolower(strrchr($params[0],'.')) == utf8_strtolower('.eyeHelp'))$params[0] = utf8_substr($params[0],0,-(utf8_strlen('.eyeHelp')));
 		$folder = eyeHelp_getFolder(array(utf8_basename($params[0])));
-	}else $folder = eyeHelp_getFolder(array(''));
+	}else{
+		$folder = eyeHelp_getFolder(array(''));
+	}
 
 	//Main window
 	$myWindow = new Window(array(
@@ -45,33 +47,8 @@ function eyeHelp_run($params=null) {
 		'height'=>500,
 		'sendResizeMsg' => 1,
 		'sigResize' => 'Resize',
-		'showDragContent'=>1
 	));
 	$myWindow->show();
-
-	//Text window
-	$myWindow2 = new Window(array(
-		'name'=>'WND_2',
-		'father' => 'WND_1_Content',
-		'type'=>100,
-		'width'=>575,
-		'height'=>420,
-		'x'=>210,
-		'y'=>45
-	));
-	$myWindow2->show();
-
-	//Tree window
-	$myWindow3 = new Window(array(
-		'name'=>'WND_3',
-		'father'=>'WND_1_Content',
-		'type'=>100,
-		'width'=>200,
-		'height'=>430,
-		'x'=>5,
-		'y'=>40
-	));
-	$myWindow3->show();
 
 	//The toolbar
 	$myToolbar = new Toolbar(array(
@@ -85,14 +62,39 @@ function eyeHelp_run($params=null) {
 		$myToolbar->addItem('pref',eyex('getThemeImage',array('images/toolbar/lin_agt_wrench.png',1)),'Preferences');
 	}
 
+	$y = 60;
+	//Text window
+	$myWindow2 = new Window(array(
+		'name'=>'WND_2',
+		'father' => 'WND_1_Content',
+		'type'=> 100,
+		'width'=> $myWindow->width - 215,
+		'height'=> $myWindow->height - $y - 28,
+		'x'=> 208,
+		'y'=> $y
+	));
+	$myWindow2->show();
+
+	//Tree window
+	$myWindow3 = new Window(array(
+		'name'=>'WND_3',
+		'father'=>'WND_1_Content',
+		'type'=> 100,
+		'width'=> 200,
+		'height'=> $myWindow2->height,
+		'x'=> 3,
+		'y'=> $y
+	));
+	$myWindow3->show();
+
 	//Topics box
 	$myBox1 = new Box(array(
 		'name'=>'BOX_1',
 		'father'=>'WND_3_Content',
 		'x'=>0,
 		'y'=>0,
-		'width'=>195,
-		'height'=>405,
+		'width'=>198,
+		'height'=> $myWindow3->height,
 		'title'=>'Topics'
 	));
 	$myBox1->show(0);
@@ -101,14 +103,29 @@ function eyeHelp_run($params=null) {
 	$myWindow4 = new Window(array(
 		'name'=>'WND_BOX_1',
 		'father' => 'BOX_1',
-		'y'=>5,
-		'x'=>5,
-		'width'=>186,
-		'height'=>397,
+		'y'=>25,
+		'x'=>3,
+		'width'=>192,
+		'height'=>$myWindow3->height - 29,
 		'type'=>100
 	));
 	$myWindow4->show();
 
+	/**
+	*@Todo if Windows Widget gets class fix this
+	*/
+
+	eyeX('rawjs',array('js'=>
+		'
+		document.getElementById("'.$myPid.'_' . $myWindow2->name . '").className = "invisWND";
+		document.getElementById("'.$myPid.'_' . $myWindow2->name . '_Content").style.top = "0";
+		document.getElementById("'.$myPid.'_' . $myWindow3->name . '").className = "invisWND";
+		document.getElementById("'.$myPid.'_' . $myWindow3->name . '_Content").className = "invisWND";
+		document.getElementById("'.$myPid.'_' . $myWindow4->name . '").className = "miniWND";
+		document.getElementById("'.$myPid.'_' . $myWindow4->name . '_Content").style.top = "0";
+		'
+	));
+	
 	//Get the title of the main topic
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
@@ -130,12 +147,12 @@ function eyeHelp_run($params=null) {
 		else $title = utf8_trim($info['title'][0]);
 	$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
 	if($title=="")$title = utf8_basename($myDir2);
-	
-	//Show sthe title of the main topic above the tree
+
+	//Show the title of the main topic above the tree
 	$myLabel2 = new Label(array(
 		'name'=>'label2',
 		'father'=>'WND_BOX_1_Content',
-		'y'=>4,
+		'y'=>6,
 		'x'=>6,
 		'text'=>''
 	));
@@ -147,9 +164,9 @@ function eyeHelp_run($params=null) {
 	$myTree = new Tree(array(
 		'name'=>'Tree',
 		'father'=>'WND_BOX_1_Content',
-		'width'=>160,
+		'width'=>$myWindow4->width - 22,
 		'x'=>0,
-		'y'=>10,
+		'y'=>14,
 		'clickTree'=>1,
 		'signal'=>'goto'
 	));
@@ -165,13 +182,20 @@ function eyeHelp_run($params=null) {
 		'father'=>'WND_2_Content',
 		'y'=>0,
 		'x'=>0,
-		'width'=>580,
-		'height'=>420,
+		'width'=>$myWindow2->width,
+		'height'=>$myWindow2->height,
 		'text'=>''
 	));
 	$myLabel1->show(0);
+	$GLOBALS['label1'] = $myLabel1;
 
 	eyeHelp_on_goto(array($folder));
+
+	//CSS
+	eyex('loadCss',array(
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/eyeHelp/eyeHelp.css&type=css',
+		'id' => 'eyeHelp.css'
+	));
 }
 
 function eyeHelp_end($params=null) {

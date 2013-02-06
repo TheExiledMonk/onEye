@@ -170,7 +170,7 @@ function lib_eyeWidgets_singleUnserialize($params) {
 */
 function lib_eyeWidgets_rawunserialize() {
 	global $myPid;
-	foreach($_SESSION[WTABLE][$myPid] as $name){
+	foreach ($_SESSION[WTABLE][$myPid] as $name => $value) {
 		unset($GLOBALS[$name]);
 	}
 	unset($_SESSION[WTABLE][$myPid]);

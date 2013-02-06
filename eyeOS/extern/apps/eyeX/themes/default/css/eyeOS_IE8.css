@@ -22,32 +22,32 @@
 	z-index: 2;
 }
 
-.activeWindow_border_left{
-	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_a.png');
+.activeWindow_border_left {
+	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_a.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #80b5ff;
 	left: -5px;
 	top: -1px;
 }
 
-.activeWindow_border_right{
-	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_a.png');
+.activeWindow_border_right {
+	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_a.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #80b5ff;
 	right: -5px;
 	top: -1px;
 }
 
-.inactiveWindow_border_left{
-	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_i.png');
+.inactiveWindow_border_left {
+	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_i.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #acacac;
 	left: -5px;
 	top: -1px;
 }
 
-.inactiveWindow_border_right{
-	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_i.png');
+.inactiveWindow_border_right {
+	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_i.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #acacac;
 	right: -5px;
@@ -70,7 +70,7 @@
 
 .blockbarItem:hover, .blockbarItem_right:hover {
 	background-color: #f1f1f1;
-	border-color:#80b5ff;
+	border-color: #80b5ff;
 }
 
 .blockbarItemPress, .blockbarItemPress_right {
@@ -91,11 +91,11 @@
 	border-bottom: 0;
 }
 
-.eyeDock_top_left_icon{
+.eyeDock_top_left_icon {
 	padding: 0 5px;
 }
 
-.eyeDock_top_left_icon:hover{
+.eyeDock_top_left_icon:hover {
 	background-color: transparent;
 	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/taskHover.png');
 	background-position: top;

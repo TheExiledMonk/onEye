@@ -32,7 +32,7 @@ function eyeMail_run($params=null) {
 			'win_name' => 'eyeMail_Window',
 			'win_style' => CLOSE + LISTED + MIN + TITLE
 		));
-		return;
+		return proc('end');
 	}
 	if (!function_exists('imap_open')) {
 		eyex('messageBox', array(
@@ -43,7 +43,7 @@ function eyeMail_run($params=null) {
 			'win_name' => 'eyeMail_Window',
 			'win_style' => CLOSE + LISTED + MIN + TITLE
 		));
-		return;
+		return proc('end');
 	}
 
 	global $myPid, $checknum;

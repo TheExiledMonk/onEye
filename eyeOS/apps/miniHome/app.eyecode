@@ -42,7 +42,17 @@ function miniHome_run($params=null) {
 		'background' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniHome/minihome.png'
 	));
 	$myWindow->show();
-	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_miniHomeWND_Content").style.top = "0px";'));
+
+	/**
+	*@Todo if Windows Widget gets class fix this
+	*/
+	eyeX('rawjs',array('js'=>
+		'document.getElementById("'.$myPid.'_' . $myWindow->name . '").className = "miniWND";
+		document.getElementById("'.$myPid.'_' . $myWindow->name . '_Content").className = "miniWND";
+		'
+	));
+
+
 	$myLabel0 = new Label(array(
 		'name' => 'myQuota',
 		'father' => 'miniHomeWND_Content',
@@ -51,7 +61,6 @@ function miniHome_run($params=null) {
 		'text' => 'My Quota',
 	));
 	$myLabel0->show();
-	$myLabel0->setCss(array('color' => '#155D9A', 'fontWeight' => 'bold'));
 
 	$myImage1 = new Imagebox(array(
 		'name' => 'imgClose',
@@ -93,6 +102,17 @@ function miniHome_run($params=null) {
 	));
 	$quotaBar->show();
 	eyeWidgets('serialize', array($quotaBar));
+
+	eyex('rawjs',array('js' =>
+		'document.getElementById("' . $myPid . '_' . $myLabel0->name . '").className = "miniAppTitle";
+		'
+	));
+
+	//CSS
+	eyex('loadCss',array(
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniApps/miniApps.css&type=css',
+		'id' => 'miniApps'
+	));
 }
 
 function miniHome_end() {

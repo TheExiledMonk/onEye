@@ -27,7 +27,7 @@
 	z-index: 2;
 }
 
-.activeWindow_border_left{
+.activeWindow_border_left {
 	background: url();
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #80b5ff;
@@ -37,7 +37,7 @@
 	top: -1px;
 }
 
-.activeWindow_border_right{
+.activeWindow_border_right {
 	background: url();
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_a.png', sizingMethod='scale');
 	background-repeat: no-repeat;
@@ -63,7 +63,7 @@
 
 .blockbarItem:hover, .blockbarItem_right:hover {
 	background-color: #f1f1f1;
-	border-color:#80b5ff;
+	border-color: #80b5ff;
 }
 
 .blockbarItemPress, .blockbarItemPress_right {
@@ -137,10 +137,10 @@
 	position: absolute;
 	text-shadow: 0px 0px 0px;
 	white-space: nowrap;
-	left:0px;right:0px;
-	width:1000px;
-	height:32px !important;
-	float:none;
+	left: 0px;right: 0px;
+	width: 1000px;
+	height: 32px !important;
+	float: none;
 	width: expression(this.parentNode.offsetWidth - 0 - 0 - 0);
 }
 
@@ -215,26 +215,26 @@
 	overflow: hidden;
 	padding: 3px 0px 0 7px;
 	white-space: nowrap;
-	width: auto ;
+	width: auto;
 	height: 24px !important;
 }
 
-.inactiveWindow{
+.inactiveWindow {
 	background: url();
 	border: 1px solid #acacac;
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png', sizingMethod='scale');
 }
 
-.inactiveWindow_border_left{
-	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_i.png');
+.inactiveWindow_border_left {
+	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_i.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #acacac;
 	left: -5px;
 	top: -1px;
 }
 
-.inactiveWindow_border_right{
-	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_i.png');
+.inactiveWindow_border_right {
+	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_i.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #acacac;
 	right: -5px;

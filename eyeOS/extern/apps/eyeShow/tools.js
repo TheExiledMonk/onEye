@@ -353,11 +353,11 @@ var SlimeyFontSizeTool = function(slimey) {
 	select.style.height = '20px';
 	select.style.width = '80px';
 	select.style.marginLeft = '4px';
-	select.title = 'Change font family';
+	select.title = lang('change font size');
 
 	var option = document.createElement('option');
 	option.value = option.style.fontSize = '';
-	option.appendChild(document.createTextNode('-- Size --'));
+	option.appendChild(document.createTextNode('-- ' + lang('Size') + ' --'));
 	select.appendChild(option);
 
 	option = document.createElement('option');
@@ -451,7 +451,7 @@ var SlimeyFontFamilyTool = function(slimey) {
 	select.style.height = '20px';
 	select.style.width = '140px';
 	select.style.marginLeft = '4px';
-	select.title = lang("change font size");
+	select.title = lang("change font family");
 
 	var option = document.createElement('option');
 	option.value = option.style.fontFamily = '';
@@ -621,7 +621,7 @@ SlimeyDeleteTool.prototype.notifySelectionChange = function() {
  */
 var SlimeyUndoTool = function(slimey) {
 	/* create the DOM element that represents the tool (a clickable image) */
-	var img = createImageButton('undo', 'Undo', this);
+	var img = createImageButton('undo', lang('undo'), this);
 
 	SlimeyTool.call(this, 'undo', img, slimey);
 
@@ -1399,8 +1399,6 @@ function createImageButtonBig(name, title, slimeyTool) {
 function createImageButtonText(name, title, slimeyTool,image) {
 	var div = document.createElement('div');
 	div.innerHTML = '<img class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/icons/22x22/'+image+'.png"/><div class="blockbarText"><a href="#"  accesskey="n">'+title+'</a></div>' ;
-
-	createImageButtonText
 
 	div.className = 'blockbarItem';
 	div.slimeyTool = slimeyTool;

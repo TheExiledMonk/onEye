@@ -55,9 +55,9 @@ CodePress = {
 			(charCode==121||evt.shiftKey) ? CodePress.actions.redo() :  CodePress.actions.undo(); 
 			evt.preventDefault();
 		}
-		else if(keyCode==86 && evt.ctrlKey)  { // paste
+		/*else if(keyCode==86 && evt.ctrlKey)  { // paste
 			// TODO: pasted text should be parsed and highlighted
-		}
+		}*/
 	},
 
 	// put cursor back to its original position after every parsing

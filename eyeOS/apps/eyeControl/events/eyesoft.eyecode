@@ -21,7 +21,7 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-define('EYECONTROL_DEFAULT_REPOSITORY','http://soft.eyeos.org/1.7/');
+define('EYECONTROL_DEFAULT_REPOSITORY','http://soft.eyeos.org/1.9/');
 
 function eyeControl_on_eyesoft_new($params = '') {
 	eyex('messageBox',array(

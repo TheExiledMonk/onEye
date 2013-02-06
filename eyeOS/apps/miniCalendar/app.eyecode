@@ -44,7 +44,15 @@ function miniCalendar_run($params=null) {
 		'forceSavePosition'=>1,
 	));
 	$myWindow->show();
-	eyeX('rawjs',array('js'=>'xGetElementById("'.$myPid.'_miniCalendarOuter_Content").style.top = "0px";'));
+
+	/**
+	*@Todo if Windows Widget gets class fix this
+	*/
+	eyeX('rawjs',array('js'=>
+		'document.getElementById("'.$myPid.'_' . $myWindow->name . '").className = "miniWND";
+		document.getElementById("'.$myPid.'_' . $myWindow->name . '_Content").className = "miniWND";
+		'
+	));
 
 	eyeX('createDiv', array(
 		'name' => 'miniCalendarInnerLeft',
@@ -55,11 +63,6 @@ function miniCalendar_run($params=null) {
 		'name' => 'miniCalendarInnerRight',
 		'father' => 'miniCalendarOuter',
 		'class' => 'miniCalendarInnerRight'
-	));
-
-	eyeX('loadCSS', array(
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniCalendar/miniCalendar.css',
-		'id' => 'miniCalendar.css'
 	));
 
 	$myImage = new Imagebox(array(
@@ -83,7 +86,7 @@ function miniCalendar_run($params=null) {
 		'disablemsg' => 0
 	));
 	$myLabel0->show();
-	$myLabel0->setCss(array('cursor' => 'Pointer', 'color' => '#155D9A', 'font-weight' => 'bold'));
+	$myLabel0->setCss(array('cursor' => 'Pointer'));
 
 	$myImage1 = new Imagebox(array(
 		'name' => 'imgClose',
@@ -103,14 +106,25 @@ function miniCalendar_run($params=null) {
 		'father' => 'miniCalendarInnerLeft',
 		'width' => 158,
 		'height' => 148,
-		'x'=>5,
-		'y'=>21,
+		'x'=> 0,
+		'y'=> 5,
 		'drawOnClick'=>1,
 		'drawHighlight'=>1
 	));
 	$myCalendar->show();
 
 	eyeX('sendMessage', array('msg' => 'today', 'params' => '<date>'.time().'</date>'));
+
+	eyex('rawjs',array('js' =>
+		'document.getElementById("' . $myPid . '_' . $myLabel0->name . '").className = "miniAppTitle";
+		'
+	));
+
+	//CSS
+	eyex('loadCss',array(
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniApps/miniApps.css&type=css',
+		'id' => 'miniApps'
+	));
 }
 
 function miniCalendar_end() {

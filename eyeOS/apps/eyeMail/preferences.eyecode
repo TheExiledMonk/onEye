@@ -20,6 +20,7 @@
 
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
+
 function eyeMail_preferencesWindow($params=null) {
 	$prefConfig = eyeXML('getXMLfile', array (um('getCurrentUserDir').CONF_USER_DIR.'/eyeMail/settings.xml'));
 
@@ -202,7 +203,7 @@ function eyeMail_preferencesWindow($params=null) {
 	));
 
 			// subList Accounts Preferences
-	eyeMail_refreshListAcc();
+	eyeMail_refreshListAcc(true);
 
 	// Security Window Preferences
 
@@ -314,7 +315,9 @@ function eyeMail_on_messageRemoveYes($params=null) {
 	$thekey = $GLOBALS['eyeMail_tabInfoHidden']->text;
 	unset($accountsFile['eyeMail'][0]['accounts'][0]['account'][$thekey]);
 	eyeXML('setXMLconfig',array('eyeMail','accounts.xml', $accountsFile));
-	$GLOBALS['eyeMail_listAccContainer']->remove();
+	if (is_object($GLOBALS['eyeMail_listAccContainer'])) {
+		$GLOBALS['eyeMail_listAccContainer']->remove();
+	}
 	eyeMail_refreshListAcc();
 	if (is_object($GLOBALS['eyeMail_boxTabContainer'])) {
 		$GLOBALS['eyeMail_boxTabContainer']->remove();
@@ -387,7 +390,7 @@ function eyeMail_refreshListAcc($params=null) {
 			'cursor' => 'Pointer'
 		));
 		$accUserBox->addEvent('onclick','sendMsg(' . $checknum . ',"accountFocus",eyeParam("focus",' . $key . '));');
-		if ($key==0) {
+		if ($key==0 && $params !== true) {
 			$js = 'sendMsg(' . $checknum . ',"accountFocus",eyeParam("focus",' . $key . '));';
 			eyex('rawjs', array('js' => $js));
 		}
@@ -1128,6 +1131,7 @@ function eyeMail_createAccount($params=null) {
 		'border-bottom' => '0.25px solid #A6A6A6'
 	));
 }
+
 function eyeMail_createAccount2($params=null) {
 	$serversConfig= getConfig('eyeMail','servers.xml');
 	$serversConfig = $serversConfig['eyeMail'][0]['servers'][0]['server'];

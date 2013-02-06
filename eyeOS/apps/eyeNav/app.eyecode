@@ -212,7 +212,6 @@ function eyeNav_run($params = '') {
 	$myToolbar->addItem('Forward','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/next.png','Forward',array($myIframe));
 	$myToolbar->addLine();
 	$myToolbar->addItem('Refresh','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/refresh.png','Refresh',array($myIframe));
-	$myToolbar->addLine();
 	$myToolbar->addItem('Startpage','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/home.png','Startpage',array($myTextbox,$myIframe));
 	$myToolbar->addLine();
 	$myToolbar->addItem('Bookmarks','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/bookmark.png','Bookmarks');

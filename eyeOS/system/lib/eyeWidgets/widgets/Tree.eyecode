@@ -172,10 +172,11 @@ class Tree {
 		global $myPid;
 		$rItemName = $myPid.'_'.$itemName;
 		$rlistname = $myPid.'_'.$listname;
-		$tokens[] = $rItemName ;
 		$tokens[] = $rlistname;
+		$tokens[] = $rItemName;
 		$js = "addSubList( %s , %s );";
 		eyeX('runjs',array('js'=>$js,'tokens'=>$tokens));
+		return $rItemName;
 	}
 
 	function addItem($listname,$itemName,$text) {
@@ -183,10 +184,20 @@ class Tree {
 		$rItemName = $myPid.'_'.$itemName;
 		$rlistname = $myPid.'_'.$listname;
 		$tokens[] = $rlistname;
-		$tokens[] = $rItemName ;
+		$tokens[] = $rItemName;
 		$tokens[] = $text;
 		$js = "addItem( %s , %s , %s );";
 		eyeX('runjs',array('js'=>$js,'tokens'=>$tokens));
+		return $rItemName;
+	}
+
+	function removeItem($sItem, $doNotAddPid = false) {
+		if (!$doNotAddPid) {
+			global $myPid;
+			$sItem = $myPid . '_' . $sItem;
+		}
+		eyex('runjs', array('js' => 'removeItem(%s);', 'tokens' => array($sItem)));
+		return true;
 	}
 
 	function processList() {

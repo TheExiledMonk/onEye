@@ -1,5 +1,5 @@
 <package>
-	<name>eyeChess</name>
+	<name>Chess Game</name>
 	<category>Games</category>
 	<version>1.9</version>
 	<description>Application to play chess against the browser</description>

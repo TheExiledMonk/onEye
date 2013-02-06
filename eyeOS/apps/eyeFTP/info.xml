@@ -1,5 +1,5 @@
 <package>
-	<name>eyeFTP</name>
+	<name>FTP Client</name>
 	<category>Networking</category>
 	<version>3.3.0-1</version>
 	<description>FTP client for eyeOS.</description>
