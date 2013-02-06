@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,11 +18,11 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 
-$modulename = basename(VFS_MODULE);
+$modulename = utf8_basename(VFS_MODULE);
 include(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/vfs/modules/'.$modulename.EYE_CODE_EXTENSION);
 
 ?>

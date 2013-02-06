@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -42,6 +42,7 @@ function lib_errorCodes_loadCodes($params=null){
 	define('VFS_FILE_NOT_EXISTS',-103);
 	define('VFS_DIR_NOT_EXISTS',-104);
 	define('VFS_FILE_NOT_FOUND',105);
+	define('VFS_INVALID_CHARS',106);	
 	
 	//Proc service errorCodes -200/-299
 	define('PROC_APP_NOT_ARE_RUNNING',-200);

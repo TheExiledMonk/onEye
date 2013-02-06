@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -39,14 +39,30 @@ class Calendar{
 	var $horiz;
 	var $vert;
 	var $cent;
-	var $widgetColors;
 	
 	var $showed = 0;
 	
 	//custom widget options
 	var $width;
 	var $height;
+	var $rowsAndDate;
+	var $workDays;
+	var $preMonthDays;
+	var $nextMonthDays;
+	var $weekEnd;
+	var	$backgroundNames;
+	var	$todayBorder;
+	var	$todayBackground;
+	var	$todayFontColor;
+	var	$toWeekBackground;
+	var $clickedBorder;
+	var $clickedWeek;
+	var	$dayName;
 	var $selectFunc;
+	var $forceDate;
+	var $drawOnClick;
+	var $drawServerDate;
+	var $drawHighlight;
 	function Calendar($params) {	
 		global $myPid;
 		$this->creatorPid = $myPid;
@@ -60,17 +76,28 @@ class Calendar{
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
-		isset($params['rowsAndDate']) ? $this->rowsAndDate = $params['rowsAndDate'] : $this->rowsAndDate = '#519eda';
-		isset($params['workDays']) ? $this->workDays = $params['workDays'] : $this->workDays= 'white';
-		isset($params['preMonthDays']) ? $this->preMonthDays = $params['preMonthDays'] : $this->preMonthDays = '#bbbbbb';
-		isset($params['nextMonthDays']) ? $this->nextMonthDays = $params['nextMonthDays'] : $this->nextMonthDays = '#bbbbbb';
-		isset($params['weekEnd']) ? $this->weekEnd = $params['weekEnd'] : $this->weekEnd = '#519eda';
-		isset($params['todayBorder']) ? $this->todayBorder = $params['todayBorder'] : $this->todayBorder = '#7186a4';
 				
 		//especific window options
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
+		isset($params['rowsAndDate']) ? $this->rowsAndDate = $params['rowsAndDate'] : $this->rowsAndDate = '#145689';
+		isset($params['workDays']) ? $this->workDays = $params['workDays'] : $this->workDays= 'black';
+		isset($params['preMonthDays']) ? $this->preMonthDays = $params['preMonthDays'] : $this->preMonthDays = '#bbbbbb';
+		isset($params['nextMonthDays']) ? $this->nextMonthDays = $params['nextMonthDays'] : $this->nextMonthDays = '#bbbbbb';
+		isset($params['weekEnd']) ? $this->weekEnd = $params['weekEnd'] : $this->weekEnd = '#2E7ABB';
+		isset($params['backgroundNames']) ? $this->backgroundNames = $params['backgroundNames'] : $this->backgroundNames = '#4886CE';
+		isset($params['todayBorder']) ? $this->todayBorder = $params['todayBorder'] : $this->todayBorder = '#5C5C5C';
+		isset($params['todayBackground']) ? $this->todayBackground = $params['todayBackground'] : $this->todayBackground = '#737373';
+		isset($params['todayFontColor']) ? $this->todayFontColor = $params['todayFontColor'] : $this->todayFontColor = '#FFF';
+		isset($params['toWeekBackground']) ? $this->toWeekBackground = $params['toWeekBackground'] : $this->toWeekBackground = '#E1E1E1';
+		isset($params['clickedWeek']) ? $this->clickedWeek = $params['clickedWeek'] : $this->clickedWeek = '#C7DFF6';
+		isset($params['clickedBorder']) ? $this->clickedBorder = $params['clickedBorder'] : $this->clickedBorder = '#558FC7';
+		isset($params['dayName']) ? $this->dayName = $params['dayName'] : $this->dayName = '#FFF';
 		isset($params['selectFunc']) ? $this->selectFunc = $params['selectFunc'] : $this->selectFunc = 'changeDate';
+		isset($params['drawOnClick']) ? $this->drawOnClick = $params['drawOnClick'] : $this->drawOnClick = 0;
+		isset($params['drawServerDate']) ? $this->drawServerDate = $params['drawServerDate'] : $this->drawServerDate = '';
+		isset($params['drawHighlight']) ? $this->drawHighlight = $params['drawHighlight'] : $this->drawHighlight = 0;		
+		isset($params['forceDate']) ? $this->forceDate = $params['forceDate'] : $this->forceDate = '';
 	}
 	
 	//event handling
@@ -84,24 +111,50 @@ class Calendar{
 	}
 
 	function show() {
-		$colors = service('mmap','array2jsArg',array($this->widgetColors));
-		$this->widgetColors['rowsAndDate'] = '#519eda';
-				$this->widgetColors['workDays'] = '#519eda';
-				$this->widgetColors['nextMonthDays'] = '#519eda';
-				$this->widgetColors['preMonthDays'] = '#519eda';			
-				$this->widgetColors['weekEnd'] = '#519eda';
-				$this->widgetColors['todayBorder'] = '#519eda';
+		$i18nMonths = array(i18n('translate',array('January')),
+							i18n('translate',array('February')),
+							i18n('translate',array('March')),
+							i18n('translate',array('April')),
+							i18n('translate',array('May')),
+							i18n('translate',array('June')),
+							i18n('translate',array('July')),
+							i18n('translate',array('August')),
+							i18n('translate',array('September')),
+							i18n('translate',array('October')),
+							i18n('translate',array('November')),
+							i18n('translate',array('December')));				
+		$months = service('mmap','array2jsArg',array($i18nMonths));
+		$i18nWeekDays = array(i18n('translate',array('S')),
+							i18n('translate',array('M')),
+							i18n('translate',array('T')),
+							i18n('translate',array('W')),
+							i18n('translate',array('TH')),
+							i18n('translate',array('F')),
+							i18n('translate',array('SA')));				
+		$weekDays = service('mmap','array2jsArg',array($i18nWeekDays));				
 		$widgetsparams = array(
 			'height' => $this->height,
 			'width' => $this->width,
 			'selectFunc' => $this->selectFunc,
-			'widgetColors'=>$colors,
 			'rowsAndDate'=>$this->rowsAndDate,
 			'workDays'=>$this->workDays,
 			'nextMonthDays'=>$this->nextMonthDays,
 			'preMonthDays'=>$this->preMonthDays,
 			'weekEnd'=>$this->weekEnd,
-			'todayBorder'=>$this->todayBorder
+			'todayBorder'=>$this->todayBorder,
+			'todayBackground'=>$this->todayBackground,
+			'todayFontColor'=>$this->todayFontColor,
+			'toWeekBackground'=>$this->toWeekBackground,
+			'backgroundNames'=>$this->backgroundNames,			
+			'dayName'=>$this->dayName,
+			'clickedWeek'=>$this->clickedWeek,
+			'clickedBorder'=>$this->clickedBorder,
+			'forceDate'=>$this->forceDate,
+			'drawOnClick'=>$this->drawOnClick,
+			'drawServerDate'=>$this->drawServerDate,
+			'drawHighlight'=>$this->drawHighlight,
+			'monthNames'=>$months,
+			'weekDays'=>$weekDays
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		
@@ -118,8 +171,8 @@ class Calendar{
 		);
 		$this->showed=1;
 		service('eyex','createWidget',$myBox);
+		reqLib('eyeWidgets','serialize',array($this));
 	}
-	
 		
 	function setCss($params) {
 		global $myPid;
@@ -156,5 +209,23 @@ class Calendar{
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.top="'.$this->y.'px";'));
 	}
 	
+	function remove() {
+		global $myPid;
+		$name = $this->name.'_Container';
+		service('eyex','removeWidget',array('name'=>$name));
+		eyeWidgets('singleUnserialize',array($this->name));
+	}
+
+	function hide() {
+		global $myPid;
+		$this->visible = 0;
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+	}
+	
+	function unhide() {
+		global $myPid;
+		$this->visible = 1;
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+	}
 }
 ?>

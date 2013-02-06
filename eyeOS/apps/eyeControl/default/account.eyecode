@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 global $currentUser;
@@ -55,7 +55,7 @@ $myLabel = new Label(array(
 ));
 $myLabel->show();
 $myLabel->setCss(array(
-	'color' => 'blue',
+	'color' => '#004488',
 	'cursor' => 'Pointer'
 ));
 $ContentY = $ContentY + 20;
@@ -72,7 +72,7 @@ $myTextbox_fullname = new Textbox(array(
 	'name' => 'eyeControl_account_textbox_fullname',
 	'father' => $eyeContainer,
 	'x' => 160,
-	'y' => $ContentY,
+	'y' => $ContentY + 2,
 	'text' => $UserXML['fullname'][0]
 ));
 $myTextbox_fullname->show();
@@ -90,7 +90,7 @@ $myTextbox_email = new Textbox(array(
 	'name' => 'eyeControl_account_textbox_email',
 	'father' => $eyeContainer,
 	'x' => 160,
-	'y' => $ContentY,
+	'y' => $ContentY + 2,
 	'text' => $UserXML['email'][0]
 ));
 $myTextbox_email->show();

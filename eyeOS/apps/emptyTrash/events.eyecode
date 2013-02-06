@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function emptyTrash_on_Message($params="") {
@@ -32,7 +32,7 @@ function emptyTrash_on_yes($params=null) {
 	if($content) {
 		if(is_array($content)) {
 			foreach($content as $current) {
-				$name = basename($current);
+				$name = utf8_basename($current);
 				if($name{0} != '.') {
 					if(is_dir($current)) {
 						service('vfs','rmdir',array($current));

@@ -18,17 +18,26 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 
 /**
- * @author Nanawel (nanawel@gmail.com)
- * @version 2.0.2
- * @updated ...-2007
+ * @author Nanawel (nanawel@eyeos.org)
+ * @version 3.0.0
+ * @updated 12-Jan-2008
  */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/events'.EYE_CODE_EXTENSION);
+
+/*********************************************************************************************/
+/*   IMAGES URL                                                                              */
+/*********************************************************************************************/
+define('EYEFTP_IMG_MANAGEHOSTSDLG_ADD', 'index.php?extern=apps/eyeFTP/gfx/addhost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_EDIT', 'index.php?extern=apps/eyeFTP/gfx/edithost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_DELETE', 'index.php?extern=apps/eyeFTP/gfx/deletehost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_LOAD', 'index.php?extern=apps/eyeFTP/gfx/loadhost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON', 'index.php?extern=apps/eyeFTP/gfx/host.png');
 
 /*********************************************************************************************/
 /*********************************************************************************************/
@@ -88,6 +97,7 @@ function eyeFTP_on_eyeFTP_manageHosts_delete_BTN($params="") {
 }
 
 function eyeFTP_on_eyeFTP_manageHosts_load_BTN($params="") {
+	global $checknum;
 	$conf = eyeFTP_getConf();
 	$displayedHosts = unserialize($GLOBALS['eyeFTP_manageHosts_serializedHostsData_HID']->text);
 	if (! $GLOBALS['eyeFTP_manageHosts_savedHosts_TAB']->selected
@@ -110,7 +120,7 @@ function eyeFTP_on_eyeFTP_manageHosts_load_BTN($params="") {
 	$GLOBALS['eyeFTP_manageHosts_DLG']->close();
 	
 	//auto connect to loaded host
-	eyeFTP_on_eyeFTP_connect_BTN();
+	eyeFTP_on_eyeFTP_connect_ITM();
 }
 
 function eyeFTP_on_eyeFTP_manageHosts_save_BTN($params="") {
@@ -172,6 +182,7 @@ function eyeFTP_refreshHostsTable() {
 		for($i = 0 ; $i < strlen($hostData['password']) ; $i++) { $hiddenPassword .= '*'; }
 		$GLOBALS['eyeFTP_manageHosts_savedHosts_TAB']->addRow(array(
 			$id,
+			'<img src="'.EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON.'" />',
 			$hostData['name'],
 			$hostData['port'],
 			$hostData['username'],
@@ -196,16 +207,7 @@ function eyeFTP_getSavedHosts() {
 		$myF['eyeFTP'] = array();
 		eyeXML('setXMLfile',array($file,$myF));
 	}
-	
-	/**
-	 * FIXME: unable to use the getXMLFile() function (issue under Windows server only?)
-	 *        otherwise parsing fails during the refresh after a 'save' operation
-	 *        => fread() replaced by file_get_contents() seems to work well
-	 *        ...weird behaviour...
-	 */
-	//$content = reqLib('eyeXML','getXMLfile',array($file));
-	$content = file_get_contents($file);
-	$content = $myXml = reqLib('eyeXML','xml2array',array($content));
+	$content = reqLib('eyeXML','getXMLfile',array($file));
 	
 	$i = 1;
 	$hosts = array();

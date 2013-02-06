@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 function eyeArchive_on_Compress($params){
 		
@@ -28,7 +28,7 @@ function eyeArchive_on_Compress($params){
 		$dest = $GLOBALS['workingPath']->text;	
 	}	
 	
-	$type = substr(strrchr($dest, "."), 1);
+	$type = utf8_substr(strrchr($dest, "."), 1);
 	$types = reqLib('eyeFileArchive','supportedTypes');
 	if(array_search($type,$types) === false){
 		eyex('messageBox',array('content'=>'The compress type is not supported'));

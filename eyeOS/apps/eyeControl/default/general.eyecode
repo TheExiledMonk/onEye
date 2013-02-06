@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 $ContentY = 10;
@@ -35,7 +35,7 @@ $myTextbox_hostname = new Textbox(array(
 	'name' => 'eyeControl_general_textbox_hostname',
 	'father' => $eyeContainer,
 	'x' => 160,
-	'y' => $ContentY,
+	'y' => $ContentY + 2,
 	'text' => EYEOS_HOSTNAME
 ));
 $myTextbox_hostname->show();
@@ -78,6 +78,58 @@ $myCheckbox_publicdirs = new Checkbox(array(
 ));
 $myCheckbox_publicdirs->show();
 $ContentY = $ContentY + 30;
+// User quota
+$myLabel = new Label(array(
+	'name' => 'eyeControl_general_label_quota',
+	'father' => $eyeContainer,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'User quota'
+));
+$myLabel->show();
+$quota = DEFAULT_QUOTA;
+if ($quota / 1024 / 1024 / 1024 >= 1 && round($quota / 1024 / 1024 / 1024) * 1024 * 1024 * 1024 == $quota) {
+	$quota = $quota / 1024 / 1024 / 1024;
+	$temp_sel['GB'] = 1;
+} elseif ($quota / 1024 / 1024 >= 1 && round($quota / 1024 / 1024) * 1024 * 1024 == $quota) {
+	$quota = $quota / 1024 / 1024;
+	$temp_sel['MB'] = 1;
+} elseif ($quota / 1024 >= 1 && round($quota / 1024) * 1024 == $quota) {
+	$quota = $quota / 1024;
+	$temp_sel['KB'] = 1;
+} else {
+	$temp_sel['B'] = 1;
+}
+$myTextbox_quota = new Textbox(array(
+	'name' => 'eyeControl_general_textbox_quota',
+	'father' => $eyeContainer,
+	'x' => 160,
+	'y' => $ContentY + 2,
+	'text' => $quota,
+	'width' => 50
+));
+$myTextbox_quota->show();
+$mySelect_quota = new Select(array(
+	'name' => 'eyeControl_general_select_quota',
+	'father' => $eyeContainer,
+	'x' => 220,
+	'y' => $ContentY,
+	'width' => 80
+));
+$mySelect_quota->show();
+$mySelect_quota->addOption('Bytes','B',$temp_sel['B']);
+$mySelect_quota->addOption('KBytes','KB',$temp_sel['KB']);
+$mySelect_quota->addOption('MBytes','MB',$temp_sel['MB']);
+$mySelect_quota->addOption('GBytes','GB',$temp_sel['GB']);
+$myLabel = new Label(array(
+	'name' => 'eyeControl_general_label_quota_info',
+	'father' => $eyeContainer,
+	'x' => 310,
+	'y' => $ContentY + 3,
+	'text' => 'Unlimited: 0 (null)'
+));
+$myLabel->show();
+$ContentY = $ContentY + 30;
 // Default language
 $myLabel = new Label(array(
 	'name' => 'eyeControl_general_label_language',
@@ -100,14 +152,13 @@ $LangXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_
 $dir = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/';
 $openDir = vfs('real_getDirContent',array($dir,'*.xml'));
 foreach ($openDir as $file) {
-	$file = basename($file);
-	$lang = substr($file,0,strlen($file) - 4);
+	$lang = utf8_basename($file,'.xml');
 	if ($lang == $LangXML['lang'][0]) {
 		$select = 1;
 	} else {
 		$select = 0;
 	}
-	$LangXML = eyeXML('getXMLfile',array($dir . $file));
+	$LangXML = eyeXML('getXMLfile',array($dir . $lang . '.xml'));
 	$mySelect_lang->addOption($LangXML['lang'][0]['name'][0],$lang,$select);
 }
 $ContentY = $ContentY + 30;
@@ -134,8 +185,8 @@ $openDir = vfs('real_getDirContent',array($dir));
 foreach ($openDir as $theme) {
 	if (is_dir($theme) && file_exists($theme . '/info.xml')) {
 		$ThemeXML = eyeXML('getXMLfile',array($theme . '/info.xml'));
-		$theme = basename($theme);
-		if ($theme == $ActualThemeXML['CONFIG'][0]['DEFAULT_THEME'][0]) {
+		$theme = utf8_basename($theme);
+		if ($theme == DEFAULT_THEME) {
 			$select = 1;
 			$selectedXML = $ThemeXML;
 			$selectedName = $theme;
@@ -158,6 +209,8 @@ $myButton = new Button(array(
 $myButton->addFriend($myTextbox_hostname);
 $myButton->addFriend($myCheckbox_register);
 $myButton->addFriend($myCheckbox_publicdirs);
+$myButton->addFriend($myTextbox_quota);
+$myButton->addFriend($mySelect_quota);
 $myButton->addFriend($myCheckbox_eyeupdater);
 $myButton->addFriend($mySelect_lang);
 $myButton->addFriend($mySelect_theme);
@@ -176,12 +229,13 @@ $myTextbox_password = new Textbox(array(
 	'name' => 'eyeControl_general_textbox_password',
 	'father' => $eyeContainer,
 	'x' => 160,
-	'y' => $ContentY,
+	'y' => $ContentY + 2,
 	'password' => 1
 ));
 $myTextbox_password->show();
+$myTextbox_password->addEnterEventMsg('general_uninstall');
 $ContentY = $ContentY + 30;
-// Uninstall eyeOS
+// Used version
 $myLabel = new Label(array(
 	'name' => 'eyeControl_update_label_used_1',
 	'father' => $eyeContainer,
@@ -190,7 +244,6 @@ $myLabel = new Label(array(
 	'text' => 'Used version'
 ));
 $myLabel->show();
-
 $myLabel = new Label(array(
 	'name' => 'eyeControl_update_label_used_2',
 	'father' => $eyeContainer,
@@ -200,6 +253,7 @@ $myLabel = new Label(array(
 ));
 $myLabel->show();
 $ContentY += 30;
+// Uninstall eyeOS
 $myButton = new Button(array(
 	'name' => 'eyeControl_general_button_uninstall',
 	'father' => $eyeContainer,

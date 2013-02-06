@@ -18,15 +18,27 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 
 /**
- * @author Nanawel (nanawel@gmail.com)
- * @version 2.0.2
- * @updated ...-2007
+ * @author Nanawel (nanawel@eyeos.org)
+ * @version 3.0.0
+ * @updated 12-Jan-2008
  */
+
+include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/hosts'.EYE_CODE_EXTENSION);
+
+/*********************************************************************************************/
+/*   IMAGES URL                                                                              */
+/*********************************************************************************************/
+define('EYEFTP_IMG_CREATEFOLDERDLG_ICON', 'index.php?extern=apps/eyeFTP/gfx/newfolder_big.png');
+define('EYEFTP_IMG_RENAMEDLG_ICON', 'index.php?extern=apps/eyeFTP/gfx/rename_big.png');
+define('EYEFTP_IMG_DELETEDLG_ICON', 'index.php?extern=apps/eyeX/themes/default/icons/48x48/q.png');
+define('EYEFTP_IMG_UPLOADDLG_ICON', 'index.php?extern=apps/eyeFTP/gfx/upload_big.png');
+/*********************************************************************************************/
+
 
 /**
  * Creates a dialog box to manage saved hosts
@@ -62,9 +74,9 @@ function showManageHostsDialog($params="") {
 		'y' => 4,
 		'width' => 430,
 		'height' => 200,
-		'sortypes' => array('Hidden','String','String','String','String'),
+		'sortypes' => array('Hidden','Html','String','String','String','String'),
 		'master' => 0,
-		'theader' => array('id','Hostname','Port','Username','Password')
+		'theader' => array('id',' ','Hostname','Port','Username','Password')
 	));
 	$hostsTable->show();
 	
@@ -90,7 +102,7 @@ function showManageHostsDialog($params="") {
 		'x' => 8,
 		'y' => 30,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFTP/gfx/add.png'
+		'img' => EYEFTP_IMG_MANAGEHOSTSDLG_ADD
 	));
 	$addButton->show(0);
 	
@@ -102,7 +114,7 @@ function showManageHostsDialog($params="") {
 		'x' => 8,
 		'y' => 64,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFTP/gfx/rename.png'
+		'img' => EYEFTP_IMG_MANAGEHOSTSDLG_EDIT
 	));
 	$editButton->addFriend($hostsTable);
 	$editButton->show(0);
@@ -115,7 +127,7 @@ function showManageHostsDialog($params="") {
 		'x' => 8,
 		'y' => 98,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFTP/gfx/delete.png'
+		'img' => EYEFTP_IMG_MANAGEHOSTSDLG_DELETE
 	));
 	$deleteButton->addFriend($hostsTable);
 	$deleteButton->show(0);
@@ -128,9 +140,10 @@ function showManageHostsDialog($params="") {
 		'x' => 8,
 		'y' => 220,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFTP/gfx/load.png'
+		'img' => EYEFTP_IMG_MANAGEHOSTSDLG_LOAD
 	));
 	$loadButton->addFriend($hostsTable);
+	$loadButton->addFriend($GLOBALS['eyeFTP_passiveMode_CHKBOX']);
 	$loadButton->show(0);
 	
 	/**
@@ -322,7 +335,7 @@ function showCreateFolderDialog() {
 	$myImage = new Imagebox(array(
 		'name' => 'eyeFTP_newFolder_IMG',
 		'father' => 'eyeFTP_newFolder_DLG_Content',
-		'url' => 'index.php?extern=apps/eyeFTP/gfx/newfolder_big.png',
+		'url' => EYEFTP_IMG_CREATEFOLDERDLG_ICON,
 		'x' => 30,
 		'y' => 38
 	));
@@ -384,7 +397,7 @@ function showRenameDialog($params="") {
 	$myImage = new Imagebox(array(
 		'name' => 'eyeFTP_rename_IMG',
 		'father' => 'eyeFTP_rename_DLG_Content',
-		'url' => 'index.php?extern=apps/eyeFTP/gfx/rename_big.png',
+		'url' => EYEFTP_IMG_RENAMEDLG_ICON,
 		'x' => 30,
 		'y' => 38
 	));
@@ -448,7 +461,7 @@ function showConfirmDeleteDialog($params="") {
 	$myImage = new Imagebox(array(
 		'name' => 'eyeFTP_delete_IMG',
 		'father' => 'eyeFTP_delete_DLG_Content',
-		'url' => 'index.php?extern=apps/eyeFTP/gfx/question.png',
+		'url' => EYEFTP_IMG_DELETEDLG_ICON,
 		'x' => 30,
 		'y' => 38
 	));
@@ -489,7 +502,7 @@ function showUploadDialog($params="") {
 		'y' => 5,
 		'height' => 120,
 		'width' => 240,
-		'url' => 'index.php?checknum='.$checknum.'&msg=eyeFTP_upload_initForm&params[]='.urlencode($params['displayedPath']),
+		'url' => 'index.php?checknum='.$checknum.'&msg=eyeFTP_uploadRemote_initForm&params[]='.urlencode($params['displayedPath']),
 		'scroll' => 1
 	));
 	$myFrame->show();
@@ -504,7 +517,7 @@ function showUploadDialog($params="") {
 	$myImage = new Imagebox(array(
 		'name' => 'eyeFTP_upload_IMG',
 		'father' => 'eyeFTP_upload_DLG_Content',
-		'url' => 'index.php?extern=apps/eyeFTP/gfx/upload_big.png',
+		'url' => EYEFTP_IMG_UPLOADDLG_ICON,
 		'x' => 30,
 		'y' => 38
 	));

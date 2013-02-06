@@ -18,16 +18,16 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDownload_run($params=null) {
 	global $checknum;
 	if(is_array($params)) {
 		$path = $params[0];
-		$info = pathinfo($path);
-		$ext = strtolower($info['extension']);
-		if ($ext == strtolower(EYEOS_LINK_EXT)) {
+		$info = utf8_pathinfo($path);
+		$ext = utf8_strtolower($info['extension']);
+		if (service('vfs','real_fileExists',array($path)) && $ext == utf8_strtolower(EYEOS_LINK_EXT)) {
 			service('eyex','messageBox',array('content'=>'Links can\'t be downloaded.'));
 			proc('end');
 			return;

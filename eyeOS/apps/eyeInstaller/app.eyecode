@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeInstaller_run($params=null) {
@@ -40,7 +40,7 @@ function eyeInstaller_run($params=null) {
 	}
 	
 	$file = $params[0];
-	$name = basename($file);
+	$name = utf8_basename($file);
 	$rfile = service('vfs','getRealName',array($file));
 	$myLabel1 = new Label(array('name'=>'Label1','father'=>'Installing_Content',
 		'text'=>"Do you really want to install this package into the system?",'y'=>25,'x'=>20));

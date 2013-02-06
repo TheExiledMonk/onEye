@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,35 +18,35 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
-function loadContent($category = 'index',$content = 'index',$contentParams = '') {
+function loadContent($category = '',$content = '',$contentParams = '') {
 	global $currentUser;
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
-	if ($category == 'others') {
+	if ($category == 'index' || !$category && !$content) {
+		$dir = EYE_ROOT . '/' . APP_DIR . '/eyeControl/default/';
+		$contentXML = getConfig('eyeControl','categories.xml');
+		$contentXML = $contentXML['index'][0];
+	} elseif ($category && !$content) {
+		$dir = EYE_ROOT . '/' . APP_DIR . '/eyeControl/default/';
+		$contentXML = getConfig('eyeControl','categories.xml');
+		$contentXML = $contentXML['cat_content'][0];
+		$contentParams[0] = $category;
+	} elseif ($category == 'others') {
 		$dir = EYE_ROOT . '/' . APP_DIR . '/eyeControl/others/';
 		$dir2 = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/eyeControl/others/';
 		$contentXML = eyeXML('getXMLfile',array($dir2 . $content . '.xml'));
 		$contentXML = $contentXML['content'][0];
-	} elseif ($category == 'index') {
-		$dir = EYE_ROOT . '/' . APP_DIR . '/eyeControl/default/';
-		$contentXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/eyeControl/categories.xml'));
-		$contentXML = $contentXML['content'][0];
-	} elseif ($category && !$content) {
-		$dir = EYE_ROOT. '/' . APP_DIR .'/eyeControl/default/';
-		$content = $category;
-		$contentXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/eyeControl/categories.xml'));
-		$temp_0 = array_findArrayByText(array($contentXML['category'],$category,array('name',0)));
-		$contentXML = $temp_0[0];
 	} else {
 		$dir = EYE_ROOT. '/' . APP_DIR .'/eyeControl/default/';
-		$contentXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/eyeControl/categories.xml'));
+		$contentXML = getConfig('eyeControl','categories.xml');
 		$temp_0 = array_findArrayByText(array($contentXML['category'],$category,array('name',0)));
 		$temp_1 = array_findArrayByText(array($temp_0[0]['content'],$content,array('name',0)));
 		$contentXML = $temp_1[0];
 	}
+	$content = $contentXML['name'][0];
 	$currentUser = $oldUser;
 	if (!file_exists($dir . $content . EYE_CODE_EXTENSION) || !$contentXML['permissions'][0]) {
 		eyex('messageBox',array('content' => 'Sorry, but this page is not installed.'));
@@ -61,9 +61,9 @@ function loadContent($category = 'index',$content = 'index',$contentParams = '')
 // $myContainer_big
 		$myContainer_big = new Container(array(
 			'name' => 'eyeControl_container_big',
-			'father' => 'eyeControl_window_Content',
-			'x' => 190,
-			'y' => 20,
+			'father' => 'eyeControl_container_big_Content',
+			'x' => 0,
+			'y' => 0,
 			'width' => 565,
 			'height' => 455
 		));
@@ -82,6 +82,7 @@ function loadContent($category = 'index',$content = 'index',$contentParams = '')
 			));
 			$myLabel->show();
 			$myLabel->setCss(array(
+				'color' => '#004488',
 				'font-size' => '14px'
 			));
 			$myLabel = new Label(array(
@@ -101,7 +102,7 @@ function loadContent($category = 'index',$content = 'index',$contentParams = '')
 			'x' => 0,
 			'y' => $containerY,
 			'width' => 565,
-			'height' => 455 - $containerY,
+			'height' => 460 - $containerY,
 			'type' => INVISIBLE_WINDOW
 		));
 		$myContainer->show();

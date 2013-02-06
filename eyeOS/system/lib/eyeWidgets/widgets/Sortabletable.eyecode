@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -76,13 +76,14 @@ class Sortabletable {
 		isset($params['sortypes']) ? $this->sortypes = $params['sortypes'] : $this->sortypes = "";
 		isset($params['sizeUnit']) ? $this->sizeUnit = $params['sizeUnit'] : $this->sizeUnit = 'px';
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = '';
+		isset($params['dblsignal']) ? $this->dblsignal = $params['dblsignal'] : $this->dblsignal = '';
 	}
 	
 	function show($noserialize=0) {
 		if(is_array($this->theader)) {
 			$newHeader = array();
 			foreach($this->theader as $value) {
-				$newHeader[] = htmlentities(i18n('translate',array($value)),ENT_QUOTES,'UTF-8');
+				$newHeader[] = i18n('translate',array($value));
 			}
 			$this->theader = $newHeader;
 		}
@@ -96,6 +97,7 @@ class Sortabletable {
 			'sizeUnit' => $this->sizeUnit,
 			'master' => $this->master,
 			'signal' => $this->signal,
+			'doubleClickSignal' => $this->dblsignal,
 			'realName' => $this->name
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
@@ -153,14 +155,16 @@ class Sortabletable {
 			$params[$i] = htmlentities($params[$i],ENT_QUOTES,'UTF-8');
 		}
 		$row = service('mmap','array2jsArg',array($params));
-		service('eyex','rawjs',array('js' => "if($name){".$name.".addEntry('$row');}"));
+		$tokens[] = $row;
+		service('eyex','runjs',array('js' => "if($name){".$name.".addEntry( %s );}",'tokens'=>$tokens));
 	}
 
 	function delRow($params) {
 		global $myPid;
 		$name = 'table_'.$myPid.'_'.$this->name;
 		$params = addslashes($params);
-		service('eyex','rawjs',array('js' => "if($name){".$name.".delEntry('$params');}"));
+		$tokens[] = $params;
+		service('eyex','rawjs',array('js' => "if($name){".$name.".delEntry( %s );}",'tokens'=>$tokens));
 	}
 	
 	function setHeader($params) {
@@ -237,8 +241,8 @@ class SortabletableSelected {
 	function delRow($params) {
 		global $myPid;
 		$name = 'table_'.$myPid.'_'.$this->name;
-		$params = addslashes($params);
-		service('eyex','rawjs',array('js' => "if($name){".$name.".delEntry('$params');}"));
+		$tokens[] = $params;
+		service('eyex','runjs',array('js' => "if($name){".$name.".delEntry( %s );}",'tokens'=>$tokens));
 	}
 	
 	function addRow($params){
@@ -248,7 +252,17 @@ class SortabletableSelected {
 			$params[$i] = htmlentities($params[$i],ENT_QUOTES,'UTF-8');
 		}
 		$row = service('mmap','array2jsArg',array($params));
-		service('eyex','rawjs',array('js' => "if($name){".$name.".addEntry('$row');}"));
+		$tokens[] = $row;
+		service('eyex','runjs',array('js' => "if($name){".$name.".addEntry( %s );}",'tokens'=>$tokens));
+	}
+	
+	function setContainerCss($params) {
+		global $myPid;
+		if(is_array($params)) {
+			foreach($params as $key => $value) {
+				service('eyex','updateCss',array('name' => $myPid.'_'.$this->name.'_Container','property' => $key,'value' => $value));
+			}
+		}
 	}
 	
 	function setX($x) {

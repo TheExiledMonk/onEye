@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 // $myTable
@@ -41,7 +41,7 @@ $nGroups = 0;
 $openDir = vfs('real_getDirContent',array($dir));
 foreach ($openDir as $folder) {
 	if (is_dir($folder)) {
-		$folder = basename($folder);
+		$folder = utf8_basename($folder);
 		$nGroups++;
 		$myTable->addRow(array($folder));
 	}
@@ -52,10 +52,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'groups_new',
 	'caption' => 'New',
-	'width' => 90,
+	'width' => 80,
 	'x' => 10,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/default/icons/16x16/new.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/new.png'
 ));
 $myButton->show();
 // Edit
@@ -64,10 +64,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'groups_edit',
 	'caption' => 'Edit',
-	'width' => 90,
-	'x' => 100,
+	'width' => 80,
+	'x' => 90,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/paste.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/paste.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -77,10 +77,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'groups_delete',
 	'caption' => 'Delete',
-	'width' => 90,
-	'x' => 190,
+	'width' => 80,
+	'x' => 170,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/delete.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/delete.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -90,10 +90,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'groups_default',
 	'caption' => 'Set as default',
-	'width' => 90,
-	'x' => 280,
+	'width' => 100,
+	'x' => 250,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/default/icons/16x16/save.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/save.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -102,7 +102,7 @@ $myLabel = new Label(array(
 	'name' => 'eyeControl_account_label_groups',
 	'father' => $eyeContainer,
 	'horiz' => 1,
-	'y' => 5,
+	'y' => 2,
 	'text' => 'Default group: %s | %s group(s)',
 	'tokens' => array(DEFAULT_GROUP,$nGroups)
 ));

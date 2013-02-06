@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,18 +18,9 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 global $currentUser;
-
-function eyeControl_on_Message($params = '') {
-	eyeWidgets('updateContent',$params);
-}
-
-function eyeControl_on_Close($params = '') {
-	global $myPid;
-	proc('close',array($myPid));
-}
 
 // Include all libraries
 $dir = EYE_ROOT . '/' . APP_DIR . '/eyeControl/libraries/';
@@ -49,5 +40,14 @@ $openDir = vfs('real_getDirContent',array($dir,'*' . EYE_CODE_EXTENSION));
 $currentUser = $oldUser;
 foreach ($openDir as $file) {
 	include_once($file);
+}
+
+function eyeControl_on_Message($params = '') {
+	eyeWidgets('updateContent',$params);
+}
+
+function eyeControl_on_Close($params = '') {
+	global $myPid;
+	proc('close',array($myPid));
 }
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
  
 
@@ -50,7 +50,7 @@ function get_dynamic_content($params) {
 				//creating the rows							
 				row.setAttribute(\'id\',"tr"+currentRow);				
 				row.insertCell(0).innerHTML="<input type=\'file\' id=\'file\'+currentRow\' name=\''.$myFiles.'["+currentRow+"]\' style=\'font-family:Verdana;font-size:11px;\'/>";
-				row.insertCell(1).innerHTML=" <div id=\'rm"+currentRow+"\' onClick=\'addFile()\' style=\'cursor: pointer;\'><img src=\'index.php?extern=apps/eyeX/themes/default/icons/16x16/new.png\' style=\'margin-bottom: -4px;\'> <span style=\'font-size: 10px;\'>'.i18n("translate",array("Another file")).'</span></div>";
+				row.insertCell(1).innerHTML=" <div id=\'rm"+currentRow+"\' onClick=\'addFile()\' style=\'cursor: pointer;\'><img src=\'index.php?extern=apps/eyeX/themes/default/icons/16x16/new.png\' style=\'margin-bottom: -4px;\'> <span style=\'font-family: Verdana; font-size: 11px;\'>'.i18n("translate",array("Another file")).'</span></div>";
 			}	
 			function removeFile(e){
 				var targ
@@ -75,10 +75,10 @@ function get_dynamic_content($params) {
 	<form enctype="multipart/form-data" action="index.php?checknum='.$checknum.'&msg='.$myCallback.'" method="POST">
 		<table border="0" id="tableFiles" cellspacing="0">
 			<tr id="tr0">
-				<td><input type="file" id="file0" name="'.$myFiles.'[0]" style="font-family:Verdana;font-size:11px;" /></td><td> <div id="rm0" onClick="addFile()" style="cursor: pointer;"><img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/new.png" style="margin-bottom: -4px;"> <span style=\'font-size: 10px;\'>'.i18n("translate",array("Another file")).'</span></div>							
+				<td><input type="file" id="file0" name="'.$myFiles.'[0]" style="font-family:Verdana;font-size:11px;" /></td><td> <div id="rm0" onClick="addFile()" style="cursor: pointer;"><img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/new.png" style="margin-bottom: -4px;"> <span style=\'font-family: Verdana; font-size: 11px;\'>'.i18n("translate",array("Another file")).'</span></div>							
 			</tr>
 		</table>
-		<input type="submit" value="'.i18n("translate",array("Upload")).'" style="font-family:Verdana;font-size:11px;" />			       
+		<input type="submit" value="'.i18n("translate",array("Upload")).'" style="font-family:Verdana; font-size:11px; border-top: 1px solid #858585; border-bottom: 1px solid #858585; border-left: 1px solid #aeaeae; border-right: 1px solid #aeaeae; font-size: 11px; height: 22px; background-image: url(index.php?extern=apps/eyeX/themes/default/images/widgets/buttonbg.png); width: 150px; margin-top: 18px; text-align: center;" />			       
 	</form>
 </body>
 </html>';

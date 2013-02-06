@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.1
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDialog_run($params=null) {
@@ -26,14 +26,14 @@ function eyeDialog_run($params=null) {
 		$type = $params[0];
 		$callback = $params[1];
 		$checknum = $params[2];
+		$defaultFilename = $params[3];
 	} else {
 		$callback = "";
 		$type = "";
 		$checknum = "";
+		$defaultFilename = "";
 	}
 	
-	$sortypes = array("String","number");
-	$myHeader = array('Name','Size');
 	if($type == 0) {
 		$caption = "Open";
 		$title = "Select file to open";
@@ -54,11 +54,7 @@ function eyeDialog_run($params=null) {
 		'width'=>$myWindow->width-10,'height'=>$myWindow->height-80,'x'=>0,'y'=>0));
 	$myWindow3->show();
 	
-	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'WND_1',
-		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>5,'y'=>6,'width'=>370,'height'=>220,
-		'signal'=>'ClickTable','master'=>1));
-		
-	$myTextbox = new Textbox(array('name'=>'txtfilename','width'=>295,'father'=>'dialogWND_Content',
+	$myTextbox = new Textbox(array('name'=>'txtfilename','text'=>$defaultFilename, 'width'=>295,'father'=>'dialogWND_Content',
 		'x'=>5,'y'=>234));
 	$myTextbox->show();
 	$myTextbox->focus();
@@ -66,7 +62,6 @@ function eyeDialog_run($params=null) {
 	
 	$myButton = new Button(array('name'=>'BTN_1','father'=>'dialogWND_Content',
 		'caption'=>$caption,'x'=>320,'y'=>232,'signal'=>'actionUser'));
-	$myButton->addFriend($myTable);
 	$myButton->addFriend($myTextbox);
 	$myButton->show();
 	

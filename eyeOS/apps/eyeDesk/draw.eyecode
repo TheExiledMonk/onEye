@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 define('EYEDESK_ICON_SEPARATION',30);
@@ -27,10 +27,11 @@ define('EYEDESK_ICON_SIZE','48x48');
 
 function drawDesktop() {
 	global $myPid;
-	global $checknum;
+	global $checknum;	
 	$userTheme = eyeSessions('getVar',array('usertheme'));
 	//load user icons from the Desktop dir, begining from the top + 20 and left + 20
 	$counter = 0;
+	$iconNumber = 0;
 	$x = 25;
 	$y = 70;
 	$scrHeight = eyeSessions('getArrayValueByKey',array('SCREEN','height'));
@@ -42,16 +43,18 @@ function drawDesktop() {
 	service('eyex','rawjs',array('js'=>'cleanDesktop('.$myPid.');'));
 	$store = service('um','getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeDesk/icons.xml';
 	$pos = reqLib('eyeXML','getXMLfile',array($store));
+	$options = getConfig('eyeDesk','contextFile.xml');
+	$optionsLink = getConfig('eyeDesk','contextLink.xml');
 	foreach ($listFile as $file){
 		//content that begins with a dot "." are ignored
-		$fileName = basename($file);
+		$fileName = utf8_basename($file);
 		$found = false;
 		$handled = false;
 		if ($fileName{0} != ".") {
 			//if current element is a directory
 			if(is_dir($file)){
 	        	//create new icon using a folder icon.
-	          	$myName = "eyeDesk_icon_$counter";	
+	          	$myName = "eyeDesk_icon_$iconNumber";	
           		//get icon size using eyeGraphics
           		$info = getimagesize(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/folder.png');
           		$myWidth = $info[0];
@@ -75,9 +78,16 @@ function drawDesktop() {
            		'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/folder.png',
            		'content'=>$fileName,'father'=>'eyeApps','x'=>$mx,'y'=>$my));	        			
 	           	$myIcon->show();
+	           	$iconNumber++;
+	            $myContextMenu = new ContextMenu(array('name'=>$myName.'_menu','father'=>$myName.'_globalContainer','searchFather'=>1));
+	            $myContextMenu->show();
+				foreach($options['menu'][0]['entry'] as $value) {
+					$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>$fileName</arg1>");
+					$counter++;
+				}
 	           	$found=true;
-			} elseif(ltrim(strrchr($file,'.'),'.') == EYEOS_INFO_EXT)  {
-	          	$myName = "eyeDesk_icon_$counter";	
+			} elseif(utf8_ltrim(strrchr($file,'.'),'.') == EYEOS_INFO_EXT)  {
+	          	$myName = "eyeDesk_icon_$iconNumber";	          	
           		//get icon size using eyeGraphics
           		$icon = 'unknown';
   				$fp = service('vfs','real_open',array($file,'r'));
@@ -88,11 +98,11 @@ function drawDesktop() {
 					$myArray = $myArray['eyeFile'][0];
 					$fileName = $myArray['filename'][0];
 					$realFileName = str_replace($myUserDir.'/files/','',$current);
-					$tmpName = basename($realFileName);
-					$realFileName = substr($realFileName,0,strlen($realFileName)-strlen($tmpName));
+					$tmpName = utf8_basename($realFileName);
+					$realFileName = utf8_substr($realFileName,0,utf8_strlen($realFileName)-utf8_strlen($tmpName));
 					$realFileName .= $fileName;
-					$info = pathinfo($realFileName);
-					$extension = strtolower($info['extension']);
+					$info = utf8_pathinfo($realFileName);
+					$extension = utf8_strtolower($info['extension']);
 					foreach($mime['mimeTypes'][0]['mime'] as $value) {
 						if($value['extension'][0] == $extension) {
 							$icon = $value['type'][0];
@@ -121,9 +131,16 @@ function drawDesktop() {
            		'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/filetypes/'.$icon.'.png',
            		'content'=>$realFileName,'father'=>'eyeApps','x'=>$mx,'y'=>$my));	        			
 	           	$myIcon->show();
+	           	$iconNumber++;
+				$myContextMenu = new ContextMenu(array('name'=>$myName.'_menu','father'=>$myName.'_globalContainer','searchFather'=>1));
+	            $myContextMenu->show();
+				foreach($options['menu'][0]['entry'] as $value) {
+					$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>$realFileName</arg1>");
+					$counter++;
+				}
 	           	$found = true;	
 			} elseif(is_file($file)){				
-				if(ltrim(strrchr($file,'.'),'.') == EYEOS_LINK_EXT) {	
+				if(utf8_ltrim(strrchr($file,'.'),'.') == EYEOS_LINK_EXT) {	
 					//open the link
 					if(filesize($file)>=EYEDESK_MINLEN_LINK) {
 						$fp = service('vfs','real_open',array($file,'r'));
@@ -149,8 +166,8 @@ function drawDesktop() {
 								}
 							} 
 							
-							$publicName = substr($fileName,0,strlen($fileName)-strlen(EYEOS_LINK_EXT)-1);
-							$myName = "eyeDesk_icon_$counter";
+							$publicName = utf8_substr($fileName,0,utf8_strlen($fileName)-utf8_strlen(EYEOS_LINK_EXT)-1);
+							$myName = "eyeDesk_icon_$iconNumber";
 							if(file_exists(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png')) {
 								$info = getimagesize(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png');
 							} else {
@@ -179,6 +196,13 @@ function drawDesktop() {
 		           					'realname'=>EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEDESK_ICON_SIZE.'/'.$linkIcon.'.png',
 		           					'content'=>array($linkContent,$args),'father'=>'eyeApps','x'=>$mx,'y'=>$my));	  
 		           			$myLinkIcon->show();
+		           			$iconNumber++;
+				            $myContextMenu = new ContextMenu(array('name'=>$myName.'_menu','father'=>$myName.'_globalContainer','searchFather'=>1));
+				            $myContextMenu->show();
+							foreach($optionsLink['menu'][0]['entry'] as $value) {
+								$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>$publicName</arg1>");
+								$counter++;
+							}
 						}
 					}
 					$found = true;

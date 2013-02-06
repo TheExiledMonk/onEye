@@ -124,7 +124,7 @@
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/IE/minimized/minbar_off.png', sizingMethod='scale');
 }
 .eyeWindowTitle_center {
-	width: expression(this.parentNode.offsetWidth-5-5);
+	width: expression(this.parentNode.offsetWidth-2-2);
 }
 .eyeWindowContent {
 	width: expression(this.parentNode.offsetWidth-2);

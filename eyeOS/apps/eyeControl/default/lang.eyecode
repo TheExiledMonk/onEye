@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,10 +18,8 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
-
-
 // Select language
 $mySelect = new Select(array(
 	'name' => 'eyeControl_desktop_select_language',
@@ -33,28 +31,15 @@ $mySelect = new Select(array(
 ));
 $mySelect->show();
 $mySelect->addOption('English','en');
-
-// Select language
-$mySelect = new Select(array(
-	'name' => 'eyeControl_desktop_select_language',
-	'father' => $eyeContainer,
-	'width' => 150,
-	'horiz' => 1,
-	'x' => 300,
-	'y' => $ContentY
-));
-$mySelect->show();
-$mySelect->addOption('English','en');
-$UserLangXML = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/i18n/lang.xml'));
+$UserLangXML = eyeXML('getXMLconfig',array('i18n','lang.xml'));
 $dir = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/';
 $oldUser = $currentUser;
 $currentUser = ROOTUSER;
 $openDir = vfs('real_getDirContent',array($dir));
 $currentUser = $oldUser;
 foreach ($openDir as $file) {
-	$file = basename($file);
-	if (substr($file,strlen($file) - 4,strlen($file)) == '.xml') {
-		$lang = substr($file,0,strlen($file) - 4);
+	if (strrchr($file,'.xml') == '.xml') {
+		$lang = utf8_basename($file,'.xml');
 		if ($lang == $UserLangXML['lang'][0]) {
 			$select = 1;
 		} else {
@@ -62,7 +47,7 @@ foreach ($openDir as $file) {
 		}
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
-				$LangXML = eyeXML('getXMLfile',array($dir . $file));
+		$LangXML = eyeXML('getXMLfile',array($file));
 		$currentUser = $oldUser;
 		$mySelect->addOption($LangXML['lang'][0]['name'][0],$lang,$select);
 	}

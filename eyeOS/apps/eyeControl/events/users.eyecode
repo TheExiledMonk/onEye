@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeControl_on_users_new($params = '') {
@@ -42,6 +42,8 @@ function eyeControl_on_users_delete($params = '') {
 		'type' => 3,
 		'title' => 'Delete user',
 		'win_name' => 'eyeControl_users_delete_window',
+		'win_style' => TITLE + CLOSE,
+		'win_removepid' => 0,
 		'btn1_capt' => 'Yes',
 		'btn1_name' => 'users_delete_yes',
 		'btn2_capt' => 'No',

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeString_on_Message($params=null){
@@ -62,9 +62,9 @@ function eyeString_on_eyeString_Btn1($params=null){
 	}
 	
 	elseif($SAlgot == 'hextoasck') {
-		for($i=0;$i<strlen($TextUncripted);$i+=2)
+		for($i=0;$i<utf8_strlen($TextUncripted);$i+=2)
 		{
-			$abc.=chr(hexdec(substr($TextUncripted,$i,2)));
+			$abc.=chr(hexdec(utf8_substr($TextUncripted,$i,2)));
 			
 		}
 	}	

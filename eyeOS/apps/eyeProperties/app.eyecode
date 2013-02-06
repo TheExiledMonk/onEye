@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeProperties_run($params=null) {
@@ -32,7 +32,7 @@ function eyeProperties_run($params=null) {
 		'title'=>'Properties'));
 	$myWindow->show();
 	$mime = getConfig('mime','mime.xml');
-	$info = pathinfo($file);
+	$info = utf8_pathinfo($file);
 	$icon='unknown';
 	foreach($mime['mimeTypes'][0]['mime'] as $value) {
 		if($value['extension'][0] == $info['extension']) {
@@ -81,7 +81,7 @@ function eyeProperties_run($params=null) {
 	$myImage->show();
 
 	$myLabel1 = new Label(array ('name' => "eyeProperties_lbl_1",'father' => 'prop_Content',
-		'text' =>basename($path),'x' => 80,'y' => 25));
+		'text' =>utf8_basename($path),'x' => 80,'y' => 25));
 	$myLabel1->show();
 	
 	if ($size) {
@@ -100,7 +100,7 @@ function eyeProperties_run($params=null) {
 		$myLabel3->show();
 		
 		$myLabel4 = new Label(array ('name' => "eyeProperties_lbl_4",'father' => 'prop_Content',
-			'text' =>'Type: %s','tokens' => array(ucfirst($icon)),'x' => 22,'y' => 110));
+			'text' =>'Type: %s','tokens' => array(utf8_ucfirst($icon)),'x' => 22,'y' => 110));
 		$myLabel4->show();
 	
 		if (is_array($myfileInfo)) {

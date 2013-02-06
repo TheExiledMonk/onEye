@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 ///
@@ -57,7 +57,7 @@ function eyeArchive_on_SelectOpenFile($params = null){
 	global $currentUser,$archivedExtensions,$myPid;
 	
 	//Getting real path (eyDialog return ~/ path).
-	if(substr($file,0,strlen('/' . GROUPS_DIR . '/')) == '/' . GROUPS_DIR . '/') {
+	if(utf8_substr($file,0,utf8_strlen('/' . GROUPS_DIR . '/')) == '/' . GROUPS_DIR . '/') {
 		$file = EYE_ROOT;
 	} else {
 		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/';
@@ -74,9 +74,9 @@ function eyeArchive_on_SelectOpenFile($params = null){
 	if(vfs('isDir',array($file))){		
 		require_once(EYE_ROOT.'/'.APP_DIR.'/eyeArchive/libraries/directory_wrapper.eyecode');				
 		if($GLOBALS['workingPath']->text == '/'){
-			$GLOBALS['workingPath']->setText($GLOBALS['workingPath']->text.basename($file).'.zip');
+			$GLOBALS['workingPath']->setText($GLOBALS['workingPath']->text.utf8_basename($file).'.zip');
 		}else{
-			$GLOBALS['workingPath']->setText(dirname($GLOBALS['workingPath']->text).'/'.basename($file).'.zip');
+			$GLOBALS['workingPath']->setText(dirname($GLOBALS['workingPath']->text).'/'.utf8_basename($file).'.zip');
 		}
 		$GLOBALS['actionLabel']->setText('Compress to...');
 	}elseif(array_search($extension,$archivedExtensions) !== false){		

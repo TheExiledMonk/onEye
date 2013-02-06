@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function editLink_run($params=null) {
@@ -48,18 +48,18 @@ function editLink_run($params=null) {
 		'text'=>'App to be executed:','y'=>25,'x'=>105));
 	$myLabel->show();
 	$mySelect = new Select(array('name'=>'iconSelect','father'=>'editLink_Content',
-		'x'=>22,'y'=>100,'width'=>70));
+		'x'=>22,'y'=>100));
 	$mySelect->show();
 	$icon.='.png';
 	if ($handle = opendir(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/default/icons/48x48/')) {
 	    while (false !== ($file = readdir($handle))) {
-	        if ($file != "." && $file != ".." && $file{0} != "." && strtolower(ltrim(strrchr($file,'.'),'.')) == 'png' && $file != $icon) {
-	        	$mySelect->addOption($file,$file);
+	        if ($file != "." && $file != ".." && $file{0} != "." && utf8_strtolower(utf8_ltrim(strrchr($file,'.'),'.')) == 'png' && $file != $icon) {
+	        	$mySelect->addOption(utf8_basename($file,'.png'),$file);
 	        }
 	    }
 	    closedir($handle);
 	}
-	$mySelect->addOption($icon,$icon,1);
+	$mySelect->addOption(utf8_basename($icon,'.png'),$icon,1);
 	$mySelect->addEvent('onchange','document.getElementById("'.$myPid.'_image_link").src="index.php?extern='.THEMES_DIR.'/default/icons/48x48/"+this.value'.';');
 	$myTextBox = new Textbox(array('name'=>'edTextbox','father'=>'editLink_Content',
 		'x'=>105,'y'=>55,'width'=>200,'text'=>$content));

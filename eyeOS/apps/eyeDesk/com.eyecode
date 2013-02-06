@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,13 +18,13 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDesk_com_onCreate($params=null) {
 	$path = realpath(dirname('./'.$params[0]));
 	$myUserDir = realpath(service('um','getCurrentUserDir').'/'.FILES_USER_DIR.'/Desktop/');
-	if (0 === strpos($path,$myUserDir)) {
+	if (0 === utf8_strpos($path,$myUserDir)) {
 		global $myPid;
 		$oldPid = $myPid;
 		$info = getEyeDeskInfo();
@@ -38,7 +38,7 @@ function eyeDesk_com_onCreate($params=null) {
 function eyeDesk_com_onDelete($params=null) {
 	$path = realpath(dirname('./'.$params[0]));
 	$myUserDir = realpath(service('um','getCurrentUserDir').'/'.FILES_USER_DIR.'/Desktop/');
-	if (0 === strpos($path,$myUserDir)) {
+	if (0 === utf8_strpos($path,$myUserDir)) {
 		global $myPid;
 		$oldPid = $myPid;
 		$info = getEyeDeskInfo();
@@ -46,7 +46,7 @@ function eyeDesk_com_onDelete($params=null) {
 		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDesk/draw'.EYE_CODE_EXTENSION);
 		drawDesktop();
 		$myPid = $oldPid;
-		$name = basename($params[0]);
+		$name = utf8_basename($params[0]);
 		$store = service('um','getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeDesk/icons.xml';
 		$pos = reqLib('eyeXML','getXMLfile',array($store));
 		if(is_array($pos['icon'])) {
@@ -63,7 +63,7 @@ function eyeDesk_com_onDelete($params=null) {
 function eyeDesk_com_onRmdir($params=null) {
 	$path = realpath(dirname('./'.$params[0]));
 	$myUserDir = realpath(service('um','getCurrentUserDir').'/'.FILES_USER_DIR.'/Desktop/');
-	if (0 === strpos($path,$myUserDir)) {
+	if (0 === utf8_strpos($path,$myUserDir)) {
 		global $myPid;
 		$oldPid = $myPid;
 		$info = getEyeDeskInfo();
@@ -71,7 +71,7 @@ function eyeDesk_com_onRmdir($params=null) {
 		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDesk/draw'.EYE_CODE_EXTENSION);
 		drawDesktop();
 		$myPid = $oldPid;
-		$name = basename($params[0]);
+		$name = utf8_basename($params[0]);
 		$store = service('um','getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeDesk/icons.xml';
 		$pos = reqLib('eyeXML','getXMLfile',array($store));
 		if(is_array($pos['icon'])) {
@@ -88,7 +88,7 @@ function eyeDesk_com_onRmdir($params=null) {
 function eyeDesk_com_onMkdir($params=null) {
 	$path = realpath(dirname('./'.$params[0]));
 	$myUserDir = realpath(service('um','getCurrentUserDir').'/'.FILES_USER_DIR.'/Desktop/');
-	if (0 === strpos($path,$myUserDir)) {
+	if (0 === utf8_strpos($path,$myUserDir)) {
 		global $myPid;
 		$oldPid = $myPid;
 		$info = getEyeDeskInfo();

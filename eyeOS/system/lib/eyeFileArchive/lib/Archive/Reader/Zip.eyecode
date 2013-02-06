@@ -193,7 +193,7 @@ class File_Archive_Reader_Zip extends File_Archive_Reader_Archive
             if ($result !== true) {
                 return $result;
             }
-        } while (substr($this->getFilename(), -1) == '/');
+        } while (utf8_substr($this->getFilename(), -1) == '/');
 
         return true;
     }
@@ -217,7 +217,7 @@ class File_Archive_Reader_Zip extends File_Archive_Reader_Archive
         if (PEAR::isError($error)) {
             return $error;
         }
-        $result = substr($this->data, $this->offset, $actualLength);
+        $result = utf8_substr($this->data, $this->offset, $actualLength);
         $this->offset += $actualLength;
         return $result;
     }
@@ -295,7 +295,7 @@ class File_Archive_Reader_Zip extends File_Archive_Reader_Archive
 
         while (($error = $this->nextWithFolders()) === true) {
             $size = 30 + $this->header['File'] + $this->header['Extra'] + $this->header['CLen'];
-            if (substr($this->getFilename(), -1) == '/' || $pred->isTrue($this)) {
+            if (utf8_substr($this->getFilename(), -1) == '/' || $pred->isTrue($this)) {
                 array_pop($this->files);
                 if ($seek === null) {
                     $seek = $size;
@@ -358,13 +358,13 @@ class File_Archive_Reader_Zip extends File_Archive_Reader_Archive
         $keep = false;
 
         $this->uncompressData();
-        $newData = substr($this->data, 0, $this->offset + $seek);
-        $this->data = substr($this->data, $this->offset + $seek);
+        $newData = utf8_substr($this->data, 0, $this->offset + $seek);
+        $this->data = utf8_substr($this->data, $this->offset + $seek);
         foreach ($blocks as $length) {
             if ($keep) {
-                $newData .= substr($this->data, 0, $length);
+                $newData .= utf8_substr($this->data, 0, $length);
             }
-            $this->data = substr($this->data, $length);
+            $this->data = utf8_substr($this->data, $length);
             $keep = !$keep;
         }
         if ($keep) {

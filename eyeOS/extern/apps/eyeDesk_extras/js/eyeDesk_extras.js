@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -17,7 +17,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 init_eyeDesk_extras($myPid,$checknum);
 eyeCalendar_active = 0;
@@ -57,8 +57,17 @@ function init_eyeDesk_extras(myPid,checknum) {
 	params.preMonthDays = '#bbbbbb';
 	params.nextMonthDays = '#bbbbbb';
 	params.weekEnd = '#519eda';
-	params.todayBorder = '#7186a4';
-
+	params.todayBorder = '#132B4D';
+	params.monthNames = '$months';
+	params.weekDays = '$weekDays';	
+	params.backgroundNames = '#53A0E1';
+	params.todayBackground = '#90A6C2';
+	params.todayFontColor = '#000';
+	params.toWeekBackground = '#2A4774';
+	params.drawServerDate = '';
+	params.forceDate = '';
+	params.drawHighlight = 0;
+	params.drawOnClick = 0;
 	Calendar_show(params,'calendarWidget_'+myPid,myPid+'_calendar_Content',100,100,1,0,checknum,1);
 		
 	function showMiniCalendar(){

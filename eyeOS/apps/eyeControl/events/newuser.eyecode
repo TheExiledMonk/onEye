@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeControl_on_newuser_save($params = '') {
@@ -31,7 +31,7 @@ function eyeControl_on_newuser_save($params = '') {
 	$x = 0;
 	$openDir = vfs('real_getDirContent',array($dir));
 	foreach ($openDir as $group) {
-		$group = basename($group);
+		$group = utf8_basename($group);
 		if (is_dir($dir . $group) && $GLOBALS['eyeControl_newuser_checkbox_group_' . $group]->checked == 1) {
 			$groups[$x] = $group;
 			$x++;
@@ -40,7 +40,7 @@ function eyeControl_on_newuser_save($params = '') {
 	if (!is_array($groups)) {
 		$groups = DEFAULT_GROUP;
 	}
-	if ($username && $password && $pwd_again && preg_match("/^[-_a-zA-Z0-9]+$/",$username) && !um('userExists',array($username)) && $password == $pwd_again && strlen($username) > 2 && strlen($username) < MAX_USERNAME_LEN) {
+	if ($username && $password && $pwd_again && preg_match("/^[-_a-zA-Z0-9]+$/",$username) && !um('userExists',array($username)) && $password == $pwd_again && utf8_strlen($username) > 2 && utf8_strlen($username) <= MAX_USERNAME_LEN) {
 		um('createUser',array(
 			'username' => $username,
 			'password' => $password,
@@ -58,9 +58,9 @@ function eyeControl_on_newuser_save($params = '') {
 		eyex('messageBox',array('content' => 'The chosen user already exists.'));
 	} elseif ($password != $pwd_again) {
 		eyex('messageBox',array('content' => 'The passwords don\'t match.'));
-	} elseif (strlen($username) < 2) {
+	} elseif (utf8_strlen($username) < 2) {
 		eyex('messageBox',array('content' => 'The chosen username is too small.'));
-	} elseif (strlen($username) > MAX_USERNAME_LEN) {
+	} elseif (utf8_strlen($username) > MAX_USERNAME_LEN) {
 		eyex('messageBox',array('content' => 'The chosen username is too long.'));
 	} else {
 		eyex('messageBox',array('content' => 'Please correct your typed settings.'));

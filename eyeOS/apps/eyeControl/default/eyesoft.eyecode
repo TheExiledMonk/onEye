@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 // $myTable
@@ -37,7 +37,7 @@ $myTable = new Sortabletable(array(
 ));
 $myTable->show();
 $nMirrors = 0;
-$mirrorXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . CONF_USER_DIR . '/ports.xml'));
+$mirrorXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/ports.xml'));
 foreach($mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'] as $mirror) {
 	$nMirrors++;
 	$myTable->addRow(array($mirror));
@@ -48,10 +48,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'eyesoft_new',
 	'caption' => 'New',
-	'width' => 90,
+	'width' => 80,
 	'x' => 10,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/default/icons/16x16/new.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/new.png'
 ));
 $myButton->show();
 // Edit
@@ -60,10 +60,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'eyesoft_edit',
 	'caption' => 'Edit',
-	'width' => 90,
-	'x' => 100,
+	'width' => 80,
+	'x' => 90,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/paste.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/paste.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -73,10 +73,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'eyesoft_test',
 	'caption' => 'Test',
-	'width' => 90,
-	'x' => 190,
+	'width' => 80,
+	'x' => 170,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/paste.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/properties.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -86,10 +86,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'eyesoft_delete',
 	'caption' => 'Delete',
-	'width' => 90,
-	'x' => 280,
+	'width' => 80,
+	'x' => 250,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/delete.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/delete.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -99,10 +99,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'eyesoft_launch',
 	'caption' => 'Launch eyeSoft',
-	'width' => 100,
-	'x' => 370,
+	'width' => 110,
+	'x' => 330,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/upload.png'
+	'img' => 'index.php?extern=apps/eyeControl/gfx/eyesoft.png'
 ));
 $myButton->show();
 // x mirror (s)
@@ -110,7 +110,7 @@ $myLabel = new Label(array(
 	'name' => 'eyeControl_eyesoft_label_mirrors',
 	'father' => $eyeContainer,
 	'horiz' => 1,
-	'y' => 5,
+	'y' => 2,
 	'text' => '%s mirror(s)',
 	'tokens' => array($nMirrors),
 ));

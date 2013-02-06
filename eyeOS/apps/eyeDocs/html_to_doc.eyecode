@@ -205,7 +205,7 @@ EOH;
 		{
 			service('vfs','create',array($file,'eyeDocs'));
 			$fp = service('vfs','open',array($file,'w'));
-			fwrite($fp,$content,strlen($content));
+			fwrite($fp,$content,utf8_strlen($content));
 			fclose($fp);
 			return true;
 		}

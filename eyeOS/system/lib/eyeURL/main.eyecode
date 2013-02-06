@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -359,9 +359,9 @@ class Net_URL
         $return = array();
 
         foreach ($parts as $part) {
-            if (strpos($part, '=') !== false) {
-                $value = substr($part, strpos($part, '=') + 1);
-                $key   = substr($part, 0, strpos($part, '='));
+            if (utf8_strpos($part, '=') !== false) {
+                $value = utf8_substr($part, utf8_strpos($part, '=') + 1);
+                $key   = utf8_substr($part, 0, utf8_strpos($part, '='));
             } else {
                 $value = null;
                 $key   = $part;
@@ -449,7 +449,7 @@ class Net_URL
     */
     function getStandardPort($scheme)
     {
-        switch (strtolower($scheme)) {
+        switch (utf8_strtolower($scheme)) {
             case 'http':    return 80;
             case 'https':   return 443;
             case 'ftp':     return 21;
@@ -847,13 +847,13 @@ class HTTP_Request
     */
     function _generateHostHeader()
     {
-        if ($this->_url->port != 80 AND strcasecmp($this->_url->protocol, 'http') == 0) {
+        if ($this->_url->port != 80 AND utf8_strcasecmp($this->_url->protocol, 'http') == 0) {
             $host = $this->_url->host . ':' . $this->_url->port;
 
-        } elseif ($this->_url->port != 443 AND strcasecmp($this->_url->protocol, 'https') == 0) {
+        } elseif ($this->_url->port != 443 AND utf8_strcasecmp($this->_url->protocol, 'https') == 0) {
             $host = $this->_url->host . ':' . $this->_url->port;
 
-        } elseif ($this->_url->port == 443 AND strcasecmp($this->_url->protocol, 'https') == 0 AND strpos($this->_url->url, ':443') !== false) {
+        } elseif ($this->_url->port == 443 AND utf8_strcasecmp($this->_url->protocol, 'https') == 0 AND utf8_strpos($this->_url->url, ':443') !== false) {
             $host = $this->_url->host . ':' . $this->_url->port;
         
         } else {
@@ -979,7 +979,7 @@ class HTTP_Request
     */
     function addHeader($name, $value)
     {
-        $this->_requestHeaders[strtolower($name)] = $value;
+        $this->_requestHeaders[utf8_strtolower($name)] = $value;
     }
 
     /**
@@ -990,8 +990,8 @@ class HTTP_Request
     */
     function removeHeader($name)
     {
-        if (isset($this->_requestHeaders[strtolower($name)])) {
-            unset($this->_requestHeaders[strtolower($name)]);
+        if (isset($this->_requestHeaders[utf8_strtolower($name)])) {
+            unset($this->_requestHeaders[utf8_strtolower($name)]);
         }
     }
 
@@ -1171,7 +1171,7 @@ class HTTP_Request
 
         // 4.3.0 supports SSL connections using OpenSSL. The function test determines
         // we running on at least 4.3.0
-        if (strcasecmp($this->_url->protocol, 'https') == 0 AND function_exists('file_get_contents') AND extension_loaded('openssl')) {
+        if (utf8_strcasecmp($this->_url->protocol, 'https') == 0 AND function_exists('file_get_contents') AND extension_loaded('openssl')) {
             if (isset($this->_proxy_host)) {
                 return PEAR::raiseError('HTTPS proxies are not supported.');
             }
@@ -1226,10 +1226,10 @@ class HTTP_Request
             if ($keepAlive) {
                 $keepAlive = (isset($this->_response->_headers['content-length'])
                               || (isset($this->_response->_headers['transfer-encoding'])
-                                  && strtolower($this->_response->_headers['transfer-encoding']) == 'chunked'));
+                                  && utf8_strtolower($this->_response->_headers['transfer-encoding']) == 'chunked'));
                 if ($keepAlive) {
                     if (isset($this->_response->_headers['connection'])) {
-                        $keepAlive = strtolower($this->_response->_headers['connection']) == 'keep-alive';
+                        $keepAlive = utf8_strtolower($this->_response->_headers['connection']) == 'keep-alive';
                     } else {
                         $keepAlive = 'HTTP/'.HTTP_REQUEST_HTTP_VER_1_1 == $this->_response->_protocol;
                     }
@@ -1269,8 +1269,8 @@ class HTTP_Request
                 $this->_url->path = $redirect;
             
             // Relative path
-            } elseif (substr($redirect, 0, 3) == '../' OR substr($redirect, 0, 2) == './') {
-                if (substr($this->_url->path, -1) == '/') {
+            } elseif (utf8_substr($redirect, 0, 3) == '../' OR utf8_substr($redirect, 0, 2) == './') {
+                if (utf8_substr($this->_url->path, -1) == '/') {
                     $redirect = $this->_url->path . $redirect;
                 } else {
                     $redirect = dirname($this->_url->path) . '/' . $redirect;
@@ -1280,7 +1280,7 @@ class HTTP_Request
                 
             // Filename, no path
             } else {
-                if (substr($this->_url->path, -1) == '/') {
+                if (utf8_substr($this->_url->path, -1) == '/') {
                     $redirect = $this->_url->path . $redirect;
                 } else {
                     $redirect = dirname($this->_url->path) . '/' . $redirect;
@@ -1336,7 +1336,7 @@ class HTTP_Request
         if (!isset($headername)) {
             return isset($this->_response->_headers)? $this->_response->_headers: array();
         } else {
-            $headername = strtolower($headername);
+            $headername = utf8_strtolower($headername);
             return isset($this->_response->_headers[$headername]) ? $this->_response->_headers[$headername] : false;
         }
     }
@@ -1401,7 +1401,7 @@ class HTTP_Request
         // Request Headers
         if (!empty($this->_requestHeaders)) {
             foreach ($this->_requestHeaders as $name => $value) {
-                $canonicalName = implode('-', array_map('ucfirst', explode('-', $name)));
+                $canonicalName = implode('-', array_map('utf8_ucfirst', explode('-', $name)));
                 $request      .= $canonicalName . ': ' . $value . "\r\n";
             }
         }
@@ -1445,11 +1445,11 @@ class HTTP_Request
                         $fp   = fopen($filename, 'r');
                         $data = fread($fp, filesize($filename));
                         fclose($fp);
-                        $basename = basename($filename);
+                        $utf8_basename = utf8_basename($filename);
                         $type     = is_array($value['type'])? @$value['type'][$key]: $value['type'];
 
                         $postdata .= '--' . $boundary . "\r\n";
-                        $postdata .= 'Content-Disposition: form-data; name="' . $varname . '"; filename="' . $basename . '"';
+                        $postdata .= 'Content-Disposition: form-data; name="' . $varname . '"; filename="' . $utf8_basename . '"';
                         $postdata .= "\r\nContent-Type: " . $type;
                         $postdata .= "\r\n\r\n" . $data . "\r\n";
                     }
@@ -1457,7 +1457,7 @@ class HTTP_Request
                 $postdata .= '--' . $boundary . "--\r\n";
             }
             $request .= 'Content-Length: ' .
-                        (HTTP_REQUEST_MBSTRING? mb_strlen($postdata, 'iso-8859-1'): strlen($postdata)) .
+                        (HTTP_REQUEST_MBSTRING? mb_strlen($postdata, 'iso-8859-1'): utf8_strlen($postdata)) .
                         "\r\n\r\n";
             $request .= $postdata;
 
@@ -1465,7 +1465,7 @@ class HTTP_Request
         } elseif (!empty($this->_body)) {
 
             $request .= 'Content-Length: ' .
-                        (HTTP_REQUEST_MBSTRING? mb_strlen($this->_body, 'iso-8859-1'): strlen($this->_body)) .
+                        (HTTP_REQUEST_MBSTRING? mb_strlen($this->_body, 'iso-8859-1'): utf8_strlen($this->_body)) .
                         "\r\n\r\n";
             $request .= $this->_body;
         }
@@ -1705,7 +1705,7 @@ class HTTP_Response
                     $data = $this->_sock->read(4096);
                 } else {
                     $data = $this->_sock->read(min(4096, $this->_toRead));
-                    $this->_toRead -= HTTP_REQUEST_MBSTRING? mb_strlen($data, 'iso-8859-1'): strlen($data);
+                    $this->_toRead -= HTTP_REQUEST_MBSTRING? mb_strlen($data, 'iso-8859-1'): utf8_strlen($data);
                 }
                 if ('' == $data) {
                     break;
@@ -1744,12 +1744,12 @@ class HTTP_Response
     */
     function _processHeader($header)
     {
-        if (false === strpos($header, ':')) {
+        if (false === utf8_strpos($header, ':')) {
             return;
         }
         list($headername, $headervalue) = explode(':', $header, 2);
-        $headername  = strtolower($headername);
-        $headervalue = ltrim($headervalue);
+        $headername  = utf8_strtolower($headername);
+        $headervalue = utf8_ltrim($headervalue);
         
         if ('set-cookie' != $headername) {
             if (isset($this->_headers[$headername])) {
@@ -1779,26 +1779,26 @@ class HTTP_Response
         );
 
         // Only a name=value pair
-        if (!strpos($headervalue, ';')) {
-            $pos = strpos($headervalue, '=');
-            $cookie['name']  = trim(substr($headervalue, 0, $pos));
-            $cookie['value'] = trim(substr($headervalue, $pos + 1));
+        if (!utf8_strpos($headervalue, ';')) {
+            $pos = utf8_strpos($headervalue, '=');
+            $cookie['name']  = utf8_trim(utf8_substr($headervalue, 0, $pos));
+            $cookie['value'] = utf8_trim(utf8_substr($headervalue, $pos + 1));
 
         // Some optional parameters are supplied
         } else {
             $elements = explode(';', $headervalue);
-            $pos = strpos($elements[0], '=');
-            $cookie['name']  = trim(substr($elements[0], 0, $pos));
-            $cookie['value'] = trim(substr($elements[0], $pos + 1));
+            $pos = utf8_strpos($elements[0], '=');
+            $cookie['name']  = utf8_trim(utf8_substr($elements[0], 0, $pos));
+            $cookie['value'] = utf8_trim(utf8_substr($elements[0], $pos + 1));
 
             for ($i = 1; $i < count($elements); $i++) {
-                if (false === strpos($elements[$i], '=')) {
-                    $elName  = trim($elements[$i]);
+                if (false === utf8_strpos($elements[$i], '=')) {
+                    $elName  = utf8_trim($elements[$i]);
                     $elValue = null;
                 } else {
-                    list ($elName, $elValue) = array_map('trim', explode('=', $elements[$i]));
+                    list ($elName, $elValue) = array_map('utf8_trim', explode('=', $elements[$i]));
                 }
-                $elName = strtolower($elName);
+                $elName = utf8_strtolower($elName);
                 if ('secure' == $elName) {
                     $cookie['secure'] = true;
                 } elseif ('expires' == $elName) {
@@ -1837,7 +1837,7 @@ class HTTP_Response
             }
         }
         $data = $this->_sock->read($this->_chunkLength);
-        $this->_chunkLength -= HTTP_REQUEST_MBSTRING? mb_strlen($data, 'iso-8859-1'): strlen($data);
+        $this->_chunkLength -= HTTP_REQUEST_MBSTRING? mb_strlen($data, 'iso-8859-1'): utf8_strlen($data);
         if (0 == $this->_chunkLength) {
             $this->_sock->readLine(); // Trailing CRLF
         }
@@ -1878,16 +1878,16 @@ class HTTP_Response
             $oldEncoding = mb_internal_encoding();
             mb_internal_encoding('iso-8859-1');
         }
-        $length = strlen($data);
+        $length = utf8_strlen($data);
         // If it doesn't look like gzip-encoded data, don't bother
-        if (18 > $length || strcmp(substr($data, 0, 2), "\x1f\x8b")) {
+        if (18 > $length || strcmp(utf8_substr($data, 0, 2), "\x1f\x8b")) {
             return $data;
         }
-        $method = ord(substr($data, 2, 1));
+        $method = utf8_ord(utf8_substr($data, 2, 1));
         if (8 != $method) {
             return PEAR::raiseError('_decodeGzip(): unknown compression method');
         }
-        $flags = ord(substr($data, 3, 1));
+        $flags = utf8_ord(utf8_substr($data, 3, 1));
         if ($flags & 224) {
             return PEAR::raiseError('_decodeGzip(): reserved bits are set');
         }
@@ -1899,7 +1899,7 @@ class HTTP_Response
             if ($length - $headerLength - 2 < 8) {
                 return PEAR::raiseError('_decodeGzip(): data too short');
             }
-            $extraLength = unpack('v', substr($data, 10, 2));
+            $extraLength = unpack('v', utf8_substr($data, 10, 2));
             if ($length - $headerLength - 2 - $extraLength[1] < 8) {
                 return PEAR::raiseError('_decodeGzip(): data too short');
             }
@@ -1910,7 +1910,7 @@ class HTTP_Response
             if ($length - $headerLength - 1 < 8) {
                 return PEAR::raiseError('_decodeGzip(): data too short');
             }
-            $filenameLength = strpos(substr($data, $headerLength), chr(0));
+            $filenameLength = utf8_strpos(utf8_substr($data, $headerLength), chr(0));
             if (false === $filenameLength || $length - $headerLength - $filenameLength - 1 < 8) {
                 return PEAR::raiseError('_decodeGzip(): data too short');
             }
@@ -1921,7 +1921,7 @@ class HTTP_Response
             if ($length - $headerLength - 1 < 8) {
                 return PEAR::raiseError('_decodeGzip(): data too short');
             }
-            $commentLength = strpos(substr($data, $headerLength), chr(0));
+            $commentLength = utf8_strpos(utf8_substr($data, $headerLength), chr(0));
             if (false === $commentLength || $length - $headerLength - $commentLength - 1 < 8) {
                 return PEAR::raiseError('_decodeGzip(): data too short');
             }
@@ -1932,23 +1932,23 @@ class HTTP_Response
             if ($length - $headerLength - 2 < 8) {
                 return PEAR::raiseError('_decodeGzip(): data too short');
             }
-            $crcReal   = 0xffff & crc32(substr($data, 0, $headerLength));
-            $crcStored = unpack('v', substr($data, $headerLength, 2));
+            $crcReal   = 0xffff & crc32(utf8_substr($data, 0, $headerLength));
+            $crcStored = unpack('v', utf8_substr($data, $headerLength, 2));
             if ($crcReal != $crcStored[1]) {
                 return PEAR::raiseError('_decodeGzip(): header CRC check failed');
             }
             $headerLength += 2;
         }
         // unpacked data CRC and size at the end of encoded data
-        $tmp = unpack('V2', substr($data, -8));
+        $tmp = unpack('V2', utf8_substr($data, -8));
         $dataCrc  = $tmp[1];
         $dataSize = $tmp[2];
 
         // finally, call the gzinflate() function
-        $unpacked = @gzinflate(substr($data, $headerLength, -8), $dataSize);
+        $unpacked = @gzinflate(utf8_substr($data, $headerLength, -8), $dataSize);
         if (false === $unpacked) {
             return PEAR::raiseError('_decodeGzip(): gzinflate() call failed');
-        } elseif ($dataSize != strlen($unpacked)) {
+        } elseif ($dataSize != utf8_strlen($unpacked)) {
             return PEAR::raiseError('_decodeGzip(): data size check failed');
         } elseif ((0xffffffff & $dataCrc) != (0xffffffff & crc32($unpacked))) {
             return PEAR::raiseError('_decodeGzip(): data CRC check failed');
@@ -2009,7 +2009,7 @@ function lib_eyeURL_doRequest($params) {
 		foreach($params['data'] as $key=>$value) {
 			$data .= urlencode($key).'='.urlencode($value).'&';
 		}
-		$data = substr($data,0,strlen($data)-1);
+		$data = utf8_substr($data,0,utf8_strlen($data)-1);
 	}
 	
 	if(!isset($params['port'])) {
@@ -2031,7 +2031,7 @@ function lib_eyeURL_doRequest($params) {
 	if(!isset($params['method'])) {
 		$method = 'GET';
 	} else {
-		$method = strtoupper($params['method']);
+		$method = utf8_strtoupper($params['method']);
 	}
 	
 	if ($method == "GET") {
@@ -2053,7 +2053,7 @@ function lib_eyeURL_doRequest($params) {
 	
 	if ($method == "POST") {
 		$requestHeader.= "Content-Type: application/x-www-form-urlencoded\r\n";
-		$requestHeader.= "Content-Length: ".strlen($data)."\r\n";
+		$requestHeader.= "Content-Length: ".utf8_strlen($data)."\r\n";
 	}
 	
 	$requestHeader.= "Connection: close\r\n\r\n";

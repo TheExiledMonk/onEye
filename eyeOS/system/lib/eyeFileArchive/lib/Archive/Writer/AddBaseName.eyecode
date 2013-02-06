@@ -25,7 +25,7 @@
  * @author     Vincent Lascaux <vincentlascaux@php.net>
  * @copyright  1997-2005 The PHP Group
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL
- * @version    CVS: $Id: AddBaseName.php,v 1.1 2005/06/02 22:45:58 vincentlascaux Exp $
+ * @version    CVS: $Id: Addutf8_basename.php,v 1.1 2005/06/02 22:45:58 vincentlascaux Exp $
  * @link       http://pear.php.net/package/File_Archive
  */
 
@@ -34,17 +34,17 @@ require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Wr
 /**
  * Writer wrapper that adds a directory to the written file
  */
-class File_Archive_Writer_AddBaseName
+class File_Archive_Writer_Addutf8_basename
 {
     var $writer;
-    var $baseName;
+    var $utf8_basename;
 
-    function File_Archive_Writer_AddBaseName($baseName, &$writer)
+    function File_Archive_Writer_Addutf8_basename($utf8_basename, &$writer)
     {
-        if (substr($baseName, -1) == '/') {
-            $this->baseName = $baseName;
+        if (utf8_substr($utf8_basename, -1) == '/') {
+            $this->utf8_basename = $utf8_basename;
         } else {
-            $this->baseName = $baseName.'/';
+            $this->utf8_basename = $utf8_basename.'/';
         }
 
         $this->writer =& $writer;
@@ -55,7 +55,7 @@ class File_Archive_Writer_AddBaseName
      */
     function newFile($filename, $stat = array(), $mime = "application/octet-stream")
     {
-        $this->writer->newFile($this->baseName.$filename, $stat, $mime);
+        $this->writer->newFile($this->utf8_basename.$filename, $stat, $mime);
     }
 
     /**
@@ -63,7 +63,7 @@ class File_Archive_Writer_AddBaseName
      */
     function newFromTempFile($tmpfile, $filename, $stat = array(), $mime = "application/octet-stream")
     {
-        //$this->writer->newFromTempFile($tmpfilen $this->baseName.$filename, $stat, $mime);
+        //$this->writer->newFromTempFile($tmpfilen $this->utf8_basename.$filename, $stat, $mime);
     }
 
     /**

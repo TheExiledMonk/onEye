@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeMkDir_run($params=null) {
@@ -33,6 +33,7 @@ function eyeMkDir_run($params=null) {
 		'type' => 3,
 		'title' => 'New folder',
 		'win_name' => 'newFolder',
+		'win_style' => TITLE + LISTED + MIN + CLOSE,
 		'btn1_capt' => 'Create',
 		'btn1_name' => 'newfolder',
 		'btn2_capt' => 'Cancel',
@@ -43,7 +44,7 @@ function eyeMkDir_run($params=null) {
 		'hidden_name' => 'nfPath',
 		'hidden2_text' => $callback,
 		'hidden2_name' => 'nfCallback',
-		'img' => 'index.php?extern=apps/eyeFiles/gfx/newfolder_big.png'
+		'img' => 'index.php?extern=apps/eyeX/themes/default/icons/48x48/folder.png'
 	));
 }
 

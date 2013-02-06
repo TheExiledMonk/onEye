@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
 	eyeOS html resource for base screen
@@ -74,8 +74,8 @@ if (is_dir($dir)) {
     if ($gd = opendir($dir)) {
         while (($name = readdir($gd)) !== false) {
         	if(!is_dir($dir.$name)) {
-        		$info = pathinfo($dir.$name);
-        		$ext = strtolower($info['extension']);
+        		$info = utf8_pathinfo($dir.$name);
+        		$ext = utf8_strtolower($info['extension']);
         		if($ext == 'js') {
            			echo "\t".'<script type="text/javascript" src="index.php?extern=libs/eyeWidgets/'.$name.'&type=text"></script>'."\n";
         		}
@@ -94,11 +94,17 @@ echo '
 echo '
 </head>
 
-<body onload=\'setInterval("sendMsg(\\"\\",\\"ping\\",\\"\\");",120000);sendMsg("'.$checknum.'","baseapp",eyeParam("flashmajor",FlashDetect.major)+eyeParam("flash",FlashDetect.installed)+eyeParam("width",xClientWidth())+eyeParam("height",xClientHeight()));\'>
+<body onload=\'document.getElementById("error").style.display="none";setInterval("sendMsg(\\"\\",\\"ping\\",\\"\\");",120000);sendMsg("'.$checknum.'","baseapp",eyeParam("flashmajor",FlashDetect.major)+eyeParam("flash",FlashDetect.installed)+eyeParam("width",xClientWidth())+eyeParam("height",xClientHeight()));\'>
 	<div id="background">
 		<div id="eyeScreen">
 			<div id="eyeWallpaper"></div>
 			<div id="eyeApps"></div>
+			<div id="error">
+				<center>
+					<p>Sorry, but you need to activate JavaScript in order to get your eyeOS System working. Please visit www.eyeOS.org for more information.</p>
+					<p>Powered by the eyeOS System.</p>
+				</center>
+			</div>
 		</div>
 	</div>
 </body>

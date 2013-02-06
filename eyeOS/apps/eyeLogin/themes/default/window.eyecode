@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
 	if you are looking for an example of app, don't read this, but if you are looking for an example
@@ -28,8 +28,8 @@
 //set the wallpaper
 global $myPid;
 global $checknum;
-
-service('eyex','rawjs',array('js'=>"document.title='Welcome to ".EYEOS_HOSTNAME."'"));
+$tokens[] = EYEOS_HOSTNAME;
+service('eyex','runjs',array('js'=>"document.title = 'Welcome to ' + %s;",'tokens'=>$tokens));
 
 $myBackground = new Imagebox(array('name' => 'wnd1','father' => 'eyeApps',
 		'url' => 'index.php?extern=apps/eyeLogin/themes/default/gfx/bg_login.png',
@@ -174,7 +174,7 @@ if(ALLOW_USER_REGISTER == 1) {
 		$langFiles = vfs('real_getDirContent',array($dir,'*.xml'));		
 			
 		foreach($langFiles as $file){
-			$fileLang = basename($file,'.xml');
+			$fileLang = utf8_basename($file,'.xml');
 			$data = eyeXML('getXMLfile',array($file));
 			$langs[] = array($data['lang'][0]['name'][0],$fileLang);
 		}
@@ -265,6 +265,13 @@ if(ALLOW_USER_REGISTER == 1) {
 	$myLabel4->show();
 	$myLabel4->setCss($myCssTitle);
 
+	$myWindow = new Window(array('name'=>'about_wnd','type'=>INVISIBLE_WINDOW,'father'=>'eyeApps', 'horiz'=>1,'vert'=>1,
+		'width'=>200,'height'=>30,'x'=>10,'y'=>10));
+	$myWindow->show();
+	$myLabelAbout = new Label(array ('name' => "eyeLogin_label_about",'father' => 'about_wnd',
+		'text' =>"Powered by eyeOS",'x' => 0,'y' => 0,'vert'=>1,'horiz'=>1));
+	$myLabelAbout->show();
+	$myLabelAbout->setCss(array('color'=>'white'));
 }
 
 service('eyex','loadScript',array('url' => 'index.php?extern=apps/eyeLogin/themes/'.LOGIN_THEME.'/js/eyelogin'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));

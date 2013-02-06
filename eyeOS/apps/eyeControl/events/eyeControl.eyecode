@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,14 +18,23 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeControl_on_box_label($params = '') {
 	foreach($params as $key => $value) {
-		if(strstr($key,'eyeControl_box_hiddenCAT_')) {
-			$key = substr($key,strlen('eyeControl_box_hiddenCAT_') - strlen($key),strlen($key));
+		if(utf8_stristr($key,'eyeControl_box_hiddenCAT_')) {
+			$key = utf8_substr($key,utf8_strlen('eyeControl_box_hiddenCAT_') - utf8_strlen($key),utf8_strlen($key));
 			loadContent($GLOBALS['eyeControl_box_hiddenCAT_' . $key]->text,$GLOBALS['eyeControl_box_hiddenNAME_' . $key]->text);
+		}
+	}
+}
+
+function eyeControl_on_box_cat_label($params = '') {
+	foreach($params as $key => $value) {
+		if(utf8_stristr($key,'eyeControl_box_hiddenCAT_')) {
+			$key = utf8_substr($key,utf8_strlen('eyeControl_box_hiddenCAT_') - utf8_strlen($key),utf8_strlen($key));
+			loadContent($GLOBALS['eyeControl_box_hiddenCAT_' . $key]->text);
 		}
 	}
 }

@@ -77,7 +77,7 @@ class File_Archive_Reader
                   $std == $sourceName ||
 
                 //$std is a directory
-                strncmp($std.'/', $sourceName, strlen($std)+1) == 0
+                strncmp($std.'/', $sourceName, utf8_strlen($std)+1) == 0
                ) {
                 return true;
             }
@@ -101,7 +101,7 @@ class File_Archive_Reader
         while ($std != ($std = preg_replace("/[^\/:?]+\/\.\.\//", "", $std))) ;
         $std = str_replace("/./", "", $std);
         if (strncmp($std, "./", 2) == 0) {
-            return substr($std, 2);
+            return utf8_substr($std, 2);
         } else {
             return $std;
         }
@@ -185,7 +185,7 @@ class File_Archive_Reader
     /**
      * Skip some data and returns how many bytes have been skipped
      * This is strictly equivalent to
-     *  return strlen(getData($length))
+     *  return utf8_strlen(getData($length))
      * But could be far more efficient
      */
     function skip($length = -1)
@@ -194,7 +194,7 @@ class File_Archive_Reader
         if (PEAR::isError($data)) {
             return $data;
         } else {
-            return strlen($data);
+            return utf8_strlen($data);
         }
     }
 

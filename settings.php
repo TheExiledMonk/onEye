@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -62,7 +62,8 @@ define('VFS_MODULE','virtual');
 define('UM_MODULE','eyeos');
 
 //Extras
+define('FORCE_NOUTF8',0);
 define('ROOTUSER','root');
-define('EYEOS_VERSION','1.2.0.0');
+define('EYEOS_VERSION','1.5.0.0');
 
 ?>

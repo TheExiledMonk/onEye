@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,14 +18,14 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 
 function lib_eyeCrypt_crypt($params) {
 	$str = $params['data'];
 	$key = $params['key'];
-	$cip = basename($params['cipher']);
+	$cip = utf8_basename($params['cipher']);
 	if(file_exists(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode')) {
 		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode');
 		if(function_exists('crypt_'.$cip.'_crypt')) {
@@ -38,7 +38,7 @@ function lib_eyeCrypt_crypt($params) {
 function lib_eyeCrypt_decrypt($params) {
 	$str = $params['data'];
 	$key = $params['key'];
-	$cip = basename($params['cipher']);
+	$cip = utf8_basename($params['cipher']);
 	if(file_exists(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode')) {
 		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeCrypt/lib/'.$cip.'.eyecode');
 		if(function_exists('crypt_'.$cip.'_crypt')) {

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
 	events resource for eyeLaunch
@@ -45,14 +45,14 @@ function eyeMp3_on_getSound($params=""){
 	echo $content;	
 	reqLib('eyeWidgets','rawunserialize');
 	
-	$shortUrl = basename($soundPath).'.mp3';
+	$shortUrl = utf8_basename($soundPath).'.mp3';
 	delShortUrl($shortUrl);
 	exit;								
 }
 
 function eyeMp3_on_putSound(){
 	global $myPid,$checknum;	
-	$mp3Name = basename($GLOBALS['soundPath']->text);
+	$mp3Name = utf8_basename($GLOBALS['soundPath']->text);
 	$url = "index.php/$mp3Name";
 	service('eyex','rawjs',array('js'=>"eyeMp3_loadSound($myPid,'$url');"));	
 	return;

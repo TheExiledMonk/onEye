@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeControl_on_eyedesk_new($params = '') {
@@ -27,6 +27,8 @@ function eyeControl_on_eyedesk_new($params = '') {
 		'type' => 3,
 		'title' => 'New command',
 		'win_name' => 'eyeControl_eyedesk_new_window',
+		'win_style' => TITLE + CLOSE,
+		'win_removepid' => 0,
 		'btn1_capt' => 'Add',
 		'btn1_name' => 'eyedesk_new_add',
 		'btn2_capt' => 'Cancel',
@@ -40,16 +42,15 @@ function eyeControl_on_eyedesk_new($params = '') {
 function eyeControl_on_eyedesk_new_add($params = '') {
 $autorun = $GLOBALS['eyeControl_eyedesk_new_textbox']->text;
 	if ($autorun) {
-		$dir = um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/eyeDesk/conf.xml';
-		$autorunXML = eyeXML('getXMLfile',array($dir));
+		$autorunXML = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
 		$arrayIds = array_findIdByText(array($autorunXML['eyeDesk'][0]['autolaunch'],$autorun));
 		if (isset($arrayIds[0])) {
 			eyex('messageBox',array('content' => 'The command is configured, yet!'));
 		} else {
 			$autorunXML['eyeDesk'][0]['autolaunch'][] = $autorun;
-			eyeXML('setXMLFile',array($dir,$autorunXML));
+			eyeXML('setXMLconfig',array('eyeDesk','conf.xml',$autorunXML));
 			eyex('messageBox',array('content' => 'Command successfully added.'));
-			loadContent('apps','eyedesk');
+			loadContent('system','eyedesk');
 		}
 	} else {
 		eyex('messageBox',array('content' => 'Please type a command!'));
@@ -68,6 +69,8 @@ function eyeControl_on_eyedesk_edit($params = '') {
 			'type' => 3,
 			'title' => 'Edit command',
 			'win_name' => 'eyeControl_eyedesk_edit_window',
+			'win_style' => TITLE + CLOSE,
+			'win_removepid' => 0,
 			'btn1_capt' => 'Save',
 			'btn1_name' => 'eyedesk_edit_save',
 			'btn2_capt' => 'Cancel',
@@ -80,9 +83,9 @@ function eyeControl_on_eyedesk_edit($params = '') {
 			'father' => 'eyeControl_container_big'
 		));
 	} elseif ($autorun == 'eyeBar') {
-		eyex('messageBox',array('content' => 'You can\'t edit the eyeBar autorun!'));
+		eyex('messageBox',array('content' => 'You can\'t edit the eyeBar command!'));
 	} else {
-		eyex('messageBox',array('content' => 'Please choose an autorun to be edited.'));
+		eyex('messageBox',array('content' => 'Please choose a command to be edited.'));
 	}
 }
 
@@ -90,15 +93,14 @@ function eyeControl_on_eyedesk_edit_save($params = '') {
 $autorun_new = $GLOBALS['eyeControl_eyedesk_edit_textbox']->text;
 $autorun_old = $GLOBALS['eyeControl_eyedesk_edit_hidden']->text;
 	if ($autorun_new && $autorun_old != 'eyeBar') {
-		$dir = um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/eyeDesk/conf.xml';
-		$autorunXML = eyeXML('getXMLfile',array($dir));
+		$autorunXML = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
 		$arrayIds = array_findIdByText(array($autorunXML['eyeDesk'][0]['autolaunch'],$autorun_old));
 		$arrayIds = $arrayIds[0];
 		if (isset($arrayIds)) {
 			$autorunXML['eyeDesk'][0]['autolaunch'][$arrayIds] = $autorun_new;
-			eyeXML('setXMLFile',array($dir,$autorunXML));
+			eyeXML('setXMLconfig',array('eyeDesk','conf.xml',$autorunXML));
 			eyex('messageBox',array('content' => 'Command successfully saved.'));
-			loadContent('apps','eyedesk');
+			loadContent('system','eyedesk');
 		} else {
 			eyex('messageBox',array('content' => 'The command doesn\'t exists, yet.'));
 		}
@@ -117,6 +119,8 @@ function eyeControl_on_eyedesk_default($params = '') {
 		'type' => 3,
 		'title' => 'Use defaults',
 		'win_name' => 'eyeControl_eyedesk_default_window',
+		'win_style' => TITLE + CLOSE,
+		'win_removepid' => 0,
 		'btn1_capt' => 'Yes',
 		'btn1_name' => 'eyedesk_default_yes',
 		'btn2_capt' => 'No',
@@ -130,13 +134,13 @@ function eyeControl_on_eyedesk_default_yes($params = '') {
 	global $currentUser;
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
-	$xmlDef = eyeXML('getXMLfile',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/eyeControl/def_files/eyeDesk.xml'));
+	$xmlDef = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/skel/' . CONF_USER_DIR . '/eyeDesk/conf.xml'));
 	$currentUser = $oldUser;
-	$xmlNew = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/eyeDesk/conf.xml'));
+	$xmlNew = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
 	$xmlNew['eyeDesk'][0]['autolaunch'] = $xmlDef['eyeDesk'][0]['autolaunch'];
-	eyeXML('setXMLfile',array(um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/eyeDesk/conf.xml',$xmlNew));
+	eyeXML('setXMLconfig',array('eyeDesk','conf.xml',$xmlNew));
 	eyex('messageBox',array('content' => 'Default settings successfully set.'));
-	loadContent('apps','eyedesk');
+	loadContent('system','eyedesk');
 }
 
 function eyeControl_on_eyedesk_default_no($params = '') {
@@ -147,10 +151,12 @@ function eyeControl_on_eyedesk_delete($params = '') {
 	$autorun = $GLOBALS['eyeControl_eyedesk_sortabletable']->selected;
 	if ($autorun && $autorun!= 'eyeBar') {
 		eyex('messageBox',array(
-			'content' => 'Do you really want to remove this autorun from eyeDesk?',
+			'content' => 'Do you really want to remove this command?',
 			'type' => 3,
 			'title' => 'Delete autorun',
 			'win_name' => 'eyeControl_eyedesk_delete_window',
+			'win_style' => TITLE + CLOSE,
+			'win_removepid' => 0,
 			'btn1_capt' => 'Yes',
 			'btn1_name' => 'eyedesk_delete_yes',
 			'btn2_capt' => 'No',
@@ -161,23 +167,22 @@ function eyeControl_on_eyedesk_delete($params = '') {
 			'img' => '?'
 		));
 	} elseif ($autorun == 'eyeBar') {
-		eyex('messageBox',array('content' => 'You can\'t delete the eyeBar autorun!'));
+		eyex('messageBox',array('content' => 'You can\'t delete the eyeBar command!'));
 	} else {
-		eyex('messageBox',array('content' => 'Please choose an autorun to be deleted.'));
+		eyex('messageBox',array('content' => 'Please choose a command to be deleted.'));
 	}
 }
 
 function eyeControl_on_eyedesk_delete_yes($params = '') {
 	$autorun = $GLOBALS['eyedesk_delete_hidden']->text;
 	if ($autorun && $autorun != 'eyeBar') {
-		$file = um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/eyeDesk/conf.xml';
-		$autorunXML = eyeXML('getXMLfile',array($file));
+		$autorunXML = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
 		$x = array_findIdByText(array($autorunXML['eyeDesk'][0]['autolaunch'],$autorun));
 		$x = $x[0];
 		unset($autorunXML['eyeDesk'][0]['autolaunch'][$x]);
-		eyeXML('setXMLFile',array($file,$autorunXML));
-		eyex('messageBox',array('content' => 'The autorun was successfully deleted.'));
-		loadContent('apps','eyedesk');
+		eyeXML('setXMLconfig',array('eyeDesk','conf.xml',$autorunXML));
+		eyex('messageBox',array('content' => 'The command was successfully deleted.'));
+		loadContent('system','eyedesk');
 	}
 }
 

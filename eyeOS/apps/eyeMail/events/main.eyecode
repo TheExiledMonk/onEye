@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeMail_on_goToAccount($params=null) {
@@ -99,7 +99,7 @@ function eyeMail_on_inbox($params=null) {
 				'url'=>'index.php?extern=apps/eyeMail/gfx/inbox.png'));
 	$myImage->show();
 	$myLabel = new Label(array('name'=>'inbox','father'=>'folder_WND_Content','x'=>40,'y'=>0,
-		'text'=>'Inbox ('.$messages.')','signal'=>'inbox','disablemsg'=>0));
+		'text'=>'Inbox (%s)','tokens' => array($messages),'signal'=>'inbox','disablemsg'=>0));
 	$myLabel->show();
 	$myLabel->setCss(array('cursor'=>'Pointer'));
 	$GLOBALS['table_1']->remove();
@@ -171,27 +171,27 @@ function eyeMail_on_getMessages($params=null) {
 			$subject = 'No subject';
 			$date = '-';
 			foreach($headers as $value) {
-				$sub = substr($value,0,strlen('From:'));
+				$sub = utf8_substr($value,0,utf8_strlen('From:'));
 				if($sub == 'From:') {
-					$sender = substr($value,strlen('From:')+1);
+					$sender = utf8_substr($value,utf8_strlen('From:')+1);
 				}
-				$sub = substr($value,0,strlen('Subject:'));
+				$sub = utf8_substr($value,0,utf8_strlen('Subject:'));
 				if($sub == 'Subject:') {
-					$subject = substr($value,strlen('Subject:')+1);
+					$subject = utf8_substr($value,utf8_strlen('Subject:')+1);
 				}
-				$sub = substr($value,0,strlen('Date:'));
+				$sub = utf8_substr($value,0,utf8_strlen('Date:'));
 				if($sub == 'Date:') {
-					$date = substr($value,strlen('Date:')+1);
+					$date = utf8_substr($value,utf8_strlen('Date:')+1);
 					$tokens = explode(' ',$date);
 					$date = $tokens[1].' '.$tokens[2].' '.$tokens[3];
 				}
 			}
-			if(strlen($subject) > 30) {
-				$subject = substr($subject,0,30);
+			if(utf8_strlen($subject) > 30) {
+				$subject = utf8_substr($subject,0,30);
 				$subject .= '...';
 			}
-			if(strlen($sender)>30) {
-				$sender = substr($sender,0,30);
+			if(utf8_strlen($sender)>30) {
+				$sender = utf8_substr($sender,0,30);
 				$sender .= '...';
 			}
 			$GLOBALS['table_1']->addRow(array($next,$subject,$sender,$date));
@@ -254,17 +254,17 @@ function eyeMail_on_Open($params=null) {
 		$subject = 'No subject';
 		$date = '-';
 		foreach($headers as $value) {
-			$sub = substr($value,0,strlen('From:'));
+			$sub = utf8_substr($value,0,utf8_strlen('From:'));
 			if($sub == 'From:') {
-				$sender = substr($value,strlen('From:')+1);
+				$sender = utf8_substr($value,utf8_strlen('From:')+1);
 			}
-			$sub = substr($value,0,strlen('Subject:'));
+			$sub = utf8_substr($value,0,utf8_strlen('Subject:'));
 			if($sub == 'Subject:') {
-				$subject = substr($value,strlen('Subject:')+1);
+				$subject = utf8_substr($value,utf8_strlen('Subject:')+1);
 			}
-			$sub = substr($value,0,strlen('Date:'));
+			$sub = utf8_substr($value,0,utf8_strlen('Date:'));
 			if($sub == 'Date:') {
-				$date = substr($value,strlen('Date:')+1);
+				$date = utf8_substr($value,utf8_strlen('Date:')+1);
 			}
 		}
 		$windowName = 'win_mail_'+uniqid();
@@ -372,8 +372,8 @@ function stripjs($code) {
 
 function eyeMail_on_send($params=null) {
 	$windowName = 'wnd_send';
-	$myWindow = new Window(array('name'=>$windowName,'father'=>'eyeApps','title'=>'Send new mail','cent'=>1,
-		'width'=>585,'height'=>600,'removepid'=>0));
+	$myWindow = new Window(array('name'=>$windowName,'father'=>'eyeApps','title'=>'New Mail','cent'=>1,
+		'width'=>585,'height'=>600,'removepid'=>0,'style'=>CLOSE));
 	$myWindow->show();
 	
 	$myLabel = new Label(array('name'=>'send_lbl_1','father'=>$windowName.'_Content',
@@ -392,7 +392,15 @@ function eyeMail_on_send($params=null) {
 		'x'=>90,'y'=>40,'width'=>470));
 	$myTextBoxSubject->show();
 	
-	$myTextArea = new TextArea(array('name'=>'text_body','father'=>$windowName.'_Content','x'=>20,'y'=>70,'height'=>460,'width'=>540));
+	$myLabel = new Label(array('name'=>'send_lbl_3','father'=>$windowName.'_Content',
+		'x'=>20,'y'=>60,'text'=>'CC:'));
+	$myLabel->show();
+	
+	$myTextBoxSubject = new Textbox(array('name'=>'textbox_cc','father'=>$windowName.'_Content',
+		'x'=>90,'y'=>60,'width'=>470));
+	$myTextBoxSubject->show();
+	
+	$myTextArea = new TextArea(array('name'=>'text_body','father'=>$windowName.'_Content','x'=>20,'y'=>90,'height'=>440,'width'=>540));
 	$myTextArea->show();
 	
 	$myButtonSend = new Button(array('name'=>'send_btn_1','father'=>$windowName.'_Content','caption'=>'Send',
@@ -405,6 +413,7 @@ function eyeMail_on_send($params=null) {
 
 function eyeMail_on_do_send($params=null) {
 	$to = $GLOBALS['textbox_to']->text;
+	$cc = $GLOBALS['textbox_cc']->text;
 	$subject = $GLOBALS['textbox_subject']->text;
 	$body = $GLOBALS['text_body']->text;
 
@@ -447,8 +456,8 @@ function eyeMail_on_do_send($params=null) {
     $smtp->workstation="";              /* Workstation name for NTLM authentication */
     $smtp->authentication_mechanism=""; /* Specify a SASL authentication method like LOGIN, PLAIN, CRAM-MD5, NTLM, etc..
                                            Leave it empty to make the class negotiate if necessary */
-    
-	if($smtp->SendMessage(
+    global $myPid;
+	$smtp->SendMessage(
         $from,
         array(
             $to
@@ -456,15 +465,15 @@ function eyeMail_on_do_send($params=null) {
         array(
             "From: $from",
             "To: $to",
+            "CC: $cc",
             "Subject: $subject",
             "Date: ".strftime("%a, %d %b %Y %H:%M:%S %Z")
         ),
-        $body)) {
-			$GLOBALS['wnd_send']->close();
-			eyeX('messageBox',array('content'=>'Mail sent to %s','tokens' => array($to)));
-        }
-    else
-        eyeX('messageBox',array('content'=>'Error Sending message: %s','tokens' => array($smtp->error)));
+        $body); 
+		$js = "document.getElementById('eyeApps').removeChild(document.getElementById('".$myPid."_wnd_send'));";
+		eyeX('rawjs',array('js'=>$js));
+		eyeX('messageBox',array('content'=>'Mail sent to %s','tokens' => array($to)));
+        
 }
 
 function eyeMail_on_Manage($params=null) {

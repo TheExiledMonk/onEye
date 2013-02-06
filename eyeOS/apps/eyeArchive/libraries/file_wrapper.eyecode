@@ -18,12 +18,12 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 define('WRAPPER_TYPE','file');
 function getFiles($file){
 	
-	return array('names'=>array(basename($file)),'path'=>array($file));
+	return array('names'=>array(utf8_basename($file)),'path'=>array($file));
 }
 
 function getFileType(){

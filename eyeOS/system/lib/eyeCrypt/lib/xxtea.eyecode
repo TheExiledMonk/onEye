@@ -125,16 +125,16 @@ class Crypt_XXTEA {
             $s .= pack('V', $v[$i]);
         }
         if ($w) {
-            return substr($s, 0, $v[$len-1]);
+            return utf8_substr($s, 0, $v[$len-1]);
         } else {
             return $s;
         }
     }
 
     function _str2long($s, $w) {
-        $v = array_values(unpack('V*', $s.str_repeat("\0", (4-strlen($s)%4)&3)));
+        $v = array_values(unpack('V*', $s.str_repeat("\0", (4-utf8_strlen($s)%4)&3)));
         if ($w) {
-            $v[] = strlen($s);
+            $v[] = utf8_strlen($s);
         }
         return $v;
     }

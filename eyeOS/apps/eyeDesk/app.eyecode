@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
 	eyeDesk
@@ -34,7 +34,7 @@
 define('EYEDESK_DEFAULT_APP_EXT','.app'); //in a near future, this will moved to a config
 
 function eyeDesk_run($params=null) {
-	/**prepare the screen**/
+	/**prepare the screen**/	
 	service('eyex','createDiv',array('nopid'=>1,'removepid'=>1,'name'=>'eyeMessageBox', 'father' => 'eyeScreen','class'=>'eyeMessageBox'));
 	service('eyex','createDiv',array('nopid'=>1,'removepid'=>1,'name'=>'eyeMessageBoxText', 'father' => 'eyeMessageBox','class'=>'eyeMessageBoxText'));
 	
@@ -88,10 +88,10 @@ function eyeDesk_showDesk($autorun) {
 		$mySettings['eyeDesk'][0]['restoreDock'][0] = 1;
 		eyeXML('setXMLfile',array($configFile,$mySettings));
 	}
-	$userTheme = basename($mySettings['eyeDesk'][0]['theme'][0]);
+	$userTheme = utf8_basename($mySettings['eyeDesk'][0]['theme'][0]);
 	eyeSessions('setVar',array('usertheme',$userTheme));
-	
-	service('eyex','rawjs',array('js'=>"eyeTheme = '$userTheme';"));
+	$tokens[] = $userTheme;
+	service('eyex','runjs',array('js'=>"eyeTheme = %s;",'tokens'=>$tokens));
 	
 	//check if the theme selected by the user is diferent from the default theme
 	//if true, reload theme to set the prefered by the user.
@@ -118,7 +118,17 @@ function eyeDesk_showDesk($autorun) {
 	//if the user has a wallpaper uploaded set his wallpaper
 	$myWllpPath = $mySettings["eyeDesk"][0]["wallpaper"][0];
 	if($myWllpPath && service('vfs','fileExists',array($myWllpPath))) {
-		service('eyex','setWallpaper',array('path' => "index.php?checknum=$checknum&msg=getWallpaper&params=", 'repeat' => 0, 'center' => 1));
+		if($mySettings['eyeDesk'][0]['wallpaperRepeat'][0] == '1') {
+			$repeat = 1;
+		} else {
+			$repeat = 0;
+		}
+		if($mySettings['eyeDesk'][0]['wallpaperCenter'][0] == '0') {
+			$center = 0;
+		} else {
+			$center = 1;
+		}
+		service('eyex','setWallpaper',array('path' => "index.php?checknum=$checknum&msg=getWallpaper&params=", 'repeat' => $repeat, 'center' => $center));
 	}
 	
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDesk/draw'.EYE_CODE_EXTENSION);
@@ -160,13 +170,22 @@ function eyeDesk_showDesk($autorun) {
 			}
 		}
 	}
-	
+		
 	//listener service calls for real-time desktop
 	addListenerServiceCall('onCreate','vfs','create',1);
 	addListenerServiceCall('onDelete','vfs','delete',1);
 	addListenerServiceCall('onMkdir','vfs','mkDir',1);
 	addListenerServiceCall('onRmdir','vfs','rmdir',1);
 	
+	//add contextmenu here
+	$myContextMenu = new ContextMenu(array('name'=>'deskMenu','father'=>'eyeApps'));
+	$myContextMenu->show();
+	$entrys = getConfig('eyeDesk','contextMenu.xml');
+	$counter = 0;
+	foreach($entrys['menu'][0]['entry'] as $value) {
+		$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0]);
+		$counter++;
+	}
 	//Welcome to the system message
 	service('eyex','messageBox',array('content'=>'Welcome to %s, %s.','tokens'=>array(EYEOS_HOSTNAME,'<strong>'.$currentUser.'</strong>')));
 }

@@ -35,10 +35,10 @@
  */
 function File_Archive_Reader_GetMime($filename)
 {
-    $pos = strrpos($filename, '.');
+    $pos = utf8_strrpos($filename, '.');
     $extension = "";
     if ($pos !== false) {
-        $extension = strtolower(substr($filename, $pos+1));
+        $extension = utf8_strtolower(utf8_substr($filename, $pos+1));
     }
 
     switch($extension) {

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 //
 // +----------------------------------------------------------------------+
@@ -44,7 +44,7 @@ class Numbers_Roman
 
     function toNumber($roman)
     {
-        $roman = strtoupper($roman);
+        $roman = utf8_strtoupper($roman);
 
         $roman = str_replace('_V', 'S', $roman);
         $roman = str_replace('_X', 'R', $roman);
@@ -73,14 +73,14 @@ class Numbers_Roman
         $arabic = 0;
         $state = 0;
         $sidx = 0;
-        $len = strlen($roman) - 1;
+        $len = utf8_strlen($roman) - 1;
 
         while ($len >= 0) {
             $i = 0;
             $sidx = $len;
 
             while ($conv[$i]['number'] > 0) {
-                if (strtoupper($roman[$sidx]) == $conv[$i]['letter']) {
+                if (utf8_strtoupper($roman[$sidx]) == $conv[$i]['letter']) {
                     if ($state > $conv[$i]['number']) {
                         $arabic -= $conv[$i]['number'];
                     } else {
@@ -176,7 +176,7 @@ class Numbers_Roman
 
 
         if ($uppercase == false) {
-            $roman = strtolower($roman);
+            $roman = utf8_strtolower($roman);
         }
 
         return $roman;

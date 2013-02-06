@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -52,8 +52,8 @@ function service_sec_cleanOutPutString($params) {
 		$string = htmlspecialchars($string,ENT_QUOTES);
 	}
 	if(isset($params['maxLen']) && is_numeric($params['maxLen']) && $params['maxLen'] > 0) {
-		if(strlen($string) > $params['maxLen']) {
-			$string = substr($string,0,$params['maxLen']);
+		if(utf8_strlen($string) > $params['maxLen']) {
+			$string = utf8_substr($string,0,$params['maxLen']);
 		}
 	}
 	if(isset($params['noreturn'])) {

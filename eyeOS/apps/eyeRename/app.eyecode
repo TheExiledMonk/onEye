@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeRename_run($params = '') {
@@ -28,12 +28,20 @@ function eyeRename_run($params = '') {
 	} else {
 		proc('end');
 	}
-	$name = basename($path);
+	if (service('vfs','fileExists',array($path))) {
+		$name = utf8_basename($path);
+	} elseif (service('vfs','real_fileExists',array($path)) && utf8_strtolower(strrchr($path,'.')) == utf8_strtolower('.' . EYEOS_LINK_EXT)) {
+		$name = utf8_basename($path,'.' . EYEOS_LINK_EXT);
+	} else {
+		service('eyex','messageBox',array('content'=>'Error renaming file.'));
+		proc('end');
+	}
 	eyex('messageBox',array(
 		'content' => 'Please type a new name here:',
 		'type' => 3,
 		'title' => 'Rename',
 		'win_name' => 'eyeRename',
+		'win_style' => TITLE + LISTED + MIN + CLOSE,
 		'btn1_capt' => 'Rename',
 		'btn1_name' => 'rename',
 		'btn2_capt' => 'Cancel',

@@ -57,7 +57,7 @@ class System_SharedMemory
         if ($type === false) {
             $type = System_SharedMemory::getAvailableTypes(true);
         } else {
-            $type = ucfirst(strtolower($type));
+            $type = utf8_ucfirst(utf8_strtolower($type));
         }
 
         require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeIPC/modules/'.$type.EYE_CODE_EXTENSION;

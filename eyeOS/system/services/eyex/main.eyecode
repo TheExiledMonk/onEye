@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -206,11 +206,11 @@ function service_eyex_setWallpaper($params) {
 		return false;
 	}
 	
-	if(!$repeat) {
+	if(!isset($repeat)) {
 		$repeat=0;
 	}
 	
-	if(!$center) {
+	if(!isset($center)) {
 		$center=1;
 	}
 	
@@ -417,17 +417,19 @@ function service_eyex_removeWidget($params) {
 ***/
 function service_eyex_messageBox($params) {
 
-	if($params['content']) $content = $params['content'];
-	else {
+	if ($params['content']) {
+		$content = $params['content'];
+	} else {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	
-	if(isset($params['type']))	{
+	if(isset($params['type'])) {
 		$type = $params['type'];
 	} else {
 		$type = 1;
 	}
+	
 	if ($type == 3) {
 		if($params['title']) {
 			$title = $params['title'];
@@ -443,9 +445,21 @@ function service_eyex_messageBox($params) {
 			return false;
 		}
 		
+		if(isset($params['win_style'])) {
+			$style = $params['win_style'];
+		} else {
+			$style = TITLE;
+		}
+		
+		if(isset($params['win_removepid'])) {
+			$removepid = $params['win_removepid'];
+		} else {
+			$removepid = 1;
+		}
+		
 		if($params['btn1_capt']) {
 			$btn1_capt = $params['btn1_capt'];
-			$btnX = 150;
+			$btnX = 1;
 			if($params['btn1_name']) {
 				$btn1_name = $params['btn1_name'];
 			} else {
@@ -459,7 +473,7 @@ function service_eyex_messageBox($params) {
 		
 		if($params['btn2_capt']) {
 			$btn2_capt = $params['btn2_capt'];
-			$btnX = 120;
+			$btnX++;
 			if($params['btn2_name']) {
 				$btn2_name = $params['btn2_name'];
 			} else {
@@ -467,9 +481,10 @@ function service_eyex_messageBox($params) {
 				return false;
 			}
 		}
+		
 		if($params['btn3_capt']) {
 			$btn3_capt = $params['btn3_capt'];
-			$btnX = 90;
+			$btnX++;
 			if($params['btn3_name']) {
 				$btn3_name = $params['btn3_name'];
 			} else {
@@ -477,6 +492,7 @@ function service_eyex_messageBox($params) {
 				return false;
 			}
 		}
+		
 		if($params['hidden_text']) {
 			$hidden_text = $params['hidden_text'];
 			if($params['hidden_name']) {
@@ -486,6 +502,7 @@ function service_eyex_messageBox($params) {
 				return false;
 			}
 		}
+		
 		if($params['hidden2_text']) {
 			$hidden2_text = $params['hidden2_text'];
 			if($params['hidden2_name']) {
@@ -495,6 +512,7 @@ function service_eyex_messageBox($params) {
 				return false;
 			}
 		}
+		
 		if($params['hidden3_text']) {
 			$hidden3_text = $params['hidden3_text'];
 			if($params['hidden3_name']) {
@@ -529,21 +547,27 @@ function service_eyex_messageBox($params) {
 			$tokens = null;
 		}
 		
+		if ($img) {
+			$widthImg = 0;
+		} else {
+			$widthImg = 63;
+		}
+		
 		$content = i18n('translate',array($content,$tokens));
 		
 		$myWindow = new Window(array(
 			'name' => $win_name,
 			'father' => $father,
 			'cent' => 1,
-			'width' => 390,
+			'width' => 390 - $widthImg,
 			'height' => 150,
 			'title' => $title,
-			'style' => TITLE
+			'style' => $style,
+			'removepid' => $removepid
 		));
 		$myWindow->show();
 		
 		if ($img) {
-			$widthImg = 0;
 			$myImageBox = new ImageBox(array(
 				'name' => 'msgbox_img',
 				'father' => $win_name . '_Content',
@@ -555,7 +579,7 @@ function service_eyex_messageBox($params) {
 				'url' => $img
 			));
 			$myImageBox->show();
-		} else $widthImg = 63;
+		}
 		
 		if ($hidden_text) {
 			$myHidden = new Hidden(array(
@@ -566,6 +590,7 @@ function service_eyex_messageBox($params) {
 			$myHidden->show();
 			reqLib('eyeWidgets','serialize',array($myHidden));
 		}
+		
 		if ($hidden2_text) {
 			$myHidden = new Hidden(array(
 				'name' => $hidden2_name,
@@ -575,6 +600,7 @@ function service_eyex_messageBox($params) {
 			$myHidden->show();
 			reqLib('eyeWidgets','serialize',array($myHidden));
 		}
+		
 		if ($hidden3_text) {
 			$myHidden = new Hidden(array(
 				'name' => $hidden3_name,
@@ -584,10 +610,11 @@ function service_eyex_messageBox($params) {
 			$myHidden->show();
 			reqLib('eyeWidgets','serialize',array($myHidden));
 		}
+		
 		$myContainer = new Container(array(
 			'father' => $win_name . '_Content',
 			'name' => 'msgbox_container',
-			'width' => 297 + $widthImg,
+			'width' => 297,
 			'x' => 78 - $widthImg,
 			'y' => 20
 		));
@@ -619,12 +646,14 @@ function service_eyex_messageBox($params) {
 			}
 		}
 		
+		$btnX = $myWindow->width / ($btnX + 1);
+		
 		$myButton = new Button(array(
 			'name' => $btn1_name,
 			'father' => $win_name . '_Content',
 			'signal' => $btn1_name,
 			'caption' => $btn1_capt,
-			'x' => $btnX,
+			'x' => $btnX - (10 + (4 * utf8_strlen($btn1_capt))),
 			'y' => 90
 		));
 		$myButton->addFriend($myTextbox);
@@ -634,9 +663,8 @@ function service_eyex_messageBox($params) {
 			$myButton = new Button(array(
 				'name' => $btn2_name,
 				'father' => $win_name . '_Content',
-				'signal' => $btn2_name,
 				'caption' => $btn2_capt,
-				'x' => 2 * $btnX,
+				'x' => (2 * $btnX) - (10 + (4 * utf8_strlen($btn1_capt))),
 				'y' => 90
 			));
 			$myButton->addFriend($myTextbox);
@@ -647,9 +675,8 @@ function service_eyex_messageBox($params) {
 			$myButton = new Button(array(
 				'name' => $btn3_name,
 				'father' => $win_name . '_Content',
-				'signal' => $btn3_name,
 				'caption' => $btn3_capt,
-				'x' => 3 * $btnX,
+				'x' => (3 * $btnX) - (10 + (4 * utf8_strlen($btn1_capt))),
 				'y' => 90
 			));
 			$myButton->addFriend($myTextbox);
@@ -668,7 +695,7 @@ function service_eyex_messageBox($params) {
 		$atribs = array(
 			'task' => array('messageBox'),
 			'content' => array($content),
-			'type' => array($type)	
+			'type' => array($type)
 		);
 		
 		$task = array(
@@ -702,7 +729,7 @@ function service_eyex_setValue($params) {
 	$atribs = array(
 		'task' => array('setValue'),
 		'content' => array($content),
-		'widget' => array($widget)	
+		'widget' => array($widget)
 	);
 	
 	$task = array(
@@ -883,6 +910,52 @@ function service_eyex_rawjs($params) { //util for widgets
 	mmap('addToBuffer',array($myAction));
 }
 
+function service_eyex_runjs($params) { //util for widgets
+	
+	if(isset($params['tokens'])){
+		$tokens = $params['tokens'];
+	}else{
+		$tokens = null;
+	}
+	if($params['js']) {
+		$js = $params['js'];
+	} else {
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	$js = str_replace("\n","",$js);
+	$js = str_replace("\r","",$js);
+	
+	if(isset($tokens) && is_array($tokens)) {
+		$pieces = explode("%s",$js);
+		$js = '';
+		$i = 0;
+		foreach($pieces as $value) {
+			$js .= $pieces[$i];
+			if(isset($tokens[$i])) {
+				$tokens[$i] = str_replace('\\','\\\\',$tokens[$i]);
+				$tokens[$i] = str_replace("'","\'",$tokens[$i]);
+				$tokens[$i] = str_replace('"','\"',$tokens[$i]);				
+				$js .= '"'.$tokens[$i].'"';
+			}
+			$i++;
+		}
+	}
+		
+	$atribs = array(
+		'task' => array('rawjs'),
+		'js' => array($js)
+	);
+	
+	$task = array(
+		'action' => array(
+			$atribs
+		)
+	);
+	
+	$myAction = eyeXML('array2xml',array($task));
+	mmap('addToBuffer',array($myAction));
+}
 /***
 * 
 * Description: change the position of a widget in the screen
@@ -1357,9 +1430,9 @@ function service_eyex_fadeInLayer($params){
 ***/
 function camelize($prop) {
 	$find = strstr($prop,'-');
-	$ant = substr($prop,0,strlen($prop)-strlen($find));
-	$find = substr($find,1,strlen($find));
-	$find{0} = strtoupper($find{0});
+	$ant = utf8_substr($prop,0,utf8_strlen($prop)-utf8_strlen($find));
+	$find = utf8_substr($find,1,utf8_strlen($find));
+	$find{0} = utf8_strtoupper($find{0});
 	return $ant.$find;
 }
 

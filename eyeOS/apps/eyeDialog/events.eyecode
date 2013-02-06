@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.1
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDialog_on_Message($params="") {
@@ -38,7 +38,7 @@ function eyeDialog_on_open($params="") {
 	if(is_object($GLOBALS['dPath'])) {	
 		if($path == "..") {
 			$path = '/'.$GLOBALS['dPath']->text;
-			$info = pathinfo($path);
+			$info = utf8_pathinfo($path);
 			$GLOBALS['dPath']->text = $info['dirname'];
 			$path = '/';
 		}elseif($GLOBALS['dPath']->text == ''){
@@ -75,7 +75,7 @@ function eyeDialog_on_open($params="") {
 	
 	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'WND_1',
 		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>5,'y'=>6,'width'=>370,'height'=>215,
-		'signal'=>'ClickTable','master'=>1));
+		'signal'=>'ClickTable','master'=>1,'dblsignal'=>'actionTable'));
 	$files = "";
 	$myTable->show();
 
@@ -87,7 +87,7 @@ function eyeDialog_on_open($params="") {
 			$fileName = "";
 			//Type 3 is only a dir list
 			if($type != 2){							
-				if(ltrim(strrchr($current,'.'),'.') == EYEOS_INFO_EXT) {
+				if(utf8_ltrim(strrchr($current,'.'),'.') == EYEOS_INFO_EXT) {
 					$icon = '<img src="index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/16x16/file.png" />&nbsp;&nbsp;';
 					//TODO: CREATE A FUNCTIONS FOR HANDLE EYEINFO FILES
 					$fp = service('vfs','real_open',array($current,'r'));
@@ -96,22 +96,22 @@ function eyeDialog_on_open($params="") {
 					$myArray = reqLib('eyeXML','xml2array',array($xml));
 					$fileName = $myArray['eyeFile'][0]['filename'][0];
 					//TODO: SIZE MUST BE EXTRACTED FROM EYEFILE, NOT EYEINFO
-					$eyefile = substr($current,0,strlen($current)-strlen(EYEOS_INFO_EXT));
+					$eyefile = utf8_substr($current,0,utf8_strlen($current)-utf8_strlen(EYEOS_INFO_EXT));
 					$eyefile .= EYEOS_FILE_EXT;
 					$size = service('vfs','real_filesize',array($eyefile));
-					$fileName = htmlentities($fileName,ENT_QUOTES,'UTF-8');
+					$fileName = $fileName;
 					$files[] = array($icon,$fileName,$size);
 				} elseif (is_dir($current)) {
 					$icon = '<img src="index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/16x16/folder.png" />&nbsp;&nbsp;';
-					$fileName = basename($current);
-					$fileName = htmlentities($fileName,ENT_QUOTES,'UTF-8');
+					$fileName = utf8_basename($current);
+					$fileName = $fileName;
 					$myTable->addRow(array($icon,$fileName,' '));
 				}
 			}else{
 				if(is_dir($current)){
 					$icon = '<img src="index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/16x16/folder.png" />&nbsp;&nbsp;';
-					$fileName = basename($current);
-					$fileName = htmlentities($fileName,ENT_QUOTES,'UTF-8');
+					$fileName = utf8_basename($current);
+					$fileName = $fileName;
 					$myTable->addRow(array($icon,$fileName,' '));	
 				}				
 			}
@@ -124,6 +124,14 @@ function eyeDialog_on_open($params="") {
 	}
 	if(is_object($GLOBALS['dPath'])) {
 		$GLOBALS['dPath']->text = $path;
+	}
+}
+
+function eyeDialog_on_actionTable($params=null) {
+	$url = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$GLOBALS['dPath']->text.'/'.$GLOBALS['table_1']->selected;
+	if(!vfs('isdir',array($url)) && vfs('fileExists',array($url))) {
+		$GLOBALS['txtfilename']->setText($mySelected);
+		eyeDialog_on_actionUser($params);
 	}
 }
 
@@ -141,6 +149,12 @@ function eyeDialog_on_actionUser($params=null) {
 	$type = $GLOBALS['dType']->text;
 	$path = $GLOBALS['dPath']->text;
 	$filename = $GLOBALS['txtfilename']->text;
+
+	if (vfs('checkSpecialChars',array($filename)) === false) {
+		$filename = str_replace('/','',$filename);
+		$filename = str_replace('\\','',$filename);
+	}
+	
 	if($type == 0) {
 		if($path == '/'){
 			$ret =$path.$mySelected;	

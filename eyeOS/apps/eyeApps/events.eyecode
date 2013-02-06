@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeApps_on_Icon_Clicked($params=null) {
@@ -27,6 +27,11 @@ function eyeApps_on_Icon_Clicked($params=null) {
 
 function eyeApps_on_Manage() {
 	proc('launch',array('eyeManageApps'));
+	proc('end');
+}
+
+function eyeApps_on_InstallApps() {
+	proc('launch',array('eyeSoft'));
 	proc('end');
 }
 

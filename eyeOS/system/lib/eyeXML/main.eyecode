@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -60,7 +60,8 @@ function getArrayText($myArray,$loops,$enter) {
 	$text = "";
 	$loops++;
 	if(!is_array($myArray)) {
-		return htmlentities($myArray,ENT_QUOTES,'UTF-8');
+		return eyeXML('entityEncode',array($myArray));
+		//	return htmlentities($myArray,ENT_QUOTES,'UTF-8');
 	}
 	foreach($myArray as $key=>$value) {
 		foreach($value as $current) {
@@ -69,7 +70,7 @@ function getArrayText($myArray,$loops,$enter) {
 			} else {
 				$enter = 0;
 			}
-			$text .= str_pad("",$loops,"\t")."<$key>";
+			$text .= utf8_str_pad("",$loops,"\t")."<$key>";
 			$temp = getArrayText($current,$loops,0);
 			if(!is_array($current)) {
 				$text .= $temp;
@@ -77,7 +78,7 @@ function getArrayText($myArray,$loops,$enter) {
 				$enter = 1;
 			} else {
 				$text .= $temp;
-				$text .= str_pad("",$loops,"\t")."</$key>\n";
+				$text .= utf8_str_pad("",$loops,"\t")."</$key>\n";
 				$enter = 1;
 			}
 		}
@@ -93,19 +94,19 @@ function getNodeContent($content) {
 		return html_entity_decode($content,ENT_QUOTES,'UTF-8');
 	}
 	$counter=array();
-	while(strlen($content) > 3) { 
+	while(utf8_strlen($content) > 3) { 
 		if(!$begin || !$end) {
 			break;
 		}
-		$name = substr($begin,1,strlen($begin)-strlen($end)-1);
+		$name = utf8_substr($begin,1,utf8_strlen($begin)-utf8_strlen($end)-1);
 		$mySearch = strstr($name," ");
 		if($mySearch) {
-			$subName = substr($name,0,strlen($name)-strlen($mySearch));
+			$subName = utf8_substr($name,0,utf8_strlen($name)-utf8_strlen($mySearch));
 		} else {
 			$subName = $name;
 		}
-		if($name{strlen($name)-1} == '/') {
-			$content = substr($begin,strlen($name)+2);
+		if($name{utf8_strlen($name)-1} == '/') {
+			$content = utf8_substr($begin,utf8_strlen($name)+2);
 			$begin = strstr($content,'<');
 			$end = strstr($begin,'>');
 			if(!isset($counter[$subName])) {
@@ -114,14 +115,14 @@ function getNodeContent($content) {
 			$return[$subName][$counter[$subName]] = "";
 			$counter[$subName]++;
 		} elseif($name{0}=='/') {
-			$content = substr($begin,strlen($name)+2);
+			$content = utf8_substr($begin,utf8_strlen($name)+2);
 			$begin = strstr($content,'<');
 			$end = strstr($begin,'>');
 		}else {
 			$to = strstr($begin,'</'.$subName.'>');
-			$mySize = strlen($begin)-strlen($to)-strlen($name)-2;
-			$subContent = substr($begin,strlen($name)+2,$mySize);
-			$content = substr($begin,(strlen($name)*2)+5+strlen($subContent));
+			$mySize = utf8_strlen($begin)-utf8_strlen($to)-utf8_strlen($name)-2;
+			$subContent = utf8_substr($begin,utf8_strlen($name)+2,$mySize);
+			$content = utf8_substr($begin,(utf8_strlen($name)*2)+5+utf8_strlen($subContent));
 			$begin = strstr($content,'<');
 			$end = strstr($begin,'>');
 			if($name) {	
@@ -147,19 +148,8 @@ function lib_eyeXML_getXmlHeader($params=null) {
 }
 
 function lib_eyeXML_getXMLfile($params) {
-	if(!is_readable($params[0])){
-		return false;
-	}
 	$file = $params[0];
-	if(filesize($file) == 0) {
-		return false;
-	}
-	$fp = service('vfs','real_open',array($file,'r'));
-	if(!$fp) {
-		return false;
-	}
-	$content = fread($fp,filesize($file));
-	fclose($fp);
+	$content = vfs('real_getFileContent',array($file));
 	$xml = lib_eyeXML_xml2array(array($content));
 	return $xml;
 }
@@ -213,5 +203,17 @@ function lib_eyeXML_setXMLconfig($params) {
 	$content = fwrite($fp,$xml);
 	fclose($fp);
 	return true;
+}
+
+function lib_eyeXML_entityEncode($params){
+	$string = $params[0];
+	$string = str_replace('&','&amp;',$string);
+	$string = str_replace('<','&lt;',$string);
+	$string = str_replace('>','&gt;',$string);
+	//Simple quote is replaced for his entity number because IE have some problems with character entity.
+	$string = str_replace('\'','&#039;',$string);
+	$string = str_replace('"','&quot;',$string);
+	
+	return $string;
 }
 ?>

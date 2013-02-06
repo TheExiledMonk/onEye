@@ -87,9 +87,9 @@ class File_Archive_Writer_Ar extends File_Archive_Writer_Archive
         $struct = "";
         $currentSize = $size;
         //if file length is > than 16..
-        if (strlen($filename) > 16) {
-            $currentSize += strlen($filename);
-            $struct .= sprintf("#1/%-13d", strlen($filename));
+        if (utf8_strlen($filename) > 16) {
+            $currentSize += utf8_strlen($filename);
+            $struct .= sprintf("#1/%-13d", utf8_strlen($filename));
             $struct .= sprintf("%-12d%-6d%-6d%-8s%-10d",
                                $time, $uid, $gid, $mode, $currentSize);
             $struct .=  "`\n".$filename;
@@ -112,7 +112,7 @@ class File_Archive_Writer_Ar extends File_Archive_Writer_Archive
      */
     function arFooter($filename, $size)
     {
-        $size = (strlen ($filename) > 16) ? $size + strlen($filename) : $size;
+        $size = (utf8_strlen ($filename) > 16) ? $size + utf8_strlen($filename) : $size;
 
         return ($size % 2 == 1) ? "\n" : "";
     }
@@ -131,7 +131,7 @@ class File_Archive_Writer_Ar extends File_Archive_Writer_Archive
             $this->_atStart = false;
         }
         if ($this->_currentFilename !== null) {
-            $this->_currentStat[7] = strlen($this->_buffer);
+            $this->_currentStat[7] = utf8_strlen($this->_buffer);
             if ($this->_useBuffer) {
                 $this->innerWriter->writeData(
                                               $this->arHeader($this->_currentFilename, $this->_currentStat)
@@ -161,7 +161,7 @@ class File_Archive_Writer_Ar extends File_Archive_Writer_Archive
          * then we need to just save with the filename an ommit the
          * directory
          */
-        $this->_currentFilename = basename($filename);
+        $this->_currentFilename = utf8_basename($filename);
         $this->_currentStat = $stat;
 
         if(!$this->_useBuffer) {

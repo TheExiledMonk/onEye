@@ -60,7 +60,7 @@ class System_SharedMemory_Common
      */
     function engineName()
     {
-        return strtolower(substr(basename(__FILE__), 0, -4));
+        return utf8_strtolower(utf8_substr(utf8_basename(__FILE__), 0, -4));
     }
 
     /**

@@ -197,7 +197,7 @@ class System_SharedMemory_Shmop extends System_SharedMemory_Common
     {
         $id  = shmop_open($this->_h, 'c', 0600, $this->_options['size']);
         if ($id) {
-           $ret = shmop_write($id, $val, 0) == strlen($val);
+           $ret = shmop_write($id, $val, 0) == utf8_strlen($val);
            shmop_close($id);
            $this->_unlock($lh);
            return $ret;

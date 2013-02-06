@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -76,13 +76,13 @@ function service_um_createUser($params = null){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	if(strlen($params['username']) < 2 || strlen($params['username']) > MAX_USERNAME_LEN) {
+	if(utf8_strlen($params['username']) < 2 || utf8_strlen($params['username']) > MAX_USERNAME_LEN) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 //Check if user exists.
 	$username = $params['username'];
-	if(um('userExists',array($username))) {
+	if(um('userExist',array($username))) {
 		errorCodes('setErrorCode',array(UM_USER_ALREADY_EXISTS));
 		return false;
 	}
@@ -159,9 +159,16 @@ function service_um_retriveUser($params = null){
 		return false;
 	}	
 	
-	$username = basename($params[0]);
+	$username = utf8_basename($params[0]);
+	global $currentUser;
+	if($currentUser != $username && $currentUser != ROOTUSER) {
+		return false;
+	}
 	$filePath = service_um_getUserFilePath(array($username));
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
 	$fp = vfs('real_open',array($filePath,'r'));
+	$currentUser = $oldUser;
 	//Error handling
 	if(!$fp){
 		return false;
@@ -190,14 +197,14 @@ function service_um_userExist($params = null){
 		return false;
 	}	
 	
-	$username = basename($params[0]);
+	$username = utf8_basename($params[0]);
 	$filePath = service_um_getUserFilePath(array($username));
-	$fp = vfs('real_open',array($filePath,'r'));
-	//Error handling
-	if(!$fp){
+	
+	if(file_exists($filePath)) {
+		return true;
+	} else {
 		return false;
 	}
-	return true;
 }
 	
 /***
@@ -227,8 +234,15 @@ function service_um_updateUser($params = null){
 		return false;
 	 } 
 	 
+	 global $currentUser;
+	 
+	 //user should be current user, or run as root
+	 if($currentUser != $params['username'] && $currentUser != ROOTUSER) {
+	 	return false;
+	 }
+	 
 	 //TODO: Make findUserByName?
-	$userInfo = um('retriveUser',array(basename($params['username'])));
+	$userInfo = um('retriveUser',array(utf8_basename($params['username'])));
 	if (isset($params['password'])) {
 		$userInfo['eyeUser'][0]['password'][0] = $params['password'];
 	}
@@ -238,26 +252,31 @@ function service_um_updateUser($params = null){
 	if (isset($params['fullname'])) {
 		$userInfo['eyeUser'][0]['fullname'][0] = $params['fullname'];
 	}
-	if (isset($params['createDate'])) {
-		$userInfo['eyeUser'][0]['createDate'][0] = $params['createDate'];
-	}
-	if (isset($params['group'])) {
-		$userInfo['eyeUser'][0]['group'] = array_splice($userInfo['eyeUser'][0]['group'],1);
-		if (is_array($params['group'])) {
-			$x = 0;
-			foreach ($params['group'] as $group) {
-				$userInfo['eyeUser'][0]['group'][$x] = $group;
-				$x++;
+	if($currentUser == ROOTUSER) {
+		if (isset($params['createDate'])) {
+			$userInfo['eyeUser'][0]['createDate'][0] = $params['createDate'];
+		}
+		if (isset($params['group'])) {
+			$userInfo['eyeUser'][0]['group'] = array_splice($userInfo['eyeUser'][0]['group'],1);
+			if (is_array($params['group'])) {
+				$x = 0;
+				foreach ($params['group'] as $group) {
+					$userInfo['eyeUser'][0]['group'][$x] = $group;
+					$x++;
+				}
+			} else {
+				$userInfo['eyeUser'][0]['group'][0] = $params['group'];
 			}
-		} else {
-			$userInfo['eyeUser'][0]['group'][0] = $params['group'];
 		}
 	}
 	
 	$xml = eyeXML('array2xml',array($userInfo,1));
 	//TODO: WARNING: SECURITY RISK WITH USERNAME IN XML? 
 	$filePath = service_um_getUserFilePath($userInfo['eyeUser'][0]['username']);
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
 	$fp = vfs('real_open',array($filePath,'w'));	
+	$currentUser = $oldUser;
 	//Error handling
 	if(!$fp){
 		return false;
@@ -286,7 +305,7 @@ function service_um_deleteUser($params = null){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$username = basename($params[0]);
+	$username = utf8_basename($params[0]);
 	if ($username == ROOTUSER) {
 		return false;
 	}
@@ -332,7 +351,7 @@ function service_um_login($params = null) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}	
-	$username = basename($params[0]);
+	$username = utf8_basename($params[0]);
 	$password = md5($params[1].md5($params[1]));
 	 
 	global $currentUser;
@@ -352,8 +371,7 @@ function service_um_login($params = null) {
 		return false;
 	}
 	
-	if($info['eyeUser'][0]['password'][0] == $password)	
-	{
+	if($info['eyeUser'][0]['password'][0] == $password)	{
 		foreach($info['eyeUser'][0]['group'] as $value) {
 			$_SESSION['groups'][$value] = 1;
 		}
@@ -385,8 +403,8 @@ function service_um_getAllUsers() {
 			if (is_dir($dir2) && $folder != '.' && $folder != '..') {
 				if ($open2 = opendir($dir2)) {
 					while ($file = readdir($open2)) {
-						if (substr($file,strlen($file) - 4,strlen($file)) == '.xml')  {
-							$allUsers[$x] = substr($file,0,strlen($file) - 4);
+						if (utf8_substr($file,utf8_strlen($file) - 4,utf8_strlen($file)) == '.xml')  {
+							$allUsers[$x] = utf8_substr($file,0,utf8_strlen($file) - 4);
 							$x++;
 						}
 					}
@@ -454,7 +472,7 @@ function service_um_getUserDir($params=null) {
 		return false;
 	}
 
-	$username = basename($params[0]);
+	$username = utf8_basename($params[0]);
 	$userDir = EYE_ROOT.'/'.USERS_DIR.'/'.getAcronim(array($username)).'/'.$username.'/';
 	return $userDir;
 }
@@ -507,13 +525,17 @@ function getAcronim($params){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	$userLenght = strlen($username);
+	$userLenght = utf8_strlen($username);
 	//Generate de dir, remove $userDir ? maybe.
-	return $username{0}.$username{$userLenght-1}.substr($userLenght,-1);	 	
+	return $username{0}.$username{$userLenght-1}.utf8_substr($userLenght,-1);	 	
 }
 
 //TODO: shall we put this function in eyeLib ? 
 function recursiveCopy($from,$to) {
+	global $currentUser;
+	if($currentUser != ROOTUSER) {
+		return false;
+	}
 	if ($gestor = opendir($from)) {
 		while (false !== ($archivo = readdir($gestor))) {
 			if ($archivo{0} != ".") {

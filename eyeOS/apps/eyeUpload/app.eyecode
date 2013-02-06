@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 
@@ -26,8 +26,8 @@ function eyeUpload_run($params=null) {
 	global $myPid;
 	global $checknum;
 	$XML = eyeXML('getXMLfile',array(um('getCurrentUserDir') . CONF_USER_DIR . '/eyeUpload/conf.xml'));
-	$isLinux = strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'linux');
-	$isMac = strpos(strtolower($_SERVER['HTTP_USER_AGENT']),'mac os x');
+	$isLinux = utf8_strpos(utf8_strtolower($_SERVER['HTTP_USER_AGENT']),'linux');
+	$isMac = utf8_strpos(utf8_strtolower($_SERVER['HTTP_USER_AGENT']),'mac os x');
 	/**
 	if($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] >= 8 && $params[2] != 1){
 		//If flash is not forced
@@ -68,7 +68,7 @@ function eyeUpload_run($params=null) {
 		'cent'=>1,
 		'width'=>$width,
 		'height'=>$height,
-		'title'=>'Upload file'
+		'title'=>'Upload files'
 	));
 	$myWindow->show();
 	if($path) {

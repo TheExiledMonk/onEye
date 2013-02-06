@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -38,7 +38,7 @@ function lib_simpleZip_createZip($params) {
 		return $zipfile->zipped_file(); 
 	} else {
 		$zipfile = new zipfile;
-		$name = basename($file);
+		$name = utf8_basename($file);
 		$fp = service('vfs','open',array($file,'r'));
 		if(!$fp) {
 			return false;
@@ -53,11 +53,11 @@ function lib_simpleZip_createZip($params) {
 
 function recursiveZip($file,$zipfile,$orig) {
 	if($file == $orig) {
-		$name = basename($file);
+		$name = utf8_basename($file);
 		$zipfile->create_dir($name);
 	} else {
-		$name = basename($orig);
-		$dirPath = substr($file,strlen($orig));
+		$name = utf8_basename($orig);
+		$dirPath = utf8_substr($file,utf8_strlen($orig));
 		$zipfile->create_dir($name.$dirPath);
 	}
 	$content = service('vfs','getDirContent',array($file));	
@@ -74,7 +74,7 @@ function recursiveZip($file,$zipfile,$orig) {
 					$size = vfs('filesize',array($current));
 					$myContent = fread($fp,$size);
 					fclose($fp);
-					$sName = basename($current);
+					$sName = utf8_basename($current);
 					$zipfile->create_file($myContent, $name.$dirPath.'/'.$sName);
 				}
 			}
@@ -112,7 +112,7 @@ class zipfile
 		$fr .= pack("V",0); // crc32
 		$fr .= pack("V",0); //compressed filesize
 		$fr .= pack("V",0); //uncompressed filesize
-		$fr .= pack("v",strlen($name)); //length of pathname
+		$fr .= pack("v",utf8_strlen($name)); //length of pathname
 		$fr .= pack("v", 0); //extra field length
 		$fr .= $name;
 		// end of "local file header" segment
@@ -127,7 +127,7 @@ class zipfile
 		// add this entry to array
 		$this->datasec[] = $fr;
 
-		$new_offset = strlen(implode("", $this->datasec));
+		$new_offset = utf8_strlen(implode("", $this->datasec));
 
 		// ext. file attributes mirrors MS-DOS directory attr byte, detailed
 		// at http://support.microsoft.com/support/kb/articles/Q125/0/19.asp
@@ -142,7 +142,7 @@ class zipfile
 		$cdrec .= pack("V",0); // crc32
 		$cdrec .= pack("V",0); //compressed filesize
 		$cdrec .= pack("V",0); //uncompressed filesize
-		$cdrec .= pack("v", strlen($name) ); //length of filename
+		$cdrec .= pack("v", utf8_strlen($name) ); //length of filename
 		$cdrec .= pack("v", 0 ); //extra field length
 		$cdrec .= pack("v", 0 ); //file comment length
 		$cdrec .= pack("v", 0 ); //disk number start
@@ -170,15 +170,15 @@ class zipfile
 		$fr .= "\x08\x00";	// compression method
 		$fr .= "\x00\x00\x00\x00"; // last mod time and date
 
-		$unc_len = strlen($data);
+		$unc_len = utf8_strlen($data);
 		$crc = crc32($data);
 		$zdata = gzcompress($data);
-		$zdata = substr($zdata, 2, -4); // fix crc bug
-		$c_len = strlen($zdata);
+		$zdata = utf8_substr($zdata, 2, -4); // fix crc bug
+		$c_len = utf8_strlen($zdata);
 		$fr .= pack("V",$crc); // crc32
 		$fr .= pack("V",$c_len); //compressed filesize
 		$fr .= pack("V",$unc_len); //uncompressed filesize
-		$fr .= pack("v", strlen($name) ); //length of filename
+		$fr .= pack("v", utf8_strlen($name) ); //length of filename
 		$fr .= pack("v", 0 ); //extra field length
 		$fr .= $name;
 		// end of "local file header" segment
@@ -194,7 +194,7 @@ class zipfile
 		// add this entry to array
 		$this->datasec[] = $fr;
 
-		$new_offset = strlen(implode("", $this->datasec));
+		$new_offset = utf8_strlen(implode("", $this->datasec));
 
 		// now add to central directory record
 		$cdrec = "\x50\x4b\x01\x02";
@@ -206,7 +206,7 @@ class zipfile
 		$cdrec .= pack("V",$crc); // crc32
 		$cdrec .= pack("V",$c_len); //compressed filesize
 		$cdrec .= pack("V",$unc_len); //uncompressed filesize
-		$cdrec .= pack("v", strlen($name) ); //length of filename
+		$cdrec .= pack("v", utf8_strlen($name) ); //length of filename
 		$cdrec .= pack("v", 0 ); //extra field length
 		$cdrec .= pack("v", 0 ); //file comment length
 		$cdrec .= pack("v", 0 ); //disk number start
@@ -242,7 +242,7 @@ class zipfile
 
 		// ZIP Comment
 		$unpackeda = unpack('x16/v1length', $filesecta[1]);
-		$this->comment = substr($filesecta[1], 18, $unpackeda['length']);
+		$this->comment = utf8_substr($filesecta[1], 18, $unpackeda['length']);
 		$this->comment = str_replace(array("\r\n", "\r"), "\n", $this->comment); // CR + LF and CR -> LF
 
 		// Cut entries from the central directory
@@ -264,7 +264,7 @@ class zipfile
 			// Check for value block after compressed data
 			if($unpackeda['general_purpose'] & 0x0008)
 			{
-				$unpackeda2 = unpack("V1crc/V1size_compressed/V1size_uncompressed", substr($filedata, -12));
+				$unpackeda2 = unpack("V1crc/V1size_compressed/V1size_uncompressed", utf8_substr($filedata, -12));
 
 				$unpackeda['crc'] = $unpackeda2['crc'];
 				$unpackeda['size_compressed'] = $unpackeda2['size_uncompressed'];
@@ -273,21 +273,21 @@ class zipfile
 				unset($unpackeda2);
 			}
 
-			$entrya['name'] = substr($filedata, 26, $unpackeda['filename_length']);
+			$entrya['name'] = utf8_substr($filedata, 26, $unpackeda['filename_length']);
 
-			if(substr($entrya['name'], -1) == "/") // skip directories
+			if(utf8_substr($entrya['name'], -1) == "/") // skip directories
 			{
 				continue;
 			}
 
 			$entrya['dir'] = dirname($entrya['name']);
 			$entrya['dir'] = ($entrya['dir'] == "." ? "" : $entrya['dir']);
-			$entrya['name'] = basename($entrya['name']);
+			$entrya['name'] = utf8_basename($entrya['name']);
 
 
-			$filedata = substr($filedata, 26 + $unpackeda['filename_length']);
+			$filedata = utf8_substr($filedata, 26 + $unpackeda['filename_length']);
 
-			if(strlen($filedata) != $unpackeda['size_compressed'])
+			if(utf8_strlen($filedata) != $unpackeda['size_compressed'])
 			{
 				$entrya['error'] = "Compressed size is not equal to the value given in header.";
 			}
@@ -309,7 +309,7 @@ class zipfile
 					case 12: // BZIP2
 						if(!extension_loaded("bz2"))
 						{
-							@dl((strtolower(substr(PHP_OS, 0, 3)) == "win") ? "php_bz2.dll" : "bz2.so");
+							@dl((utf8_strtolower(utf8_substr(PHP_OS, 0, 3)) == "win") ? "php_bz2.dll" : "bz2.so");
 						}
 
 						if(extension_loaded("bz2"))
@@ -331,7 +331,7 @@ class zipfile
 					{
 						$entrya['error'] = "Decompression failed.";
 					}
-					elseif(strlen($filedata) != $unpackeda['size_uncompressed'])
+					elseif(utf8_strlen($filedata) != $unpackeda['size_uncompressed'])
 					{
 						$entrya['error'] = "File size is not equal to the value given in header.";
 					}
@@ -356,7 +356,7 @@ class zipfile
 		$file = str_replace("\\", "/", $file);
 		$dir = str_replace("\\", "/", $dir);
 
-		if(strpos($file, "/") !== false)
+		if(utf8_strpos($file, "/") !== false)
 		{
 			$dira = explode("/", "{$dir}/{$file}");
 			$file = array_shift($dira);
@@ -364,13 +364,13 @@ class zipfile
 			unset($dira);
 		}
 
-		while(substr($dir, 0, 2) == "./")
+		while(utf8_substr($dir, 0, 2) == "./")
 		{
-			$dir = substr($dir, 2);
+			$dir = utf8_substr($dir, 2);
 		}
-		while(substr($file, 0, 2) == "./")
+		while(utf8_substr($file, 0, 2) == "./")
 		{
-			$file = substr($file, 2);
+			$file = utf8_substr($file, 2);
 		}
 		if(!in_array($dir, $this->dirs))
 		{
@@ -386,7 +386,7 @@ class zipfile
 		}
 		foreach($ext_blacklist as $ext)
 		{
-			if(substr($file, -1 - strlen($ext)) == ".{$ext}")
+			if(utf8_substr($file, -1 - utf8_strlen($ext)) == ".{$ext}")
 			{
 				return true;
 			}
@@ -424,8 +424,8 @@ class zipfile
 				$this->eof_ctrl_dir.
 				pack("v", sizeof($this->ctrl_dir)). // total number of entries "on this disk"
 				pack("v", sizeof($this->ctrl_dir)). // total number of entries overall
-				pack("V", strlen($ctrldir)). // size of central dir
-				pack("V", strlen($data)). // offset to start of central dir
+				pack("V", utf8_strlen($ctrldir)). // size of central dir
+				pack("V", utf8_strlen($data)). // offset to start of central dir
 				"\x00\x00"; // .zip file comment length
 	}
 }

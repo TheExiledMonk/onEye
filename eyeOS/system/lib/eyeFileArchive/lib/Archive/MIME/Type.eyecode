@@ -134,7 +134,7 @@ class MIME_Type {
         $params = array();
         $tmp = explode(';', $type);
         for ($i = 1; $i < count($tmp); $i++) {
-            $params[] = trim($tmp[$i]);
+            $params[] = utf8_trim($tmp[$i]);
         }
         return $params;
     }
@@ -150,7 +150,7 @@ class MIME_Type {
     function stripParameters($type)
     {
         if (strstr($type, ';')) {
-            return substr($type, 0, strpos($type, ';'));
+            return utf8_substr($type, 0, utf8_strpos($type, ';'));
         }
         return $type;
     }
@@ -167,7 +167,7 @@ class MIME_Type {
     function getMedia($type)
     {
         $tmp = explode('/', $type);
-        return strtolower($tmp[0]);
+        return utf8_strtolower($tmp[0]);
     }
 
 
@@ -182,7 +182,7 @@ class MIME_Type {
     {
         $tmp = explode('/', $type);
         $tmp = explode(';', $tmp[1]);
-        return strtolower(trim($tmp[0]));
+        return utf8_strtolower(utf8_trim($tmp[0]));
     }
 
 
@@ -195,7 +195,7 @@ class MIME_Type {
      */
     function get()
     {
-        $type = strtolower($this->media.'/'.$this->subType);
+        $type = utf8_strtolower($this->media.'/'.$this->subType);
         if (count($this->parameters)) {
             foreach ($this->parameters as $key => $null) {
                 $type .= '; '.$this->parameters[$key]->get();
@@ -216,8 +216,8 @@ class MIME_Type {
      */
     function isExperimental($type)
     {
-        if (substr(MIME_Type::getMedia($type), 0, 2) == 'x-' ||
-            substr(MIME_Type::getSubType($type), 0, 2) == 'x-') {
+        if (utf8_substr(MIME_Type::getMedia($type), 0, 2) == 'x-' ||
+            utf8_substr(MIME_Type::getSubType($type), 0, 2) == 'x-') {
             return true;
         }
         return false;
@@ -234,7 +234,7 @@ class MIME_Type {
      */
     function isVendor($type)
     {
-        if (substr(MIME_Type::getSubType($type), 0, 4) == 'vnd.') {
+        if (utf8_substr(MIME_Type::getSubType($type), 0, 4) == 'vnd.') {
             return true;
         }
         return false;
@@ -343,7 +343,7 @@ class MIME_Type {
         }
 
         // Don't return an empty string
-        if (!$type || !strlen($type)) {
+        if (!$type || !utf8_strlen($type)) {
             return PEAR::raiseError("Sorry, couldn't determine file type.");
         }
 

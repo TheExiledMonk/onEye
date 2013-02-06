@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
 	events resource for eyeX
@@ -54,7 +54,7 @@ function eyeX_on_saveWinPosition($params=''){
 	$filePath .=$appName.'.xml';//Adding the appName
 	
 	//Parsing winName.
-	$winName = substr($winName,strpos($winName,'_')+1);
+	$winName = utf8_substr($winName,utf8_strpos($winName,'_')+1);
 	$currentArray = reqLib('eyeXML','getXMLconfig',array('eyex',$appName.'.xml'));
 	if(!$currentArray){
 		//At the moment, use real_create etc, TODO: put setXMLfile.

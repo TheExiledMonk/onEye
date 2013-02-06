@@ -18,9 +18,11 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
+define('MAX_IMAGE_SIZE_W',600);
+define('MAX_IMAGE_SIZE_H',500);
 function eyeImages_on_Message($params="") {
 	reqLib('eyeWidgets','updateContent',$params);
 }
@@ -54,6 +56,130 @@ function eyeImages_on_Resize($params=null) {
 	$height = intval($height);
 	$GLOBALS['imgFrame']->setWidth($width-15);
 	$GLOBALS['imgFrame']->setHeight($height-30);
+}
+
+function eyeImages_on_Next($params=null) {
+	global $checknum;
+	
+	$path = $GLOBALS['iPath']->text;
+	$iframe = $GLOBALS['imgFrame'];
+	
+	if(empty($path) || !is_object($iframe)) {
+		return;
+	}
+	
+	$dir = dirname($path);
+	$imglist = vfs('getDirContent', array($dir));
+	
+	$extensions = array(
+		"bmp", "gif", "jpeg", "jpg", "png", "tiff"
+	);
+	
+	$myArray = array();
+	foreach($imglist as $img) {
+		$info = utf8_pathinfo($img);
+		$ext = $info['extension'];
+		
+		foreach($extensions as $e) {
+			if(utf8_strcasecmp($ext, $e) == 0) {
+				$myArray[] = $img;
+			}
+		}
+	}
+	
+	//Get the index
+	for($i=0; $i < count($myArray); $i++) {
+		if(utf8_strcasecmp($myArray[$i], $path) == 0) {
+			break;
+		}
+	}
+
+	if(!isset($myArray[$i+1])) {
+		$newpath = $myArray[0];
+	} else {
+		$newpath = $myArray[$i+1];
+	}
+	
+	$fullscreen = $GLOBALS['fullscreen']->text;
+	
+	if(utf8_strcasecmp($path, $newpath) != 0) {
+		proc('launch', array('eyeImages', array($newpath, $fullscreen)));
+		proc('end');
+	}
+}
+
+function eyeImages_on_Previous($params=null) {
+		global $checknum;
+	
+	$path = $GLOBALS['iPath']->text;
+	$iframe = $GLOBALS['imgFrame'];
+	
+	if(empty($path) || !is_object($iframe)) {
+		return;
+	}
+	
+	$dir = dirname($path);
+	$imglist = vfs('getDirContent', array($dir));
+	
+	$extensions = array(
+		"bmp", "gif", "jpeg", "jpg", "png", "tiff"
+	);
+	
+	$myArray = array();
+	foreach($imglist as $img) {
+		$info = utf8_pathinfo($img);
+		$ext = $info['extension'];
+		
+		foreach($extensions as $e) {
+			if(utf8_strcasecmp($ext, $e) == 0) {
+				$myArray[] = $img;
+			}
+		}
+	}
+	
+	//Get the index
+	for($i=0; $i < count($myArray); $i++) {
+		if(utf8_strcasecmp($myArray[$i], $path) == 0) {
+			break;
+		}
+	}
+
+	if(!isset($myArray[$i-1])) {
+		$newpath = $myArray[count($myArray)-1];
+	} else {
+		$newpath = $myArray[$i-1];
+	}
+	
+	$fullscreen = $GLOBALS['fullscreen']->text;
+	
+	if(utf8_strcasecmp($path, $newpath) != 0) {
+		proc('launch', array('eyeImages', array($newpath, $fullscreen)));
+		proc('end');
+	}
+}
+
+function eyeImages_on_Fullscreen($params=null) {
+	global $checknum;
+	
+	$file = $GLOBALS['iPath']->text;
+
+	if(!$file) {
+		return;
+	}
+
+	if($GLOBALS['fullscreen']->text == 0) {
+		eyeX('rawjs',array('js' => 'document.getElementById("minimizedAppsLeft").style.zIndex="0";'));
+		eyeX('rawjs',array('js' => 'document.getElementById("minimizedAppsRight").style.zIndex="0";'));
+		eyeX('rawjs',array('js' => 'document.getElementById("minimizedApps").style.zIndex="0";'));
+		proc('launch',array('eyeImages', array($file, 1)));
+		proc('end');
+	} else {
+		eyeX('rawjs',array('js' => 'document.getElementById("minimizedAppsLeft").style.zIndex="10000";'));
+		eyeX('rawjs',array('js' => 'document.getElementById("minimizedAppsRight").style.zIndex="10000";'));
+		eyeX('rawjs',array('js' => 'document.getElementById("minimizedApps").style.zIndex="10000";'));
+		proc('launch',array('eyeImages', array($file)));
+		proc('end');
+	}
 }
 
 function eyeImages_on_Close(){

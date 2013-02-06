@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,15 +18,21 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 
 //Loading basic settings for eyeOS Kernel and Services
 include_once('settings.php');
-
 //change directory to EYE_ROOT
 chdir('./'.REAL_EYE_ROOT);
+
+//Loaded before kernel for kernel utf8 compatibility
+include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeString/main'.EYE_CODE_EXTENSION);
+call_user_func('lib_eyeString_start');
+//setting library loaded
+define('LIB_'.strtoupper('eyeString').'_LOADED',1);
+
 //Loading the Kernel
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/kernel'.EYE_CODE_EXTENSION);
 
@@ -52,7 +58,6 @@ reqLib('errorCodes','loadCodes');
 //load pear library class
 reqLib('eyePear','loadPear');
 
-
 //Setting the Running Log check var to 0
 global $LOG_RUNNING;
 $LOG_RUNNING = 0;
@@ -68,22 +73,25 @@ ini_set('default_charset', DEFAULT_CHARSET);
 //Check if index.php is being used to load images/files from extern directory
 if (isset($_GET['extern'])) {
 		$myExtern = $_GET['extern'];
-		//get the type for the header content-type
+		//get the type for the header content-type		
 		if(isset($_GET['type'])) {
 			$type = $_GET['type'];
 		} else {
 			$type = "";
 		}
 		//call to extern to throw the file
+		reqLib('eyeSessions','startSession');
 		service('extern','getFile',array($myExtern,$type),1);
 } else {
 	//Loading eyeWidgets definitions
 	reqLib('eyeWidgets','loadWidgets');
+	
 	//Starting a simple session
 	reqLib('eyeSessions','startSession');
 	
 	//If widget table does not exist, create it 
 	reqLib('eyeWidgets','checkTable');
+	
 	//if there are a shorturl in the url, like index.php/file
 	if(isset($_SERVER['PATH_INFO'])) {
 		$myInfo = $_SERVER['PATH_INFO'];
@@ -127,9 +135,9 @@ if (isset($_GET['extern'])) {
 			echo "<eyeMessage><action><task>pong</task></action></eyeMessage>";
 			$_SESSION['ping'] = time();
 			exit;
-		}
-		//Loading the default application (usually Login App)
-		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/init'.EYE_CODE_EXTENSION);
+		}		
+		//Loading the default application (usually Login App)		
+		include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/init'.EYE_CODE_EXTENSION);		
 	}
 }
 

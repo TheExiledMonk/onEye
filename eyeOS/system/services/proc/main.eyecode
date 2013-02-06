@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -72,10 +72,9 @@ function service_proc_end($params=null) {
 * 
 * Last update 2007-02-19 
 ***/
-function service_proc_launch($params) {	
-	
-	//Needed params for start
-	$appName = basename($params[0]);
+function service_proc_launch($params) {		
+	//Needed params for start	
+	$appName = utf8_basename($params[0]);
 	if(!$appName) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;

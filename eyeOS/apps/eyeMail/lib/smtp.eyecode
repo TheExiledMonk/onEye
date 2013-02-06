@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 class smtp_class
@@ -67,15 +67,15 @@ class smtp_class
 			$separator=$string;
 			$string=$this->next_token;
 		}
-		for($character=0;$character<strlen($separator);$character++)
+		for($character=0;$character<utf8_strlen($separator);$character++)
 		{
-			if(GetType($position=strpos($string,$separator[$character]))=="integer")
+			if(GetType($position=utf8_strpos($string,$separator[$character]))=="integer")
 				$found=(IsSet($found) ? min($found,$position) : $position);
 		}
 		if(IsSet($found))
 		{
-			$this->next_token=substr($string,$found+1);
-			return(substr($string,0,$found));
+			$this->next_token=utf8_substr($string,$found+1);
+			return(utf8_substr($string,0,$found));
 		}
 		else
 		{
@@ -119,17 +119,17 @@ class smtp_class
 				return("");
 			}
 			if(GetType($data=@fgets($this->connection,100))!="string"
-			|| strlen($data)==0)
+			|| utf8_strlen($data)==0)
 			{
 				$this->SetDataAccessError("it was not possible to read line from the SMTP server");
 				return("");
 			}
 			$line.=$data;
-			$length=strlen($line);
+			$length=utf8_strlen($line);
 			if($length>=2
-			&& substr($line,$length-2,2)=="\r\n")
+			&& utf8_substr($line,$length-2,2)=="\r\n")
 			{
-				$line=substr($line,0,$length-2);
+				$line=utf8_substr($line,0,$length-2);
 				if($this->debug)
 					$this->OutputDebug("S $line");
 				return($line);
@@ -151,7 +151,7 @@ class smtp_class
 
 	Function PutData(&$data)
 	{
-		if(strlen($data))
+		if(utf8_strlen($data))
 		{
 			if($this->debug)
 				$this->OutputDebug("C $data");
@@ -168,7 +168,7 @@ class smtp_class
 	{
 		$responses=array();
 		Unset($this->result_code);
-		while(strlen($line=$this->GetLine($this->connection)))
+		while(utf8_strlen($line=$this->GetLine($this->connection)))
 		{
 			if(IsSet($this->result_code))
 			{
@@ -243,7 +243,7 @@ class smtp_class
 			if(!strcmp($ip=@gethostbyname($domain),$domain))
 				return("could not resolve host \"".$domain."\"");
 		}
-		if(strlen($this->exclude_address)
+		if(utf8_strlen($this->exclude_address)
 		&& !strcmp(@gethostbyname($this->exclude_address),$ip))
 			return("domain \"".$domain."\" resolved to an address excluded to be valid");
 		if($this->debug)
@@ -295,7 +295,7 @@ class smtp_class
 			case SASL_CONTINUE:
 				break;
 			case SASL_NOMECH:
-				if(strlen($this->authentication_mechanism))
+				if(utf8_strlen($this->authentication_mechanism))
 				{
 					$this->error="authenticated mechanism ".$this->authentication_mechanism." may not be used: ".$sasl->error;
 					return(0);
@@ -305,7 +305,7 @@ class smtp_class
 				$this->error="Could not start the SASL authentication client: ".$sasl->error;
 				return(0);
 		}
-		if(strlen($mechanism=$sasl->mechanism))
+		if(utf8_strlen($mechanism=$sasl->mechanism))
 		{
 			if($this->PutLine("AUTH ".$sasl->mechanism.(IsSet($message) ? " ".base64_encode($message) : ""))==0)
 			{
@@ -383,7 +383,7 @@ class smtp_class
 		$hosts=array();
 		if($this->direct_delivery)
 		{
-			if(strlen($domain)==0)
+			if(utf8_strlen($domain)==0)
 				return(1);
 			$hosts=$weights=$mxhosts=array();
 			$getmxrr=$this->getmxrr;
@@ -404,27 +404,27 @@ class smtp_class
 		}
 		else
 		{
-			if(strlen($this->host_name))
+			if(utf8_strlen($this->host_name))
 				$hosts[]=$this->host_name;
-			if(strlen($this->pop3_auth_host))
+			if(utf8_strlen($this->pop3_auth_host))
 			{
 				$user=$this->user;
-				if(strlen($user)==0)
+				if(utf8_strlen($user)==0)
 				{
 					$this->error="it was not specified the POP3 authentication user";
 					return(0);
 				}
 				$password=$this->password;
-				if(strlen($password)==0)
+				if(utf8_strlen($password)==0)
 				{
 					$this->error="it was not specified the POP3 authentication password";
 					return(0);
 				}
 				$domain=$this->pop3_auth_host;
 				$this->error=$this->ConnectToHost($domain, $this->pop3_auth_port, "Resolving POP3 authentication host \"".$domain."\"...");
-				if(strlen($this->error))
+				if(utf8_strlen($this->error))
 					return(0);
-				if(strlen($response=$this->GetLine())==0)
+				if(utf8_strlen($response=$this->GetLine())==0)
 					return(0);
 				if(strcmp($this->Tokenize($response," "),"+OK"))
 				{
@@ -432,7 +432,7 @@ class smtp_class
 					return(0);
 				}
 				if(!$this->PutLine("USER ".$this->user)
-				|| strlen($response=$this->GetLine())==0)
+				|| utf8_strlen($response=$this->GetLine())==0)
 					return(0);
 				if(strcmp($this->Tokenize($response," "),"+OK"))
 				{
@@ -440,7 +440,7 @@ class smtp_class
 					return(0);
 				}
 				if(!$this->PutLine("PASS ".$password)
-				|| strlen($response=$this->GetLine())==0)
+				|| utf8_strlen($response=$this->GetLine())==0)
 					return(0);
 				if(strcmp($this->Tokenize($response," "),"+OK"))
 				{
@@ -456,12 +456,12 @@ class smtp_class
 			$this->error="could not determine the SMTP to connect";
 			return(0);
 		}
-		for($host=0, $error="not connected";strlen($error) && $host<count($hosts);$host++)
+		for($host=0, $error="not connected";utf8_strlen($error) && $host<count($hosts);$host++)
 		{
 			$domain=$hosts[$host];
 			$error=$this->ConnectToHost($domain, $this->host_port, "Resolving SMTP server domain \"$domain\"...");
 		}
-		if(strlen($error))
+		if(utf8_strlen($error))
 		{
 			$this->error=$error;
 			return(0);
@@ -481,7 +481,7 @@ class smtp_class
 		{
 			$fallback=1;
 			if($this->esmtp
-			|| strlen($this->user))
+			|| utf8_strlen($this->user))
 			{
 				if($this->PutLine("EHLO $localhost"))
 				{
@@ -490,7 +490,7 @@ class smtp_class
 						$this->esmtp_host=$this->Tokenize($responses[0]," ");
 						for($response=1;$response<count($responses);$response++)
 						{
-							$extension=strtoupper($this->Tokenize($responses[$response]," "));
+							$extension=utf8_strtoupper($this->Tokenize($responses[$response]," "));
 							$this->esmtp_extensions[$extension]=$this->Tokenize("");
 						}
 						$success=1;
@@ -520,8 +520,8 @@ class smtp_class
 					$success=1;
 			}
 			if($success
-			&& strlen($this->user)
-			&& strlen($this->pop3_auth_host)==0)
+			&& utf8_strlen($this->user)
+			&& utf8_strlen($this->pop3_auth_host)==0)
 			{
 				if(!IsSet($this->esmtp_extensions["AUTH"]))
 				{
@@ -530,21 +530,21 @@ class smtp_class
 				}
 				else
 				{
-					if(strlen($this->authentication_mechanism))
+					if(utf8_strlen($this->authentication_mechanism))
 						$mechanisms=array($this->authentication_mechanism);
 					else
 					{
 						$mechanisms=array();
-						for($authentication=$this->Tokenize($this->esmtp_extensions["AUTH"]," ");strlen($authentication);$authentication=$this->Tokenize(" "))
+						for($authentication=$this->Tokenize($this->esmtp_extensions["AUTH"]," ");utf8_strlen($authentication);$authentication=$this->Tokenize(" "))
 							$mechanisms[]=$authentication;
 					}
 					$credentials=array(
 						"user"=>$this->user,
 						"password"=>$this->password
 					);
-					if(strlen($this->realm))
+					if(utf8_strlen($this->realm))
 						$credentials["realm"]=$this->realm;
-					if(strlen($this->workstation))
+					if(utf8_strlen($this->workstation))
 						$credentials["workstation"]=$this->workstation;
 					$success=$this->SASLAuthenticate($mechanisms,$credentials,$authenticated,$mechanism);
 					if(!$success
@@ -559,7 +559,7 @@ class smtp_class
 							"user"=>$this->user,
 							"password"=>$this->password
 						);
-						if(strlen($this->realm))
+						if(utf8_strlen($this->realm))
 						{
 							/*
 							 * According to: http://www.sendmail.org/~ca/email/authrealms.html#authpwcheck_method
@@ -587,7 +587,7 @@ class smtp_class
 						}
 					}
 					if($success
-					&& strlen($mechanism)==0)
+					&& utf8_strlen($mechanism)==0)
 					{
 						$this->error="it is not supported any of the authentication mechanisms required by the server";
 						$success=0;
@@ -650,9 +650,9 @@ class smtp_class
 	{
 		if($this->direct_delivery)
 		{
-			if(GetType($at=strrpos($recipient,"@"))!="integer")
+			if(GetType($at=utf8_strrpos($recipient,"@"))!="integer")
 				return("it was not specified a valid direct recipient");
-			$domain=substr($recipient,$at+1);
+			$domain=utf8_substr($recipient,$at+1);
 			switch($this->state)
 			{
 				case "Disconnected":

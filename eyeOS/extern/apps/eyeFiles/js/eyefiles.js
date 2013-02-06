@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -17,7 +17,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 init_eyeFiles($myPid,$checknum);
 
@@ -126,9 +126,8 @@ function init_eyeFiles(pid,checknum) {
 		x = xLeft(widget);
 		y = xTop(widget);
 		maximized = true;
-		xResizeTo(widget, xWidth(father)-leftBorder-rightBorder, xHeight(father)-barX_height-barX_height-spaceBetweenApps-spaceBetweenApps);
-		xMoveTo(widget, leftBorder, barX_height+spaceBetweenApps);
-		xMoveTo(widget,null,barX_height+spaceBetweenApps);
+		xResizeTo(widget, xWidth(father)-leftBorder-rightBorder, xHeight(father)-barX_height-barX_height-spaceBetweenApps-spaceBetweenApps-55);
+		xMoveTo(widget,leftBorder,barX_height+spaceBetweenApps+30);
 		mBtn.onclick = minimize;
 		onEyeFilesResize();
 	}

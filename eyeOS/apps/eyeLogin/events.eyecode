@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
 	events resource for eyeLogin 
@@ -45,20 +45,21 @@ function eyeLogin_on_doLogin($params="") {
 }
 
 function eyeLogin_on_successLogin($params=null) {
-	global $currentUser;
+	global $currentUser;	
 	loadConfig('eyeLogin');
 	$pid = service('proc','findPidByName',array('eyeX'));
 	service('proc','setProcessUser',array($pid)); //set eyeX to the currentUser
 	proc('end');
-	service('eyex','rawjs',array('js'=>"document.title='$currentUser @ ".EYEOS_HOSTNAME."'"));
+	$tokens = array($currentUser,EYEOS_HOSTNAME);
+	service('eyex','runjs',array('js'=>"document.title =  %s +'@'+ %s ;",'tokens'=>$tokens));
 	$udir = um('getCurrentUserDir');
-	$xml = eyeXML('getXMLfile',array($udir.'/conf/i18n/lang.xml'));
+	$xml = eyeXML('getXMLfile',array($udir.'/conf/i18n/lang.xml'));	
 	if(is_array($xml)) {
 		$lang = $xml['lang'][0];
 	} else {
 		$lang = 'en';
 	}
-	i18n('setLang',array($lang));
+	i18n('setLang',array($lang));	
 	service('proc','launch',array(LOGIN_EXECUTE,'autorun'));
 }
 
@@ -115,12 +116,12 @@ function eyeLogin_on_doCreateUser($params="") {
 		return false;	
 	}
 	
-	if(strlen($pass1) < 4) {
+	if(utf8_strlen($pass1) < 4) {
 		$GLOBALS['eyeLogin_HiddenLabel']->setText("Password is too short");
 		return false;
 	}
 	
-	if(strlen($myUsername) < 2) {
+	if(utf8_strlen($myUsername) < 2) {
 		$GLOBALS['eyeLogin_HiddenLabel']->setText("Username is too short");
 		return false;
 	}

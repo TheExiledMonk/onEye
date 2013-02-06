@@ -191,12 +191,12 @@ class MagpieRSS {
     }
     
     function feed_start_element($p, $element, &$attrs) {
-        $el = $element = strtolower($element);
+        $el = $element = utf8_strtolower($element);
         $attrs = array_change_key_case($attrs, CASE_LOWER);
         
         // check for a namespace, and split if found
         $ns = false;
-        if ( strpos( $element, ':' ) ) {
+        if ( utf8_strpos( $element, ':' ) ) {
             list($ns, $el) = split( ':', $element, 2); 
         }
         if ( $ns and $ns != 'rdf' ) {
@@ -316,7 +316,7 @@ class MagpieRSS {
     }
     
     function feed_end_element ($p, $el) {
-        $el = strtolower($el);
+        $el = utf8_strtolower($el);
         
         if ( $el == 'item' or $el == 'entry' ) 
         {
@@ -496,7 +496,7 @@ class MagpieRSS {
     *
     */
     function create_parser($source, $out_enc, $in_enc, $detect) {
-        if ( substr(phpversion(),0,1) == 5) {
+        if ( utf8_substr(phpversion(),0,1) == 5) {
             $parser = $this->php5_create_parser($in_enc, $detect);
         }
         else {
@@ -551,7 +551,7 @@ class MagpieRSS {
         
         if (!$in_enc) {
             if (preg_match('/<?xml.*encoding=[\'"](.*?)[\'"].*?>/m', $source, $m)) {
-                $in_enc = strtoupper($m[1]);
+                $in_enc = utf8_strtoupper($m[1]);
                 $this->source_encoding = $in_enc;
             }
             else {
@@ -594,7 +594,7 @@ class MagpieRSS {
     }
     
     function known_encoding($enc) {
-        $enc = strtoupper($enc);
+        $enc = utf8_strtoupper($enc);
         if ( in_array($enc, $this->_KNOWN_ENCODINGS) ) {
             return $enc;
         }
@@ -609,7 +609,7 @@ class MagpieRSS {
             $errormsg .= " ($php_errormsg)";
         }
         if ( MAGPIE_DEBUG ) {
-            trigger_error( $errormsg, $lvl);        
+           // trigger_error( $errormsg, $lvl);        
         }
         else {
             error_log( $errormsg, 0);
@@ -639,8 +639,8 @@ if (!function_exists('array_change_key_case')) {
 
 
 	function array_change_key_case($array,$case=CASE_LOWER) {
-       if ($case=CASE_LOWER) $cmd=strtolower;
-       elseif ($case=CASE_UPPER) $cmd=strtoupper;
+       if ($case=CASE_LOWER) $cmd=utf8_strtolower;
+       elseif ($case=CASE_UPPER) $cmd=utf8_strtoupper;
        foreach($array as $key=>$value) {
                $output[$cmd($key)]=$value;
        }

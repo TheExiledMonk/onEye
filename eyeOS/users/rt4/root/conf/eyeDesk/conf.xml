@@ -3,5 +3,8 @@
 	<autolaunch>eyeDock</autolaunch>
 	<autolaunch>eyeBar</autolaunch>
 	<autolaunch>eyeDesk_extras</autolaunch>
-	<wallpaper></wallpaper>
+	<wallpaper>
+		<restoreDock>1</restoreDock>
+	</wallpaper>
+	<restoreDock>1</restoreDock>
 </eyeDesk>

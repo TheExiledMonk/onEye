@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeNotes_on_Message($params="") {
@@ -81,6 +81,10 @@ function eyeNotes_on_SaveAs($params=null) {
 function eyeNotes_on_SelectFileSave($params=null) {
 	$file = $params['arg'][0];
 	if($file) {
+		$posPoint = utf8_strpos($file, ".");
+		if ($posPoint === false) {
+			$file = $file.".txt";
+		}
 		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
 		if(!service('vfs','create',array($file,'eyeNotes'))) {
 			service('eyex','messageBox',array('content'=>'Unable to create file'));

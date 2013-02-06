@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,18 +18,37 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeControl_on_general_save($params = '') {
-	$dir = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/';
+// Set the correct quota in bytes
+	$quota = $GLOBALS['eyeControl_general_textbox_quota']->text;
+	if (!$quota || !is_numeric($quota)) {
+		$quota == 0;
+	} else {
+		round($quota);
+		$q_type = $GLOBALS['eyeControl_general_select_quota']->selected;
+		switch ($q_type) {
+		case 'GB':
+			$quota = $quota * 1024 * 1024 * 1024;
+			break;
+		case 'MB':
+			$quota = $quota * 1024 * 1024;
+			break;
+		case 'KB':
+			$quota = $quota * 1024;
+			break;
+		}
+	}
 //Save Hostname, Allow user register and Allow public dirs
+	$dir = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/';
 	$File = $dir . 'system.xml';
 	$XML = eyeXML('getXMLfile',array($File));
 	$XML['CONFIG'][0]['EYEOS_HOSTNAME'][0] = $GLOBALS['eyeControl_general_textbox_hostname']->text;
 	$XML['CONFIG'][0]['ALLOW_USER_REGISTER'][0] = $GLOBALS['eyeControl_general_checkbox_register']->checked;
 	$XML['CONFIG'][0]['ALLOW_PUBLIC_DIRS'][0] = $GLOBALS['eyeControl_general_checkbox_publicdirs']->checked;
-	$XML['CONFIG'][0]['UPDATE_SEARCH'][0] = $GLOBALS['eyeControl_general_checkbox_eyeupdater']->checked;
+	$XML['CONFIG'][0]['DEFAULT_QUOTA'][0] = $quota;
 	eyeXML('setXMLFile',array($File,$XML));
 // Default Language
 	$i18n_dir = $dir . 'skel/' . CONF_USER_DIR . '/i18n/';
@@ -48,7 +67,7 @@ function eyeControl_on_general_save($params = '') {
 	$ThemeXML = eyeXML('getXMLfile',array($ThemeFile));
 	$ThemeXML['CONFIG'][0]['DEFAULT_THEME'][0] = $GLOBALS['eyeControl_general_select_theme']->selected;
 	eyeXML('setXMLFile',array($ThemeFile,$ThemeXML));
-// Ready message
+// Ready!
 	eyex('messageBox',array('content' => 'Changes successfully saved.'));
 }
 
@@ -62,6 +81,8 @@ function eyeControl_on_general_uninstall($params = '') {
 			'type' => 3,
 			'title' => 'Uninstall eyeOS',
 			'win_name' => 'eyeControl_general_uninstall_window',
+			'win_style' => TITLE + CLOSE,
+			'win_removepid' => 0,
 			'btn1_capt' => 'Yes',
 			'btn1_name' => 'general_uninstall_yes',
 			'btn2_capt' => 'No',
@@ -80,24 +101,11 @@ function eyeControl_on_general_uninstall_yes($params = '') {
 		eyeWidgets('unserialize');
 		eyex('messageBox',array('content' => 'The eyeOS system was successfully deleted.'));
 		eyex('rawjs',array('js' => 'window.setTimeout("home()",2000);'));
-		vfs('real_rmdir',array('./'));
+		vfs('real_rmdir',array(EYE_ROOT . '/'));
 	}
 }
 
 function eyeControl_on_general_uninstall_no($params = '') {
 	$GLOBALS['eyeControl_general_uninstall_window']->close();
-}
-
-// Copy and change the code from eyeControl!
-function eyeControl_on_general_update($params = '') {
-	$httpClient = eyeURL('getHTTPClient');
-	$httpClient->setURL('http://eyeos.org/ver_u.txt');
-	$httpClient->sendRequest();
-	$version = trim($httpClient->getResponseBody());
-	if ($version) {
-		proc('launch',array('eyeNav','http://prdownloads.sourceforge.net/eyeos/eyeOS' . $version . '.tar.gz'));
-	} else {
-		proc('launch',array('eyeNav','http://prdownloads.sourceforge.net/eyeos/'));
-	}
 }
 ?>

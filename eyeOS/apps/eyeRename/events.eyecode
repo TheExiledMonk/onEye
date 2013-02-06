@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeRename_on_Message($params = '') {
@@ -29,23 +29,35 @@ function eyeRename_on_rename($params = '') {
 	$orig = $GLOBALS['rnPath']->text;
 	$callback = $GLOBALS['rnCallback']->text;
 	$dest = $GLOBALS['rnTextbox']->text;
-	$dest = str_replace('/','',$dest);
-	$dest = str_replace('\\','',$dest);
-	$dest = str_replace('\'','',$dest);
-	$dest = str_replace('"','',$dest);
-	if($dest) {
-		$info = pathinfo($orig);
+	if ($dest) {
+		$info = utf8_pathinfo($orig);
+		if (vfs('checkSpecialChars',array($dest)) === false) {
+			$dest = str_replace('/','',$dest);
+			$dest = str_replace('\\','',$dest);
+			service('eyex','messageBox',array('content' => 'Some special chars have been removed.'));
+		}
 		$dest = $info['dirname'].'/'.$dest;
-		if(service('vfs','fileExists',array($orig)) && service('vfs','rename',array($orig,$dest))) {
-			if($callback != '') {
-				service('eyex','rawjs',array('js'=>$callback));
+		if (service('vfs','fileExists',array($orig))) {
+			if (!service('vfs','rename',array($orig,$dest))) {
+				service('eyex','messageBox',array('content' => 'Error renaming file.'));
+				$callback = '';
+			}
+		} elseif (service('vfs','real_fileExists',array($orig)) && utf8_strtolower(strrchr($orig,'.')) == utf8_strtolower('.' . EYEOS_LINK_EXT)) {
+			$dest = $dest . '.' . EYEOS_LINK_EXT;
+			if (!service('vfs','real_move',array($orig,$dest))) {
+				service('eyex','messageBox',array('content' => 'Error renaming file.'));
+				$callback = '';
 			}
 		} else {
-			service('eyex','messageBox',array('content'=>'Error renaming file.'));
+			service('eyex','messageBox',array('content' => 'Error renaming file.'));
+			$callback = '';
+		}
+		if($callback != '') {
+			service('eyex','rawjs',array('js'=>$callback));
 		}
 		proc('end');
 	} else {
-		service('eyex','messageBox',array('content'=>'You haven\'t type a new filename.'));
+		service('eyex','messageBox',array('content' => 'You haven\'t typed a new filename.'));
 	}
 }
 

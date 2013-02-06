@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,17 +18,22 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 
 function lib_i18n_loadLang($params) {
-	$app = basename($params[0]);
+	$app = utf8_basename($params[0]);	
 	if(!$app) {
 		return false;
 	}
 	if(isset($_SESSION['lang'])){
 		$lang = $_SESSION['lang'];
+		//loading the global strings
+		if(file_exists(EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION) &&
+		is_readable(EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION)) {
+			include_once(EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION);
+		}
 		if(file_exists(EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION) &&
 		is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION)) {
 			include_once(EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION);
@@ -74,7 +79,7 @@ function lib_i18n_getLang($params=null) {
 }
 
 function lib_i18n_setLang($params) {
-	$lang = basename($params[0]);
+	$lang = utf8_basename($params[0]);
 	if(!$lang) {
 		return false;
 	}

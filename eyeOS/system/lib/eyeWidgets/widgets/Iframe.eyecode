@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -105,8 +105,7 @@ class Iframe {
 			reqLib('eyeWidgets','serialize',array($this));
 		}
 	}
-	
-		
+			
 	function setCss($params) {
 		global $myPid;
 		if(is_array($params)) {
@@ -133,7 +132,8 @@ class Iframe {
 	function setUrl($url) {
 		global $myPid;
 		$this->url = $url;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src="'.$url.'";'));
+		$tokens[] = $this->url;
+		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src= %s ;','tokens'=>$tokens));
 	}
 	
 	function setX($x) {

@@ -82,7 +82,7 @@ class File_Archive_Reader_Memory extends File_Archive_Reader
         $this->memory = &$memory;
         $this->filename = $this->getStandardURL($filename);
         $this->stat = $stat;
-        $this->stat[7] = $this->stat['size'] = strlen($this->memory);
+        $this->stat[7] = $this->stat['size'] = utf8_strlen($this->memory);
         $this->mime = $mime;
     }
 
@@ -121,15 +121,15 @@ class File_Archive_Reader_Memory extends File_Archive_Reader
      */
     function getData($length = -1)
     {
-        if ($this->offset == strlen($this->memory)) {
+        if ($this->offset == utf8_strlen($this->memory)) {
             return null;
         }
         if ($length == -1) {
-            $actualLength = strlen($this->memory) - $this->offset;
+            $actualLength = utf8_strlen($this->memory) - $this->offset;
         } else {
-            $actualLength = min($length, strlen($this->memory) - $this->offset);
+            $actualLength = min($length, utf8_strlen($this->memory) - $this->offset);
         }
-        $result = substr($this->memory, $this->offset, $actualLength);
+        $result = utf8_substr($this->memory, $this->offset, $actualLength);
         $this->offset += $actualLength;
         return $result;
     }
@@ -140,9 +140,9 @@ class File_Archive_Reader_Memory extends File_Archive_Reader
     function skip($length = -1)
     {
         if ($length == -1) {
-            $length = strlen($this->memory) - $this->offset;
+            $length = utf8_strlen($this->memory) - $this->offset;
         } else {
-            $length = min($length, strlen($this->memory) - $this->offset);
+            $length = min($length, utf8_strlen($this->memory) - $this->offset);
         }
         $this->offset += $length;
         return $length;
@@ -203,15 +203,15 @@ class File_Archive_Reader_Memory extends File_Archive_Reader
     function makeWriterRemoveBlocks($blocks, $seek = 0)
     {
         require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR."/eyeFileArchive/lib/Archive/Writer/Memory".EYE_CODE_EXTENSION;
-        $data = substr($this->memory, 0, $this->offset + $seek);
-        $this->memory = substr($this->memory, $this->offset + $seek);
+        $data = utf8_substr($this->memory, 0, $this->offset + $seek);
+        $this->memory = utf8_substr($this->memory, $this->offset + $seek);
 
         $keep = false;
         foreach ($blocks as $length) {
             if ($keep) {
-                $data .= substr($this->memory, 0, $length);
+                $data .= utf8_substr($this->memory, 0, $length);
             }
-            $this->memory = substr($this->memory, $length);
+            $this->memory = utf8_substr($this->memory, $length);
             $keep = !$keep;
         }
         if ($keep) {
@@ -220,7 +220,7 @@ class File_Archive_Reader_Memory extends File_Archive_Reader
             $this->memory = $data;
         }
         $this->close();
-        return new File_Archive_Writer_Memory($this->memory, strlen($this->memory));
+        return new File_Archive_Writer_Memory($this->memory, utf8_strlen($this->memory));
     }
 }
 

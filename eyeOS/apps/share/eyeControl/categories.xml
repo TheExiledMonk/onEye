@@ -1,8 +1,12 @@
-<content>
+<index>
 	<display>Main</display>
 	<name>index</name>
 	<permissions>all</permissions>
-</content>
+</index>
+<cat_content>
+	<name>category</name>
+	<permissions>all</permissions>
+</cat_content>
 <category>
 	<display>Personal</display>
 	<name>account</name>
@@ -24,7 +28,7 @@
 		<img>index.php?extern=apps/eyeX/themes/default/icons/48x48/password.png</img>
 	</content>
 	<content>
-		<description>Change your preferred language</description>
+		<description>Change your preferred language.</description>
 		<display>Language</display>
 		<name>lang</name>
 		<permissions>all</permissions>
@@ -107,50 +111,23 @@
 	</content>
 </category>
 <category>
-	<description>Settings for eyeOS applications</description>
 	<display>System</display>
-	<name>apps</name>
+	<name>system</name>
 	<permissions>all</permissions>
-	<title>yes</title>
-	<link>yes</link>
 	<content>
-		<description>Manage the autorun applications.</description>
-		<display>Autorun Apps</display>
+		<description>Manage the autorun commands.</description>
+		<display>Autorun Commands</display>
 		<name>eyedesk</name>
 		<permissions>all</permissions>
 		<title>yes</title>
 		<img>index.php?extern=apps/eyeX/themes/default/icons/48x48/autorun.png</img>
-	</content>	
+	</content>
 	<content>
-		<description>Manage the eyeFiles sites and configure eyeUpload.</description>
-		<display>File Manager</display>
-		<name>eyefiles</name>
-		<permissions>all</permissions>
-		<title>yes</title>
-		<img>index.php?extern=apps/eyeX/themes/default/icons/48x48/home.png</img>
-	</content>	
-	<content>
-		<description>Edit the eyeNav's Start Page.</description>
+		<description>Manage eyeNav&#039;s startpage, its bookmarks and search engines.</description>
 		<display>Web Browser</display>
 		<name>eyenav</name>
 		<permissions>all</permissions>
 		<title>yes</title>
 		<img>index.php?extern=apps/eyeX/themes/default/icons/48x48/eyeNav.png</img>
-	</content>
-	<content>
-		<description>Add a new site to eyeFiles.</description>
-		<display>New site</display>
-		<name>newsite</name>
-		<permissions>all</permissions>
-		<title>yes</title>
-		<show>no</show>
-	</content>
-	<content>
-		<description>Edit a site from eyeFiles.</description>
-		<display>Edit site</display>
-		<name>editsite</name>
-		<permissions>all</permissions>
-		<title>yes</title>
-		<show>no</show>
 	</content>
 </category>

@@ -152,8 +152,8 @@ class File_Archive_Reader_Tar extends File_Archive_Reader_Archive
             if (PEAR::isError($rawHeader)) {
                 return $rawHeader;
             }
-            if (strlen($rawHeader)<512 || $rawHeader == pack("a512", "")) {
-                $this->seekToEnd = strlen($rawHeader);
+            if (utf8_strlen($rawHeader)<512 || $rawHeader == pack("a512", "")) {
+                $this->seekToEnd = utf8_strlen($rawHeader);
                 $this->currentFilename = null;
                 return false;
             }
@@ -193,12 +193,12 @@ class File_Archive_Reader_Tar extends File_Archive_Reader_Archive
                 $this->footerLength = 512 - $this->leftLength%512;
             }
 
-            $checksum = 8*ord(" ");
+            $checksum = 8*utf8_ord(" ");
             for ($i = 0; $i < 148; $i++) {
-                $checksum += ord($rawHeader{$i});
+                $checksum += utf8_ord($rawHeader{$i});
             }
             for ($i = 156; $i < 512; $i++) {
-                $checksum += ord($rawHeader{$i});
+                $checksum += utf8_ord($rawHeader{$i});
             }
 
             if (octdec($header['checksum']) != $checksum) {
@@ -224,7 +224,7 @@ class File_Archive_Reader_Tar extends File_Archive_Reader_Archive
             return null;
         } else {
             $data = $this->source->getData($actualLength);
-            if (strlen($data) != $actualLength) {
+            if (utf8_strlen($data) != $actualLength) {
                 return PEAR::raiseError('Unexpected end of tar archive');
             }
             $this->leftLength -= $actualLength;

@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeTrash_run($params=null) {
@@ -37,22 +37,14 @@ function eyeTrash_run($params=null) {
 		'x'=>$myWindow3->width+10,'y'=>5));
 	$myWindow2->show();
 	service('eyex','rawjs',array('js'=>'document.getElementById("'.$myPid.'_WND_2").onmousedown="";'));
-	$myBox = new Box(array('name'=>'BOX_1','father'=>'WND_3_Content','x'=>6,'y'=>2,'width'=>170,
+	$myBox = new Box(array('name'=>'BOX_1','father'=>'WND_3_Content','x'=>6,'y'=>0,'width'=>170,
 		'height'=>135,'title'=>'Actions'));
 	$myBox->show();
 	
 	$myWindow5 = new Window(array('name'=>'WND_BOX_1','father' => 'BOX_1',
-		'y'=>12,'x'=>0,'width'=>168,'height'=>130,'type'=>100));
+		'y'=>8,'x'=>0,'width'=>168,'height'=>130,'type'=>100));
 	$myWindow5->show();
-	
-	$myBox2 = new Box(array('name'=>'BOX_2','father'=>'WND_3_Content','x'=>6,'y'=>$myBox->height+22,
-		'width'=>170,'height'=>165,'title'=>'Places'));
-	$myBox2->show();
-	
-	$myWindow4 = new Window(array('name'=>'WND_BOX_2','father' => 'BOX_2',
-		'y'=>12,'x'=>0,'width'=>168,'height'=>148,'type'=>100));
-	$myWindow4->show();
-	
+
 	$myUserDir = service('um','getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeTrash/conf.xml';
 	
 	if(is_readable($myUserDir)) {
@@ -99,41 +91,6 @@ function eyeTrash_run($params=null) {
 		}
 	}
 	
-	$myUserDir = service('um','getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeFiles/sites.xml';
-	
-	if(is_readable($myUserDir)) {
-		$fp = service('vfs','real_open',array($myUserDir,'r'));
-		if($fp) {
-			$myContent = fread($fp,filesize($myUserDir));
-			fclose($fp); //free the descriptor
-			$xml = reqLib('eyeXML','xml2array',array($myContent));
-			$counter = 0;
-			if(is_array($xml['eyeSites'][0]['site'])) {
-				foreach($xml['eyeSites'][0]['site'] as $value) {
-						$Yofset = $counter * 30;
-						$myContainer = new Container(array('name' =>'site_container_line_'.$counter,
-						'father' => 'WND_BOX_2_Content', 'x' => 2,'y'=>$Yofset,'width'=>160,'height' => 30));
-						$myContainer->show();
-						$myImage1 = new Imagebox(array('name'=>'site_img_'.$counter,
-							'father'=>'site_container_line_'.$counter,'url'=>'index.php?extern=apps/eyeFiles/gfx/site.png','x'=>10,'y'=>7));
-						$myImage1->show();
-						$myHidden = new Hidden(array('name'=>'place_hid_'.$counter,
-							'father'=>'site_container_line_'.$counter,'text'=>$value['path'][0]));
-						$myHidden->show();
-						service('eyex','rawjs',array('js'=>"document.getElementById('".$myPid."_site_container_line_".$counter."').onmouseover = function(){document.getElementById('".$myPid."_site_container_line_".$counter."').style.backgroundColor='#E9E9E9';};"));
-						service('eyex','rawjs',array('js'=>"document.getElementById('".$myPid."_site_container_line_".$counter."').onmouseout = function(){document.getElementById('".$myPid."_site_container_line_".$counter."').style.backgroundColor='transparent';};"));
-						$myLabel1 = new Label(array('name'=>'site_lbl_'.$counter,
-							'father'=>'site_container_line_'.$counter,'text'=>$value['label'][0],'y'=>7,'x'=>40,
-							'disablemsg'=>0,'signal'=>'siteExecute'));
-						$myLabel1->addFriend($myHidden);
-						$myLabel1->show();	
-						$myLabel1->setCss(array('font-family'=>'Verdana','font-size'=>'11px',
-							'cursor'=>'Pointer'));
-						$counter++;
-				}
-			}
-		}		
-	}
 	
 	service('eyex','loadScript',array('url' => 'index.php?extern=apps/eyeFiles/js/eyeFiles'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 	

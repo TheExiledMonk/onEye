@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,23 +18,25 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDock_run($params=null) {
 	global $myPid,$checknum;
-	//Load js.	
-
-	if(is_array($params) && isset($params[0]['redraw'])) {
-		eyeWidgets('unserialize');
-	}
-	
+		
 	$checkPid = proc('findPidByName', array('eyeDock'));
 	if($checkPid != false && $checkPid != $myPid) {
 		proc('end');
 		return false;
 	}
-	service('eyex','loadScript',array('url'=>'index.php?extern=apps/eyeDock/js/eyeDock'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	
+	if(is_array($params) && isset($params[0]['redraw'])) {
+		eyeWidgets('unserialize');
+		eyeX('sendMessage', array('msg' => 'Launch', 'params' => '.'));
+	} else {
+		//Load js if it wasn't loaded
+		eyeX('loadScript',array('url'=>'index.php?extern=apps/eyeDock/js/eyeDock'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	}
 }
 
 function eyeDock_end($params=null) {

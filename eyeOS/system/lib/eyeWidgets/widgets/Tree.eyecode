@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -174,16 +174,21 @@ class Tree {
 		global $myPid;
 		$rItemName = $myPid.'_'.$itemName;
 		$rlistname = $myPid.'_'.$listname;
-		$js = "addSubList('$rItemName','$rlistname');";
-		eyeX('rawjs',array('js'=>$js));
+		$tokens[] = $rItemName ;
+		$tokens[] = $rlistname;		
+		$js = "addSubList( %s , %s );";
+		eyeX('runjs',array('js'=>$js,'tokens'=>$tokens));
 	}
 	
 	function addItem($listname,$itemName,$text) {
 		global $myPid;
 		$rItemName = $myPid.'_'.$itemName;
 		$rlistname = $myPid.'_'.$listname;
-		$js = "addItem('$rlistname','$rItemName','$text');";
-		eyeX('rawjs',array('js'=>$js));
+		$tokens[] = $rlistname;
+		$tokens[] = $rItemName ;		
+		$tokens[] = $text;
+		$js = "addItem( %s , %s , %s );";		
+		eyeX('runjs',array('js'=>$js,'tokens'=>$tokens));
 	}
 	
 	function processList() {
@@ -228,16 +233,21 @@ class TreeSelected {
 		global $myPid;
 		$rItemName = $myPid.'_'.$itemName;
 		$rlistname = $myPid.'_'.$listname;
-		$js = "addSubList('$rItemName','$rlistname');";
-		eyeX('rawjs',array('js'=>$js));
-	}
+		$tokens[] = $rItemName ;
+		$tokens[] = $rlistname;		
+		$js = "addSubList( %s , %s );";
+		eyeX('runjs',array('js'=>$js,'tokens'=>$tokens));
+	}	
 	
 	function addItem($listname,$itemName,$text) {
 		global $myPid;
 		$rItemName = $myPid.'_'.$itemName;
 		$rlistname = $myPid.'_'.$listname;
-		$js = "addItem('$rlistname','$rItemName','$text');";
-		eyeX('rawjs',array('js'=>$js));
+		$tokens[] = $rlistname;
+		$tokens[] = $rItemName ;		
+		$tokens[] = $text;
+		$js = "addItem( %s , %s , %s );";		
+		eyeX('runjs',array('js'=>$js,'tokens'=>$tokens));
 	}
 	
 	function processList() {

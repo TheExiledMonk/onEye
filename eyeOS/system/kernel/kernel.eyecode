@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -34,10 +34,8 @@ if(strstr($ua,'MSIE 6')){
 	define('IE',0);
 }
 
-
-
-function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
-	$sec_servicename = basename($servicename);
+function service($servicename,$servicefunction=null,$params=null,$noListen=0) {	
+	$sec_servicename = utf8_basename($servicename);	
 	if(!checkServiceLoaded($sec_servicename)){
 		if(is_readable(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/'.$sec_servicename.'/main'.EYE_CODE_EXTENSION)) {
 			include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SERVICE_DIR.'/'.$sec_servicename.'/main'.EYE_CODE_EXTENSION);
@@ -74,7 +72,7 @@ function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 	if(!function_exists('service_'.$sec_servicename.'_'.$servicefunction)) {
 		return false;
 	}
-	$minfunction = strtolower($servicefunction);
+	$minfunction = utf8_strtolower($servicefunction);
 	if(isset($_SESSION['KListenerList'][$sec_servicename][$minfunction]) &&
 		is_array($_SESSION['KListenerList'][$sec_servicename][$minfunction]) && $noListen == 0){
 		
@@ -89,7 +87,7 @@ function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 			if(!$appName) {
 				unset($_SESSION['KListenerList'][$sec_servicename][$minfunction][$key]);
 			} else {
-				$appName = basename($appName);
+				$appName = utf8_basename($appName);
 				if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/com'.EYE_CODE_EXTENSION)) {
 					include_once(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/com'.EYE_CODE_EXTENSION);
 					if(function_exists($appName.'_com_'.$value)) {
@@ -126,7 +124,7 @@ function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 			if(!$appName) {
 				unset($_SESSION['KListenerListP'][$sec_servicename][$minfunction][$key]);
 			} else {
-				$appName = basename($appName);
+				$appName = utf8_basename($appName);
 				if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/com'.EYE_CODE_EXTENSION)) {
 					include_once(EYE_ROOT.'/'.APP_DIR.'/'.$appName.'/com'.EYE_CODE_EXTENSION);
 					if(function_exists($appName.'_com_'.$value)) {
@@ -149,10 +147,10 @@ function service($servicename,$servicefunction=null,$params=null,$noListen=0) {
 	return $ret; 
 }
 
-function reqLib($libname,$function,$params=null) {
-	$sec_libname = basename($libname);
-	if(!checkLibraryLoaded($sec_libname)) {
-		if(is_readable(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/'.$sec_libname.'/main'.EYE_CODE_EXTENSION)) {
+function reqLib($libname,$function,$params=null) {		
+	$sec_libname = utf8_basename($libname);	
+	if(!checkLibraryLoaded($sec_libname)) {				
+		if(is_readable(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/'.$sec_libname.'/main'.EYE_CODE_EXTENSION)) {						
 			include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/'.$sec_libname.'/main'.EYE_CODE_EXTENSION);
 			setLibraryLoaded($sec_libname);
 			if(function_exists('lib_'.$sec_libname.'_init')) {
@@ -166,7 +164,7 @@ function reqLib($libname,$function,$params=null) {
 			}
 		}
 	}
-	if(function_exists('lib_'.$libname.'_'.$function)){
+	if(function_exists('lib_'.$libname.'_'.$function)){		
 		return call_user_func('lib_'.$libname.'_'.$function,$params);
 	} else {
 		return false;
@@ -177,7 +175,7 @@ function setServiceLoaded($name) {
 	if(!$name) {
 		return false;
 	}
-	define(strtoupper($name).'_LOADED',1);
+	define(utf8_strtoupper($name).'_LOADED',1);
 	return true;
 }
 
@@ -185,7 +183,7 @@ function checkServiceLoaded($name) {
 	if(!$name) {
 		return false;
 	}
-	if(!defined(strtoupper($name.'_LOADED'))) {
+	if(!defined(utf8_strtoupper($name.'_LOADED'))) {
 		return false;
 	} else {
 		return true;
@@ -196,7 +194,7 @@ function setLibraryLoaded($name) {
 	if(!$name) {
 		return false;
 	}
-	define('LIB_'.strtoupper($name).'_LOADED',1);
+	define('LIB_'.utf8_strtoupper($name).'_LOADED',1);
 	return true;
 }
 
@@ -204,25 +202,25 @@ function checkLibraryLoaded($name) {
 	if(!$name) {
 		return false;
 	}
-	if(!defined('LIB_'.strtoupper($name.'_LOADED'))) {
+	if(!defined('LIB_'.utf8_strtoupper($name.'_LOADED'))) {
 		return false;
 	} else {
 		return true;
 	}
 }
 
-function loadServiceConfig() {
-	if ($handler = opendir(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/')) {
-		while (false !== ($archivo = readdir($handler))) {
+function loadServiceConfig() {	
+	if ($handler = opendir(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/')) {		
+		while (false !== ($archivo = readdir($handler))) {			
 			if(is_file(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo)) {
 				if ($archivo{0} != "." && filesize(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo) > 1) {
 					$myFile = fopen(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo,'r');
 					$myContent = fread($myFile,filesize(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/'.$archivo));
-					fclose($myFile);
-					$myArray = reqLib('eyeXML','xml2array',array($myContent));
+					fclose($myFile);					
+					$myArray = reqLib('eyeXML','xml2array',array($myContent));										
 					if(isset($myArray['CONFIG']) && is_array($myArray['CONFIG'])) {
 						if(is_array($myArray['CONFIG'][0])) {
-							foreach($myArray['CONFIG'][0] as $key => $value) {
+							foreach($myArray['CONFIG'][0] as $key => $value) {								
 								define($key,$value[0]);
 							}
 						}
@@ -235,7 +233,7 @@ function loadServiceConfig() {
 }
 
 function loadConfig($appName) {
-	$appName = basename($appName);
+	$appName = utf8_basename($appName);
 	if ($handler = opendir(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/')) {
 		while (false !== ($archivo = readdir($handler))) {
 			if ($archivo{0} != "." && filesize(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo) > 1) {
@@ -255,8 +253,8 @@ function loadConfig($appName) {
 }
 
 function getConfig($appName,$archivo='conf.xml') {
-	$appName = basename($appName);
-	$archivo = basename($archivo);
+	$appName = utf8_basename($appName);
+	$archivo = utf8_basename($archivo);
 	if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo)) {
 		$myFile = fopen(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo,'r');
 		$myContent = fread($myFile,filesize(EYE_ROOT.'/'.APP_DIR.'/'.APP_CONF_SHARE.'/'.$appName.'/'.$archivo));
@@ -268,7 +266,7 @@ function getConfig($appName,$archivo='conf.xml') {
 }
 
 function getAppInfo($app) {
-	$app = basename($app);
+	$app = utf8_basename($app);
 	$myFile = EYE_ROOT.'/'.APP_DIR.'/'.$app.'/';
 	global $currentUser;
 	$oldUser = $currentUser;
@@ -291,7 +289,7 @@ function delShortUrl($shortUrl) {
 
 function addListenerServiceCall($myCallback,$myService,$myCall,$postExecution=0) {
 	global $myPid;
-	$call = strtolower($myCall);
+	$call = utf8_strtolower($myCall);
 	if($postExecution==0) {
 		$_SESSION['KListenerList'][$myService][$call][$myPid] = $myCallback;
 	} else {
@@ -301,7 +299,7 @@ function addListenerServiceCall($myCallback,$myService,$myCall,$postExecution=0)
 
 function removeListenerServiceCall($myService,$myCall,$postExecution=0) {
 	global $myPid;
-	$call = strtolower($myCall);
+	$call = utf8_strtolower($myCall);
 	if($postExecution==0) {
 		if(isset($_SESSION['KListenerList'][$myService][$call][$myPid])) {
 			unset($_SESSION['KListenerList'][$myService][$call][$myPid]);

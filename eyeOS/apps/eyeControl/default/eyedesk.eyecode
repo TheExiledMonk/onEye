@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 // $myTable
@@ -37,7 +37,7 @@ $myTable = new Sortabletable(array(
 ));
 $myTable->show();
 $nCommands = 0;
-$commandXML = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/eyeDesk/conf.xml'));
+$commandXML = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
 foreach($commandXML['eyeDesk'][0]['autolaunch'] as $command) {
 	$nCommands++;
 	$myTable->addRow(array($command));
@@ -51,7 +51,7 @@ $myButton = new Button(array(
 	'width' => 90,
 	'x' => 10,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/default/icons/16x16/new.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/new.png'
 ));
 $myButton->show();
 // Edit
@@ -63,7 +63,7 @@ $myButton = new Button(array(
 	'width' => 90,
 	'x' => 100,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/paste.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/paste.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -76,7 +76,7 @@ $myButton = new Button(array(
 	'width' => 90,
 	'x' => 190,
 	'y' => 0,
-	'img' => 'index.php?extern=apps/eyeFiles/gfx/delete.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/delete.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -86,10 +86,10 @@ $myButton = new Button(array(
 	'father' => $eyeContainer,
 	'signal' => 'eyedesk_default',
 	'caption' => 'Use defaults',
-	'width' => 90,
+	'width' => 100,
 	'x' => 280,
 	'y' => 0,
-	'img' => 'index.php?extern=' . THEMES_DIR . '/default/icons/16x16/save.png'
+	'img' => 'index.php?extern=' . THEMES_DIR . '/' . $_SESSION['usertheme'] . '/icons/16x16/save.png'
 ));
 $myButton->show();
 // x command(s)
@@ -97,7 +97,7 @@ $myLabel = new Label(array(
 	'name' => 'eyeControl_eyedesk_label_commands',
 	'father' => $eyeContainer,
 	'horiz' => 1,
-	'y' => 5,
+	'y' => 2,
 	'text' => '%s command(s)',
 	'tokens' => array($nCommands)
 ));

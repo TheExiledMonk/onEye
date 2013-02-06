@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 global $myPid;
@@ -41,12 +41,12 @@ $openDir = vfs('real_getDirContent',array($dir));
 $currentUser = $oldUser;
 foreach ($openDir as $theme) {
 	if (is_dir($theme) && file_exists($theme . '/info.xml')) {
-		$UserThemeXML = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/eyeDesk/conf.xml'));
+		$UserThemeXML = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		$ThemeXML = eyeXML('getXMLfile',array($theme . '/info.xml'));
 		$currentUser = $oldUser;
-		$theme = basename($theme);
+		$theme = utf8_basename($theme);
 		if ($theme == $UserThemeXML['eyeDesk'][0]['theme'][0]) {
 			$select = 1;
 			$selectedXML = $ThemeXML['eyeXtheme'][0];

@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeArchive_on_Extract($params="") {
@@ -81,7 +81,7 @@ function eyeArchive_on_SelectDestDialog($params = null){
 		_eyeArchive_setProject($myProject);
 		
 		if($myProject->type == 'directory'){
-			$name = basename($GLOBALS['workingPath']->text);
+			$name = utf8_basename($GLOBALS['workingPath']->text);
 			$GLOBALS['workingPath']->setText($workPath.'/'.$name);
 		}else{
 			$GLOBALS['workingPath']->setText($workPath);

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -44,8 +44,8 @@ define('MAX_FILE_NAME_LEN',40);
 * 
 * Last update 2007-06-1
 ***/
-function service_extern_getFile($params) {
-	$info = pathinfo($params[0]);
+function service_extern_getFile($params) {	
+	$info = utf8_pathinfo($params[0],'a');
 	$type = $params[1];
 	$myDir = $info['dirname'];
 	$myFile = $info['basename'];
@@ -56,12 +56,12 @@ function service_extern_getFile($params) {
 	$myExt = str_replace("\r",'',$myExt);
 	$myFile = str_replace("\n",'',$myFile);
 	$myFile = str_replace("\r",'',$myFile);
-	
-	if(strlen($myExt) > MAX_FILE_EXTENSION) {
+		
+	if(utf8_strlen($myExt) > MAX_FILE_EXTENSION) {
 		return;
 	}
 	
-	if(strlen($myFile > MAX_FILE_NAME_LEN)) {
+	if(utf8_strlen($myFile > MAX_FILE_NAME_LEN)) {
 		return;
 	}
 	
@@ -71,12 +71,12 @@ function service_extern_getFile($params) {
 	
 	$extern_path = realpath(EYE_ROOT.'/'.EXTERN_DIR.'/');
 
-	if (0 !== strpos ($myDir,$extern_path)) { //check dir
+	if (0 !== utf8_strpos ($myDir,$extern_path)) { //check dir
 		return;
 	} 
-
+	
 	if(is_readable($myDir.'/'.$myFile)) {		
-		$len = filesize($myDir.'/'.$myFile);
+		$len = filesize($myDir.'/'.$myFile);		
 		if($type == 'text') {
 			header("Content-type: text/plain");	
 		} elseif ($type == 'image' || $myExt == 'png' || $myExt == 'jpg' || $myExt == 'gif') {
@@ -101,7 +101,7 @@ function service_extern_getFile($params) {
 		header("X-Pad: avoid browser bug");
 		if($type == 'dynamic') {
 			echo $return;
-		} else {
+		} else {			
 			readfile($myDir.'/'.$myFile);
 		}
 	} 

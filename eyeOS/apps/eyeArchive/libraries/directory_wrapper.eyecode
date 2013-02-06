@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 define('WRAPPER_TYPE','directory');
 function getFiles($file){
@@ -27,9 +27,9 @@ function getFiles($file){
 		$contentLen = count($tmpContent);				
 		$content = array();
 		for($x=0;$x <$contentLen;$x++){			
-			if(strpos($tmpContent[$x],EYEOS_FILE_EXT)){
+			if(utf8_strpos($tmpContent[$x],EYEOS_FILE_EXT)){
 				$content['path'][] = $file.$tmpContent[$x];
-				$name = substr($tmpContent[$x],0,strpos($tmpContent[$x],'_'));
+				$name = utf8_substr($tmpContent[$x],0,utf8_strpos($tmpContent[$x],'_'));
 				$content['names'][] = $name;				
 			}			
 		}		

@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function emptyTrash_run($params = '') {
@@ -32,6 +32,7 @@ function emptyTrash_run($params = '') {
 		'type' => 3,
 		'title' => 'Empty trash',
 		'win_name' => 'emptyTrash_window',
+		'win_style' => TITLE + LISTED + MIN + CLOSE,
 		'btn1_capt' => 'Yes',
 		'btn1_name' => 'yes',
 		'btn2_capt' => 'No',

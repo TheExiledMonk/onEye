@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 
@@ -30,7 +30,7 @@ function mmap($call,$args=null) {
 	return service('mmap',$call,$args);
 }
 
-function proc($call,$args=null) {
+function proc($call,$args=null) {	
 	return service('proc',$call,$args);
 }
 
@@ -76,6 +76,18 @@ function i18n($call,$args=null) {
 
 function eyeWv($call,$args=null) {
 	return reqLib('eyeWv',$call,$args);
+}
+
+function eyeXls($call,$args=null) {
+	return reqLib('eyeXls',$call,$args);
+}
+
+function eyeConverter($call,$args=null) {
+	return reqLib('eyeConverter',$call,$args);
+}
+
+function eyeString($call,$args=null) {
+	return reqLib('eyeString',$call,$args);
 }
 
 ?>

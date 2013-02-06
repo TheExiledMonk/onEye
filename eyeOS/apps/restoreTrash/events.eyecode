@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 */
 
 function restoreTrash_on_Message($params="") {
@@ -30,7 +30,7 @@ function restoreTrash_on_yes($params=null) {
 	$file =$GLOBALS['nfFile']->text;
 	$myArray = reqLib('eyeXML','getXMLfile',array($myUserDir.$file));
 	$myArray = $myArray['eyeTrash'][0];
-    $file = substr($file,0,strrpos($file,'.'));
+    $file = utf8_substr($file,0,utf8_strrpos($file,'.'));
     if($myArray['type'][0] == 'dir') {
     	service('vfs','real_copyDir',array($myUserDir.$file,$myArray['restorePoint'][0]));
     	service('vfs','real_rmdir',array($myUserDir.$file));
@@ -44,6 +44,7 @@ function restoreTrash_on_yes($params=null) {
 		service('eyex','rawjs',array('js'=>$callback));
 	}
 	$icon = 'unknown';
+	service('eyex','messageBox',array('content'=>'File restored successfully.'));
 	proc('end');
 }
 

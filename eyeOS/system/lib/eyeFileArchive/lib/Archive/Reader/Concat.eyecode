@@ -108,9 +108,9 @@ class File_Archive_Reader_Concat extends File_Archive_Reader
         }
 
         $result = '';
-        while ($length == -1 || strlen($result)<$length) {
+        while ($length == -1 || utf8_strlen($result)<$length) {
             $sourceData = $this->source->getData(
-                $length==-1 ? -1 : $length - strlen($result)
+                $length==-1 ? -1 : $length - utf8_strlen($result)
             );
 
             if (PEAR::isError($sourceData)) {
@@ -129,7 +129,7 @@ class File_Archive_Reader_Concat extends File_Archive_Reader
                 $result .= $sourceData;
             }
         }
-        $this->filePos += strlen($result);
+        $this->filePos += utf8_strlen($result);
         return $result == '' ? null : $result;
     }
     /**

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
  
@@ -100,9 +100,9 @@ function eyeCalc_run($params=null) {
 	$myBut_Op_Multiply = new Imagebox(array('name'=>'but_op_multiply','father'=>'calcWND',
 		'x'=>26,'y'=>85,'url'=>'index.php?extern=apps/eyeCalc/img/multiply.png'));
 	$myBut_Op_Multiply->show();
-	$myBut_Op_Substract = new Imagebox(array('name'=>'but_op_substract','father'=>'calcWND',
-		'x'=>91,'y'=>85,'url'=>'index.php?extern=apps/eyeCalc/img/substract.png'));
-	$myBut_Op_Substract->show();
+	$myBut_Op_substract = new Imagebox(array('name'=>'but_op_substract','father'=>'calcWND',
+		'x'=>91,'y'=>85,'url'=>'index.php?extern=apps/eyeCalc/img/utf8_substract.png'));
+	$myBut_Op_substract->show();
 	$myBut_Op_Add = new Imagebox(array('name'=>'but_op_add','father'=>'calcWND',
 		'x'=>123,'y'=>85,'url'=>'index.php?extern=apps/eyeCalc/img/add.png'));
 	$myBut_Op_Add->show();

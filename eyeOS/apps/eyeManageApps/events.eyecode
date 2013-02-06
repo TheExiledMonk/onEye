@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 define('ICON_SIZE',48);
@@ -38,7 +38,7 @@ function eyeManageApps_on_Close() {
 }
 
 //Specific events
-function eyeManageApps_on_ListApps($reloadDock = true) {
+function eyeManageApps_on_ListApps($params=null) {
 	if(is_object($GLOBALS['appsContainer']) && method_exists($GLOBALS['appsContainer'], 'setContent')) {
 		$GLOBALS['appsContainer']->setContent("");
 	}
@@ -82,7 +82,7 @@ function eyeManageApps_on_ListApps($reloadDock = true) {
 				if(!vfs('real_fileExists',array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon))){
 					$aicon = DEFAULT_APP_ICON;
 				}
-				$appIcon = new Icon(array('name' => 'icon_'.$appCounter, 'father' => 'appsContainer',
+				$appIcon = new Icon(array('name' => 'icon_'.$counter.'_'.$appCounter, 'father' => 'appsContainer',
 				 'x' => $appX, 'y' => $myY+40, 'onclick' => 1, 'draggable' => 0, 'text' => $app['name'][0],
 				 'image' => 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon,
 				 'content' => array($aicon,$aname,$group['name'][0], $app['exec'][0], $app['desc'][0])));
@@ -109,15 +109,15 @@ function eyeManageApps_on_ListApps($reloadDock = true) {
 		$counter++;
 		
 		$groupLine = new Line(array('name' => 'line'.$counter, 'father' => 'appsContainer', 'x' => 10,
-		 'y' => $myY, 'width' => 560));
+		 'y' => $myY, 'width' => 560, 'height' => 1));
 		$groupLine->show();
 	}
-	if($reloadDock == true) {
-		$dock = proc('findPidByName', array('eyeDock'));
-		if($dock != false) {
-			proc('close', array($dock));
-			proc('launch', array("eyeDock"));
-		}
+}
+
+function eyeManageApps_on_refreshDock($params=null) {
+	$dock = proc('findPidByName', array('eyeDock'));
+	if($dock != false) {
+		proc('getTask', array($dock, array('redraw' => 1)));
 	}
 }
 
@@ -206,7 +206,7 @@ function eyeManageApps_on_createGroup($params) {
 		$myButton1->addFriend($myTextBox1);
 		$myButton1->show();
 	} else {//Filter groupname
-		$gname = trim($params['groupName'][0]);
+		$gname = utf8_trim($params['groupName'][0]);
 		if(isGroup($gname) || $gname == "") {
 			return;
 		}
@@ -217,8 +217,8 @@ function eyeManageApps_on_createGroup($params) {
 						);
 		$config['eyeDock'][0]['Group'][] = $newGroup;
 		if(eyeXML('setXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml', $config))) {
-			global $checknum;
-			eyeX('rawjs',array('js'=>"eyeManageApps_refresh($checknum);"));
+			eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
+			eyeX('sendMessage', array('msg' => 'refreshDock', 'params' => '.'));
 		}
 	}
 }
@@ -335,10 +335,10 @@ function eyeManageApps_on_addApp($params) {
 			closedir($dir);
 		}
 	} else {
-		$aname = trim($params['tboxappName'][0]);
-		$agroup = trim($params['selectappgroup'][0]);
-		$aexec = trim($params['tboxappExec'][0]);
-		$adesc = trim($params['tboxappDesc'][0]);
+		$aname = utf8_trim($params['tboxappName'][0]);
+		$agroup = utf8_trim($params['selectappgroup'][0]);
+		$aexec = utf8_trim($params['tboxappExec'][0]);
+		$adesc = utf8_trim($params['tboxappDesc'][0]);
 		
 		if(!$aname) {
 			eyeX('messageBox', array('content' => "You must specify the name of the application"));
@@ -381,9 +381,9 @@ function eyeManageApps_on_addApp($params) {
 				}
 
 				if(eyeXML('setXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml', $myApps))) {
-					global $checknum;
-			                eyeX('rawjs',array('js'=>"eyeManageApps_refresh($checknum);"));
 					eyeX('messageBox', array('content' => $aname.' added'));
+					eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
+					eyeX('sendMessage', array('msg' => 'refreshDock', 'params' => '.'));
 				}
 				$myHidden = new Hidden(array('name'=>'execApp','father'=>'WND_1','text'=>''));
 				$myHidden->show();
@@ -471,8 +471,8 @@ function eyeManageApps_on_updateApp($params) {
 	
 	if($saveChanges == true) {
 		if(eyeXML('setXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml', $config)) == true) {
-			global $checknum;
-			eyeX('rawjs',array('js'=>"eyeManageApps_refresh($checknum);"));
+			eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
+			eyeX('sendMessage', array('msg' => 'refreshDock', 'params' => '.'));
 		}
 	}
 }
@@ -488,7 +488,7 @@ function eyeManageApps_on_updateGroup($params) {
 	
 	$saveChanges = false;
 	$oldGroupName = $params['oldGroupName'][0];
-	$newGroupName = trim($params['newGroupName'][0]);
+	$newGroupName = utf8_trim($params['newGroupName'][0]);
 	$icon = $params['selectIcon'][0];
 	
 	//Trying to pass no group name or a different but existing group name?
@@ -517,8 +517,8 @@ function eyeManageApps_on_updateGroup($params) {
 	
 	if($saveChanges == true) {
 		if(eyeXML('setXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml', $config)) == true) {
-			global $checknum;
-			eyeX('rawjs',array('js'=>"eyeManageApps_refresh($checknum);"));
+			eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
+			eyeX('sendMessage', array('msg' => 'refreshDock', 'params' => '.'));
 		}
 	}
 }
@@ -540,7 +540,8 @@ function eyeManageApps_on_clickGroup($params){
 				if(strcmp($groupName, $myApps['eyeDock'][0]['Group'][$j]['name'][0]) == 0) {
 					unset($myApps['eyeDock'][0]['Group'][$j]);
 					eyeXML('setXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml', $myApps));
-	                		eyeX('rawjs',array('js'=>"eyeManageApps_refresh($checknum);"));
+	                eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
+					eyeX('sendMessage', array('msg' => 'refreshDock', 'params' => '.'));
 					return;
 				}
 			}
@@ -570,8 +571,8 @@ function _removeApp($appName, $groupName){
 				unset($myApps['eyeDock'][0]['Group'][$j]['items'][0]['item'][$i]);
 				$result = eyeXML('setXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml', $myApps));
 				if($result == true) {
-					global $checknum;
-		                	eyeX('rawjs',array('js'=>"eyeManageApps_refresh($checknum);"));
+					eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
+					eyeX('sendMessage', array('msg' => 'refreshDock', 'params' => '.'));
 				}
 				return $result;
 			}
@@ -670,7 +671,7 @@ function appProperties($params) {
 	
 	if ($handle = opendir(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/')) {
 	    while (false !== ($file = readdir($handle))) {
-	        if ($file != "." && $file != ".." && $file{0} != "." && strtolower(ltrim(strrchr($file,'.'),'.')) == 'png' && $file != $icon) {
+	        if ($file != "." && $file != ".." && $file{0} != "." && utf8_strtolower(utf8_ltrim(strrchr($file,'.'),'.')) == 'png' && $file != $icon) {
 	        	$mySelect2->addOption($file,$file);
 	        }
 	    }
@@ -754,7 +755,7 @@ function groupProperties($groupName) {
 	$userTheme = eyeSessions('getVar', array('usertheme'));
 	if ($handle = opendir(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons')) {
 	    while (false !== ($file = readdir($handle))) {
-	        if ($file != "." && $file != ".." && $file{0} != "." && strtolower(ltrim(strrchr($file,'.'),'.')) == 'png' && !strpos($file, '_')) {
+	        if ($file != "." && $file != ".." && $file{0} != "." && utf8_strtolower(utf8_ltrim(strrchr($file,'.'),'.')) == 'png' && !utf8_strpos($file, '_')) {
 	        	if(strcmp($icon, $file) == 0) {
 	        		$mySelect1->addOption($file, $file, 1);
 	        	} else {

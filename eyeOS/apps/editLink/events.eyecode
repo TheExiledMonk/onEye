@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function editLink_on_Message($params="") {
@@ -28,7 +28,7 @@ function editLink_on_Message($params="") {
 function editLink_on_updateLink($params=null) {
 	$content =$GLOBALS['edTextbox']->text;
 	$icon = $GLOBALS['iconSelect']->selected;
-	$icon = substr($icon,0,strlen($icon)-4);
+	$icon = utf8_substr($icon,0,utf8_strlen($icon)-4);
 	$path = $GLOBALS['xPath']->text;
 	$data = eyeXML('getXMLfile',array($path));
 	$data['eyeLink'][0]['content'][0] = $content;

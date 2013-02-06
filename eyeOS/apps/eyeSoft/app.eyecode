@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeSoft_run($params=null) {
@@ -31,7 +31,7 @@ function eyeSoft_run($params=null) {
 	}
 	$config = reqLib('eyeXML','getXMLfile',array(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports.xml'));
 	$myWindow = new Window(array('name'=>'eyeSoft','father'=>'eyeApps',
-	'cent'=>1,'width'=>650,'height'=>570,'title'=>'App Manager'));
+	'cent'=>1,'width'=>650,'height'=>570,'title'=>'App Manager','style' => TITLE + LISTED + MIN + CLOSE));
 	$myWindow->show();
 	
 	$myWindow = new Window(array('name'=>'eyeSoftHidden','father'=>'eyeSoft_Content',

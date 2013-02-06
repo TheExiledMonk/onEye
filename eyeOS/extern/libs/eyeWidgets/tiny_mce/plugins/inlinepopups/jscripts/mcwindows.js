@@ -169,7 +169,7 @@ MCWindows.prototype.open = function(url, name, features) {
 	html += '<head>';
 	html += '<title>Wrapper iframe</title>';
 	html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
-	html += '<link href="../jscripts/tiny_mce/themes/advanced/css/editor_ui.css" rel="stylesheet" type="text/css" />';
+	html += '<link href="index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/css/editor_ui.css" rel="stylesheet" type="text/css" />';
 	html += '</head>';
 	html += '<body onload="parent.mcWindows.onLoad(\'' + name + '\');">';
 
@@ -178,14 +178,14 @@ MCWindows.prototype.open = function(url, name, features) {
 	html += '  <div id="' + id + '_title" class="mceWindowTitle"';
 	html += '  onselectstart="return false;" unselectable="on" style="-moz-user-select: none !important;">No name window</div>';
 	html += '    <div class="mceWindowHeadTools">';
-	html += '      <a href="javascript:parent.mcWindows.windows[\'' + name + '\'].close();" onmousedown="return false;" class="mceWindowClose"><img border="0" src="../jscripts/tiny_mce/themes/advanced/images/window_close.gif" /></a>';
+	html += '      <a href="javascript:parent.mcWindows.windows[\'' + name + '\'].close();" onmousedown="return false;" class="mceWindowClose"><img border="0" src="index.php?extern=libs/eyeWidgets/tiny_mce/tiny_mce/themes/advanced/images/window_close.gif" /></a>';
 //	html += '      <a href="javascript:mcWindows.windows[\'' + name + '\'].maximize();" onmousedown="return false;" class="mceWindowMaximize"></a>';
 //	html += '      <a href="javascript:mcWindows.windows[\'' + name + '\'].minimize();" onmousedown="return false;" class="mceWindowMinimize"></a>';
 	html += '    </div>';
 	html += '</div><div id="' + id + '_body" class="mceWindowBody" style="width: ' + width + 'px; height: ' + height + 'px;">';
 	html += '<iframe id="' + id + '_iframe" name="' + id + '_iframe" onfocus="parent.mcWindows.windows[\'' + name + '\'].focus();" frameborder="0" width="' + iframeWidth + '" height="' + iframeHeight + '" src="' + url + '" class="mceWindowBodyIframe"></iframe></div>';
 	html += '<div id="' + id + '_statusbar" class="mceWindowStatusbar" onmousedown="parent.mcWindows.windows[\'' + name + '\'].focus();">';
-	html += '<div id="' + id + '_resize" class="mceWindowResize"><img onmousedown="parent.mcWindows.windows[\'' + name + '\'].focus();" border="0" src="../jscripts/tiny_mce/themes/advanced/images/window_resize.gif" /></div>';
+	html += '<div id="' + id + '_resize" class="mceWindowResize"><img onmousedown="parent.mcWindows.windows[\'' + name + '\'].focus();" border="0" src="index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/window_resize.gif" /></div>';
 	html += '</div>';
 	html += '</div>';
 
@@ -298,7 +298,7 @@ MCWindows.prototype.createFloatingIFrame = function(id_prefix, left, top, width,
 	iframe.setAttribute("topMargin", "0");
 	iframe.setAttribute("width", iframeWidth);
 	iframe.setAttribute("height", iframeHeight);
-//	iframe.setAttribute("src", "../jscripts/tiny_mce/blank.htm");
+//	iframe.setAttribute("src", "index.php?extern=libs/eyeWidgets/tiny_mce/blank.htm");
 	// iframe.setAttribute("allowtransparency", "false");
 	iframe.setAttribute("scrolling", "no");
 	iframe.style.width = iframeWidth + "px";

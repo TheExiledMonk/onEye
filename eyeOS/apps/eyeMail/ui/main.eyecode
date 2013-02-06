@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 //create the window
@@ -86,10 +86,10 @@ $myButton2 = new Button(array('name'=>'BTN_2','father'=>'main_WND_Content','sign
 $myButton2->addFriend($myTable);
 $myButton2->show();
 $myButton3 = new Button(array('name'=>'BTN_3','father'=>'main_WND_Content','signal'=>'send',
-	'caption'=>'Send','x'=>380,'y'=>10,'img'=>'index.php?extern=apps/eyeMail/gfx/send.png'));
+	'caption'=>'New','x'=>380,'y'=>10,'img'=>'index.php?extern=apps/eyeMail/gfx/send.png'));
 $myButton3->show();
 //TODO: change the icon
 $myButton4 = new Button(array('name'=>'BTN_4','father'=>'main_WND_Content','signal'=>'manage',
-	'caption'=>'Accounts','x'=>460,'y'=>10,'img'=>'index.php?extern=apps/eyeMail/gfx/send.png'));
+	'caption'=>'Preferences','x'=>460,'y'=>10,'img'=>'index.php?extern=apps/eyeMail/gfx/send.png'));
 $myButton4->show();
 ?>

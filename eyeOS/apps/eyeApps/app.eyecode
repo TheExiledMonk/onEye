@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,16 +18,20 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeApps_run($params=null) {
+	global $currentUser;
 	$myWindow1 = new Window(array('title'=>'eyeApps','name'=>'eyeApplications','father' => 'eyeApps',
 	'y'=>0,'type'=>NORESIZE_WINDOW,'x'=>0,'cent'=>1,'width'=>520,'height'=>400));
 	$myWindow1->show();	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeApplications_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('Manage','index.php?extern=apps/eyeX/themes/default/images/toolbar/filesave.png','Manage');
+	$myToolbar->addItem('Manage','index.php?extern=apps/eyeX/themes/default/images/toolbar/lin_agt_wrench.png','Manage Dock');
+	if ($currentUser == ROOTUSER) {
+		$myToolbar->addItem('InstallApps','index.php?extern=apps/eyeX/themes/default/images/toolbar/installapps.png','Install Apps');
+	}
 	$AppDir  = EYE_ROOT.'/'.APP_DIR.'/';
 	$x = 20;
 	$y = 70;

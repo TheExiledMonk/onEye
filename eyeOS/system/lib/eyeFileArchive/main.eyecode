@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
  *This is only a wrapper of fileArchive (pear project). 
@@ -38,20 +38,22 @@ function lib_eyeFileArchive_extract($params=null){
 	if(isset($params['eqTypes'])){
 		File_Archive::setOption('eqTypes',$params['eqTypes']);	
 	}		
-					
+				
 	$myReaders = _getReaders($params);	
 	$result = File_Archive::extract($myReaders,$params[1]);
 	
 	//convert it to virtual file
 	global $readFiles;
 	
-	foreach($readFiles as $file){		
-		if(vfs('isdir',array($file))){
-			vfs('realToVirtualDir',array($file));
-		}else{
-			vfs('realToVirtual',array($file));
-		}		
-	}
+	if(!$params['realOutput']){
+		foreach($readFiles as $file){		
+			if(vfs('isdir',array($file))){
+				vfs('realToVirtualDir',array($file));
+			}else{
+				vfs('realToVirtual',array($file));
+			}		
+		}
+	}	
 	
 	if($result != null){
 		return false;
@@ -102,7 +104,9 @@ function lib_eyeFileArchive_compress($params=null){
 	if($result != ''){
 		return false;
 	}
-	vfs('realToVirtual',array($params[1]));
+	if(!$params['realOutput']){
+		vfs('realToVirtual',array($params[1]));
+	}	
 	return true;
 }
 
@@ -115,7 +119,7 @@ function _getEqTypes(&$params){
 				if(!vfs('real_checkPermissions',array($arcSource[0]))){
 					return false;
 				}
-				$ext = strtolower(vfs('getExtension',array($arcSource[0])));				
+				$ext = utf8_strtolower(vfs('getExtension',array($arcSource[0])));				
 				if(!array_key_exists($ext,$params['eqTypes'])){										
 					$realExt = vfs('real_getExtension',array($arcSource[0]));
 					if(isset($longExtensions[$realExt])){
@@ -126,7 +130,7 @@ function _getEqTypes(&$params){
 			}
 		}		
 	}else{
-		$ext = strtolower(vfs('getExtension',array($params[0])));	
+		$ext = utf8_strtolower(vfs('getExtension',array($params[0])));	
 		if(!array_key_exists($ext,$params['eqTypes'])){										
 			$realExt = vfs('real_getExtension',array($params[0]));
 			if(isset($longExtensions[$realExt])){
@@ -142,13 +146,13 @@ function _getReaders(&$params){
 //This array content de extracted files with sym if have
 	global $readFiles;
 	if(!is_array($params[0])){
-		if($params[0]{strlen($params[0])} != '/'){			
+		if($params[0]{utf8_strlen($params[0])} != '/'){			
 			$params[0] .= '/';			
 		}		
 		$sym = vfs('getVirtualName',array($params[0]));		
 		$ext = vfs('real_getExtension',array($sym));		
-		$sym = basename($sym);		
-		$sym = substr($sym,0,strpos($sym,$ext)-1);
+		$sym = utf8_basename($sym);		
+		$sym = utf8_substr($sym,0,utf8_strpos($sym,$ext)-1);
 		//Adding to extracted arrray
 		$readFiles[] = $params[1].'/'.$sym;
 		$myReaders = File_Archive::read($params[0],$sym);
@@ -173,10 +177,10 @@ function _getReaders(&$params){
 		}	
 		if(is_array($params[0]['simple'])){
 			foreach($params[0]['simple'] as $file){
-				if($file{strlen($file)} != '/'){
+				if($file{utf8_strlen($file)} != '/'){
 					$file .= '/';
 				}
-				$sym = basename($file);
+				$sym = utf8_basename($file);
 				$readFiles[] = $params[1].'/'.$sym;
 				$myReaders[] = File_Archive::read($file,$sym);
 			}

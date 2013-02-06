@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDocs_on_Message($params="") {
@@ -54,8 +54,8 @@ function eyeDocs_on_Save($params=null) {
 		$checknum,
 	);
 	if(is_object($GLOBALS['notePath']) && $GLOBALS['notePath']->text) {
-		$info = pathinfo($GLOBALS['notePath']->text);
-		if(strtolower($info['extension'] == 'doc')) {
+		$info = utf8_pathinfo($GLOBALS['notePath']->text);
+		if(utf8_strtolower($info['extension'] == 'doc')) {
 			include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDocs/html_to_doc'.EYE_CODE_EXTENSION);
 			$htmltodoc= new HTML_TO_DOC();
 			$myContent = $GLOBALS['noteContent']->text;
@@ -91,7 +91,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 	$file = $params['arg'][0];
 	if($file) {
 		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
-		if (substr($file,-4) == ".doc") {
+		if (utf8_substr($file,-4) == ".doc") {
 			include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDocs/html_to_doc'.EYE_CODE_EXTENSION);
 			$htmltodoc= new HTML_TO_DOC();
 			$myContent = $GLOBALS['noteContent']->text;
@@ -100,7 +100,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 				service('eyex','messageBox',array('content'=>'Document saved successfully.'));
 			}
 		} else {
-			if (substr($file,-7) != ".eyedoc") {
+			if (utf8_substr($file,-7) != ".eyedoc") {
 				$file = $file.'.eyedoc';
 			}
 			service('vfs','create',array($file,'eyeDocs'));
@@ -123,23 +123,51 @@ function eyeDocs_on_SelectFileOpen($params=null) {
 	$file = $params['arg'][0];
 	if($file) {		
 		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
-		$info = pathinfo($file);
-		if(strtolower($info['extension']) == 'doc') {
-			$myContent = eyeWv('convert',array($file));
-		} else {
-			$fp = service('vfs','open',array($file,'r'));
-			if(!$fp) {
-				service('eyex','messageBox',array('content'=>'Error opening file'));
-				return;
-			}
-			$size = service('vfs','filesize',array($file));
-			if ($size > 0) {
-				$fp = service('vfs','open',array($file,'r'));
-				$myContent = fread($fp,$size);
-				fclose($fp);
-			}
+		$info = utf8_pathinfo($file);
+		$tCheckNum = proc('findChecknumByName',array('eyeDesk'));
+		$real = vfs('getRealName',array($file));
+		if(!vfs('checkPermissions',array($real))) {
+			eyeX('messageBox',array('content'=>'You don\'t have sufficient permissions'));
+			return false;
 		}
-		$GLOBALS['noteContent']->setText($myContent);
+		$extension = utf8_strtolower($info['extension']);
+		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
+		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.tmp';
+		
+		copy($real,$nfile);
+		$to = 'HTML (StarWriter)';
+		$tfp = vfs('real_open',array($nfile,'r'));
+		$bytes = fread($tfp,5);
+		$real = 1;
+		if($bytes == '<html') {
+			$real = 0;
+			$content = file_get_contents($nfile);
+		}
+		$bytes = fread($tfp,25);
+		if(strstr($bytes,'<!--')) {
+			$real = 0;
+			$content = file_get_contents($nfile);
+		}
+		if($extension == 'eyedoc') {
+			$real = 0;
+			$content = file_get_contents($nfile);
+		}
+		
+		fclose($tfp);
+		$to = 'HTML (StarWriter)';
+		if($real == 1) {
+			eyeConverter('convert',array($nfile,$myHTML,$to,1));
+			$fp = vfs('real_open',array($myHTML,'r'));
+			$content = fread($fp,vfs('real_filesize',array($myHTML)));
+			fclose($fp);
+			$content = str_replace('<IMG SRC="','<IMG SRC="index.php?checknum='.$tCheckNum.'&msg=viewTempImg&params=',$content);
+		} else {
+			$pattern = '/<img[^\/]*\/>/i';
+			$replacement = '';
+			$content = preg_replace($pattern, $replacement, $content);
+		}
+		
+		$GLOBALS['noteContent']->setText($content);
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeDocsWND','text'=>$file));
 		reqLib('eyeWidgets','serialize',array($myHidden));
 	}

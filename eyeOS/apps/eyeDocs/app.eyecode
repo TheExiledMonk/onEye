@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDocs_run($params=null) {
@@ -26,18 +26,45 @@ function eyeDocs_run($params=null) {
 	$content = "";
 	if($params[0]) {
 		$file = $params[0];
-		$info = pathinfo($file);
-		$extension = $info['extension'];
-		if(strtolower($extension) == 'doc') {
-			$content = eyeWv('convert',array($file));
+		$info = utf8_pathinfo($file);
+		$extension = utf8_strtolower($info['extension']);
+		$tCheckNum = proc('findChecknumByName',array('eyeDesk'));
+		$real = vfs('getRealName',array($file));
+		if(!vfs('checkPermissions',array($real))) {
+			eyeX('messageBox',array('content'=>'You don\'t have sufficient permissions'));
+			return false;
+		}
+		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
+		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.tmp';
+		copy($real,$nfile);
+		$tfp = vfs('real_open',array($nfile,'r'));
+		$bytes = fread($tfp,5);
+		$real = 1;
+		if($bytes == '<html') {
+			$real = 0;
+			$content = file_get_contents($nfile);
+		}
+		$bytes = fread($tfp,25);
+		if(strstr($bytes,'<!--')) {
+			$real = 0;
+			$content = file_get_contents($nfile);
+		}
+		if($extension == 'eyedoc') {
+			$real = 0;
+			$content = file_get_contents($nfile);
+		}
+		fclose($tfp);
+		$to = 'HTML (StarWriter)';
+		if($real == 1) {
+			eyeConverter('convert',array($nfile,$myHTML,$to,1));
+			$fp = vfs('real_open',array($myHTML,'r'));
+			$content = fread($fp,vfs('real_filesize',array($myHTML)));
+			fclose($fp);
+			$content = str_replace('<IMG SRC="','<IMG SRC="index.php?checknum='.$tCheckNum.'&msg=viewTempImg&params=',$content);
 		} else {
-			$fp = service('vfs','open',array($file,'r'));
-			if(!$fp) {
-				service('eyex','messageBox',array('content'=>'File not found'));
-				return;
-			}
-			$size = service('vfs','filesize',array($file));
-			$content = fread($fp,$size);
+			$pattern = '/<img[^\/]*\/>/i';
+			$replacement = '';
+			$content = preg_replace($pattern, $replacement, $content);
 		}
 
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));

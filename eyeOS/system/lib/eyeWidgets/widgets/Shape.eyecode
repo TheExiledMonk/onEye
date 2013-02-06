@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -47,11 +47,11 @@ class Shape {
 	var $visible;
 	var $type;
 	var $sidesNumber;
-	var $length;
-	var $radius;
 	var $width;
 	var $height;
-	var $lineColor;
+	var $color;
+	var $Xcoordinates;
+	var $Ycoordinates;
 	
 	function Shape($params) {
 		global $myPid;
@@ -71,26 +71,30 @@ class Shape {
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 50;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 50;
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
-		isset($params['type']) ? $this->type = $params['type'] : $this->type = 'polygon';
-		isset($params['sidesNumber']) ? $this->sidesNumber = intval($params['sidesNumber']) : $this->sidesNumber = 4;
-		isset($params['radius']) ? $this->radius = $params['radius'] : $this->radius = 1;
-		isset($params['length']) ? $this->length = intval($params['length']) : $this->length = 1;
-		isset($params['lineColor']) ? $this->lineColor = $params['lineColor'] : $this->lineColor = 'black';
+		isset($params['type']) ? $this->type = $params['type'] : $this->type = 'rectangle';
+		isset($params['color']) ? $this->color = $params['color'] : $this->color = 'black';
+		isset($params['Xcoordinates']) ? $this->Xcoordinates = $params['Xcoordinates'] : $this->Xcoordinates = "";
+		isset($params['Ycoordinates']) ? $this->Ycoordinates = $params['Ycoordinates'] : $this->Ycoordinates = "";
 	}
 	
 
 	function show($noserialize=1) {
-		$apothem = $this->length / (2 * tan(M_PI_4/$this->sidesNumber));
+		if(is_array($this->Xcoordinates)) {
+			$xcoord = mmap('array2jsArg', array($this->Xcoordinates));	
+		}
+		
+		if(is_array($this->Ycoordinates)) {
+			$ycoord = mmap('array2jsArg', array($this->Ycoordinates));
+		}
+		
 		$widgetsparams = array(
 			'visible' => $this->visible,
 			'width' => $this->width,
 			'height' => $this->height,
 			'type' => $this->type,
-			'sidesNumber' => $this->sidesNumber,
-			'radius' => $this->radius,
-			'length' => $this->length,
-			'lineColor' => $this->lineColor,
-			'apothem' => $apothem
+			'color' => $this->color,
+			'Ycoordinates' => $ycoord,
+			'Xcoordinates' => $xcoord
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		

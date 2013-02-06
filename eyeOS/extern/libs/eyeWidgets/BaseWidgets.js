@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -17,7 +17,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -210,15 +210,28 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	var myWidth = params['width'];
 	var myHeight = params['height'];	
 	var selectFunc = params['selectFunc'];
+	var drawOnClick = params['drawOnClick'];
+	var drawHighlight = params['drawHighlight'];	
+	var weekHighlight = false;
 	var globalDate = new Date();
+	if(params['forceDate'] != ''){		
+		globalDate.setTime(params['forceDate']);		
+	}
+	if(params['drawServerDate'] != ''){
+		var drawServerDate = new Date();
+		drawServerDate.setTime(params['drawServerDate']);		
+	}else{
+		var drawServerDate = '';
+	}
+	
 	var globalMonth = globalDate.getMonth();
 	var myDay = globalDate.getDate();
 	var globalYear = globalDate.getFullYear();
-	
-	//Waiting for i18n
-	var monthNames = new Array('January','February','March','April','May','June','July','August','September','October','November','December');
-
+	var monthNames = getArrayArg(params['monthNames']);
+	var weekDays = getArrayArg(params['weekDays']);			
 	var calendarBase = document.createElement('div');
+	var lastSelect = false;
+	
 	calendarBase.setAttribute('id',name+'calendarBase');
 	calendarBase.style.width = myWidth+'px';
 	calendarBase.style.height = myHeight+'px';
@@ -237,8 +250,9 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		var rowsAndDate = document.createElement('div');
 		rowsAndDate.setAttribute('id',name+'rowsAndDate');		
 		rowsAndDate.style.position = 'absolute';
+		rowsAndDate.style.top = '2%';
 		rowsAndDate.style.width = '100%';
-		rowsAndDate.style.height = '18%';	
+		rowsAndDate.style.height = '12%';	
 		rowsAndDate.style.color = params['rowsAndDate'];
 		rowsAndDate.style.fontSize = '9px';
 		rowsAndDate.style.fontWeight = 'bold';
@@ -289,68 +303,27 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		weekDaysNames.style.width = '100%';
 		weekDaysNames.style.height = '12%';
 		weekDaysNames.style.position = 'absolute';
-		weekDaysNames.style.top = '18%';
-			
-			var leftCorner = document.createElement('div');
-			leftCorner.setAttribute('id',name+'leftCorner');
-			leftCorner.style.position = 'absolute';
-			leftCorner.style.left = '6%';
-			leftCorner.style.top = '0%';
-			leftCorner.style.height = '100%';
-			leftCorner.style.width = '6%';
-			leftCorner.style.background = 'no-repeat';			
-			if(IEversion == 6){
-				leftCorner.style.backgroundImage = '';
-				leftCorner.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowLeft.png', sizingMethod='scale');"
-			}else{			
-				leftCorner.style.backgroundImage ='url(index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowLeft.png)' ;		
-			}
-	
+		weekDaysNames.style.top = '15%';
+		weekDaysNames.style.left = '1px';
+		weekDaysNames.style.backgroundColor = params['backgroundNames'];					
 			var dayNameContent = document.createElement('div');
-			dayNameContent.style.width = '78%';
-			dayNameContent.style.height = '100%';
-			dayNameContent.style.lineHeight = '100%';			
-			dayNameContent.style.position = 'absolute';
-			dayNameContent.style.left = '12%';
-			dayNameContent.style.top = '0%';
-			dayNameContent.style.backgroundColor = '#53A0E1';
-				var dayNames = new Array('S','M','T','W','T','F','S');
-				var left = 0;
+			dayNameContent.style.textAlign = 'center';				
+				var left = 11;
 				for(x=0;x<7;x++)
 				{
 					var dayName = document.createElement('div');
-					dayName.style.left = left+'%'					
-					dayName.style.width ='6.5%';
-					dayName.style.height ='100%';
-					dayName.style.lineHeight ='100%';
+					dayName.style.left = left+'%'
+					dayName.style.width ='9%';
+					dayName.style.lineHeight ='136%';
 					dayName.style.position = 'absolute';
 					dayName.style.color = params['dayName'];
-					dayName.style.fontFamily = 'verdana';
 					dayName.style.fontSize = '1em';
-					var text = document.createTextNode(dayNames[x]);
+					var text = document.createTextNode(weekDays[x]);
 					dayName.appendChild(text);
 					dayNameContent.appendChild(dayName);			
-					left = left+15;
-				}
-			
-			var rightCorner = document.createElement('div');
-			rightCorner.setAttribute('id',name+'rightCorner');
-			rightCorner.style.position = 'absolute';
-			rightCorner.style.right = '6%';
-			rightCorner.style.top = '0%';
-			rightCorner.style.height = '100%';
-			rightCorner.style.width = '6%';
-			rightCorner.style.background = 'no-repeat';
-			if(IEversion == 6){
-				rightCorner.style.backgroundImage = '';
-				rightCorner.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader (src='index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowRight.png', sizingMethod='scale');"
-				dayNameContent.style.backgroundColor = '#53A0E1';	
-			}else{			
-				rightCorner.style.backgroundImage='url(index.php?extern=apps/eyeX/themes/default/images/widgets/calendar_rowRight.png)'
-			}
-		weekDaysNames.appendChild(leftCorner);
+					left = left+12;
+				}			
 		weekDaysNames.appendChild(dayNameContent);
-		weekDaysNames.appendChild(rightCorner);
 		return weekDaysNames;
 	}
 		
@@ -366,7 +339,8 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		calendarBody.style.width = '100%';
 		calendarBody.style.height = '70%';
 		calendarBody.style.position = 'absolute';
-		calendarBody.style.top = '30%';
+		calendarBody.style.top = '25%';
+		calendarBody.style.left = '1px';
 							
 		//Calculating the the month lenght.
 		var preMonthLenght = getMonthDays(globalMonth-1);
@@ -416,6 +390,12 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			weekMonth.style.position = 'absolute';
 			weekMonth.style.top = top+'%';
 			weekMonth.style.left = '0%';
+			if(weekHighlight != false && weekHighlight == x && drawHighlight != 0){
+				weekMonth.style.backgroundColor = params['clickedWeek'];												
+				weekMonth.style.borderColor = params['clickedWeek'];
+				weekMonth.style.borderStyle = 'solid';
+				weekMonth.style.borderWidth = '1px';				
+			}
 			var left = 11;
 			var vdate = new Date();
 			for(y=0;y<7;y++)
@@ -423,8 +403,10 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 				var weekDay = document.createElement('div');
 				weekDay.style.position = 'absolute';
 				weekDay.style.left = left+'%';
+				weekDay.style.width = '9%';
 				weekDay.style.height = '100%';
-				weekDay.style.width = '5%';
+				weekDay.style.textAlign = 'center';
+				weekDay.style.height = '100%';
 				weekDay.style.fontSize = '10px';				
 				weekDay.style.fontFamily = 'verdana';
 				weekDay.style.color = dayColors[count];
@@ -434,12 +416,37 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 					weekDay.style.cursor = 'pointer';
 					if(dayNums[count] == vdate.getDate() && globalMonth == vdate.getMonth() && globalYear == vdate.getFullYear()){
 						weekDay.style.border = 'solid 1px';
-						weekDay.style.borderColor = params['todayBorder'];						
+						weekDay.style.borderColor = params['todayBorder'];
+						weekDay.style.color = params['todayFontColor'];
+						weekDay.style.backgroundColor = params['todayBackground'];
+						
+						weekMonth.style.backgroundColor = params['toWeekBackground'];												
+						weekMonth.style.borderColor = params['toWeekBackground'];
+						weekMonth.style.borderStyle = 'solid';
+						weekMonth.style.borderWidth = '1px';						
+						
+						weekMonth.current = true;
+						weekDay.current = true;
+						weekHighlight = x;
 					}
+					if(drawServerDate != ''){
+						if(dayNums[count] == drawServerDate.getDate() && globalMonth == drawServerDate.getMonth() && globalYear == drawServerDate.getFullYear()){						
+							weekDay.style.border = 'solid 1px';
+							weekDay.style.borderColor = params['clickedBorder'];
+						
+							weekMonth.style.backgroundColor = params['clickedWeek'];												
+							weekMonth.style.borderColor = params['clickedWeek'];
+							weekMonth.style.borderStyle = 'solid';
+							weekMonth.style.borderWidth = '1px';
+						
+							lastSelect = weekDay;						
+						}
+					}														
 				}else{
 					weekDay.style.cursor = 'default';
 				}
-				weekDay.day = dayNums[count];//Calcule the day of the month 
+				weekDay.day = dayNums[count];//Calcule the day of the month
+								
 				var text = document.createTextNode(dayNums[count]);
 				//!!! the dayColors fix is only for some time, in the next version this days will send a correct data
 				if(selectFunc != '' && dayColors[count] != params['preMonthDays'] && dayColors[count] != params['nextMonthDays'])
@@ -526,17 +533,42 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	function selectFunctionParser(e)
 	{
 		var event = new xEvent(e);
-		var dayClicked = event.target.day;
-		myDay = dayClicked;
+		var target = event.target;
+		if(drawOnClick != 0){		
+			if(lastSelect != false){			
+				if(lastSelect.current != true){
+					lastSelect.style.border = '';				
+				}			
+				if(lastSelect.parentNode && lastSelect.parentNode.current != true){				
+					lastSelect.parentNode.style.backgroundColor = '';
+					lastSelect.parentNode.style.border = '';				
+				}			
+			}				
+			if(target.current != true){
+				target.style.borderStyle = 'solid';
+				target.style.borderColor = params['clickedBorder'];
+				target.style.borderWidth = '1px';
+			}					
+			if(target.parentNode.current != true){
+				target.parentNode.style.borderStyle = 'solid';
+				target.parentNode.style.borderColor = params['clickedWeek'];			
+				target.parentNode.style.borderWidth = '1px';
+				target.parentNode.style.backgroundColor = params['clickedWeek'];
+			}		
+		}
+		lastSelect = target;
+		
+		var dayClicked = target.day;
+		myDay = dayClicked;		
 		var selectDate = new Date();
 		selectDate.setMonth(globalMonth);		
 		selectDate.setYear(globalYear);
 		selectDate.setDate(dayClicked);
 		sendMsg(checknum,selectFunc,eyeParam('date',selectDate.getTime()));
-	}
+	}	
 }
 function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
-	var text = params["text"];
+	var text = tinyMCE.entityDecode(params["text"]);
 	var checked = params["checked"];
 	var enabled = params["enabled"];
 	var visible = params["visible"];
@@ -688,17 +720,19 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	realname = tinyMCE.entityDecode(realname);
 	if(overBorder != 0) {
 		myGlobalContainer.onmouseover = function() {
-			myGlobalContainer.style.border = '1px solid #dddddd';
+			myGlobalContainer.style.border = '1px solid #9ec8fb';
+			myGlobalContainer.style.backgroundColor = '#c7ddf8';
 			myIconText.innerHTML = "";
 			myIconText.appendChild(document.createTextNode(realname));
 		}
 		
 		myGlobalContainer.onmouseout = function() {
-			myGlobalContainer.style.border = '1px solid #ffffff';
+			myGlobalContainer.style.border = '1px solid transparent';
+			myGlobalContainer.style.backgroundColor = 'transparent';
 			myIconText.innerHTML = "";
 			myIconText.appendChild(document.createTextNode(text));
 		}
-		myGlobalContainer.style.border = '1px solid #ffffff';
+		myGlobalContainer.style.border = '1px solid transparent';
 	}
 	
 	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,"eyeIcon",0);
@@ -740,6 +774,7 @@ function Iframe_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	var myFrame = document.createElement('iframe');
 	myFrame.setAttribute('id',name);
+	myFrame.setAttribute('name',name);
 	myFrame.setAttribute('src',url);
 	myFrame.setAttribute('width',mywidth);
 	myFrame.setAttribute('height',myheight);
@@ -1477,6 +1512,7 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var height = params["height"];
 	var sizeUnit = params["sizeUnit"];
 	var signal = params["signal"];
+	var dsignal = params["doubleClickSignal"];
 	var sortypes = getArrayArg(params["sortypes"]);
 	var master = params["master"];
 	var realName = params["realName"];
@@ -1523,14 +1559,15 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	oTable.appendChild(oTHead);
 	oTBody.setAttribute('id',name+'_Body');
 	oTable.appendChild(oTBody);
-	oTable.style.width=width+sizeUnit;
+	oWidthNoHorizScrollbar = width - 17;
+	oTable.style.width=oWidthNoHorizScrollbar+sizeUnit;
 	oTable.setAttribute('id',name);
 	oTable.className="sort-table";
 	widget.appendChild(oTable);
 	createWidget(name+'_Container',father,widget,horiz,vert,x,y,-1,-1,"eyeTable",cent);
-	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'");');
+	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'","'+dsignal+'");');
 }
-function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName) {
+function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName, dsignal) {
 
 	this.sortTypes = oSortTypes || [];
 	this.normalSort = oSortTypes;
@@ -1539,6 +1576,7 @@ function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireN
 	this.descending = null;
 	this.lastClick = null;
 	this.mySignal = signal;
+	this.mydSignal = dsignal;
 	this.myMaster = master;
 	this.realName = rName;
 	this.mychecknum = checknum;
@@ -1552,6 +1590,10 @@ function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireN
 	
 	this._bodyOnclick = function (e) {
 		oThis.bodyOnclick(e);
+	}
+	
+	this._bodyOndblclick = function (e) {
+		oThis.bodyOndblclick(e);
 	}
 
 	if (oTable) {
@@ -1661,12 +1703,16 @@ SortableTable.prototype.delEntry = function(entry) {
 SortableTable.prototype.setTBody = function (oTBody) {
 	this.tBody = oTBody;
 	var c = oTBody;
-	if (typeof c.addEventListener != "undefined")
+	if (typeof c.addEventListener != "undefined") {
 		c.addEventListener("click", this._bodyOnclick, false);
-	else if (typeof c.attachEvent != "undefined")
+		c.addEventListener("dblclick", this._bodyOndblclick, false);
+	} else if (typeof c.attachEvent != "undefined") {
 		c.attachEvent("onclick", this._bodyOnclick);
-	else
+		c.attachEvent("ondblclick", this._bodyOndblclick);
+	} else {
 		c.onclick = this._bodyOnclick;
+		c.ondblclick = this._bodyOndblclick;
+	}
 };
 
 SortableTable.prototype.setSortTypes = function ( oSortTypes ) {
@@ -1759,6 +1805,20 @@ SortableTable.prototype.getSelectValue = function(i) {
 	}
 };
 
+SortableTable.prototype.bodyOndblclick = function(e) {
+	var el = e.target || e.srcElement;
+	while (el.tagName != "TR")
+		el = el.parentNode;
+	if(this.lastClick) {
+		this.lastClick.className = '';
+	}
+	this.lastClick = el;
+	el.className = 'sort-table-select';
+	if(this.mydSignal) {
+		sendMsg(this.mychecknum,this.mydSignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)));
+	}
+}
+
 SortableTable.prototype.bodyOnclick = function(e) {
 	var el = e.target || e.srcElement;
 	while (el.tagName != "TR")
@@ -1769,7 +1829,7 @@ SortableTable.prototype.bodyOnclick = function(e) {
 	this.lastClick = el;
 	el.className = 'sort-table-select';
 	if(this.mySignal) {
-		sendMsg(this.mychecknum,'ClickTable',eyeParam(this.realName,this.getSelectValue(this.myMaster)));
+		sendMsg(this.mychecknum,this.mySignal,eyeParam(this.realName,this.getSelectValue(this.myMaster)));
 	}
 }
 
@@ -2264,16 +2324,16 @@ thirdButtonPosition = 38;
 function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var title = params["title"];
 	var type = params["type"];
-		var showtitle = params["showtitle"];
-		var listed = params["listed"];
-		var max = params["max"];
-			var max_pos = params["max_pos"];
-		var min = params["min"];
-			var min_pos = params["min_pos"];
-		var close = params["close"];
-			var close_pos = params["close_pos"];
-		var resize = params["resize"];
-		var nodrag = params["nodrag"];
+	var showtitle = params["showtitle"];
+	var listed = params["listed"];
+	var max = params["max"];
+	var max_pos = params["max_pos"];
+	var min = params["min"];
+	var min_pos = params["min_pos"];
+	var close = params["close"];
+	var close_pos = params["close_pos"];
+	var resize = params["resize"];
+	var nodrag = params["nodrag"];
 	var width = params["width"];
 	var height = params["height"];
 	var sendCloseMsg = params["sendCloseMsg"];
@@ -2284,6 +2344,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var savePosition = params["savePosition"];
 	var saveFunc = params["saveFunc"];
 	var xChecknum = params["xChecknum"];	
+	var sigClose = params["sigClose"];
 	var theText = document.createTextNode('');
 	createWidget(name,father,theText,horiz,vert,x,y,width,height,"eyeWindowMain",cent);
 	
@@ -2293,8 +2354,8 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	if (type == 2) {
 		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
-		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum);
-	} else if (type == 3 && background != "") {
+		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
+	} else if ((type == 3 || type == 4) && background != "") {
 		var myImage = document.createElement('img');
 		myImage.setAttribute('id',name+'_background');
 		myImage.src=background;
@@ -2302,7 +2363,12 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myDiv.style.overflow = "hidden";
 		myDiv.appendChild(myImage);
 		createWidget(name+"_Content",name,myDiv,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
-		makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum);
+		if(type == 3) {
+			makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
+		} else {
+			makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
+		}
+		
 		if (IEversion != 0) {
 			fixPNG(myImage.id);
 		}
@@ -2391,11 +2457,11 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			nodrag = 0;
 		}
 		
-		makeWindow(name,title,father,"",checknum,max,resize,showtitle,close,min,listed,nodrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum);
+		makeWindow(name,title,father,"",checknum,max,resize,showtitle,close,min,listed,nodrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose);
 	}
 }
 
-function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum) {	
+function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose) {	
 	var widget = xGetElementById(widgetid);
 	if (!widget) {
 		return;
@@ -2411,10 +2477,14 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 		var leftBorder = xWidth(xGetElementById(widgetid+"_WindowBottom_left"));
     	var barX_height = xHeight(barX);
     	var grandfatid = fatherid;
+    	var height_minimized = 0;
+    	var height_minimized = 0;
 	} else {
 		var rightBorder = 0;
 		var leftBorder = 0;
     	var barX_height = 0;
+    	var height_minimized = 55;
+    	var start_at_y = 30;
 		fatherid = "minimizedAppsIn";
 		var grandfatid = "minimizedApps";
 	}
@@ -2499,8 +2569,6 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 		var barWin_height = 0;
 	}
 
-
-
 	if (mBtn) {
 		function maxOnClick()
 		{
@@ -2515,9 +2583,8 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 				x = xLeft(widget);
 				y = xTop(widget);
 				maximized = true;
-				xResizeTo(widget, xWidth(father)-leftBorder-rightBorder, xHeight(father)-barX_height-barX_height);
-				xMoveTo(widget, leftBorder, barX_height);
-				xMoveTo(widget,null,barX_height);
+				xResizeTo(widget, xWidth(father)-leftBorder-rightBorder, xHeight(father)-barX_height-barX_height-height_minimized);
+				xMoveTo(widget,leftBorder,barX_height+start_at_y);
 			}
 			if(sendResizeMsg==1) {
 				wndresize();
@@ -2539,7 +2606,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 				widget.style.display = 'none';
 			}
 			if(sendCloseMsg == 1) {
-				sendMsg(checknum,'Close','');
+				sendMsg(checknum,sigClose,'');
 			}
 		}
 		cBtn.onclick = closeOnClick;
@@ -2590,14 +2657,13 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 		if(document.getElementById(widgetid).parentNode.id == "eyeApps") {
 			if (x < leftBorder - xWidth(widget) + 75) x = leftBorder - xWidth(widget) + 75;
 			if (x > xright + xWidth(widget) - 75) x = xright + xWidth(widget) - 75;
-			if (y < 0) y = 0;
 			if (y > ybottom + xHeight(widget) - 50) y = ybottom + xHeight(widget) - 50;
 		} else {
 			if (x < 0) x = 0;
-			if (x > xright - 2) x = xright - 2;
-			if (y < 0) y = 0;
-			if (y > ybottom - 1) y = ybottom - 1;
+			if (x > xright) x = xright;
+			if (y > ybottom) y = ybottom;
 		}
+		if (y < 0) y = 0;
 		
 		xMoveTo(widget, x, y);
 	}
@@ -2607,7 +2673,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 		if(savePosition == 1){
 			if(saveFunc != ''){
 				try{
-					eval(saveFunc);
+					sendMsg(checknum,saveFunc,eyeParam('x',xLeft(widget))+eyeParam('y',xTop(widget))+eyeParam('winName',widget.id));
 				}catch(err){
 					//alert(err);
 				}
@@ -2724,7 +2790,7 @@ function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myProgressC = document.createElement('center');
 	myProgressC.style.position='absolute';
 	myProgressC.style.top='2px';
-	myProgressC.style.width = mywidth+'%';	
+	myProgressC.style.width = mywidth+'px';
 	myProgressC.appendChild(myProgressText);
 	myProgress.appendChild(myProgressBar);
 	myProgress.appendChild(myProgressC);
@@ -2741,6 +2807,15 @@ function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myBar.setAttribute('id',name);
 	myBar.className = 'blockbar';
 	obj.appendChild(myBar);
+}
+
+function addLineToBar(mibarra) {
+//c7c7c7
+	var obj = document.getElementById(mibarra);
+	var container = document.createElement('div');	
+	container.className = 'blockbarline';
+	container.innerHTML = '&nbsp;';
+	obj.appendChild(container);
 }
 
 function addItemToBar(mibarra,itemName,itemImg,itemText,sync,checknum) {
@@ -2990,4 +3065,137 @@ function processList(ul) {
 			item.insertBefore(s,item.firstChild);
 		}
 	}
+}
+
+
+function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var sFather = params["sFather"];
+	var myFather = params["mFather"];
+	var rFather = params['rFather'];
+	var obj = document.getElementById(father);
+	if(!obj) { 
+		return false;
+	}
+	
+	var myMenu = document.createElement('div');
+	myMenu.setAttribute('id',name);
+	myMenu.className = 'eyeContextMenu';
+	myMenu.style.display = 'none';
+	if(IEversion == 6){
+		myMenu.style.position = 'absolute';	
+	}else{
+		myMenu.style.position = 'fixed';	
+	}	
+	myMenu.style.zIndex = 9000000;
+	if(myFather) {
+		document.getElementById(myFather).appendChild(myMenu);
+	} else {
+		obj.appendChild(myMenu);
+	}
+	obj.oncontextmenu = function(e) {
+		var e = new xEvent(e);
+		if(e.target.id == father || ( (e.target.parentNode.id == father) && (sFather == 1) ) ) {
+			if(IEversion == 6){
+				showContextMenu(e,name,rFather);	
+			}else{
+				showContextMenu(e,name);	
+			}			
+			return false;
+		}
+	}
+	var openedDiv = name;
+	var codeClick = "hideContextMenu('"+name+"');";
+	addClickHandler(openedDiv,codeClick);
+}
+lastMenu = "";
+function showContextMenu(e,menuName,rFather) {
+	if(lastMenu != "") {
+		hideContextMenu(lastMenu);
+	}
+	lastMenu = menuName;
+	var top = e.pageY;
+	var left = e.pageX;
+	if(IEversion == 6){
+		var father = document.getElementById(rFather);		
+		top = e.offsetY;
+		left = e.offsetX;
+		top += xTop(father);
+		left += xLeft(father);		
+	}
+	myMenu = document.getElementById(menuName);
+	myMenu.style.top = top+'px';
+	myMenu.style.left = left+'px';
+	myMenu.style.display = 'block';
+}
+
+function addContextEntry(menuName,text,entryName,signal,checknum,params) {
+	var obj = document.getElementById(menuName);
+	if(!obj) {
+		return false;
+	}
+	
+	var myEntry = document.createElement('div');
+	myEntry.setAttribute('id',entryName);
+	myEntry.className = 'eyeContextMenuEntry';
+	myEntry.innerHTML = text;
+	myEntry.onclick = function() { sendMsg(checknum,signal,params);};
+	myEntry.onmouseover = function () {
+		myEntry.style.backgroundColor = '#3B7CEF';
+	}
+	myEntry.onmouseout = function () {
+		myEntry.style.backgroundColor = 'white';
+	}
+	obj.appendChild(myEntry);
+}
+
+function hideContextMenu(menuName) {
+	obj = document.getElementById(menuName);
+	if(!obj) {
+		return;
+	}
+	document.getElementById(menuName).style.display='none';
+}
+
+function Applet_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var height = params["height"];
+	var width = params["width"];
+	var codebase = params["codebase"];
+	var visible = params["visible"];
+	var appletParamsNames = getArrayArg(params["appletParamsNames"]);
+	var appletParamsValues = getArrayArg(params["appletParamsValues"]);
+	
+	if(IEversion == 0) {
+		var myApplet = document.createElement("embed");
+		myApplet.setAttribute('type', 'application/x-java-applet');
+		myApplet.setAttribute('width', width);
+		myApplet.setAttribute('height', height);
+		myApplet.setAttribute('id', name);
+		
+		for(key in appletParamsNames){
+			myApplet.setAttribute(appletParamsNames[key], appletParamsValues[key]);
+		}
+	} else {
+		var myApplet = document.createElement("object");
+	
+		myApplet.setAttribute('width',width);
+		myApplet.setAttribute('height',height);
+		myApplet.setAttribute('id', name);
+
+		for(key in appletParamsNames){
+			var myTempParam = document.createElement('param');
+			myTempParam.setAttribute('name',appletParamsNames[key]);
+			myTempParam.setAttribute('value',appletParamsValues[key]);
+			myApplet.appendChild(myTempParam);
+		}
+	}
+	
+	if( codebase) {
+		myApplet.setAttribute('codebase', codebase);
+	}
+	
+	if( visible == 0) {
+	    myApplet.style.visibility = 'hidden';
+	}
+	
+	createWidget(name+'_Container',father,myApplet,horiz,vert,x,y,width,height,"eyeApplet",cent);
 }

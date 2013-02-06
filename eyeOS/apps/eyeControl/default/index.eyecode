@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,21 +18,20 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 global $currentUser;
-$x = 1;
+$x = 0;
 $boxY = 0;
 $oldUser = $currentUser;
 $currentUser = ROOTUSER;
-$categoriesXML = eyeXML('getXMLfile',array(EYE_ROOT. '/' . APP_DIR .'/' . APP_CONF_SHARE . '/eyeControl/categories.xml'));
+$categoriesXML = getConfig('eyeControl','categories.xml');
 $currentUser = $oldUser;
 $array = array_findArrayByText(array($categoriesXML['category'],'no',array('show',0),2));
 foreach($array as $category) {
 	if ($category['permissions'][0] == 'all' || $category['permissions'][0] == 'root' && $currentUser == ROOTUSER || $category['permissions'][0] == 'user' && $currentUser != ROOTUSER) {
 		// $myLine
-		$boxY = $boxY + 7;
 		$myLine = new Line(array(
 			'name' => 'eyeControl_index_line_' . $category['name'][0],
 			'father' => $eyeContainer,
@@ -41,21 +40,31 @@ foreach($array as $category) {
 			'width' => 545
 		));
 		$myLine->show();
-		$boxY = $boxY + 10;
+		$boxY += 5;
 		// $myLabel
+		$myHiddenCAT = new Hidden(array(
+			'name' => 'eyeControl_index_hiddenCAT_' . $x,
+			'father' => $eyeContainer,
+			'text' => $category['name'][0]
+		));
+		$myHiddenCAT->show();
 		$myLabel = new Label(array(
-			'name' => 'eyeControl_index_label_' . $category['name'][0],
+			'name' => 'eyeControl_index_label_' . $x,
 			'father' => $eyeContainer,
 			'text' => $category['display'][0],
 			'x' => 0,
-			'y' => $boxY
+			'y' => $boxY,
+			'disablemsg' => 0,
+			'signal' => 'index_category'
 		));
+		$myLabel->addFriend($myHiddenCAT);
 		$myLabel->show();
 		$myLabel->setCss(array(
 			'font-size'=>'14px',
-			'color' => '#044d85'
+			'color' => '#004488',
+			'cursor' => 'Pointer'
 		));
-		$boxY = $boxY + 25;
+		$boxY += 25;
 		$z = -1;
 		$array = array_findArrayByText(array($category['content'],'no',array('show',0),2));
 		foreach($array as $content) {
@@ -63,7 +72,7 @@ foreach($array as $category) {
 				$x++;
 				if ($z == 2) {
 					$z = 0;
-					$boxY = $boxY + 60;
+					$boxY += 60;
 				} else {
 					$z++;
 				}
@@ -83,7 +92,7 @@ foreach($array as $category) {
 					'name' => 'eyeControl_index_button_' . $x,
 					'father' => $eyeContainer,
 					'caption' => $content['display'][0],
-					'x' => 40 + ($z * 150),
+					'x' => 40 + ($z * 180),
 					'y' => $boxY,
 					'img' => $content['img'][0],
 					'signal' => 'index_button',
@@ -94,16 +103,18 @@ foreach($array as $category) {
 				$myButton->show();
 			}
 		}
-		$boxY = $boxY + 50;
+		$boxY += 50;
 	}
+	$boxY += 15;
 }
 $oldUser = $currentUser;
 $currentUser = ROOTUSER;
 $openDir = vfs('real_getDirContent',array(EYE_ROOT. '/' . APP_DIR .'/' . APP_CONF_SHARE . '/eyeControl/others/','*.xml'));
 $currentUser = $oldUser;
 if (is_array($openDir) && $openDir[0]) {
+	$x++;
 	// $myLine
-		$myLine = new Line(array(
+	$myLine = new Line(array(
 		'name' => 'eyeControl_index_line_others',
 		'father' => $eyeContainer,
 		'x' => 0,
@@ -111,21 +122,31 @@ if (is_array($openDir) && $openDir[0]) {
 		'width' => 545
 	));
 	$myLine->show();
-	$boxY = $boxY + 10;
+	$boxY += 5;
 	// $myLabel
+	$myHiddenCAT = new Hidden(array(
+		'name' => 'eyeControl_index_hiddenCAT_' . $x,
+		'father' => $eyeContainer,
+		'text' => 'others'
+	));
+	$myHiddenCAT->show();
 	$myLabel = new Label(array(
-		'name' => 'eyeControl_index_label_others',
+		'name' => 'eyeControl_index_label_' . $x,
 		'father' => $eyeContainer,
 		'text' => 'Others',
 		'x' => 0,
-		'y' => $boxY
+		'y' => $boxY,
+		'disablemsg' => 0,
+		'signal' => 'index_category'
 	));
+	$myLabel->addFriend($myHiddenCAT);
 	$myLabel->show();
 	$myLabel->setCss(array(
 		'font-size'=>'14px',
-		'color' => '#044d85'
+		'color' => '#004488',
+		'cursor' => 'Pointer'
 	));
-	$boxY = $boxY + 25;
+	$boxY += 25;
 	$z = -1;
 	foreach ($openDir as $file) {
 		$oldUser = $currentUser;
@@ -137,7 +158,7 @@ if (is_array($openDir) && $openDir[0]) {
 			$x++;
 			if ($z == 2) {
 				$z = 0;
-				$boxY = $boxY + 40;
+				$boxY += 40;
 			} else {
 				$z++;
 			}
@@ -157,10 +178,11 @@ if (is_array($openDir) && $openDir[0]) {
 				'name' => 'eyeControl_index_button_' . $x,
 				'father' => $eyeContainer,
 				'caption' => $content['display'][0],
-				'x' => 40 + ($z * 150),
+				'x' => 40 + ($z * 180),
 				'y' => $boxY,
 				'img' => $content['img'][0],
-				'signal' => 'index_button'
+				'signal' => 'index_button',
+					'width' => 140
 			));
 			$myButton->addFriend($myHiddenCAT);
 			$myButton->addFriend($myHiddenNAME);

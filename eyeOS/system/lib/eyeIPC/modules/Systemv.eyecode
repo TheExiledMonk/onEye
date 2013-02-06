@@ -188,7 +188,7 @@ class System_SharedMemory_Systemv extends System_SharedMemory_Common
      */
     function _s2i($name)
     {
-        return unpack('N', str_pad($name, 4, "\0", STR_PAD_LEFT));
+        return unpack('N', utf8_str_pad($name, 4, "\0", utf8_str_pad_LEFT));
     }
 }
 ?>

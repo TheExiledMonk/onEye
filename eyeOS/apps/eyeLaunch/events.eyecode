@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 /*
 	events resource for eyeLaunch
@@ -57,15 +57,15 @@ function parseArguments($myApp){
  */
  
  //Remplace scaped chars with a rand string
-	if(strpos($myApp,'\"')){
+	if(utf8_strpos($myApp,'\"')){
 		//remplace
-		$quoteRemplace = substr(uniqid(rand()),0,8);
+		$quoteRemplace = utf8_substr(uniqid(rand()),0,8);
 		$myApp = str_replace('\"',$quoteRemplace,$myApp);
 	}
 	//Remplacing scaped spaces
-	if(strpos($myApp,'\ ')){
+	if(utf8_strpos($myApp,'\ ')){
 		//remplace
-		$quoteRemplace = substr(uniqid(rand()),0,8);
+		$quoteRemplace = utf8_substr(uniqid(rand()),0,8);
 		$myApp = str_replace('\ ',$quoteRemplace,$myApp);
 	}
 	
@@ -79,8 +79,8 @@ function parseArguments($myApp){
 		$appName = str_replace('"','',$appName[0]);
 		$items[0] = $appName;
 	}else{
-		if(strpos($myApp,' ')){
-			$appName = substr($myApp,0,strpos($myApp,' '));
+		if(utf8_strpos($myApp,' ')){
+			$appName = utf8_substr($myApp,0,utf8_strpos($myApp,' '));
 			$myApp = str_replace($appName,'',$myApp);
 			$items[0] = $appName;	
 		}else{
@@ -106,11 +106,11 @@ function parseArguments($myApp){
 	preg_match_all("/ .+ /U",$myApp,$rest);
 	foreach($rest[0] as $argument){
 		$myApp = str_replace($argument,'',$myApp);		
-		$items[] = trim($argument);
+		$items[] = utf8_trim($argument);
 	}
 	
 //The last argument if it exists	
-	$items[] = trim($myApp);	
+	$items[] = utf8_trim($myApp);	
 	return $items;	
 }
 

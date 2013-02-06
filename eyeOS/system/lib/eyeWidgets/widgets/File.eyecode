@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 class File {
@@ -94,8 +94,7 @@ class File {
 			reqLib('eyeWidgets','serialize',array($this));
 		}
 	}
-	
-		
+			
 	//event handling
 	function addEvent($eventName,$eventFunc,$args='') {
 		global $myPid;
@@ -131,11 +130,12 @@ class File {
 	function setSrc($newUrl) {
 		global $myPid;
 		$this->src = $newUrl;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src="'.$newUrl.'"'));
+		$tokens[] = $this->src;
+		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src= %s ','tokens'=>$tokens));
 	}
 	
 	function validSrc($url) {
-		$extension = substr($url, -4);
+		$extension = utf8_substr($url, -4);
 		
 		return ($extension === ".swf");
 	}
@@ -174,7 +174,7 @@ class File {
 	}
 	
 	function notify($callback) {
-		global $checknum;
+		global $checknum;		
 		$js = '<script>window.parent.sendMsg('.$checknum.',"'.$callback.'","");</script>';
 		echo $js;
 	}
@@ -207,7 +207,7 @@ class File {
 				if($_FILES[$this->filename]['error'][$index] != 0){
 					continue;
 				}
-				$filename = basename($_FILES[$this->filename]['name'][$index]);
+				$filename = utf8_basename($_FILES[$this->filename]['name'][$index]);
 				$finalPath = $where.'/'.$filename;
 				if(!vfs('checkQuota',array($file))) {
 					exit;
@@ -216,7 +216,7 @@ class File {
 				vfs('realToVirtual',array($finalPath));		
 			}			
 		}else{
-			$filename = basename($_FILES[$this->filename]['name']);
+			$filename = utf8_basename($_FILES[$this->filename]['name']);
 			$finalPath = $where.'/'.$filename;
 			if(!vfs('checkQuota',array($_FILES[$this->filename]['tmp_name']))) {
 				exit;

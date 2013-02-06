@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 */
 
 define('EYEFILES_ICON_SIZE','48x48');
@@ -52,7 +52,7 @@ function eyeTrash_on_openFile($params=null) {
 			foreach($content as $current) {		
 				$fileName = false;   
                 $current = str_replace("//","/",$current); 
-				if(ltrim(strrchr($current,'.'),'.') == EYEOS_TRASH_EXT) {
+				if(utf8_ltrim(strrchr($current,'.'),'.') == EYEOS_TRASH_EXT) {
 					$icon = 'unknown';
 					$fp = service('vfs','real_open',array($current,'r'));
 					if($fp && filesize($current) > 0) {
@@ -64,12 +64,12 @@ function eyeTrash_on_openFile($params=null) {
 						$fileName = $myArray['lastname'][0];
 						if($type == 'dir') {
 							$icon = 'folder';
-							$realFileName = basename($current);
+							$realFileName = utf8_basename($current);
 						} else {
-							$info = pathinfo($fileName);
-							$extension = strtolower($info['extension']);                                      
-							$realFileName = basename($current);                        
-							$dinfo = pathinfo($realFileName);
+							$info = utf8_pathinfo($fileName);
+							$extension = utf8_strtolower($info['extension']);                                      
+							$realFileName = utf8_basename($current);                        
+							$dinfo = utf8_pathinfo($realFileName);
 							$realFileName = $dinfo['basename'];                        
 							foreach($mime['mimeTypes'][0]['mime'] as $value) {
 								if($value['extension'][0] == $extension) {
@@ -89,7 +89,7 @@ function eyeTrash_on_openFile($params=null) {
 					$myHeight = $info[1];
 					//TODO: MAKE A BETTER AND CONFIGURABLE TOOLTIPS
 					$myTooltip = filesize($current);
-					$myIcon = new Icon(array('name'=>$myName,'text'=>$fileName,'father'=>'WND_2_Content',
+					$myIcon = new Icon(array('name'=>$myName,'text'=>utf8_wordwrap($fileName,9," ",true),'father'=>'WND_2_Content',
 					'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
 					'realname'=>EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
 					'content'=>array($realFileName,$windowWidth),'x'=>$x,'y'=>$y,'tooltip'=>$myTooltip,'overBorder'=>1));	        			

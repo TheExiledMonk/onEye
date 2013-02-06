@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeDelete_run($params=null) {
@@ -31,18 +31,27 @@ function eyeDelete_run($params=null) {
 		proc('end');
 		return;
 	}
-	
 	if(is_dir($path)) {
-		if(service('vfs','rmdir',array($path,1))) {
-			service('eyex','messageBox',array('content'=>'Directory removed successfully.'));
+		if (service('vfs','rmdir',array($path,1))) {
+			service('eyex','messageBox',array('content' => 'Directory removed successfully.'));
 		} else  {
-			service('eyex','messageBox',array('content'=>'Unable to delete directory.'));
+			service('eyex','messageBox',array('content' => 'Unable to delete directory.'));
 		}
-	} elseif(!service('vfs','delete',array($path,1))) {
-		$error = reqLib('errorCodes','getErrorCode');
-		service('eyex','messageBox',array('content'=>'Error deleting file.'));
+	} elseif (service('vfs','fileExists',array($path))) {
+		if (service('vfs','delete',array($path,1))) {
+			service('eyex','messageBox',array('content' => 'File moved to trash.'));
+		} else {
+			$error = reqLib('errorCodes','getErrorCode');
+			service('eyex','messageBox',array('content' => 'Error deleting file.'));
+		}
+	} elseif (service('vfs','real_fileExists',array($path)) && strtolower(strrchr($path,'.')) == strtolower('.' . EYEOS_LINK_EXT)) {
+		if (service('vfs','real_delete',array($path))) {
+			service('eyex','messageBox',array('content' => 'File removed successfully.'));
+		} else  {
+			service('eyex','messageBox',array('content' => 'Error deleting file.'));
+		}
 	} else {
-		service('eyex','messageBox',array('content'=>'File moved to trash.'));
+		service('eyex','messageBox',array('content' => 'Error deleting file.'));
 	}
 	service('eyex','rawjs',array('js'=>$callback));
 	proc('end');

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -108,15 +108,12 @@ function service_mmap_routemsg($params) {
 			return mmap('releaseBuffer');
 		}
 	}
-	if($args) {
+	if($args) {		
 		$args = eyeXML('xml2array',array($args));
-	}
-	
+	}	
 	global $procInfo;
 	$procInfo = proc('getProcByChecknum',array($checknum));
-	
-	
-	
+			
 	$currentUser = $procInfo['currentUser'];
 	$myPid = $procInfo['pid'];
 	
@@ -182,7 +179,7 @@ function service_mmap_array2js($params) {
 		$value = addslashes($v);
 		$code .= "'$key' : '$value',";
 	}
-	$code = substr($code,0,-1);
+	$code = utf8_substr($code,0,-1);
 	$code .= "}";
 	return $code;
 }
@@ -202,7 +199,7 @@ function service_mmap_array2jsArg($params) {
 			$code .= $value.'""';
 		}
 	}
-	$code = substr($code,0,strlen($code)-2);
+	$code = utf8_substr($code,0,utf8_strlen($code)-2);
 	return $code;
 }
 ?>

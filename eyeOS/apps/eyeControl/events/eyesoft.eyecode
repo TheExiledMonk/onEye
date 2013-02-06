@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,15 +18,18 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeControl_on_eyesoft_new($params = '') {
 	eyex('messageBox',array(
-		'content' => 'Mirror address (example: http://soft.eyeos.org/ports.xml)',
+		'content' => 'Mirror address (example: %s)',
 		'type' => 3,
+		'tokens' => 'http://soft.eyeos.org/ports.xml',
 		'title' => 'Add mirror',
 		'win_name' => 'eyeControl_eyesoft_add_window',
+		'win_style' => TITLE + CLOSE,
+		'win_removepid' => 0,
 		'btn1_capt' => 'Add',
 		'btn1_name' => 'eyesoft_add',
 		'btn2_capt' => 'Test',
@@ -49,9 +52,9 @@ function eyeControl_on_eyesoft_add($params = '') {
 			eyex('messageBox',array('content' => 'The mirror is installed, yet!'));
 		} else {
 			$mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'][] = $selected;
-			eyeXML('setXMLFile',array($dir,$mirrorXML));
+			eyeXML('setXMLfile',array($dir,$mirrorXML));
 			eyex('messageBox',array('content' => 'Mirror successfully saved.'));
-			loadContent('apps','eyesoft');
+			loadContent('system','eyesoft');
 		}
 	} else {
 		eyex('messageBox',array('content' => 'Please type an address!'));
@@ -64,7 +67,7 @@ function eyeControl_on_eyesoft_add_test($params = '') {
 		$httpClient = eyeURL('getHTTPClient');
 		$httpClient->setURL($selected);
 		$httpClient->sendRequest();
-		$xml = trim($httpClient->getResponseBody());
+		$xml = utf8_trim($httpClient->getResponseBody());
 		$array = eyeXML('xml2array',array($xml));
 		if ($array['eyePorts'][0]['portServer'][0]['path'][0]) {
 			eyex('messageBox',array('content' => 'File can be downloaded successfully.'));
@@ -88,6 +91,8 @@ function eyeControl_on_eyesoft_edit($params = '') {
 			'type' => 3,
 			'title' => 'Edit mirror',
 			'win_name' => 'eyeControl_eyesoft_edit_window',
+			'win_style' => TITLE + CLOSE,
+			'win_removepid' => 0,
 			'btn1_capt' => 'Save',
 			'btn1_name' => 'eyesoft_edit_save',
 			'btn2_capt' => 'Test',
@@ -120,7 +125,7 @@ function eyeControl_on_eyesoft_edit_save($params = '') {
 			$mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'][$x] = $mirror_new;
 			eyeXML('setXMLFile',array($dir,$mirrorXML));
 			eyex('messageBox',array('content' => 'Mirror successfully saved.'));
-			loadContent('apps','eyesoft');
+			loadContent('system','eyesoft');
 		} else {
 			eyex('messageBox',array('content' => 'The mirror doesn\'t exists, yet.'));
 		}
@@ -137,7 +142,7 @@ function eyeControl_on_eyesoft_edit_test($params = '') {
 		$httpClient = eyeURL('getHTTPClient');
 		$httpClient->setURL($selected);
 		$httpClient->sendRequest();
-		$xml = trim($httpClient->getResponseBody());
+		$xml = utf8_trim($httpClient->getResponseBody());
 		$array = eyeXML('xml2array',array($xml));
 		if ($array['eyePorts'][0]['portServer'][0]['path'][0]) {
 			eyex('messageBox',array('content' => 'File can be downloaded successfully.'));
@@ -165,6 +170,8 @@ function eyeControl_on_eyesoft_delete($params = '') {
 			'type' => 3,
 			'title' => 'Delete mirror',
 			'win_name' => 'eyeControl_eyesoft_delete_window',
+			'win_style' => TITLE + CLOSE,
+			'win_removepid' => 0,
 			'btn1_capt' => 'Yes',
 			'btn1_name' => 'eyesoft_delete_yes',
 			'btn2_capt' => 'No',
@@ -191,7 +198,7 @@ function eyeControl_on_eyesoft_delete_yes($params = '') {
 		unset($mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'][$x]);
 		eyeXML('setXMLFile',array($file,$mirrorXML));
 		eyex('messageBox',array('content' => 'The mirror was successfully deleted.'));
-		loadContent('apps','eyesoft');
+		loadContent('system','eyesoft');
 	}
 }
 
@@ -201,7 +208,7 @@ function eyeControl_on_eyesoft_test($params = '') {
 		$httpClient = eyeURL('getHTTPClient');
 		$httpClient->setURL($mirror);
 		$httpClient->sendRequest();
-		$xml = trim($httpClient->getResponseBody());
+		$xml = utf8_trim($httpClient->getResponseBody());
 		$array = eyeXML('xml2array',array($xml));
 		if ($array['eyePorts'][0]['portServer'][0]['path'][0]) {
 			eyex('messageBox',array('content' => 'File can be downloaded successfully.'));

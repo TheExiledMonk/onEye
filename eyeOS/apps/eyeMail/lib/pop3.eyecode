@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 class pop3_class
@@ -53,15 +53,15 @@ class pop3_class
 			$separator=$string;
 			$string=$this->next_token;
 		}
-		for($character=0;$character<strlen($separator);$character++)
+		for($character=0;$character<utf8_strlen($separator);$character++)
 		{
-			if(GetType($position=strpos($string,$separator[$character]))=="integer")
+			if(GetType($position=utf8_strpos($string,$separator[$character]))=="integer")
 				$found=(IsSet($found) ? min($found,$position) : $position);
 		}
 		if(IsSet($found))
 		{
-			$this->next_token=substr($string,$found+1);
-			return(substr($string,0,$found));
+			$this->next_token=utf8_substr($string,$found+1);
+			return(utf8_substr($string,0,$found));
 		}
 		else
 		{
@@ -91,11 +91,11 @@ class pop3_class
 			if(feof($this->connection))
 				return(0);
 			$line.=fgets($this->connection,100);
-			$length=strlen($line);
+			$length=utf8_strlen($line);
 			if($length>=2
-			&& substr($line,$length-2,2)=="\r\n")
+			&& utf8_substr($line,$length-2,2)=="\r\n")
 			{
-				$line=substr($line,0,$length-2);
+				$line=utf8_substr($line,0,$length-2);
 				if($this->debug)
 					$this->OutputDebug("S $line");
 				return($line);
@@ -230,7 +230,7 @@ class pop3_class
 			&& function_exists("class_exists")
 			&& class_exists("sasl_client_class"))
 			{
-				if(strlen($this->authentication_mechanism))
+				if(utf8_strlen($this->authentication_mechanism))
 					$mechanisms=array($this->authentication_mechanism);
 				else
 				{
@@ -252,7 +252,7 @@ class pop3_class
 								case ".":
 									break 2;
 								case "SASL":
-									for($method=1;strlen($mechanism=$this->Tokenize(" "));$method++)
+									for($method=1;utf8_strlen($mechanism=$this->Tokenize(" "));$method++)
 										$mechanisms[]=$mechanism;
 									break;
 							}
@@ -262,9 +262,9 @@ class pop3_class
 				$sasl=new sasl_client_class;
 				$sasl->SetCredential("user",$user);
 				$sasl->SetCredential("password",$password);
-				if(strlen($this->realm))
+				if(utf8_strlen($this->realm))
 					$sasl->SetCredential("realm",$this->realm);
-				if(strlen($this->workstation))
+				if(utf8_strlen($this->workstation))
 					$sasl->SetCredential("workstation",$this->workstation);
 				do
 				{
@@ -276,13 +276,13 @@ class pop3_class
 					case SASL_CONTINUE:
 						break;
 					case SASL_NOMECH:
-						if(strlen($this->authentication_mechanism))
+						if(utf8_strlen($this->authentication_mechanism))
 							return($this->SetError("authenticated mechanism ".$this->authentication_mechanism." may not be used: ".$sasl->error));
 						break;
 					default:
 						return($this->SetError("Could not start the SASL authentication client: ".$sasl->error));
 				}
-				if(strlen($sasl->mechanism))
+				if(utf8_strlen($sasl->mechanism))
 				{
 					if($this->PutLine("AUTH ".$sasl->mechanism.(IsSet($message) ? " ".base64_encode($message) : ""))==0)
 						return("Could not send the AUTH command");
@@ -460,8 +460,8 @@ class pop3_class
 				case "":
 					break 2;
 				default:
-					if(substr($response,0,1)==".")
-						$response=substr($response,1,strlen($response)-1);
+					if(utf8_substr($response,0,1)==".")
+						$response=utf8_substr($response,1,utf8_strlen($response)-1);
 					break;
 			}
 			if($this->join_continuation_header_lines
@@ -485,8 +485,8 @@ class pop3_class
 				case ".":
 					return("");
 				default:
-					if(substr($response,0,1)==".")
-						$response=substr($response,1,strlen($response)-1);
+					if(utf8_substr($response,0,1)==".")
+						$response=utf8_substr($response,1,utf8_strlen($response)-1);
 					break;
 			}
 			$body[$line]=$response;
@@ -537,7 +537,7 @@ class pop3_class
 			return($this->SetError("connection is not in GETMESSAGE state"));
 		$message="";
 		$end_of_message=0;
-		while($count>strlen($this->message_buffer)
+		while($count>utf8_strlen($this->message_buffer)
 		&& !$end_of_message)
 		{
 			$response=$this->GetLine();
@@ -551,21 +551,21 @@ class pop3_class
 			}
 			else
 			{
-				if(substr($response,0,1)==".")
-					$response=substr($response,1,strlen($response)-1);
+				if(utf8_substr($response,0,1)==".")
+					$response=utf8_substr($response,1,utf8_strlen($response)-1);
 				$this->message_buffer.=$response."\r\n";
 			}
 		}
 		if($end_of_message
-		|| $count>=strlen($this->message_buffer))
+		|| $count>=utf8_strlen($this->message_buffer))
 		{
 			$message=$this->message_buffer;
 			$this->message_buffer="";
 		}
 		else
 		{
-			$message=substr($this->message_buffer, 0, $count);
-			$this->message_buffer=substr($this->message_buffer, $count);
+			$message=utf8_substr($this->message_buffer, 0, $count);
+			$this->message_buffer=utf8_substr($this->message_buffer, $count);
 		}
 		return("");
 	}
@@ -688,16 +688,16 @@ class pop3_stream
 		$this->pop3=new pop3_class;
 		if(!$this->ParsePath($path, $url))
 			return(FALSE);
-		$message=substr($url["path"],1);
+		$message=utf8_substr($url["path"],1);
 		if(strcmp(intval($message), $message)
 		|| $message<=0)
 			return($this->SetError("it was not specified a valid message to retrieve"));
-		if(strlen($error=$this->pop3->Open()))
+		if(utf8_strlen($error=$this->pop3->Open()))
 			return($this->SetError($error));
 		$this->opened = 1;
 		$apop = (IsSet($url["query"]["apop"]) ? intval($url["query"]["apop"]) : 0);
-		if(strlen($error=$this->pop3->Login(UrlDecode($url["user"]), UrlDecode($url["pass"]),$apop))
-		|| strlen($error=$this->pop3->OpenMessage($message,-1)))
+		if(utf8_strlen($error=$this->pop3->Login(UrlDecode($url["user"]), UrlDecode($url["pass"]),$apop))
+		|| utf8_strlen($error=$this->pop3->OpenMessage($message,-1)))
 		{
 			$this->stream_close();
 			return($this->SetError($error));
@@ -723,9 +723,9 @@ class pop3_stream
 			return($this->SetError("it was not specified a valid length of the message to read"));
 		if($this->end_of_message)
 			return("");
-		if(strlen($error=$this->pop3->GetMessage($count, $read, $this->end_of_message)))
+		if(utf8_strlen($error=$this->pop3->GetMessage($count, $read, $this->end_of_message)))
 			return($this->SetError($error));
-		$this->read += strlen($read);
+		$this->read += utf8_strlen($read);
 		return($read);
 	}
 

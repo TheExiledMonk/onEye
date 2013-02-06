@@ -88,7 +88,7 @@ class MIME_Type_Parameter {
     function getAttribute($param)
     {
         $tmp = explode('=', $param);
-        return trim($tmp[0]);
+        return utf8_trim($tmp[0]);
     }
 
 
@@ -104,10 +104,10 @@ class MIME_Type_Parameter {
         $tmp = explode('=', $param);
         $value = $tmp[1];
         if (MIME_Type_Parameter::hasComment($param)) {
-            $cs = strpos($value, '(');
-            $value = substr($value, 0, $cs);
+            $cs = utf8_strpos($value, '(');
+            $value = utf8_substr($value, 0, $cs);
         }
-        return trim($value, '" ');
+        return utf8_trim($value, '" ');
     }
 
 
@@ -121,9 +121,9 @@ class MIME_Type_Parameter {
      */
     function getComment($param)
     {
-        $cs = strpos($param, '(');
-        $comment = substr($param, $cs);
-        return trim($comment, '() ');
+        $cs = utf8_strpos($param, '(');
+        $comment = utf8_substr($param, $cs);
+        return utf8_trim($comment, '() ');
     }
 
 

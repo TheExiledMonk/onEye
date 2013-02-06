@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,25 +18,19 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeControl_on_desktop_language($params = '') {
-	$maxCodeLen = 4;
-	$dir = um('getCurrentUserDir');
-	if(!file_exists($dir . '/' . CONF_USER_DIR . '/i18n')) {
-		vfs('real_mkdir',array($dir . '/' . CONF_USER_DIR . '/i18n'));
-	}
-	$LangFile = $dir . '/' . CONF_USER_DIR . '/i18n/lang.xml';
-	$LangXML = eyeXML('getXMLfile',array($LangFile));
+	$dir = um('getCurrentUserDir') . '/' . CONF_USER_DIR . '/i18n/';
+	$LangXML = eyeXML('getXMLconfig',array('i18n','lang.xml'));
 	$LangXML['lang'][0] = $GLOBALS['eyeControl_desktop_select_language']->selected;
 	
-	if(strlen($LangXML['lang'][0]) > $maxCodeLen){
-		eyex('messageBox',array('content'=>'The languaeg is incorrect, please choose another.'));
-		return false;	
+	if (!file_exists($dir)) {
+		vfs('real_mkdir',array($dir));
 	}
-	eyeXML('setXMLFile',array($LangFile,$LangXML));
-	eyex('messageBox',array('content'=>'Language changed. Please restart your desktop now.'));
+	eyeXML('setXMLconfig',array('i18n','lang.xml',$LangXML));
+	eyex('messageBox',array('content' => 'Language changed. Please restart your desktop now.'));
 }
 
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeManageApps_run($params=null) {
@@ -27,11 +27,11 @@ function eyeManageApps_run($params=null) {
 	//Loading the needed javascript
 	eyeX('loadScript',array('url' => 'index.php?extern=apps/eyeManageApps/js/eyeManageApps.js&type=text'));
 	$myWindow = new Window(array('name' => 'WND_1', 'father' => 'eyeApps', 'title' => 'eyeManageApps',
-	 'width' => 775, 'height' => 525, 'x' => 50, 'y' => 3));
+	 'width' => 775, 'height' => 525, 'cent' => 2));
 	$myWindow->show();
 	
 	$myBox1 = new Box(array('name' => 'BOX_1', 'father' => 'WND_1_Content', 'x' => 5, 'y' => 5,
-	 'width' => 170, 'height' => 185, 'title' => 'Actions'));
+	 'width' => 170, 'height' => 200, 'title' => 'Actions'));
 	$myBox1->show();
 
 	$myWindow2 = new Window(array('name'=>'WND_BOX_1','father' => 'BOX_1',
@@ -60,7 +60,6 @@ function eyeManageApps_run($params=null) {
 				'father'=>'action_container_line_'.$counter,'text'=>$value['label'][0],'y'=>7,'x'=>40,
 				'disablemsg'=>0,'signal'=>'actionExecute'));
 			$myLabel1->addFriend($myHidden);
-			$myLabel1->addFriend($myTextBox);
 			$myLabel1->show();
 		} else  {
 			$myLabel1 = new Label(array('name'=>'action_lbl_'.$counter,
@@ -80,8 +79,7 @@ function eyeManageApps_run($params=null) {
 	$myContainer->show();
 	reqLib('eyeWidgets', 'serialize', array($myContainer));
 	
-	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeManageApps/events'.EYE_CODE_EXTENSION);
-	eyeManageApps_on_ListApps(false);
+	eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
 }
 
 function eyeManageApps_end() {

@@ -48,12 +48,32 @@
 		<extension>eyedoc</extension>
 	</mime>
 	<mime>
-		<type>document</type>
+		<type>documentOffice</type>
+		<extension>doc</extension>
+	</mime>
+	<mime>
+		<type>documentOffice</type>
 		<extension>odt</extension>
 	</mime>
 	<mime>
-		<type>document</type>
-		<extension>doc</extension>
+		<type>sheetOffice</type>
+		<extension>ods</extension>
+	</mime>
+	<mime>
+		<type>sheetOffice</type>
+		<extension>xls</extension>
+	</mime>
+	<mime>
+		<type>sheetOffice</type>
+		<extension>csv</extension>
+	</mime>
+	<mime>
+		<type>presentationOffice</type>
+		<extension>ppt</extension>
+	</mime>
+	<mime>
+		<type>presentationOffice</type>
+		<extension>odp</extension>
 	</mime>
 	<mime>
 		<type>sound</type>
@@ -150,5 +170,9 @@
 	<mime>
 		<type>image</type>
 		<extension>gif</extension>
+	</mime>
+	<mime>
+		<type>vcard</type>
+		<extension>vcf</extension>
 	</mime>
 </mimeTypes>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function eyeMkDir_on_Message($params="") {
@@ -27,13 +27,16 @@ function eyeMkDir_on_Message($params="") {
 
 function eyeMkDir_on_newfolder($params=null) {
 	$myUserDir = $GLOBALS['nfPath']->text;
-	$myFolderName = basename($GLOBALS['nfTextbox']->text);
-	$myFolderName = str_replace('\\','',$myFolderName);
-	$myFolderName = str_replace('/','',$myFolderName);
+	$myFolderName = $GLOBALS['nfTextbox']->text;
+	if (vfs('checkSpecialChars',array($myFolderName)) === false) {
+		$myFolderName = str_replace('/','',$myFolderName);
+		$myFolderName = str_replace('\\','',$myFolderName);
+		service('eyex','messageBox',array('content' => 'Some special chars have been removed.'));
+	}
 	$myUserDir .= '/'.$myFolderName;
 	$callback = $GLOBALS['nfCallback']->text;
 	global $myPid;
-	//TODO: FILTER SPECIAL CHARACTERS
+	
 	if(!service('vfs','mkDir',array($myUserDir))) {
 		service('eyex','messageBox',array('content'=>'Error creating directory'));
 	} else {

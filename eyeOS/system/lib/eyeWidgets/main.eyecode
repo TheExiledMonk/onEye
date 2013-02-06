@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
 /*
@@ -82,7 +82,7 @@ function lib_eyeWidgets_unserialize() {
 	global $myPid;
 	if(isset($_SESSION[WTABLE][$myPid]) && is_array($_SESSION[WTABLE][$myPid])) {
 		foreach ($_SESSION[WTABLE][$myPid] as $value) {
-			if(strcasecmp(get_class($value),'window')==0) {
+			if(utf8_strcasecmp(get_class($value),'window')==0) {
 				service('eyex','rawjs',array('js'=>"if(document.getElementById('".$myPid."_".$value->name."'))slideClose(document.getElementById('".$myPid."_".$value->name."').parentNode.id,'".$myPid."_".$value->name."')"));
 				service('eyex','rawjs',array('js'=>"if(document.getElementById('".$myPid."_".$value->name."'))document.getElementById('".$myPid."_".$value->name."').parentNode.removeChild(document.getElementById('".$myPid."_".$value->name."'))"));
 			}

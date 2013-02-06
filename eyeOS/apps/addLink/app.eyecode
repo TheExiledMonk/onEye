@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 function addLink_run($params = '') {
@@ -31,7 +31,9 @@ function addLink_run($params = '') {
 		'btn1_name' => 'create',
 		'btn2_capt' => 'Cancel',
 		'btn2_name' => 'cancel',
-		'textbox_text' => $params[0],
+		'hidden_text' => $params[1],
+		'hidden_name' => 'addLink_hidden',
+		'textbox_text' => $params[3],
 		'textbox_name' => 'addLink_textbox',
 		'textbox_event' => 'create',
 		'img' => 'index.php?extern=apps/eyeFiles/gfx/rename_big.png'

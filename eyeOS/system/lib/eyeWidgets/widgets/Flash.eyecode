@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.2
+                      |___/              1.5
 
                      Web Operating System
                            eyeOS.org
@@ -18,7 +18,7 @@
             provided with this release in license.txt
              or via web at gnu.org/licenses/gpl.txt
 
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
 class Flash {
@@ -152,11 +152,12 @@ class Flash {
 	function setSrc($newUrl) {
 		global $myPid;
 		$this->src = $newUrl;
-		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src="'.$newUrl.'"'));
+		$tokens[] = $this->src;
+		service('eyex','runjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").src= %s ','tokens'=>$tokens));
 	}
 	
 	function validSrc($url) {
-		$extension = substr($url, -4);
+		$extension = utf8_substr($url, -4);
 		
 		return ($extension === ".swf");
 	}
