@@ -31,7 +31,6 @@ class ContextMenu {
 	var $showed = 0;
 	var $sFather;
 	var $mFather;
-	var $rFather;
 	
 	function ContextMenu($params) {	
 		global $myPid;
@@ -49,14 +48,6 @@ class ContextMenu {
 				$this->mFather = $params['mfather'];	
 			}else{
 				$this->mFather = $myPid.'_'.$params['mfather'];	
-			}		
-		}
-		if($params['rfather']){
-			$isLayer = service('eyex','isLayer',array('name'=>$params['rfather']));
-			if($isLayer){
-				$this->rFather = $params['rfather'];	
-			}else{
-				$this->rFather = $myPid.'_'.$params['rfather'];	
 			}		
 		}
 		//generic widget options with default
@@ -81,8 +72,7 @@ class ContextMenu {
 		global $myPid;
 		$widgetsparams = array(
 			'sFather' => $this->sFather,
-			'mFather' => $this->mFather,
-			'rFather' => $this->rFather
+			'mFather' => $this->mFather
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		

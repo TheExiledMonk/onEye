@@ -108,8 +108,7 @@ function eyeFeeds_drawFeedsTree_addContextMenu($menuName, $nodeName, $addOnly=fa
 	$myMenu = new ContextMenu(array(
 		'name' => $menuName,
 		'father' => $nodeName,
-		'searchFather' => 1,
-		'rfather' => $nodeName
+		'searchFather' => 1
 	));
 	$myMenu->show();
 

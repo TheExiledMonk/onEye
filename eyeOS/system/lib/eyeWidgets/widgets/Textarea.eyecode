@@ -233,7 +233,7 @@ class Textarea {
 		global $myPid;
 		$name = $myPid.'_'.$this->name;
 		if($this->rich!=0) {
-			return "eyeParam('".$this->name."',Base64.encode(txtAreas['".$myPid.'_'.$this->name."_objTxt'].getContent()))";
+			return "eyeParam('".$this->name."',Base64.encode(txtAreas['".$myPid.'_'.$this->name."_objTxt'].getContent()))+eyeParam('md5',md5(txtAreas['".$myPid.'_'.$this->name."_objTxt'].getContent()))";
 		} elseif ($this->code == 1) {
 			return "eyeParam('$this->name',Base64.encode(cp_$name.getCode()))";
 		} else {

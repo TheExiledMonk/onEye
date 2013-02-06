@@ -394,8 +394,7 @@ function eyeFTP_run($params=null) {
 	/*$localFilesContextMenu = new ContextMenu(array(
 		'name' => 'eyeFTP_localFiles_CMN',
 		'father' => 'eyeFTP_localFiles_TAB',
-		'searchFather' => 1,
-		'rfather' => 'eyeFTP_localFiles_TAB'
+		'searchFather' => 1
 	));
 	$localFilesContextMenu->show();
 
@@ -428,8 +427,7 @@ function eyeFTP_run($params=null) {
 	/*$remoteFilesContextMenu = new ContextMenu(array(
 		'name' => 'eyeFTP_remoteFiles_CMN',
 		'father' => 'eyeFTP_remoteFiles_TAB',
-		'searchFather' => 1,
-		'rfather' => 'eyeFTP_remoteFiles_TAB'
+		'searchFather' => 1
 	));
 	$remoteFilesContextMenu->show();
 

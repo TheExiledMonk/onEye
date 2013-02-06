@@ -375,7 +375,6 @@ function eyeDesk_on_OpenPath($params = '') {
 			'father' => $myIcon->name . '_globalContainer',
 			'name' => $myIcon->name . '_ContextMenu',
 			'mfather' => 'eyeDesk_Container',
-			'rfather' => $myIcon->name . '_Container',
 			'searchFather' => 1
 		));
 		$myContextMenu->show();

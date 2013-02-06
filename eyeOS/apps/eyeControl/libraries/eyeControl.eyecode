@@ -112,7 +112,7 @@ function eyeControl_lib_loadContent($category = '',$content = '',$contentParams 
 		if ($contentXML['title'][0] == 'yes') {
 			$containerY = 45;
 			$myLabel = new Label(array(
-				'name' => 'eyeControl_label',
+				'name' => 'eyeControl_label_title',
 				'father' => 'eyeControl_container_big',
 				'x' => 0,
 				'y' => 0,
@@ -124,10 +124,10 @@ function eyeControl_lib_loadContent($category = '',$content = '',$contentParams 
 				'font-size' => '14px'
 			));
 			$myLabel = new Label(array(
-				'name' => 'eyeControl_label',
+				'name' => 'eyeControl_label_description',
 				'father' => 'eyeControl_container_big',
 				'x' => 0,
-				'y' => 17,
+				'y' => 20,
 				'text' => $contentXML['description'][0]
 			));
 			$myLabel->show();

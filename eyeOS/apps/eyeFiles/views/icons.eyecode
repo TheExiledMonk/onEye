@@ -157,7 +157,6 @@ foreach ($files as $file) {
 			'father' => $myIcon->name . '_globalContainer',
 			'name' => $myIcon->name . '_ContextMenu',
 			'mfather' => 'eyeFiles_Container',
-			'rfather' => $myIcon->name . '_Container',
 			'searchFather' => 1
 		));
 		$myContextMenu->show();

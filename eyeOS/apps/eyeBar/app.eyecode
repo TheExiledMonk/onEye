@@ -35,7 +35,8 @@ function eyeBar_run($params=null) {
 	eyeX('createDiv',array(
 		'name' => 'eyeMenuDiv',
 		'class' => 'eyeMenuButton',
-		'father' => 'eyeApps'
+		'removepid' => 1,
+		'father' => 'eyeScreen'
 	));
 	
 	//create the button

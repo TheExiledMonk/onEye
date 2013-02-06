@@ -21,88 +21,76 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
+require_once(EYE_ROOT.'/'.APP_DIR.'/eyeDocs/lib'.EYE_CODE_EXTENSION);
+
 function eyeDocs_run($params=null) {
-	global $myPid;
-	$content = "";
+	//create the title, executing translate over it because its a dinamyc string.
+	$title = i18n('translate',array('Word Processor'));
+	//check if a file has been passed as an argument
 	if($params[0]) {
+		//get the filename
 		$file = $params[0];
-		$title = utf8_basename($file).' - ' . i18n('translate',array('Word Processor'));
-		$info = utf8_pathinfo($file);
-		$extension = utf8_strtolower($info['extension']);
-		$tCheckNum = proc('findChecknumByName',array('eyeX'));
-		$real = vfs('getRealName',array($file));
-		if(!vfs('checkPermissions',array($real))) {
-			eyeX('messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
-			return false;
-		}
-		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
-		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.html';
-		copy($real,$nfile);
-		$tfp = vfs('real_open',array($nfile,'r'));
-		$bytes = fread($tfp,5);
-		$real = 1;
-		if($bytes == '<html') {
-			$real = 0;
-			$content = file_get_contents($nfile);
-		}
-		$bytes = fread($tfp,25);
-		if(strstr($bytes,'<!--')) {
-			$real = 0;
-			$content = file_get_contents($nfile);
-		}
-		if($extension == 'eyedoc') {
-			$real = 0;
-			$content = file_get_contents($nfile);
-		}
-		fclose($tfp);
-		$to = 'HTML (StarWriter)';
-		if($real == 1) {
-			eyeConverter('convert',array($nfile,$myHTML,$to,1));
-			$fp = vfs('real_open',array($myHTML,'r'));
-			$content = fread($fp,vfs('real_filesize',array($myHTML)));
-			fclose($fp);
-			$content = str_replace('<IMG SRC="','<IMG SRC="index.php?checknum='.$tCheckNum.'&msg=viewTempImg&params=',$content);
-			$content = str_replace("\n","",$content);
-			$content = str_replace("\r","",$content);
-			preg_match("/<BODY[^>]+>(.*)<\/BODY>/",$content,$matches);
-			$content = $matches[1];
+		
+		//if the file doesn't exists, show a messagebox informing the user, else
+		//read the file etc.
+		if(!vfs('fileExists',array($file))) {
+			eyeX('messageBox',array('content' => 'The file does not exist.'));
 		} else {
-			$pattern = '/<img[^\/]*\/>/i';
-			$replacement = '';
-			$content = preg_replace($pattern, $replacement, $content);
+			//set the filename in the title
+			$title = utf8_basename($file).' - '.$title;
+			
+			//open the file, get the contents, and save the path
+			$content = eyeDocs_openFile($file);
 		}
-		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
-		reqLib('eyeWidgets','serialize',array($myHidden));
-	} else {
-		$title = 'Word Processor';
-	}
-	$myWindow = new Window(array('name'=>'eyeDocsWND','father'=>'eyeApps',
-	'cent'=>1,'width'=>780,'height'=>550,'title'=>$title,'sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>2,'savePosition' => 1,'minWidth'=>780,'minHeight'=>550));
-	if (IE && IE < 8) {
-		$restWidth = 2;
-		$restHeight = 34;
-	} else {
-		$restWidth = 2;
-		$restHeight = 34;
-	}
-	$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeDocsWND_Content',
-		'width'=>$myWindow->width-$restWidth,'height'=>$myWindow->height-$restHeight,'x'=>0,'y'=>0,'rich'=>2,'text'=>$content));
+	} 
+	//create the main window
+	$myWindow = new Window(array(
+		'name'=>'eyeDocsWND',
+		'father'=>'eyeApps',
+		'cent'=>1,
+		'width'=>780,
+		'height'=>550,
+		'title'=>$title,
+		'sendResizeMsg'=>1,
+		'sigResize'=>'Resize',
+		'removeWin'=>2,
+		'savePosition'=>1,
+		'minWidth'=>780,
+		'minHeight'=>550
+	));
+	
+	//the main textarea, using tinymce (rich = 2)
+	$myTextArea = new Textarea(array(
+		'name'=>'fileContent',
+		'father'=>'eyeDocsWND_Content',
+		'width'=>$myWindow->width-2,
+		'height'=>$myWindow->height-34,
+		'x'=>0,
+		'y'=>0,
+		'rich'=>2,
+		'text'=>$content
+	));
+	
+	//the window should be friend of the textarea, to get the final contents when closing
+	//so we can compare if the contents are different.
 	$myWindow->addFriend($myTextArea);
+	
+	//add a sync to calc de crc32
+	
 	$myWindow->show();
 	$myTextArea->show();
+	
+	//remove the text in the statusbar of the tinymce
 	$myTextArea->setRichStatusText('');
+
+	eyeDocs_updateServerContent();
+	
+	//add a listener service call to get the resize events
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');
-	$myHiddenContent = new Hidden(array(
-		'name' => 'textAreaContent',
-		'father' => 'eyeNotesWND_Content',
-		'text' => $content
-	));
-	eyeWidgets('serialize',array($myHiddenContent));
 }
 
 function eyeDocs_end($params=null) {
-	reqLib('eyeWidgets','unserialize');
+	eyeConverter('cleanTmp');
+	eyeWidgets('unserialize');
 }
-
-
 ?>

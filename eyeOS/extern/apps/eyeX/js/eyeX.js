@@ -58,6 +58,19 @@ function fixPNG(myImage,type){
 	}
 }
 
+function cookieEnabled() {
+	var cookieNumber = 0;
+	while (document.cookie.indexOf('cookieEnabled-' + cookieNumber) != -1) {
+		cookieNumber++;
+	}
+	document.cookie = 'cookieEnabled-' + cookieNumber;
+	if (document.cookie.indexOf('cookieEnabled-' + cookieNumber) != -1) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 //== eyeCursor Section ==
 var isEyeCursorActivated = false;
 
@@ -173,12 +186,12 @@ function sendMsg(checknum,msg,parameters) {
 	var url = 'index.php';
 	if (window.XMLHttpRequest) {
 		http_request = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
+	} else if (window.ActiveXObject && ActiveXObject) {
 		try {
         	http_request = new ActiveXObject("Msxml2.XMLHTTP");
      	} catch (e) {
         	try {
-           	http_request = new ActiveXObject("Microsoft.XMLHTTP");
+				http_request = new ActiveXObject("Microsoft.XMLHTTP");
         	} catch (e) {}
      	}
   	}

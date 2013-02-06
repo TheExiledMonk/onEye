@@ -93,11 +93,11 @@ function eyeLogin_Start(pid,checknum) {
 	
 	var obj = xGetElementById(pid + '_eyeLogin_Imagebox_1_New_Container');
 	if (obj) {
-		obj.onclick = function () { eyeLogin_2_Launch(pid); };
+		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
 		obj.style.zIndex = '10000';
 		
 		var obj = xGetElementById(pid + '_eyeLogin_Label_1_New_Container');
-		obj.onclick = function () { eyeLogin_2_Launch(pid); };
+		obj.onclick = function () { eyeLogin_2_Launch(pid,checknum); };
 		obj.style.zIndex = '10000';
 	}
 	
@@ -126,7 +126,7 @@ function eyeLogin_Start(pid,checknum) {
 	obj.onblur = function() { eyeLogin_Light_Off(pid + '_eyeLogin_Select_1_Language'); };
 }
 
-function eyeLogin_2_Launch(pid) {
+function eyeLogin_2_Launch(pid,checknum) {
 	if (xGetElementById(pid + '_eyeLogin_2_Container').style.display == 'block') {
 		if (IEversion) {
 			xGetElementById(pid + '_eyeLogin_2_Container').style.display = 'none';

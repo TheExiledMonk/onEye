@@ -377,7 +377,7 @@ $myContainer = new Simplebox(array(
 $myContainer->show();
 $myContainer->setCSS(array('cursor' => 'pointer'));
 $myContainer->addEvent('onclick','sendMsgParam = sendMsg(' . $checknum . ',"system_cache_label");');
-eyex('rawjs',array('js' => 'xGetElementById("' . $myPid . '_eyeControl_system_cache_box_warning_Container").style.borderColor = "#ffffff";'));
+eyex('rawjs',array('js' => 'xGetElementById("' . $myPid . '_eyeControl_system_cache_box_warning").style.borderColor = "#ffffff";'));
 $myLabel = new Label(array(
 	'name' => 'eyeControl_system_cache_label_warning',
 	'father' => 'eyeControl_system_cache_box_warning',

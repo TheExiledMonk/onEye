@@ -49,7 +49,7 @@ function init_eyeDesk_extras(myPid,checknum) {
 	eyeClockText.className = 'eyeClockText';
 	
 	xAddEventListener(eyeClockId,'click',showMiniCalendar);
-	xGetElementById('eyeApps').appendChild(eyeClockId);
+	xGetElementById('eyeScreen').appendChild(eyeClockId);
 	eyeClockId.appendChild(eyeClockText);
 	
 	eyeClock(myPid);
@@ -58,7 +58,7 @@ function init_eyeDesk_extras(myPid,checknum) {
 	var calendarContent = document.createElement('div');
 	calendarContent.setAttribute('id',myPid + '_calendar_Content');
 	calendarContent.className = 'eyeDesk_miniCalendar';
-	xGetElementById('eyeApps').appendChild(calendarContent);
+	xGetElementById('eyeScreen').appendChild(calendarContent);
 	
 	var params = new Array();
 	params.backgroundNames = '#53a0e1';

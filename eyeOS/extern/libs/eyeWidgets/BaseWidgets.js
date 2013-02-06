@@ -2251,7 +2251,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			skin : "o2k7",
 			skin_variant : "silver",
 			save_onsavecallback : function(ed) {
-				sendMsg(checknum,'Save',eyeParam(name.substring(6),Base64.encode(ed.getContent())));
+				sendMsg(checknum,'Save',eyeParam(name.substring(6),Base64.encode(ed.getContent()))+eyeParam('md5',md5(ed.getContent())));
 			}
 		});
 		txtAreas[name+'_objTxt'].addButton('open', {
@@ -2265,7 +2265,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			title : 'Save as',
 			image : 'index.php/extern/externVersion/1/externPath/libs/eyeWidgets/tiny_mce/themes/advanced/img/saveAs.png',
 			onclick : function() {
-				sendMsg(checknum,'saveAs',eyeParam(name.substring(6),Base64.encode(txtAreas[name+'_objTxt'].getContent())));
+				sendMsg(checknum,'saveAs',eyeParam(name.substring(6),Base64.encode(txtAreas[name+'_objTxt'].getContent()))+eyeParam('md5',md5(txtAreas[name+'_objTxt'].getContent())));
 			}
 		});
 		txtAreas[name+'_objTxt'].checknum = checknum;
@@ -3411,13 +3411,7 @@ function collapseTree(treeId) {
 function expandToItem(treeId,itemId) {
 	var ul = document.getElementById(treeId);
 	if (ul == null) { return false; }
-	var ret = expandCollapseList(ul,nodeOpenClass,itemId);
-	if (ret) {
-		var o = document.getElementById(itemId);
-		if (o.scrollIntoView) {
-			o.scrollIntoView(false);
-		}
-	}
+	expandCollapseList(ul,nodeOpenClass,itemId);
 }
 
 // Performs 3 functions:
@@ -3452,7 +3446,7 @@ function expandCollapseList(ul,cName,itemId) {
 						//That's is to evade some odd behaviour in the most sucking browser around the world,
 						//Our friend, IE!
 						//I've discover a secred style property to evade it, it's TETAS!
-						xGetElementById('background').style.tetas = '';
+						xGetElementById('background').style.border = '0px solid';
 						return true;
 					}
 				}
@@ -3465,7 +3459,7 @@ function expandCollapseList(ul,cName,itemId) {
 			}
 			if (nbOfSubItems != 0 && itemHasSubList && itemId==null) {
 				item.className = cName;
-				xGetElementById('background').style.tetas = '';
+				xGetElementById('background').style.border = '0xp solid';
 			}
 		}
 	}
@@ -3591,7 +3585,6 @@ function hideSimpleMenu(menuName) {
 function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var sFather = params["sFather"];
 	var myFather = params["mFather"];
-	var rFather = params['rFather'];
 	var obj = document.getElementById(father);
 	if(!obj) {
 		return false;
@@ -3616,7 +3609,7 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	obj.oncontextmenu = function(e) {
 		var e = new xEvent(e);
 		if(e.target.id == father || ( (e.target.parentNode.id == father) && (sFather == 1) ) ) {
-			showContextMenu(e,name,rFather,myFather);
+			showContextMenu(e,name);
 			return false;
 		}
 	}
@@ -3624,7 +3617,7 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		if (eyeKeyDown == 17) {
 			var e = new xEvent(e);
 			if (e.target.id == father || ((e.target.parentNode.id == father) && (sFather == 1))) {
-				showContextMenu(e,name,rFather,myFather);
+				showContextMenu(e,name);
 				eyeKeyDown = 0;
 				return false;
 			}
@@ -3636,24 +3629,41 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	addClickHandler(openedDiv,codeClick);
 }
 lastMenu = "";
-function showContextMenu(e,menuName,rFather,myFather) {
-	if(lastMenu != "") {
+function showContextMenu(e,menuName) {
+	if (lastMenu != '') {
 		hideContextMenu(lastMenu);
 	}
 	lastMenu = menuName;
-	var top = e.pageY;
 	var left = e.pageX;
-	if (IEversion && IEversion < 7) {
-		var father = xGetElementById(rFather);
-		top = e.offsetY;
-		left = e.offsetX;
-		top += xTop(father);
-		left += xLeft(father);
-	}
-	myMenu = document.getElementById(menuName);
-	myMenu.style.top = top+'px';
-	myMenu.style.left = left+'px';
+	var top = e.pageY;
+	var myMenu = document.getElementById(menuName);
 	myMenu.style.display = 'block';
+	var widthMenu = xWidth(myMenu);
+	var widthApps = xWidth('eyeApps');
+	if (left > widthApps - widthMenu - 5) {
+		left = widthApps - widthMenu - 5;
+		if (left < 0) {
+			left = 0;
+		}
+	} else if (left < 5) {
+		left = 5;
+	}
+	var heightMenu = xHeight(myMenu);
+	var heightApps = xHeight('eyeApps');
+	if (top > heightApps - heightMenu - 5) {
+		top = heightApps - heightMenu - 5;
+		if (top < 0) {
+			top = 0;
+		}
+	} else if (top < 5) {
+		top = 5;
+	}
+	if (IEversion && IEversion < 7) {
+		left -= xPageX(myMenu.parentNode);
+		top -= xPageY(myMenu.parentNode);
+	}
+	myMenu.style.left = left + 'px';
+	myMenu.style.top = top + 'px';
 }
 
 function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
@@ -3668,7 +3678,9 @@ function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	myEntry.innerHTML = text;
 	myEntry.onclick = function() { sendMsg(checknum,signal,params);};
 	obj.appendChild(myEntry);
-	fixPNG(imgId);
+	if(IEversion && IEversion < 7) {
+	    fixPNG(imgId);
+	}
 }
 
 function hideContextMenu(menuName) {
