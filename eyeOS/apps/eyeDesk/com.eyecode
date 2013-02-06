@@ -22,93 +22,34 @@
 */
 
 function eyeDesk_com_onEvent($params = '') {
+	global $myPid;
 	eyeWidgets('updateContent');
 	foreach ($params as $value) {
 		$value = eyeFiles('cleanPath',array($value));
 		if ($value[1] == 'home' && $value[2] == 'Desktop/') {
-			include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDesk/events' . EYE_CODE_EXTENSION);
-			return eyeDesk_on_OpenPath();
+			$desktop = 1;
+		} elseif ($value[1] == 'trash') {
+			$trash = 1;
+		}
+	}
+	if ($desktop) {
+		include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDesk/events' . EYE_CODE_EXTENSION);
+		eyeDesk_on_OpenPath();
+	}
+	if ($trash) {
+		foreach ($_SESSION['eyeDesk'][$myPid]['trashes'] as $trash) {
+			if (!count(vfs('getDirContent',array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/')))) {
+				eyex('rawjs',array('js' => 'xGetElementById("img_' . $myPid . '_eyeDesk_View_Icons_Icon_' . $trash . '").src = "index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/trash.png";'));
+			} else {
+				eyex('rawjs',array('js' => 'xGetElementById("img_' . $myPid . '_eyeDesk_View_Icons_Icon_' . $trash . '").src = "index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/trash_full.png";'));
+			}
 		}
 	}
 }
 
 function eyeDesk_com_onResized($params = '') {
-	global $myPid;
 	eyeWidgets('updateContent');
-	$GLOBALS['eyeDesk_Container']->setHeight($_SESSION['SCREEN']['eyeApps']['height']);
-	$GLOBALS['eyeDesk_Container']->setWidth($_SESSION['SCREEN']['eyeApps']['width']);
-	$conf = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
-	if (!$conf['eyeDesk'][0]['loadIconPositions'][0]) {
-		eyex('rawjs',array('js' => 'i = 0;
-		x = 30;
-		y = 60;
-		e = xGetElementById("' . $myPid . '_eyeDesk_View_Icons_Icon_0_Container");
-		while (e) {
-			xSlideTo("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container",x,y,500);
-			y += 88;
-			if (xHeight("' . $myPid . '_eyeDesk_Container_Container") - y - 88 < 0) {
-				x += 88;
-				y = 60;
-			}
-			i++;
-			e = xGetElementById("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container");
-		}'));
-	} elseif ($conf['eyeDesk'][0]['loadIconPositions'][0] == 2) {
-		eyex('rawjs',array('js' => 'i = 0;
-		e = xGetElementById("' . $myPid . '_eyeDesk_View_Icons_Icon_0_Container");
-		while (e) {
-			x = false;
-			y = false;
-			if (xWidth("' . $myPid . '_eyeDesk_Container_Container") - xLeft("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container") - 88 < 0) {
-				x = xWidth("' . $myPid . '_eyeDesk_Container_Container") - 88;
-			}
-			if (xHeight("' . $myPid . '_eyeDesk_Container_Container") - xTop("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container") - 88 < 0) {
-				y = xHeight("' . $myPid . '_eyeDesk_Container_Container") - 88;
-			}
-			if (x || y) {
-				if (!x) {
-					x = xLeft("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container");
-				}
-				x = Math.round((x - 30) / 88) * 88 + 30;
-				if (xWidth("' . $myPid . '_eyeDesk_Container_Container") - x - 88 < 0) {
-					x = x - 88;
-				}
-				if (!y) {
-					y = xTop("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container");
-				}
-				y = Math.round((y - 30) / 88) * 88 + 60;
-				if (xHeight("' . $myPid . '_eyeDesk_Container_Container") - y - 88 < 0) {
-					y = y - 88;
-				}
-				xSlideTo("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container",x,y,500);
-			}
-			i++;
-			e = xGetElementById("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container");
-		}'));
-	} else {
-		eyex('rawjs',array('js' => 'i = 0;
-		e = xGetElementById("' . $myPid . '_eyeDesk_View_Icons_Icon_0_Container");
-		while (e) {
-			x = false;
-			y = false;
-			if (xWidth("' . $myPid . '_eyeDesk_Container_Container") - xLeft("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container") - 88 < 0) {
-				x = xWidth("' . $myPid . '_eyeDesk_Container_Container") - 88;
-			}
-			if (xHeight("' . $myPid . '_eyeDesk_Container_Container") - xTop("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container") - 88 < 0) {
-				y = xHeight("' . $myPid . '_eyeDesk_Container_Container") - 88;
-			}
-			if (x || y) {
-				if (!x) {
-					x = xLeft("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container");
-				}
-				if (!y) {
-					y = xTop("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container");
-				}
-				xSlideTo("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container",x,y,500);
-			}
-			i++;
-			e = xGetElementById("' . $myPid . '_eyeDesk_View_Icons_Icon_" + i + "_Container");
-		}'));
-	}
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDesk/events' . EYE_CODE_EXTENSION);
+	eyeDesk_on_OpenPath();
 }
 ?>

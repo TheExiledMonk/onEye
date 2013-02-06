@@ -35,20 +35,67 @@ function lib_eyeMessages_sendMessage($params) {
 		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
 		return false;
 	}
-	$to = $params[0];
+	$to_users = $params[0];
 	$subject = $params[1];
 	$content = $params[2];
 	$attach = $params[3];
+	$to_groups = $params[4];
 
-	if(empty($to) || empty($subject) || empty($content)) {
+	if(empty($to_users) && empty($to_groups)) {
 		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
 		return false;
 	}
-
-	if(!reqLib('eyeSwap', 'send', array($to, $subject, $content, 'eyeMessages', $attach))){
-		return false;	
+	
+	if(empty($subject) || empty($content)) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
 	}
-
+	
+	if(!empty($to_users)) {
+		if(!utf8_strpos($to_users, ',')) {
+			if(!reqLib('eyeSwap', 'send', array($to_users, $subject, $content, 'eyeMessages', $attach))){
+				return false;	
+			}
+			
+			$to = $to_users;
+		} else {
+			$addressees = explode(",", $to_users);
+			foreach($addressees as $ad) {
+				$ad = utf8_trim($ad);
+				if(reqLib('eyeSwap', 'send', array($ad, $subject, $content, 'eyeMessages', $attach))) {
+					if(empty($to)) {
+						$to = $ad;
+					} else {
+						$to.= ', '.$ad;
+					}
+				}
+			}
+		}
+	}
+	
+	if(SEND_TO_GROUPS == 1 && !empty($to_groups)) {
+		$groups = explode(",", $to_groups);
+		foreach($groups as $group) {
+			$group = utf8_trim($group);
+			
+			if(!utf8_strpos($group, BANNED_SEND_GROUPS) && um('groupExists', array($group))) {
+				$usersInGroup = um('getAllUsersByGroup', array('group' => $group));
+				
+				if(is_array($usersInGroup)) {
+					foreach($usersInGroup as $user) {
+						reqLib('eyeSwap', 'send', array($user, $subject, $content, 'eyeMessages', $attach));
+					}
+					
+					if(empty($to)) {
+						$to = $group;
+					} else {
+						$to.= ', '.$group;
+					}
+				}
+			}
+		}
+	}
+	
 	//Save a copy of the message into the sent directory. The attach is NOT saved here
 	$xml = array(
 		'swapMessage' => array(
@@ -162,12 +209,7 @@ function lib_eyeMessages_deleteMessage($params) {
 	} else {		
 		$dir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/'.$folder.'/'.$hash;
 		$trashDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeMessages/trash/';
-
-// 		if($folder == "sent") {
-// 			vfs('real_delete', array($dir.'.msgSwap'));
-// 		} else {
-			_move_message($dir, $trashDir);
-// 		}
+		_move_message($dir, $trashDir);
 	}
 	return true;
 }

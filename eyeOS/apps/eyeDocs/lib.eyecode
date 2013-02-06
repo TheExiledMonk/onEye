@@ -49,7 +49,7 @@ function eyeDocs_saveFile($content) {
 		if(!vfs('fileExists',array($file))) {
 			vfs('create',array($file,'eyeDocs'));
 		}
-		
+
 		eyeConverter('convert',array($tempFile,vfs('getRealName',array($file)),$format,1));
 	} else {
 		$pos = strpos($content,'--&gt;</p>');
@@ -92,20 +92,20 @@ function eyeDocs_openFile($file) {
 	//split the path into different parts
 	$info = utf8_pathinfo($file);
 	//get the extension, see http://www.php.net/pathinfo for more information
-	$extension = utf8_strtolower($info['extension']);
+	$extension = utf8_basename(utf8_strtolower($info['extension']));
 	
 	if($extension == 'doc' || $extension == 'odt') {
 		$tCheckNum = proc('findChecknumByName',array('eyeX'));
 		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
 		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.html';
 		$real = vfs('getRealName',array($file));
-		
+
 		if(!vfs('checkPermissions',array($file))) {
 			eyeX('messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
 			return false;
 		}
 		
-		vfs('real_copy',array($real,$nfile));
+		copy($real,$nfile);
 		$to = 'HTML (StarWriter)';
 		eyeConverter('convert',array($nfile,$myHTML,$to,1));
 		$fp = vfs('real_open',array($myHTML,'r'));

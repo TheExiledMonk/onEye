@@ -72,8 +72,12 @@ serviceLoading();
 $index = indexRequested();
 if($index !== false){
 	loadIndex($index);
-}elseif(clientIsMobile()){
-	loadIndex('mobile');
+}elseif(clientMobile()){
+	if (mobileWithWebkit()) {
+		loadIndex('iphone');
+	} else {
+		loadIndex('mobile');
+	}
 }else{
 	loadIndex('browser');
 }
@@ -82,8 +86,10 @@ if($index !== false){
 function loadIndex($index){
 	//If some index has been loaded, return false because indexes can't be mixed
 	if(defined('INDEX_TYPE')){
+		define('INDEX_BASE','./../');
 		return false;
 	}
+	define('INDEX_BASE','./');
 	//Include the file with the __FILE__ secure
 	$myPath = dirname(realpath(__FILE__)).'/';
 	$rPath = realpath($myPath.'/'.$index.'/index.php');
@@ -103,7 +109,7 @@ function indexRequested(){
 /*
 *Check if the client is a cell phone without special support (like iphone).
 */
-function clientIsMobile(){
+function clientMobile(){
 	if(CHECK_MOBILE == 1) {
 		$mobileClients = array(
 			"midp",
@@ -135,9 +141,18 @@ function clientIsMobile(){
 		$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
 		foreach($mobileClients as $mobileClient) {
 			if (strstr($userAgent, $mobileClient)) {
-				return true;
+				return $mobileClient;
 			}
 		}
+		return false;
+	}
+}
+
+function mobileWithWebkit() {
+	$userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+	if (strstr($userAgent, 'webkit')) {
+		return true;
+	} else {
 		return false;
 	}
 }

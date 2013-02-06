@@ -24,6 +24,10 @@
 *This defines are different between indexes
 */
 define('INDEX_TYPE','browser');
+
+//start output buffering.
+ob_start();
+
 if(!defined('EYE_INDEX')){
 	//Maybe a redirection here?
 	include_once('../index.php');

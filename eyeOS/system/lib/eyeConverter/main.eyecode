@@ -38,27 +38,19 @@ function lib_eyeConverter_convert($params) {
 		$useReal = false;
 	}
 	
+	if(!vfs('real_checkPermissions',array($orig)) && !vfs('checkPermissions',array($orig))) {
+		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+		return false;
+	}
+	
+	if(!vfs('real_checkPermissions',array($dest)) && !vfs('checkPermissions',array($dest))) {
+		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+		return false;
+	}
+	
 	if($useReal) {
-		if(!vfs('real_checkPermissions',array($orig))) {
-			reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
-			return false;
-		}
-		
-		if(!vfs('real_checkPermissions',array($dest))) {
-			reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
-			return false;
-		}
 		$forig = $orig;
 	} else {
-		if(!vfs('checkPermissions',array($orig))) {
-			reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
-			return false;
-		}
-		
-		if(!vfs('checkPermissions',array($dest))) {
-			reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
-			return false;
-		}
 		$forig = vfs('getRealName',array($orig));
 	}	
 	
@@ -93,6 +85,22 @@ function lib_eyeConverter_convert($params) {
 		$pipe = array();
 		$desc = array();
 		proc_open($cmd,$desc,$pipe,null,$env);
+		return true;
+	} else if(FORMAT_PARSER == 'unoconv') {
+		if($format == 'writerglobal8_writer') {
+			$format = 'odt';
+		} else if($format == 'MS Word 97') {
+			$format = 'doc';
+		} else if($format == 'HTML (StarWriter)') {
+			$format = 'html';
+		} else if($format == 'calc8') {
+			$format = 'ods';
+		} else if($format == 'MS Excel 97') {
+			$format = 'xls';
+		}
+		
+		$cmd = 'unoconv --format='.$format.' --output=file://'.$dest.' '.$forig;
+		shell_exec($cmd);
 		return true;
 	}
 	return false;

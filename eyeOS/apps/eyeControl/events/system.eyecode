@@ -111,18 +111,15 @@ function eyeControl_on_system_uninstall($params = '') {
 	$userInfo = um('retrieveUser',array($currentUser));
 	if ($currentUser == REAL_ROOTUSER && md5($password . md5($password)) == $userInfo['eyeUser'][0]['password'][0]) {
 		eyex('messageBox',array(
+			'buttons' => array(array('system_uninstall_yes','Yes'),array('system_uninstall_no','No')),
 			'content' => 'Do you really want to delete the eyeOS system? This removes all data from eyeOS\' directory!',
-			'type' => 3,
-			'title' => 'Uninstall eyeOS',
-			'win_name' => 'eyeControl_system_uninstall_window',
-			'win_style' => TITLE + CLOSE,
-			'win_removepid' => 0,
-			'btn1_capt' => 'Yes',
-			'btn1_name' => 'system_uninstall_yes',
-			'btn2_capt' => 'No',
-			'btn2_name' => 'system_uninstall_no',
 			'father' => 'eyeControl_container_big',
-			'img' => '?'
+			'img' => '?',
+			'title' => 'Uninstall eyeOS',
+			'type' => 3,
+			'win_name' => 'eyeControl_system_uninstall_window',
+			'win_removepid' => 0,
+			'win_style' => TITLE + CLOSE
 		));
 	} else {
 		eyex('messageBox',array('content' => 'Please type the correct root password to uninstall eyeOS!'));
@@ -137,6 +134,7 @@ function eyeControl_on_system_uninstall_yes($params = '') {
 		eyex('rawjs',array('js' => 'window.setTimeout("home()",2000);'));
 		vfs('real_rmdir',array(EYE_ROOT . '/'));
 		vfs('real_delete',array(EYE_ROOT . '/../browser/'));
+		vfs('real_delete',array(EYE_ROOT . '/../iphone/'));
 		vfs('real_delete',array(EYE_ROOT . '/../mobile/'));
 		vfs('real_delete',array(EYE_ROOT . '/../index.php'));
 		vfs('real_delete',array(EYE_ROOT . '/../license.txt'));

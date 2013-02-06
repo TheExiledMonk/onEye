@@ -1,5 +1,5 @@
 /**
- * $Id: editor_plugin_src.js 999 2009-02-10 17:42:58Z spocke $
+ * $Id: editor_plugin_src.js 1150 2009-06-01 11:50:46Z spocke $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
@@ -50,7 +50,7 @@
 
 			// Only store selection if the type is a normal window
 			if (!f.type)
-				t.bookmark = ed.selection.getBookmark('simple');
+				t.bookmark = ed.selection.getBookmark(1);
 
 			id = DOM.uniqueId();
 			vp = DOM.getViewPort();
@@ -254,7 +254,7 @@
 			});
 
 			// Setup blocker
-			/*if (t.count == 0 && t.editor.getParam('dialog_type', 'modal') == 'modal') {
+			if (t.count == 0 && t.editor.getParam('dialog_type', 'modal') == 'modal') {
 				DOM.add(DOM.doc.body, 'div', {
 					id : 'mceModalBlocker',
 					'class' : (t.editor.settings.inlinepopups_skin || 'clearlooks2') + '_modalBlocker',
@@ -263,7 +263,7 @@
 
 				DOM.show('mceModalBlocker'); // Reduces flicker in IE
 			} else
-				DOM.setStyle('mceModalBlocker', 'z-index', t.zIndex - 1);*/
+				DOM.setStyle('mceModalBlocker', 'z-index', t.zIndex - 1);
 
 			if (tinymce.isIE6 || /Firefox\/2\./.test(navigator.userAgent) || (tinymce.isIE && !DOM.boxModel))
 				DOM.setStyles('mceModalBlocker', {position : 'absolute', left : vp.x, top : vp.y, width : vp.w - 2, height : vp.h - 2});

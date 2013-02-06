@@ -26,17 +26,9 @@ function restoreTrash_run($params = '') {
 	$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/' . $file));
 	if ($params[0]) {
 		eyex('messageBox',array(
-			'btn2_capt' => 'Cancel',
-			'btn2_name' => 'Close',
-			'btn1_capt' => 'Accept',
-			'btn1_name' => 'Do',
+			'buttons' => array(array('Do','Accept'),array('Close','Cancel')),
 			'content' => 'Do you really want to restore "%s"?',
-			'hidden_name' => 'restoreTrash_Hidden_Path',
-			'hidden_text' => $file,
-			'hidden2_name' => 'restoreTrash_Hidden_Callback',
-			'hidden2_text' => $params[1],
-			'hidden3_name' => 'restoreTrash_Hidden_To',
-			'hidden3_text' => $params[2],
+			'hiddens' => array(array('restoreTrash_Hidden_Path',$file),array('restoreTrash_Hidden_Callback',$params[1]),array('restoreTrash_Hidden_To',$params[2])),
 			'img' => '?',
 			'savePosition' => 1,
 			'title' => i18n('translate',array('Restore %s',array($xml['eyeTrash'][0]['lastname'][0]))),

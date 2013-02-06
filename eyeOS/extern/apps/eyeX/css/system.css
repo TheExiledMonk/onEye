@@ -1,15 +1,58 @@
+ul.mktree {}
+
+ul.mktree li {
+	cursor: pointer;
+	list-style: none;
+}
+
+ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li ul li ul li{
+	font-size: 11px;
+}
+
+ul.mktree, ul.mktree ul, ul.mktree li {
+	margin-left: 6px;
+	margin-top: 5px;
+	padding: 0;
+}
+
+ul.mktree li .bullet {
+	padding-left: 15px;
+}
+
+ul.mktree li.liOpen .bullet, ul.mktree li.liClosed .bullet, ul.mktree li.liBullet .bullet {
+	cursor: pointer;
+	display: inline-block;
+	height: 16px;
+}
+
+ul.mktree li.liOpen .bullet {
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/folder_open.png) center left no-repeat;
+}
+
+ul.mktree li.liClosed .bullet {
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/folder.png) center left no-repeat;
+}
+
+ul.mktree li.liBullet .bullet {
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/bullet.gif) center left no-repeat;
+	cursor: default;
+}
+
+ul.mktree li.liOpen ul {
+	display: block;
+}
+
+ul.mktree li.liClosed ul {
+	display: none;
+}
+
 a:hover, a:link, a:visited {
 	border: 0;
 	text-decoration: none;
 }
 
-.activeWindow, .inactiveWindow{
-	-moz-border-radius-topleft: 6px;
-	-moz-border-radius-topright: 6px;
-	-webkit-border-top-left-radius: 6px;
-	-webkit-border-top-right-radius: 6px;
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png) repeat-x;
-	border: 1px solid #214e79;
+.activeWindow, .inactiveWindow {
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/bg_top.png) repeat-x;
 	cursor: move;
 	height: 21px;
 	left: 0px;
@@ -41,6 +84,86 @@ body, html {
 	overflow: hidden;
 }
 
+.calendar_calendarBody {
+	height: 70%;
+	left: 1px;
+	position: absolute;
+	top: 20%;
+	width: 100%;
+}
+
+.calendar_dateMiddle {
+	height: 100%;
+	left: 24%;
+	position: absolute;
+	width: 52%;
+}
+
+.calendar_dayName {
+	font-size: 1em;
+	line-height: 136%;
+	position: absolute;
+	width: 9%;
+}
+
+.calendar_rowLeft {
+	cursor: pointer;
+	left: 0;
+	height: 100%;
+	position: absolute;
+	width: 24%;
+}
+
+.calendar_rowRight {
+	cursor: pointer;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	width: 24%;
+}
+
+.calendar_rowsAndDate {
+	font-size: 11px;
+	font-weight: bold;
+	height: 12%;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	width: 100%;
+}
+
+.calendar_weekDaysNames {
+	height: 12%;
+	left: 1px;
+	position: absolute;
+	top: 12%;
+	width: 100%;
+}
+
+.calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday {
+	font-family: Verdana,Arial,sans-serif,FreeSans;
+	font-size: 10px;
+	height: 90%;
+	position: absolute;
+	text-align: center;
+	width: 9%;
+}
+
+.calendar_weekDayClicked, .calendar_weekDayToday {
+	border: 1px solid;
+}
+
+.calendar_weekMonth, .calendar_weekMonthClicked, .calendar_weekMonthToday {
+	height: 16%;
+	left: 0;
+	position: absolute;
+	width: 99%;
+}
+
+.calendar_weekMonthClicked, .calendar_weekMonthToday {
+	border: 1px solid;
+}
+
 .cPointer {
 	cursor: pointer;
 }
@@ -60,8 +183,43 @@ body, html {
 	z-index: 10;
 }
 
-.eyeCheckboxContainer {
+.eyeCheckboxContainer, .eyeLabel, .eyeRadio {
 	font-size: 11px;
+}
+
+.eyeChess_b {
+	background-color: #888888
+}
+
+.eyeChess_t {
+	background-color: #dddddd;
+}
+
+.eyeChess_w {
+	background-color: #cccccc
+}
+
+.eyeChess_Table {
+	left: 469px;
+	position: absolute;
+	top: 5px;
+}
+
+.eyeChess_Text {
+	left: 10px;
+	position: absolute;
+	top: 480px;
+}
+
+.eyeChess_textarea {
+	border: 1px inset #808080;
+	height:450px;
+}
+
+.eyeChess_TextUndo {
+	left: 180px;
+	position: absolute;
+	top: 460px;
 }
 
 .eyeDockText_center {
@@ -208,10 +366,6 @@ body, html {
 	visibility: hidden;
 }
 
-.eyeLabel {
-	font-size: 11px;
-}
-
 .eyeMenuButton {
 	z-index: 10;
 }
@@ -225,17 +379,7 @@ body, html {
 	z-index: 100;
 }
 
-.eyeRadio {
-	font-size: 11px;
-}
-
-#eyeScreen {
-	height: 100%;
-	position: absolute;
-	width: 100%;
-}
-
-#eyeWallpaper {
+#eyeScreen, #eyeWallpaper {
 	height: 100%;
 	position: absolute;
 	width: 100%;
@@ -266,8 +410,7 @@ body, html {
 }
 
 .inactiveWindow{
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png)repeat-x;
-	border: 1px solid #acacac;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/windows/bg_top_x.png)repeat-x;
 }
 
 .inactiveWindow_border_left {}

@@ -1,51 +1,3 @@
-lu.mktree {}
-
-ul.mktree li {
-	cursor: pointer;
-	list-style: none;
-}
-
-ul.mktree, ul.mktree ul, ul.mktree li {
-	margin-left: 6px;
-	margin-top: 5px;
-	padding: 0;
-}
-
-ul.mktree li .bullet {
-	padding-left: 15px;
-}
-
-ul.mktree li.liOpen .bullet, ul.mktree li.liClosed .bullet, ul.mktree li.liBullet .bullet {
-	cursor: pointer;
-	display: inline-block;
-	height: 16px;
-}
-
-ul.mktree li.liOpen .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=oxygen&extern=images/widgets/folder_open.png) center left no-repeat;
-}
-
-ul.mktree li.liClosed .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=oxygen&extern=images/widgets/folder.png) center left no-repeat;
-}
-
-ul.mktree li.liBullet .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=oxygen&extern=images/widgets/bullet.gif) center left no-repeat;
-	cursor: default;
-}
-
-ul.mktree li.liOpen ul {
-	display: block;
-}
-
-ul.mktree li.liClosed ul {
-	display: none;
-}
-
-ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li ul li ul li{
-	font-size: 11px;
-}
-
 .activeWindow{
 	-moz-border-radius-topleft: 7px;
 	-moz-border-radius-topright: 7px;
@@ -233,87 +185,6 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	width: 3px;
 }
 
-
-.calendar_calendarBody {
-	height: 70%;
-	left: 1px;
-	position: absolute;
-	top: 20%;
-	width: 100%;
-}
-
-.calendar_dateMiddle {
-	height: 100%;
-	left: 24%;
-	position: absolute;
-	width: 52%;
-}
-
-.calendar_dayName {
-	font-size: 1em;
-	line-height: 136%;
-	position: absolute;
-	width: 9%;
-}
-
-.calendar_rowLeft {
-	cursor: pointer;
-	left: 0;
-	height: 100%;
-	position: absolute;
-	width: 24%;
-}
-
-.calendar_rowRight {
-	cursor: pointer;
-	height: 100%;
-	position: absolute;
-	right: 0;
-	width: 24%;
-}
-
-.calendar_rowsAndDate {
-	font-size: 11px;
-	font-weight: bold;
-	height: 12%;
-	position: absolute;
-	text-align: center;
-	top: 0;
-	width: 100%;
-}
-
-.calendar_weekDaysNames {
-	height: 12%;
-	left: 1px;
-	position: absolute;
-	top: 12%;
-	width: 100%;
-}
-
-.calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday {
-	font-family: Verdana,Arial,sans-serif,FreeSans;
-	font-size: 10px;
-	height: 90%;
-	position: absolute;
-	text-align: center;
-	width: 9%;
-}
-
-.calendar_weekDayClicked, .calendar_weekDayToday {
-	border: 1px solid;
-}
-
-.calendar_weekMonth, .calendar_weekMonthClicked, .calendar_weekMonthToday {
-	height: 16%;
-	left: 0;
-	position: absolute;
-	width: 99%;
-}
-
-.calendar_weekMonthClicked, .calendar_weekMonthToday {
-	border: 1px solid;
-}
-
 .eyeBarItemsText {
 	color: #ffffff;
 	left: 35px;
@@ -374,7 +245,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	-moz-border-radius: 7px;
 	-webkit-border-radius: 7px;
 	background-color: #ffffff;
-	background: url(index.php?version=2EXTERN_CACHE_VERSION&theme=oxygen&extern=images/widgets/buttonbg.png)repeat-x top;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=oxygen&extern=images/widgets/buttonbg.png)repeat-x top;
 	border-bottom: 1px solid #7f7f7f;
 	border-left: 1px solid #aeaeae;
 	border-right: 1px solid #7f7f7f;
@@ -391,39 +262,6 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	border-top: 1px solid #a1c6f3;
 }
 
-.eyeChess_b {
-	background-color: #888888
-}
-
-.eyeChess_t {
-	background-color: #dddddd;
-}
-
-.eyeChess_w {
-	background-color: #cccccc
-}
-
-.eyeChess_Table {
-	left: 469px;
-	position: absolute;
-	top: 5px;
-}
-
-.eyeChess_Text {
-	left: 10px;
-	position: absolute;
-	top: 480px;
-}
-
-.eyeChess_textarea {
-	border: 1px solid #808080;
-}
-
-.eyeChess_TextUndo {
-	left: 180px;
-	position: absolute;
-	top: 460px;
-}
 .eyeClock {
 	background: url(index.php?version=32EXTERN_CACHE_VERSION&theme=oxygen&extern=images/minimized/minbar_bg.png) repeat-x;
 	bottom: 0;

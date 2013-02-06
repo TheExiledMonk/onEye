@@ -178,7 +178,7 @@ class File {
 			}
 			return true;
 		} else if (is_uploaded_file($_FILES[$this->filename]['tmp_name'])) {
-				return true;
+			return true;
 		}
 		return false;
 	}

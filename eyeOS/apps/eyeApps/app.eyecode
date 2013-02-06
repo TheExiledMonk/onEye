@@ -75,7 +75,7 @@ function eyeApps_run($params = '') {
 	$y = 20;
 	foreach ($folders as $folder) {
 		$xml = getAppInfo($folder);
-		if ($xml['package'][0]['type'][0] == 'Application') {
+		if ($xml['package'][0]['type'][0] == 'Application' && $xml['package'][0]['name'][0] != 'eyeApps') {
 			$myIcon = new Icon(array(
 				'content' => array($folder),
 				'draggable' => 0,

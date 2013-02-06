@@ -58,31 +58,58 @@ function newMessage_run($params=null) {
 		eyeWidgets('serialize', array($myHidden));
 	}
 	
-	$lblTo = new Label(array(
-		'name' => 'lblTo',
+	$lblToUsers = new Label(array(
+		'name' => 'lblToUsers',
 		'father' => 'newMessageWND_Content',
 		'x' => 10,
 		'y' => 21,
-		'text' => 'To',
+		'text' => 'To users',
 		'width' => 50
 	));
-	$lblTo->show();
-	$tboxTo = new Textbox(array(
-		'name' => 'tboxTo', 
+	$lblToUsers->show();
+	$tboxToUsers = new Textbox(array(
+		'name' => 'tboxToUsers', 
 		'father' => 'newMessageWND_Content',
 		'x' => 80,
 		'y' => 19,
 		'width' => 300,
 		'text' => $to
 	));
-	$tboxTo->show();
-	$tboxTo->focus();
+	$tboxToUsers->show();
+	$tboxToUsers->focus();
+	
+	if(SEND_TO_GROUPS == 1) {
+		$lblToGroups = new Label(array(
+			'name' => 'lblToGroups',
+			'father' => 'newMessageWND_Content',
+			'x' => 10,
+			'y' => 41,
+			'text' => 'To groups',
+			'width' => 50
+		));
+		$lblToGroups->show();
+		$tboxToGroups = new Textbox(array(
+			'name' => 'tboxToGroups', 
+			'father' => 'newMessageWND_Content',
+			'x' => 80,
+			'y' => 39,
+			'width' => 300,
+			'text' => ''
+		));
+		$tboxToGroups->show();
+		
+		$myWindow->setHeight($myWindow->height+20);
+		
+		$myY = 61;
+	} else {
+		$myY = 41;
+	}
 	
 	$lblSubject = new Label(array(
 		'name' => 'lblSubject',
 		'father' => 'newMessageWND_Content',
 		'x' => 10,
-		'y' => 41,
+		'y' => $myY,
 		'text' => 'Subject',
 		'width' => 50
 	));
@@ -91,17 +118,19 @@ function newMessage_run($params=null) {
 		'name' => 'tboxSubject', 
 		'father' => 'newMessageWND_Content',
 		'x' => 80,
-		'y' => 39,
+		'y' => $myY-2,
 		'width' => 300,
 		'text' => $subject
 	));
 	$tboxSubject->show();
 	
+	$myY+= 20;
+	
 	$lblAttach = new Label(array(
 		'name' => 'lblAttach',
 		'father' => 'newMessageWND_Content',
 		'x' => 10,
-		'y' => 63,
+		'y' => $myY,
 		'text' => 'Attach',
 		'width' => 50
 	));
@@ -110,7 +139,7 @@ function newMessage_run($params=null) {
 		'name' => 'tboxAttach', 
 		'father' => 'newMessageWND_Content',
 		'x' => 80,
-		'y' => 64,
+		'y' => $myY-1,
 		'width' => 200,
 		'enabled' => 0
 	));
@@ -119,19 +148,21 @@ function newMessage_run($params=null) {
 		'name' => 'addAttach',
 		'father' => 'newMessageWND_Content',
 		'x' => $tboxAttach->width+90,
-		'y' => 61,
+		'y' => $myY-2,
 		'caption' => 'Add file',
 		'width' => 94
 	));
 	$bttnAddAttach->show();
 	
+	$myY+= 20;
+	
 	$contentTarea = new Textarea(array(
 		'name' => 'contentTarea',
 		'father' => 'newMessageWND_Content',
 		'width' => 302,
-		'height' => 240,
+		'height' => 250,
 		'x' => 80,
-		'y' => 88
+		'y' => $myY
 	));
 	$contentTarea->show();
 	
@@ -145,7 +176,8 @@ function newMessage_run($params=null) {
 		'vert' => 1,
 		'y' => 18
 	));
-	$bttnSend->addFriend($tboxTo);	
+	$bttnSend->addFriend($tboxToUsers);
+	$bttnSend->addFriend($tboxToGroups);
 	$bttnSend->addFriend($tboxSubject);
 	$bttnSend->addFriend($tboxAttach);
 	$bttnSend->addFriend($contentTarea);

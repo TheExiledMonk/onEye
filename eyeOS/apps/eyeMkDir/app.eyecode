@@ -24,15 +24,9 @@
 function eyeMkDir_run($params = '') {
 	if ($params[0]) {
 		eyex('messageBox',array(
-			'btn2_capt' => 'Cancel',
-			'btn2_name' => 'Close',
-			'btn1_capt' => 'Accept',
-			'btn1_name' => 'Do',
+			'buttons' => array(array('Do','Accept'),array('Close','Cancel')),
 			'content' => 'Type the name of the new folder',
-			'hidden_name' => 'eyeMkDir_Hidden_Path',
-			'hidden_text' => $params[0],
-			'hidden2_name' => 'eyeMkDir_Hidden_Callback',
-			'hidden2_text' => $params[1],
+			'hiddens' => array(array('eyeMkDir_Hidden_Path',$params[0]),array('eyeMkDir_Hidden_Callback',$params[1])),
 			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/folder.png',
 			'savePosition' => 1,
 			'textbox_event' => 'Do',

@@ -29,7 +29,7 @@ function eyeLogin_run($params = '') {
 		proc('getTask',array($pid));
 	} else {
 		//we need um module preload
-		um('getCurrentUserDir');//Kernel lacks an interface to initialize services, so I just call the first inoquos functionI thought
+		um('init');
 
 		// Preload $langs var
 		$langs = array(array('English','en'));

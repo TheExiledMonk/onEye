@@ -36,7 +36,7 @@ function eyeImages_run($params = '') {
 			'PNG files' => '*.png',
 			'TIFF files' => '*.tiff',
 			'All files' => '*.*'
-		))));
+		),'','','Close')));
 	}
 }
 

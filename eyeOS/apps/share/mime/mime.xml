@@ -223,4 +223,8 @@
 		<type>link</type>
 		<extension>swf</extension>
 	</mime>
+	<mime>
+		<type>eyeProject</type>
+		<extension>eyeproject</extension>
+	</mime>
 </mimeTypes>

@@ -20,8 +20,8 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-focusWindow = '';
-txtAreas = new Object();
+var focusWindow = '';
+var txtAreas = new Object();
 
 function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = params["height"];
@@ -152,56 +152,80 @@ function Listbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible,'Listbox');
 	}
 }
-function Listbox_addItem(pid,name,checknum,sig,rowSize,text,id,image) {
+function Listbox_addItem(pid,name,checknum,sig,rowSize,disablemsg,text,id,image) {
     var obj = document.getElementById(pid+'_'+name);
     var orientation = obj.getAttribute('orientation');
     if (orientation == 'vertical') {
+        obj.style.overflowX = "hidden";
+        obj.style.overflowY = "auto";
         var divBox = document.createElement('div');
         divBox.setAttribute('id',pid+'_'+id);
         divBox.style.height = rowSize + 'px';
+        divBox.style.width = 100+'%';
         if (image!=0) {
             var divImage = document.createElement('img');
             divImage.setAttribute('src',image);
+            divImage.setAttribute('id','img_'+id);
             divImage.className = "eyeListbox_img";
+            divImage.style.marginTop = (parseInt(divBox.style.height) * 3 / 10) + "px";
             divBox.appendChild(divImage);
         }
         
-        var divText = document.createElement('div');
-        divText.appendChild(document.createTextNode(text));
-        divText.className = "eyeListbox_txt";
-        divText.setAttribute('id','txt_'+id);
-        divBox.appendChild(divText);
+        if (text) {
+            var divText = document.createElement('div');
+            divText.appendChild(document.createTextNode(text));
+            divText.className = "eyeListbox_txt";
+            divText.setAttribute('id','txt_'+id);
+            divBox.appendChild(divText);
+        }
         obj.appendChild(divBox);
 
         divBox.onmouseover = function() {
-            var lastFocus = obj.getAttribute('lastFocus');
+            var lastFocus = obj.getAttribute('lastfocus');
             if (lastFocus.length == 0 || lastFocus != id) {
                 this.className = "eyeListbox_over";
             }
         }
         divBox.onmouseout = function() {
-            var lastFocus = obj.getAttribute('lastFocus');
+            var lastFocus = obj.getAttribute('lastfocus');
             if (lastFocus.length == 0 || lastFocus != id) {
                 this.className = "eyeListbox_out";
             }
         }
         divBox.onmousedown = function() {
-            var lastFocus = obj.getAttribute('lastFocus');
+            var lastFocus = obj.getAttribute('lastfocus');
             if (lastFocus.length == 0) {
-                obj.setAttribute('lastFocus',id);
+                obj.setAttribute('lastfocus',id);
             } else {
                 var lastObj = document.getElementById(pid+'_'+lastFocus);
-				if(lastObj) {
-                	lastObj.className = "eyeListbox_out";
-				}
-                obj.setAttribute('lastFocus',id);
+                lastObj.className = "eyeListbox_out";
+                obj.setAttribute('lastfocus',id);
             }
             this.className = "eyeListbox_focus";
         }
-        divBox.onmouseup = function() {
-            sendMsg(checknum,sig,eyeParam('id',id));
+        if (disablemsg==0) {
+            divBox.onmouseup = function() {
+                sendMsg(checknum,sig,eyeParam('id',id));
+            }
         }
-    } else {
+    }
+}
+
+function Listbox_selectItem(pid,name,id) {
+    var item = document.getElementById(pid+'_'+id);
+    if (!item) { 
+        return false; 
+    }
+    var obj = document.getElementById(pid+'_'+name);
+    var lastid = obj.getAttribute('lastfocus');
+    if (lastid.length != 0) {
+        var tempobj = document.getElementById(pid+'_'+lastid);
+        tempobj.className = "eyeListbox_out";
+    }
+    obj.setAttribute('lastfocus',id);
+    item.className = "eyeListbox_focus";
+    if (typeof item.onmouseup == 'function') {
+        item.onmouseup();
     }
 }
 function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -288,17 +312,17 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		}
 	}
 
-	myContainer.appendChild(myButton);
-	if(myContent) {
-		myContainer.appendChild(myContent);
-	}
-	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible,'Button');
-	if (myImg != null) {
-		fixPNG(myButton);
-	}
+    myContainer.appendChild(myButton);
+    if(myContent) {
+        myContainer.appendChild(myContent);
+    }
+    createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible,'Button');
+    if (myImg != null) {
+        fixPNG(myButton);
+    }
+	
 }
-function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
-{
+function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myWidth = params['width'];
 	var myPid = params['myPid'];
 	var myHeight = params['height'];
@@ -746,120 +770,120 @@ function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	createWidget(name+'_Container',father,myHidden,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'Hidden');
 }
 function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
-	var text = params["text"];
-	var image = params["image"];
-	var draggable = params["draggable"];
-	var onclick = params["onclick"];
-	var content = params["content"];
-	var myWidth = params["width"];
-	var myHeight = params["height"];
-	var visible = params["visible"];
-	var myOnLoad = params["myonload"];
-	var realname = params["realname"];
-	var overBorder = params["overBorder"];
-	var overBorderBackground = params["overBorderBg"];
-	var overBorderColor = params["overBorderColor"];
-	var textColor = params["textColor"];
-	var useClass = params["useClass"];
-	overClass = params["overClass"];
+    var text = params["text"];
+    var image = params["image"];
+    var draggable = params["draggable"];
+    var onclick = params["onclick"];
+    var content = params["content"];
+    var myWidth = params["width"];
+    var myHeight = params["height"];
+    var visible = params["visible"];
+    var myOnLoad = params["myonload"];
+    var realname = params["realname"];
+    var overBorder = params["overBorder"];
+    var overBorderBackground = params["overBorderBg"];
+    var overBorderColor = params["overBorderColor"];
+    var textColor = params["textColor"];
+    var useClass = params["useClass"];
+    overClass = params["overClass"];
 
-	var myGlobalContainer = document.createElement('div');
-	myGlobalContainer.style.width='65px';
-	myGlobalContainer.setAttribute('id',name+'_globalContainer');
+    var myGlobalContainer = document.createElement('div');
+    myGlobalContainer.style.width='65px';
+    myGlobalContainer.setAttribute('id',name+'_globalContainer');
+    
+    var myImage = document.createElement('img');
+    if(myOnLoad != null) {
+        myImage.onload=function(){eval(myOnLoad);};
+    }
+    myImage.src = image;
+    myImage.setAttribute('id','img_'+name);
+    myImage.className = 'eyeIcon_Image';
 
-	var myImage = document.createElement('img');
-	if(myOnLoad != null) {
-		myImage.onload=function(){eval(myOnLoad);};
-	}
-	myImage.src = image;
-	myImage.setAttribute('id','img_'+name);
-	myImage.className = 'eyeIcon_Image';
+    if(myWidth > 0) {
+        myImage.setAttribute('width',myWidth);
+    }
+    if(myHeight > 0) {
+        myImage.setAttribute('height',myHeight);
+    }
 
-	if(myWidth > 0) {
-		myImage.setAttribute('width',myWidth);
-	}
-	if(myHeight > 0) {
-		myImage.setAttribute('height',myHeight);
-	}
+    var myIconText = document.createElement('div');
+    myIconText.className = 'eyeIcon_Text';
+    myIconText.setAttribute('align','center');
+    myIconText.setAttribute('id',name+'_text');
+    myIconText.style.width = '65px';
 
-	var myIconText = document.createElement('div');
-	myIconText.className = 'eyeIcon_Text';
-	myIconText.setAttribute('align','center');
-	myIconText.setAttribute('id',name+'_text');
-	myIconText.style.width = '65px';
+    text = tinyMCE.entityDecode(text);
+    var theText = document.createTextNode(text);
+    myIconText.appendChild(theText);
 
-	text = tinyMCE.entityDecode(text);
-	var theText = document.createTextNode(text);
-	myIconText.appendChild(theText);
+    myGlobalContainer.appendChild(myImage);
+    myGlobalContainer.appendChild(myIconText);
 
-	myGlobalContainer.appendChild(myImage);
-	myGlobalContainer.appendChild(myIconText);
+    var myContent = document.createElement('input');
+    myContent.setAttribute('type', 'hidden');
+    myContent.setAttribute('id',name+'_Content');
+    myContent.value = content;
 
-	var myContent = document.createElement('input');
-	myContent.setAttribute('type', 'hidden');
-	myContent.setAttribute('id',name+'_Content');
-	myContent.value = content;
+    myGlobalContainer.appendChild(myContent);
+    realname = tinyMCE.entityDecode(realname);
+    if(overBorder != 0) {
+        if(IEversion && IEversion < 7) {
+            myGlobalContainer.style.border = 'none';
+        } else {
+            myGlobalContainer.onmouseover = function() {
+                myGlobalContainer.style.backgroundColor = overBorderBackground;
+                myGlobalContainer.style.border = overBorderColor;
+                myIconText.innerHTML = "";
+                myIconText.appendChild(document.createTextNode(realname));
+            }
 
-	myGlobalContainer.appendChild(myContent);
-	realname = tinyMCE.entityDecode(realname);
-	if(overBorder != 0) {
-		if(IEversion && IEversion < 7) {
-			myGlobalContainer.style.border = 'none';
-		} else {
-			myGlobalContainer.onmouseover = function() {
-				myGlobalContainer.style.backgroundColor = overBorderBackground;
-				myGlobalContainer.style.border = overBorderColor;
-				myIconText.innerHTML = "";
-				myIconText.appendChild(document.createTextNode(realname));
-			}
-
-			myGlobalContainer.onmouseout = function() {
-				myGlobalContainer.style.border = '1px solid transparent';
-				myGlobalContainer.style.backgroundColor = 'transparent';
-				myIconText.innerHTML = "";
-				myIconText.appendChild(document.createTextNode(text));
-			}
-			myGlobalContainer.style.border = '1px solid transparent';
-		}
-	}
-	if(useClass != 0){
-		myGlobalContainer.onmouseover = function() {
-			myIconText.innerHTML = "";
-			myIconText.appendChild(document.createTextNode(realname));
-		}
-		myGlobalContainer.onmouseout = function() {
-			myIconText.innerHTML = "";
-			myIconText.appendChild(document.createTextNode(text));
-		}
-	}
-	createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,'eyeIcon_blank',0,'px',visible,'Icon');
-	xGetElementById(name + '_globalContainer').className = overClass;
-	var globalContainer = xGetElementById(name+'_Container');
-	globalContainer.checknum = checknum;
-	globalContainer.style.color = textColor;
-	if (draggable==1) {
-			makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
-	}
-	if(onclick==1){
-		myGlobalContainer.onclick = function(){
-			var myContent = getArrayArg(content);
-			var result = '';
-			for (var i in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
-			}
-			sendMsg(checknum,'Icon_Clicked',result);
-		}
-	} else if (onclick == 2) {
-		myGlobalContainer.ondblclick = function() {
-			var myContent = getArrayArg(content);
-			var result = '';
-			for (var i in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
-			}
-			sendMsg(checknum,'Icon_Clicked',result);
-		}
-	}
-	fixPNG(myImage);
+            myGlobalContainer.onmouseout = function() {
+                myGlobalContainer.style.border = '1px solid transparent';
+                myGlobalContainer.style.backgroundColor = 'transparent';
+                myIconText.innerHTML = "";
+                myIconText.appendChild(document.createTextNode(text));
+            }
+            myGlobalContainer.style.border = '1px solid transparent';
+        }
+    }
+    if(useClass != 0){
+        myGlobalContainer.onmouseover = function() {
+            myIconText.innerHTML = "";
+            myIconText.appendChild(document.createTextNode(realname));
+        }
+        myGlobalContainer.onmouseout = function() {
+            myIconText.innerHTML = "";
+            myIconText.appendChild(document.createTextNode(text));
+        }
+    }
+    createWidget(name+'_Container',father,myGlobalContainer,horiz,vert,x,y,-1,-1,'eyeIcon_blank',0,'px',visible,'Icon');
+    xGetElementById(name + '_globalContainer').className = overClass;
+    var globalContainer = xGetElementById(name+'_Container');
+    globalContainer.checknum = checknum;
+    globalContainer.style.color = textColor;
+    if (draggable==1) {
+            makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
+    }
+    if(onclick==1){
+        myGlobalContainer.onclick = function(){
+            var myContent = getArrayArg(content);
+            var result = '';
+            for (var i in myContent) {
+                result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
+            }
+            sendMsg(checknum,'Icon_Clicked',result);
+        }
+    } else if (onclick == 2) {
+        myGlobalContainer.ondblclick = function() {
+            var myContent = getArrayArg(content);
+            var result = '';
+            for (var i in myContent) {
+                result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
+            }
+            sendMsg(checknum,'Icon_Clicked',result);
+        }
+    }
+    fixPNG(myImage);
 }
 widgetDrop_behaviours = [];
 dropIndex = 400;
@@ -2256,14 +2280,14 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		});
 		txtAreas[name+'_objTxt'].addButton('open', {
 			title : 'Open File',
-			image : 'index.php/extern/externVersion/1/externPath/libs/eyeWidgets/tiny_mce/themes/advanced/img/open.png',
+			image : 'index.php?version=' + EXTERN_CACHE_VERSION + '&extern=libs/eyeWidgets/tiny_mce/themes/advanced/img/open.png',
 			onclick : function() {
 				sendMsg(checknum,'Open','');
 			}
 		});
 		txtAreas[name+'_objTxt'].addButton('saveAs', {
 			title : 'Save as',
-			image : 'index.php/extern/externVersion/1/externPath/libs/eyeWidgets/tiny_mce/themes/advanced/img/saveAs.png',
+			image : 'index.php?version=' + EXTERN_CACHE_VERSION + '&extern=libs/eyeWidgets/tiny_mce/themes/advanced/img/saveAs.png',
 			onclick : function() {
 				sendMsg(checknum,'saveAs',eyeParam(name.substring(6),Base64.encode(txtAreas[name+'_objTxt'].getContent()))+eyeParam('md5',md5(txtAreas[name+'_objTxt'].getContent())));
 			}
@@ -2292,7 +2316,9 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			CodePress.path = 'index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/codepress/';
 			myTextarea.parentNode.insertBefore(eval("cp_"+name), myTextarea);
 	}
-}function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+}
+
+function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = tinyMCE.entityDecode(params["text"]);
 	var enabled = params["enabled"];
 	var visible = params["visible"];

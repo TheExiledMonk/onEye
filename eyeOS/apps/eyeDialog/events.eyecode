@@ -147,6 +147,19 @@ function eyeDialog_on_filetype_SEL_change($params=null) {
 	eyeDialog_refreshFilesList();
 }
 
+//Notify eyeDialog is going to be closed to the application which launched it
+function eyeDialog_on_closingNotification(){
+	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
+	$trimd=trim($dialogParams[7]);
+	if(!empty($trimd)){
+		$cancelCallback = $dialogParams[7];
+		$callback_checknum = $dialogParams[2];
+		if($cancelCallback && $callback_checknum) {
+			service('eyex','rawjs',array('js'=>'sendMsg('.$callback_checknum.',"'.$cancelCallback.'",eyeParam("CanceledByUser","'.'1'.'"));'));
+		}
+	}
+}
+
 //OK BUTTON (could be "open" or "select" or "save" according to the type of the dialog)
 function eyeDialog_on_ok_BTN($params=null) {
 	//eyeX('messageBox',array('content'=> $GLOBALS['files_TAB']->selected));
@@ -205,6 +218,7 @@ function eyeDialog_on_ok_BTN($params=null) {
 
 //CANCEL BUTTON
 function eyeDialog_on_cancel_BTN($params=null) {
+	eyeDialog_on_closingNotification();
 	eyeDialog_on_Close();
 }
 
@@ -224,7 +238,9 @@ function eyeDialog_on_confirmFileReplace_DLG_no_BTN($params=null) {
 function eyeDialog_on_Message($params="") {
 	reqLib('eyeWidgets','updateContent',$params);
 }
+
 function eyeDialog_on_Close(){
+	eyeDialog_on_closingNotification();
 	proc('end');
 }
 

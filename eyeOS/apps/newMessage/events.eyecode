@@ -47,12 +47,13 @@ function newMessage_on_SelectFileOpen($params=null) {
 }
 
 function newMessage_on_send($params) {
-	$to = $GLOBALS['tboxTo']->text;
+	$to_users = $GLOBALS['tboxToUsers']->text;
+	$to_groups = $GLOBALS['tboxToGroups']->text;
 	$subject = $GLOBALS['tboxSubject']->text;
 	$content = $GLOBALS['contentTarea']->text;
 	$attach = um('getCurrentUserDir').FILES_USER_DIR.'/'.$GLOBALS['tboxAttach']->text;
 
-	if(reqLib('eyeMessages', 'sendMessage', array($to, $subject, $content, $attach))) {
+	if(reqLib('eyeMessages', 'sendMessage', array($to_users, $subject, $content, $attach, $to_groups))) {
 		eyeX('messageBox', array('content' => 'Message sent'));
 		
 		if(is_object($GLOBALS['callback'])) {

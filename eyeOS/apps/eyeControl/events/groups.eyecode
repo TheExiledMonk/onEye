@@ -23,19 +23,16 @@
 
 function eyeControl_on_groups_new($params = '') {
 	eyex('messageBox',array(
+		'buttons' => array(array('groups_create','Accept'),array('groups_create_cancel','Cancel')),
 		'content' => 'Type the name of the group you want to create:',
-		'type' => 3,
-		'title' => 'Create group',
-		'win_name' => 'eyeControl_groups_create_window',
-		'win_style' => TITLE + CLOSE,
-		'win_removepid' => 0,
-		'btn1_capt' => 'Accept',
-		'btn1_name' => 'groups_create',
-		'btn2_capt' => 'Cancel',
-		'btn2_name' => 'groups_create_cancel',
+		'father' => 'eyeControl_container_big',
 		'textbox_event' => 'groups_create',
 		'textbox_name' => 'eyeControl_groups_create_textbox',
-		'father' => 'eyeControl_container_big'
+		'title' => 'Create group',
+		'type' => 3,
+		'win_name' => 'eyeControl_groups_create_window',
+		'win_removepid' => 0,
+		'win_style' => TITLE + CLOSE
 	));
 }
 
@@ -87,22 +84,18 @@ function eyeControl_on_groups_edit($params = '') {
 	$group = $GLOBALS['eyeControl_groups_sortabletable']->selected;
 	if ($group) {
 		eyex('messageBox',array(
+			'buttons' => array(array('groups_rename','Rename'),array('groups_rename_cancel','Cancel')),
 			'content' => 'Type the new group\'s name:',
-			'type' => 3,
-			'title' => 'Rename group',
-			'win_name' => 'eyeControl_groups_rename_window',
-			'win_style' => TITLE + CLOSE,
-			'win_removepid' => 0,
-			'btn1_capt' => 'Rename',
-			'btn1_name' => 'groups_rename',
-			'btn2_capt' => 'Cancel',
-			'btn2_name' => 'groups_rename_cancel',
+			'father' => 'eyeControl_container_big',
+			'hiddens' => array(array('eyeControl_groups_rename_hidden',$group)),
 			'textbox_event' => 'groups_rename',
 			'textbox_name' => 'eyeControl_groups_rename_textbox',
 			'textbox_text' => $group,
-			'hidden_name' => 'eyeControl_groups_rename_hidden',
-			'hidden_text' => $group,
-			'father' => 'eyeControl_container_big'
+			'title' => 'Rename group',
+			'type' => 3,
+			'win_name' => 'eyeControl_groups_rename_window',
+			'win_removepid' => 0,
+			'win_style' => TITLE + CLOSE
 		));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose a group to edit.'));
@@ -193,20 +186,16 @@ function eyeControl_on_groups_delete($params = '') {
 	$group = $GLOBALS['eyeControl_groups_sortabletable']->selected;
 	if ($group && $group != DEFAULT_GROUP) {
 		eyex('messageBox',array(
+			'buttons' => array(array('groups_delete_yes','Yes'),array('groups_delete_no','No')),
 			'content' => 'Do you really want to remove this group from the system?',
-			'type' => 3,
-			'title' => 'Delete group',
-			'win_name' => 'eyeControl_groups_delete_window',
-			'win_style' => TITLE + CLOSE,
-			'win_removepid' => 0,
-			'btn1_capt' => 'Yes',
-			'btn1_name' => 'groups_delete_yes',
-			'btn2_capt' => 'No',
-			'btn2_name' => 'groups_delete_no',
-			'hidden_text' => $group,
-			'hidden_name' => 'groups_delete_hidden',
 			'father' => 'eyeControl_container_big',
-			'img' => '?'
+			'hiddens' => array(array('groups_delete_hidden',$group)),
+			'img' => '?',
+			'title' => 'Delete group',
+			'type' => 3,
+			'win_name' => 'eyeControl_groups_delete_window',
+			'win_removepid' => 0,
+			'win_style' => TITLE + CLOSE
 		));
 	} elseif ($group == DEFAULT_GROUP) {
 		eyex('messageBox',array('content' => 'You cannot delete the default group!'));

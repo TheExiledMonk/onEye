@@ -41,12 +41,12 @@ $myFlash = new Flash(array(
 		$sessionId,
 		'advanced_Do'
 	),
-	'height' => 175,
+	'height' => 200,
 	'name' => 'eyeUpload_advanced_Flash',
 	'src' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeUpload/swf/eyeuploadx.swf&type=swf',
-	'width' => 400,
-	'x' => 35,
-	'y' => 10
+	'width' => 450,
+	'x' => 8,
+	'y' => 8
 ));
 $myFlash->show();
 ?>

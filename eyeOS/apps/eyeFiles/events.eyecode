@@ -167,28 +167,7 @@ function eyeFiles_on_Action($params = '') {
 	if ($params['File'][0]) {
 		if ($params['Action'][0] == 'launch') {
 			$xml = eyeXML('getXMLfile',array($path[0] . '/' . $params['File'][0]));
-			$link = explode(' ', utf8_trim($xml['eyeLink'][0]['content'][0]));
-			if (strrchr($link[0],'.') == '.app') {
-				proc('launch',array(utf8_basename($link[0],'.app'),array_slice($link,1)));
-			} elseif (utf8_substr($xml['eyeLink'][0]['content'][0],0,7) == 'http://' || utf8_substr($xml['eyeLink'][0]['content'][0],0,8) == 'https://') {
-				proc('launch',array('eyeNav',$xml['eyeLink'][0]['content'][0]));
-			} elseif (utf8_substr($xml['eyeLink'][0]['content'][0],0,7) == 'ftp://') {
-				proc('launch',array('eyeFTP',$xml['eyeLink'][0]['content'][0]));
-			} else {
-				$file = utf8_basename($xml['eyeLink'][0]['content'][0]);
-				$path = eyeFiles('cleanPath',array(utf8_substr(utf8_trim($xml['eyeLink'][0]['content'][0],'/\\'),0,- utf8_strlen($file))));
-				$path[0] .= '/' . $file;
-				if (vfs('isdir',array($path[0]))) {
-					proc('launch',array('eyeFiles',array($path[2] . '/' . $file,$path[1])));
-				} else {
-					$xml = getConfig('filetypes',utf8_strtolower(utf8_substr(strrchr($path[0],'.'),1)) . '.xml');
-					if ($xml['fileType'][0]['app'][0]) {
-						proc('launch',array($xml['fileType'][0]['app'][0],$path[0]));
-					} else {
-						proc('launch',array('eyeOpen',$path[0]));
-					}
-				}
-			}
+			eyeFiles('launchCommand',array($xml['eyeLink'][0]['content'][0]));
 		} else {
 			proc('launch',array($params['Action'][0],array($path[1] . '://' . $path[2] . '/' . $params['File'][0])));
 		}
@@ -279,13 +258,13 @@ function eyeFiles_on_OpenPath($params = '') {
 	$show = $path[2];
 	$type = $path[1];
 	$path = $path[0];
-
+	
 	if (!$params['nohistory'] && $_SESSION['eyeFiles'][$myPid]['history']['list'][$_SESSION['eyeFiles'][$myPid]['history']['position']] != $type . '://' . $show) {
 		$_SESSION['eyeFiles'][$myPid]['history']['position']++;
 		$_SESSION['eyeFiles'][$myPid]['history']['list'] = array_slice($_SESSION['eyeFiles'][$myPid]['history']['list'],0,$_SESSION['eyeFiles'][$myPid]['history']['position']);
 		$_SESSION['eyeFiles'][$myPid]['history']['list'][] = $type . '://' . $show;
 	}
-
+	
 	if ($GLOBALS['eyeFiles_Hidden_Action']->text != '') {
 		$father = 'files';
 		if ($type == 'trash') {
@@ -296,11 +275,7 @@ function eyeFiles_on_OpenPath($params = '') {
 		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Box_Actions_menu_' . $father . '_Container_' . $GLOBALS['eyeFiles_Hidden_Action']->text . '_Container"); e.className = ""; e.style.backgroundColor = "";'));
 		$GLOBALS['eyeFiles_Hidden_Action']->setText('');
 	}
-	if ($type == 'groups') {
-		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Window_Content").style.backgroundImage = "url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/eyegroupsbg.png)";'));
-	} else {
-		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Window_Content").style.backgroundImage = "url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/eyefilesbg.png)";'));
-	}
+	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Window_Content").style.backgroundImage = "url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/bg-' . $type . '.png)";'));
 	if ($show == '/') {
 		$title = i18n('translate',array(ucfirst($type)));
 	} else {

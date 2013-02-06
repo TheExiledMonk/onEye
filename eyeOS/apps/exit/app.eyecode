@@ -36,6 +36,7 @@
 */
 function exit_run($params=null) {
 	eyeSessions('endSession'); //delete session
+	eyex('rawjs',array('js' => 'window.onbeforeunload = ""'));
 	eyeX('rawjs',array('js'=>'location.reload();')); //refresh the page
 }
 ?>

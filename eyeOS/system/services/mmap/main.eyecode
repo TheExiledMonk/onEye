@@ -55,7 +55,18 @@ function service_mmap_addToBuffer($params) {
 function service_mmap_releaseBuffer() {
 	//this function release output buffer
 	global $outputBuffer;
+
+	//get possible PHP errors
+	$content = ob_get_contents();
 	
+	if(!empty($content)) {
+	  $line = base64_encode($content);
+	  eyeX('rawjs',array('js'=>'console.log(Base64.decode("'.$line.'"));'));
+	}
+
+	//flush output buffer if needed
+	ob_clean();
+
 	//Making the xml response.
 	$temp = eyeXML('append',array('eyeMessage',$outputBuffer));
 	$temp = eyeXML('getXmlHeader').$temp;

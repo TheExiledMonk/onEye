@@ -1,57 +1,9 @@
-ul.mktree {}
-
-ul.mktree li {
-	cursor: pointer;
-	list-style: none;
-}
-
-ul.mktree, ul.mktree ul, ul.mktree li {
-	margin-left: 6px;
-	margin-top: 5px;
-	padding: 0;
-}
-
-ul.mktree li .bullet {
-	padding-left: 15px;
-}
-
-ul.mktree li.liOpen .bullet, ul.mktree li.liClosed .bullet, ul.mktree li.liBullet .bullet {
-	cursor: pointer;
-	display: inline-block;
-	height: 16px;
-}
-
-ul.mktree li.liOpen .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/widgets/folder_open.png) center left no-repeat;
-}
-
-ul.mktree li.liClosed .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/widgets/folder.png) center left no-repeat;
-}
-
-ul.mktree li.liBullet .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/widgets/bullet.gif) center left no-repeat;
-	cursor: default;
-}
-
-ul.mktree li.liOpen ul {
-	display: block;
-}
-
-ul.mktree li.liClosed ul {
-	display: none;
-}
-
-ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li ul li ul li{
-	font-size: 11px;
-}
-
 .activeWindow, .eyeWindowTitle, .inactiveWindow{
 	-moz-border-radius-topleft: 7px;
 	-moz-border-radius-topright: 7px;
 	-webkit-border-top-left-radius: 7px;
 	-webkit-border-top-right-radius: 7px;
-	background:#e6e5e5 url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top.png) repeat-x;
+	background:#e6e5e5 url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top.png) repeat-x;
 	border-top: 2px groove #ffffff;
 	border-left: 2px groove #ffffff;
 	border-right: 2px ridge #ffffff;
@@ -65,7 +17,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 .activeWindow_border_left {
 	-moz-border-radius-topleft: 5px;
 	-webkit-border-top-left-radius: 5px;
-	background:#e6e5e5  url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_left.png) repeat-x top;
+	background:#e6e5e5  url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_left.png) repeat-x top;
 	position: absolute;
 	height: 23px;
 	left: 0px;
@@ -76,7 +28,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 .activeWindow_border_right {
 	-moz-border-radius-topright: 5px;
 	-webkit-border-top-right-radius: 5px;
-	background:#e6e5e5  url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_right.png) no-repeat;
+	background:#e6e5e5  url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_right.png) no-repeat;
 	height: 23px;
 	position: absolute;
 	right: 0px;
@@ -172,86 +124,6 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	color: #333333;
 	font-size: 9px;
 	margin-top: 5px;
-}
-
-.calendar_calendarBody {
-	height: 70%;
-	left: 1px;
-	position: absolute;
-	top: 20%;
-	width: 100%;
-}
-
-.calendar_dateMiddle {
-	height: 100%;
-	left: 24%;
-	position: absolute;
-	width: 52%;
-}
-
-.calendar_dayName {
-	font-size: 1em;
-	line-height: 136%;
-	position: absolute;
-	width: 9%;
-}
-
-.calendar_rowLeft {
-	cursor: pointer;
-	left: 0;
-	height: 100%;
-	position: absolute;
-	width: 24%;
-}
-
-.calendar_rowRight {
-	cursor: pointer;
-	height: 100%;
-	position: absolute;
-	right: 0;
-	width: 24%;
-}
-
-.calendar_rowsAndDate {
-	font-size: 11px;
-	font-weight: bold;
-	height: 12%;
-	position: absolute;
-	text-align: center;
-	top: 0;
-	width: 100%;
-}
-
-.calendar_weekDaysNames {
-	height: 12%;
-	left: 1px;
-	position: absolute;
-	top: 12%;
-	width: 100%;
-}
-
-.calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday {
-	font-family: Verdana,Arial,sans-serif,FreeSans;
-	font-size: 10px;
-	height: 90%;
-	position: absolute;
-	text-align: center;
-	width: 9%;
-}
-
-.calendar_weekDayClicked, .calendar_weekDayToday {
-	border: 1px solid;
-}
-
-.calendar_weekMonth, .calendar_weekMonthClicked, .calendar_weekMonthToday {
-	height: 16%;
-	left: 0;
-	position: absolute;
-	width: 99%;
-}
-
-.calendar_weekMonthClicked, .calendar_weekMonthToday {
-	border: 1px solid;
 }
 
 .dynamic-slider-control {
@@ -383,41 +255,8 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	border-top: 1px solid #a1c6f3;
 }
 
-.eyeChess_b {
-	background-color: #888888
-}
-
-.eyeChess_t {
-	background: #dddddd;
-}
-
-.eyeChess_w {
-	background-color: #cccccc
-}
-
-.eyeChess_Table {
-	left: 469px;
-	position: absolute;
-	top: 5px;
-}
-
-.eyeChess_Text {
-	left: 10px;
-	position: absolute;
-	top: 480px;
-}
-
-.eyeChess_textarea {
-	border: 1px solid #808080;
-}
-
-.eyeChess_TextUndo {
-	left: 180px;
-	position: absolute;
-	top: 460px;
-}
 .eyeClock {
-	background:transparent url(index.php?version=2EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/apps/eyeDock/centertext.png) bottom repeat-x;
+	background:transparent url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/apps/eyeDock/centertext.png) bottom repeat-x;
 	border-left: 1px solid #353B40;
 	cursor: pointer;
 	height: 31px;
@@ -679,7 +518,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 
 /*eyeDock 1.8.5*/
 .eyeDockText_center, .minimizedAppsRight {
-	background:transparent url(index.php?version=2EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/apps/eyeDock/centertext.png) bottom repeat-x;
+	background:transparent url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/apps/eyeDock/centertext.png) bottom repeat-x;
 	height: 31px;
 	left: 0px;
 	position: absolute;
@@ -818,30 +657,27 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 
 .eyeMenuButton_Img {}
 
-.eyeMessageBox {
+.eyeMessageBox{}
+
+.eyeMessageBoxText {
 	-icab-border-radius: 10px;
 	-khtml-border-radius: 10px;
 	-moz-border-radius: 10px;
 	-o-border-radius: 10px;
 	-webkit-border-radius: 10px;
-	background:#000000 url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/desktop/messagebox.png) no-repeat bottom right;
+	background: #000000 url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/desktop/messagebox.png) no-repeat bottom right;
 	border-radius: 10px;
 	bottom: 40px;
-	filter: alpha(opacity=90);
-	height: 69px;
-	opacity: 0.9;
+	color: #ffffff;
+	filter: alpha(opacity=60);
+	font-size: 10pt;
+	max-width: 280px;
+	min-height: 20px;
+	opacity: 0.6;
+	padding: 15px;
 	position: absolute;
 	right: 10px;
-	width: 208px;
 	z-index: 100;
-}
-
-.eyeMessageBoxText {
-	color: #ffffff;
-	font-size: 10pt;
-	margin-left: 20px;
-	margin-right: 20px;
-	margin-top: 18px;
 }
 
 .eyeProgress {
@@ -977,7 +813,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 }
 
 .eyeWindowCloseButton {
-	background-image: url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/close.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/close.png);
 	background-repeat: no-repeat;
 	cursor: pointer;
 	height: 18px;
@@ -1047,7 +883,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 }
 
 .eyeWindowMaxButton {
-	background-image: url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/max.png);
+	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/max.png);
 	background-repeat: no-repeat;
 	cursor: pointer;
 	height: 18px;
@@ -1062,7 +898,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 }
 
 .eyeWindowMinimizeButton {
-	background: url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/min.png) no-repeat;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/min.png) no-repeat;
 	cursor: pointer;
 	height: 18px;
 	padding-right: 12px;
@@ -1128,7 +964,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	-moz-border-radius-topright: 7px;
 	-webkit-border-top-left-radius: 7px;
 	-webkit-border-top-right-radius: 7px;
-	background:#e6e5e5 url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top.png) repeat-x;
+	background:#e6e5e5 url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top.png) repeat-x;
 	border-top: 2px groove #ffffff;
 	border-left: 2px groove #ffffff;
 	border-right: 2px ridge #ffffff;
@@ -1144,7 +980,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 .eyeWindowTitle_border_left {
 	-moz-border-radius-topleft: 5px;
 	-webkit-border-top-left-radius: 5px;
-	background:#e6e5e5  url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_left.png) repeat-x top;
+	background:#e6e5e5  url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_left.png) repeat-x top;
 	position: absolute;
 	height: 23px;
 	left: 0px;
@@ -1155,7 +991,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 .eyeWindowTitle_border_right {
 	-moz-border-radius-topright: 5px;
 	-webkit-border-top-right-radius: 5px;
-	background:#e6e5e5  url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_right.png) no-repeat;
+	background:#e6e5e5  url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/bg_top_right.png) no-repeat;
 	height: 23px;
 	position: absolute;
 	right: 0px;
@@ -1164,7 +1000,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 }
 
 .eyeWindowTitle_text {
-	background:#e6e5e5  url(index.php?version=22EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/text.png) no-repeat right;
+	background:#e6e5e5  url(index.php?version=EXTERN_CACHE_VERSION&theme=eyeFusion&extern=images/windows/text.png) no-repeat right;
 	color: #000000;
 	cursor: default;
 	font-weight: 600;

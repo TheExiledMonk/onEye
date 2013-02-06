@@ -160,8 +160,7 @@ class Window {
 			isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
 		} else {
 			$position = $this->getSavedPositions();
-			$screen = reqLib('eyeSessions','getVar',array('SCREEN'));
-			if (!$position || $this->father == 'eyeApps' && ($position['top'][0] > $screen['height'] || $position['left'][0] > $screen['width'])) {
+			if (!$position || $this->father == 'eyeApps' && ($position['top'][0] > $_SESSION['SCREEN']['eyeApps']['height'] || $position['left'][0] > $_SESSION['SCREEN']['eyeApps']['width'])) {
 				isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
 				isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
 			} else {

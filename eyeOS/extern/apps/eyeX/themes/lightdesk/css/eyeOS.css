@@ -1,51 +1,3 @@
-lu.mktree {}
-
-ul.mktree li {
-	cursor: pointer;
-	list-style: none;
-}
-
-ul.mktree, ul.mktree ul, ul.mktree li {
-	margin-left: 6px;
-	margin-top: 5px;
-	padding: 0;
-}
-
-ul.mktree li .bullet {
-	padding-left: 15px;
-}
-
-ul.mktree li.liOpen .bullet, ul.mktree li.liClosed .bullet, ul.mktree li.liBullet .bullet {
-	cursor: pointer;
-	display: inline-block;
-	height: 16px;
-}
-
-ul.mktree li.liOpen .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/folder_open.png) center left no-repeat;
-}
-
-ul.mktree li.liClosed .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/folder.png) center left no-repeat;
-}
-
-ul.mktree li.liBullet .bullet {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/bullet.gif) center left no-repeat;
-	cursor: default;
-}
-
-ul.mktree li.liOpen ul {
-	display: block;
-}
-
-ul.mktree li.liClosed ul {
-	display: none;
-}
-
-ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li ul li ul li{
-	font-size: 11px;
-}
-
 .activeWindow, .eyeWindowTitle, .inactiveWindow{
 	-moz-border-radius-topleft: 6px;
 	-moz-border-radius-topright: 6px;
@@ -64,9 +16,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 .activeWindow_border_right {}
 
 #background {
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/wallpapers/default.jpg);
-	background-position: bottom right;
-	background-repeat: no-repeat;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/wallpapers/default.jpg) no-repeat bottom right;
 	height: 100%;
 	min-height: 400px;
 	min-width: 500px;
@@ -103,7 +53,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	float: right;
 }
 
-.blockbarItem:hover, .blockbarItem_right:hover {
+.blockbarItem:hover, .blockbarItem_right:hover, .blockbarItemPress, .blockbarItemPress_right {
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
 	-opera-border-radius: 5px;
@@ -122,21 +72,13 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 }
 
 .blockbarItemPress, .blockbarItemPress_right {
-	-moz-border-radius: 5px;
-	-o-border-radius: 5px;
-	-opera-border-radius: 5px;
-	-webkit-border-radius: 5px;
 	background-color: #e7e7e7;
 	border-color: #84848a #909197 #a5a6ad #909197;
 	border-radius: 5px;
 	border-style: solid;
 	border-width: 2px 2px 1px 2px;
-	cursor: pointer;
-	font-size: 20px;
 	margin-top: 5px;
 	padding: 2px 6px 5px;
-	text-align: center;
-	width: auto;
 }
 
 .blockbarline, .blockbarline_right {
@@ -152,86 +94,6 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	color: #333333;
 	font-size: 9px;
 	margin-top: 5px;
-}
-
-.calendar_calendarBody {
-	height: 70%;
-	left: 1px;
-	position: absolute;
-	top: 25%;
-	width: 100%;
-}
-
-.calendar_dateMiddle {
-	height: 100%;
-	left: 24%;
-	position: absolute;
-	width: 52%;
-}
-
-.calendar_dayName {
-	font-size: 1em;
-	line-height: 136%;
-	position: absolute;
-	width: 9%;
-}
-
-.calendar_rowLeft {
-	cursor: pointer;
-	left: 0;
-	height: 100%;
-	position: absolute;
-	width: 24%;
-}
-
-.calendar_rowRight {
-	cursor: pointer;
-	height: 100%;
-	position: absolute;
-	right: 0;
-	width: 24%;
-}
-
-.calendar_rowsAndDate {
-	font-size: 9px;
-	font-weight: bold;
-	height: 12%;
-	position: absolute;
-	text-align: center;
-	top: 2%;
-	width: 100%;
-}
-
-.calendar_weekDaysNames {
-	height: 12%;
-	left: 1px;
-	position: absolute;
-	top: 15%;
-	width: 100%;
-}
-
-.calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday {
-	font-family: Verdana,Arial,sans-serif,FreeSans;
-	font-size: 10px;
-	height: 90%;
-	position: absolute;
-	text-align: center;
-	width: 9%;
-}
-
-.calendar_weekDayClicked, .calendar_weekDayToday {
-	border: 1px solid;
-}
-
-.calendar_weekMonth, .calendar_weekMonthClicked, .calendar_weekMonthToday {
-	height: 16%;
-	left: 0;
-	position: absolute;
-	width: 99%;
-}
-
-.calendar_weekMonthClicked, .calendar_weekMonthToday {
-	border: 1px solid;
 }
 
 .dynamic-slider-control {
@@ -294,15 +156,6 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	width: 3px;
 }
 
-#eyeApps {
-	height: 100%;
-	left: 0;
-	position: absolute;
-	right: 10px;
-	width: auto;
-	z-index: 10;
-}
-
 .eyeBarItemsText {
 	color: #dddddd;
 	left: 35px;
@@ -348,7 +201,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	-opera-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	background-color: #ffffff;
-	background: url(index.php?version=2EXTERN_CACHE_VERSION&theme=newdefault&extern=images/widgets/buttonbg.png)repeat-x top;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=newdefault&extern=images/widgets/buttonbg.png)repeat-x top;
 	border-bottom: 1px solid #7f7f7f;
 	border-left: 1px solid #aeaeae;
 	border-right: 1px solid #7f7f7f;
@@ -365,47 +218,13 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	border-top: 1px solid #a1c6f3;
 }
 
-.eyeChess_b {
-	background-color: #888888
-}
-
-.eyeChess_t {
-	background: #dddddd;
-}
-
-.eyeChess_w {
-	background-color: #cccccc
-}
-
-.eyeChess_Table {
-	left: 469px;
-	position: absolute;
-	top: 5px;
-}
-
-.eyeChess_Text {
-	left: 10px;
-	position: absolute;
-	top: 480px;
-}
-
-.eyeChess_textarea {
-	border: 1px solid #808080;
-}
-
-.eyeChess_TextUndo {
-	left: 180px;
-	position: absolute;
-	top: 460px;
-}
-
 .eyeClock {
 	top: 0;
 	cursor: pointer;
 	height: 24px;
 	position: absolute;
 	right: 0;
-	width: 90px;
+	width: 110px;
 	z-index: 1000;
 }
 
@@ -746,7 +565,9 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	width: 138px;
 }
 
-.eyeMessageBox {
+.eyeMessageBox {}
+
+.eyeMessageBoxText {
 	-icab-border-radius: 10px;
 	-khtml-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -756,21 +577,16 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	border: 1px solid #214e79;
 	border-radius: 10px;
 	bottom: 40px;
+	color: #000000;
 	filter: alpha(opacity=90);
-	height: 69px;
+	font-size: 10pt;
+	max-width: 280px;
+	min-height: 20px;
 	opacity: 0.9;
+	padding: 15px;
 	position: absolute;
 	right: 10px;
-	width: 208px;
-	z-index: 100;
-}
-
-.eyeMessageBoxText {
-	color: #000000;
-	font-size: 10pt;
-	margin-left: 20px;
-	margin-right: 20px;
-	margin-top: 18px;
+	z-index: 1000;
 }
 
 .eyeProgress {
@@ -806,30 +622,28 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 .eyeSplit {}
 
 .eyeSplitter_horizontal, .eyeSplitter_vertical {
-	background:url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/dimple.png)no-repeat center center;
+	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/dimple.png)no-repeat center center;
 	margin-top:-1px;
 	padding:1px;
 }
 
 .eyeTab {}
 
-.eyeTabArrowRight {
+.eyeTabArrowRight, .eyeTabArrowLeft {
 	position: absolute;
 	top: 0px;
 	cursor: Pointer;
-	right: 0px;
 	width: 9px;
 	height: 24px;
+}
+
+.eyeTabArrowRight {
+	right: 0px;
 	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/arrow_right.png);
 }
 
 .eyeTabArrowLeft {
-	position: absolute;
-	top: 0px;
-	cursor: Pointer;
 	left: 0px;
-	width: 9px;
-	height: 24px;
 	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/widgets/arrow_left.png);
 }
 
@@ -891,7 +705,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	vertical-align: middle;
 }
 
-.eyeTextarea {
+.eyeTextarea, .eyeTextbox {
 	-moz-border-radius: 3px;
 	-o-border-radius: 3px;
 	-opera-border-radius: 3px;
@@ -901,41 +715,33 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	font-size: 11px;
 }
 
-.eyeTextarea:hover {
+.eyeTextarea:hover, .eyeTextbox:hover {
 	border: 1px solid #858585;
 }
 
 .eyeTextareaContainer {}
 
 .eyeTextbox {
-	-moz-border-radius: 3px;
-	-o-border-radius: 3px;
-	-opera-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	background-color: #ffffff;
-	border: 1px solid #bcbcbc;
-	font-size: 11px;
 	padding-left: 2px;
 }
 
-.eyeTextbox:hover {
-	border: 1px solid #858585;
+.eyeWindowCloseButton, .eyeWindowMaxButton, .eyeWindowMinimizeButton {
+	cursor: pointer;
+	height: 22px;
+	position: absolute;
+	top: 1px;
+	width: 23px;
 }
 
 .eyeWindowCloseButton {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/close.png) no-repeat;
-	cursor: pointer;
-	height: 15px;
-	position: absolute;
-	top: 1px;
-	width: 23px;
 }
 
 .eyeWindowCloseButton:hover {
 	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/close_x.png);
 }
 
-.eyeWindowContent {
+.eyeWindowContent, .eyeWindowMainDrag {
 	-moz-border-radius-bottomleft: 6px;
 	-moz-border-radius-bottomright: 5px;
 	-webkit-border-bottom-left-radius: 6px;
@@ -964,27 +770,6 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 
 .eyeWindowMain {
 	color: #000000;
-	height: 250px;
-	margin: 0;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
-	width: 200px;
-}
-
-.eyeWindowMainDrag {
-	-moz-border-radius-bottomleft: 6px;
-	-moz-border-radius-bottomright: 6px;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-topright: 5px;
-	-webkit-border-bottom-left-radius: 6px;
-	-webkit-border-bottom-right-radius: 6px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	background-color: #a1bfe6;
-	border-bottom: 1px solid #dddddd;
-	border-left: 1px solid #dddddd;
-	border-right: 1px solid #dddddd;
 	height: 200px;
 	margin: 0;
 	overflow: hidden;
@@ -993,14 +778,21 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	width: 200px;
 }
 
+.eyeWindowMainDrag {
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	background-color: #a1bfe6;
+	border-bottom: 1px solid #dddddd;
+	border-left: 1px solid #dddddd;
+	border-right: 1px solid #dddddd;
+	overflow: hidden;
+}
+
 .eyeWindowMaxButton {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/max.png) no-repeat;
-	cursor: pointer;
-	height: 15px;
 	padding-right: 7px;
-	position: absolute;
-	top: 1px;
-	width: 23px;
 }
 
 .eyeWindowMaxButton:hover {
@@ -1009,12 +801,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 
 .eyeWindowMinimizeButton {
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/min.png) no-repeat;
-	cursor: pointer;
-	height: 15px;
 	padding-right: 12px;
-	position: absolute;
-	top: 1px;
-	width: 23px;
 }
 
 .eyeWindowMinimizeButton:hover {
@@ -1028,7 +815,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	z-index: 10000;
 }
 
-.eyeWindowOnBar_Off {
+.eyeWindowOnBar_Off, .eyeWindowOnBar_On {
 	-moz-border-radius-topleft: 6px;
 	-moz-border-radius-topright: 6px;
 	-webkit-border-top-left-radius: 6px;
@@ -1047,21 +834,9 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 }
 
 .eyeWindowOnBar_On {
-	-moz-border-radius-topleft: 6px;
-	-moz-border-radius-topright: 6px;
-	-webkit-border-top-left-radius: 6px;
-	-webkit-border-top-right-radius: 6px;
 	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=lightdesk&extern=images/windows/bg_top.png)repeat-x;
 	border: 1px solid #214e79;
 	color: #ffffff;
-	cursor: pointer;
-	font-weight: 400;
-	height: 22px;
-	overflow: hidden;
-	position: absolute;
-	top: -26px;
-	width: 170px;
-	z-index: 20;
 }
 
 .eyeWindowOnBar_text {
@@ -1112,11 +887,10 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	font-size: 11px;
 }
 
-.minIconLeft {
+.minIconLeft, .minIconRight {
 	bottom: 0;
 	cursor: pointer;
 	display: none;
-	left: 223px;
 	height: 18px;
 	overflow: hidden;
 	position: absolute;
@@ -1124,16 +898,12 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	z-index: 10000;
 }
 
+.minIconLeft {
+	left: 235;
+}
+
 .minIconRight {
-	bottom: 0;
-	cursor: pointer;
-	display: none;
-	height: 18px;
-	overflow: hidden;
-	position: absolute;
-	right: 2px;
-	width: 8px;
-	z-index: 10000;
+	right: 15px;
 }
 
 .minimizedApps {
@@ -1146,12 +916,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	z-index: 10000;
 }
 
-.minimizedAppsLeft {
-	display: none;
-	visibility: hidden;
-}
-
-.minimizedAppsRight {
+.minimizedAppsLeft, .minimizedAppsRight {
 	display: none;
 	visibility: hidden;
 }
@@ -1223,12 +988,7 @@ ul.mktree li, ul.mktree li ul li, ul.mktree li ul li ul li, ul.mktree li ul li u
 	padding: 3px 4px 1px 6px;
 }
 
-.sort-table thead td[_sortType=HtmlButNoSort]:active {
-	border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
-	padding: 2px 5px;
-}
-
-.sort-table thead td[_sortType=None]:active {
+.sort-table thead td[_sortType=HtmlButNoSort]:active, .sort-table thead td[_sortType=None]:active {
 	border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
 	padding: 2px 5px;
 }

@@ -27,10 +27,7 @@ function eyeIframize_run($params = '') {
 		eyeIframize_on_Do($params);
 	} else {
 		eyex('messageBox',array(
-			'btn1_capt' => 'Open',
-			'btn1_name' => 'Do',
-			'btn2_capt' => 'Cancel',
-			'btn2_name' => 'Close',
+			'buttons' => array(array('Do','Open'),array('Close','Cancel')),
 			'content' => 'What URL do you want to open in an Iframe?',
 			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/file.png',
 			'textbox_event' => 'Do',

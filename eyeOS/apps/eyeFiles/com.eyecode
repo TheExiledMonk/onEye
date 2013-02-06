@@ -28,10 +28,27 @@ function eyeFiles_com_onEvent($params = '') {
 	$path = eyeFiles('cleanPath',array($GLOBALS['eyeFiles_Hidden_Path']->text));
 	foreach ($params as $value) {
 		$value = eyeFiles('cleanPath',array($value));
-		if ($value[0] == $path[0]) {
-			include_once(EYE_ROOT . '/' . APP_DIR . '/eyeFiles/events' . EYE_CODE_EXTENSION);
-			return eyeFiles_on_OpenPath();
+		if ($value[0] == $path[0] || $value[1] . '://' . $value[2] == $path[1] . '://' . $path[2]) {
+			$load = 1;
 		}
+		if ($value[1] == 'trash') {
+			$trash = 1;
+		}
+	}
+	if ($load) {
+		include_once(EYE_ROOT . '/' . APP_DIR . '/eyeFiles/events' . EYE_CODE_EXTENSION);
+		eyeFiles_on_OpenPath();
+	}
+	if ($trash) {
+		if (count(vfs('getDirContent',array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/')))) {
+			$full = '_full';
+		}
+		eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Toolbar");
+for (var i = 0; i < e.childNodes.length; i++) {
+	if (e.childNodes[i].id == "' . $myPid . '_Trash_Container") {
+		e.childNodes[i].childNodes[0].src = "index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/trash' . $full . '.png";
+	}
+}'));
 	}
 }
 

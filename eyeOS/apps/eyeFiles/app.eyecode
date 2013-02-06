@@ -61,12 +61,52 @@ function eyeFiles_run($params = '') {
 	$myToolbar->addItem('Next','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/next.png','Next');
 	$myToolbar->addLine();
 	$myToolbar->addItem('Home','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/home.png','Home');
+	$myWidgetDrop = new widgetDrop(array(
+		'father' => 'Home_Container',
+		'name' => 'Home_Container_WidgetDrop'
+	));
+	$myWidgetDrop->show();
+	$myWidgetDrop->addBehaviour(array(
+		'type' => 'widgetDrop_simpleMsg',
+		'params' => array(
+			'content' => array('home:///'),
+			'pid' => $myPid,
+			'signal' => 'Icon_Dropped'
+	)));
 	$myToolbar->addItem('Groups','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/groups.png','Groups');
-	$myToolbar->addItem('Trash','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/trash.png','Trash');
+	if (count(vfs('getDirContent',array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/')))) {
+		$myToolbar->addItem('Trash','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/trash_full.png','Trash');
+	} else {
+		$myToolbar->addItem('Trash','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/trash.png','Trash');
+	}
+	$myWidgetDrop = new widgetDrop(array(
+		'father' => 'Trash_Container',
+		'name' => 'Trash_Container_WidgetDrop'
+	));
+	$myWidgetDrop->show();
+	$myWidgetDrop->addBehaviour(array(
+		'type' => 'widgetDrop_simpleMsg',
+		'params' => array(
+			'content' => array('trash:///'),
+			'pid' => $myPid,
+			'signal' => 'Icon_Dropped'
+	)));
 	if ($currentUser == ROOTUSER) {
 		$myToolbar->addLine();
 		$myToolbar->addItem('Users','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/users.png','Users');
 		$myToolbar->addItem('Real','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/apps/eyeFiles/real.png','Real');
+		$myWidgetDrop = new widgetDrop(array(
+			'father' => 'Real_Container',
+			'name' => 'Real_Container_WidgetDrop'
+		));
+		$myWidgetDrop->show();
+		$myWidgetDrop->addBehaviour(array(
+			'type' => 'widgetDrop_simpleMsg',
+			'params' => array(
+				'content' => array('real:///'),
+				'pid' => $myPid,
+				'signal' => 'Icon_Dropped'
+		)));
 	}
 	$myToolbar->addLine('ActionsLine');
 	$myToolbar->addItem('Upload','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/upload.png','Upload files');

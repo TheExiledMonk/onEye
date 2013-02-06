@@ -443,7 +443,45 @@ function lib_eyeFiles_imagecreatefrombmp($params = '') {
 	return $image;
 }
 
-// eyeFiles is listening the following function and updates its content if needed.
+/*
+$params[0] -> command
+*/
+function lib_eyeFiles_launchCommand($params = '') {
+	$link = explode(' ', utf8_trim($params[0]));
+	if (strrchr($link[0],'.') == '.app') {
+		proc('launch',array(utf8_basename($link[0],'.app'),array_slice($link,1)));
+	} elseif (utf8_substr($params[0],0,7) == 'http://' || utf8_substr($params[0],0,8) == 'https://') {
+		proc('launch',array('eyeNav',$params[0]));
+	} elseif (utf8_substr($params[0],0,7) == 'ftp://') {
+		proc('launch',array('eyeFTP',$params[0]));
+	} else {
+		$params[0] = str_replace('\\','/',$params[0]);
+		if (utf8_substr($params[0],-1) == '/') {
+			$temp = $params[0];
+		} else {
+			$file = utf8_basename($params[0]);
+			$temp = utf8_substr($params[0],0,- utf8_strlen($file));
+		}
+		$path = eyeFiles('cleanPath',array($temp));
+		if (isset($file)) {
+			$path[0] .= '/' . $file;
+		}
+		if (vfs('isdir',array($path[0]))) {
+			proc('launch',array('eyeFiles',array($params[0])));
+		} else {
+			$xml = getConfig('filetypes',utf8_strtolower(utf8_substr(strrchr($path[0],'.'),1)) . '.xml');
+			if ($xml['fileType'][0]['app'][0]) {
+				proc('launch',array($xml['fileType'][0]['app'][0],$path[0]));
+			} else {
+				proc('launch',array('eyeOpen',$path[0]));
+			}
+		}
+	}
+}
+
+/*
+This function is called everytime its listeners should update
+*/
 function lib_eyeFiles_update($params = '') {
 	return true;
 }

@@ -139,7 +139,7 @@ function eyeLogin_on_successLogin($params = '') {
 	if ($currentUser) {
 		$pid = proc('findPidByName',array('eyeX'));
 		proc('setProcessUser',array($pid));
-		eyex('rawjs',array('js' => 'EXTERN_CACHE_VERSION = "' . EXTERN_CACHE_VERSION . '"; xGetElementById("eyex-info").style.display = "none"; xGetElementById("eyex-powered").style.display = "none";'));
+		eyex('rawjs',array('js' => 'xGetElementById("eyex-info").style.display = "none"; xGetElementById("eyex-powered").style.display = "none";'));
 		loadConfig('eyeLogin');
 		proc('launch',array(LOGIN_EXECUTE,'autorun'));
 		proc('end');

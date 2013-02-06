@@ -26,54 +26,90 @@ function eyeProcess_run($params = '') {
 		'cent' => 1,
 		'father' => 'eyeApps',
 		'name' => 'eyeProcess_Window',
-		'height' => 450,
+		'height' => 457,
 		'savePosition' => 1,
 		'sendResizeMsg' => 1,
 		'sigResize' => 'Resize',
 		'title' => 'Process Manager',
-		'width' => 300,
+		'width' => 305,
 		'x' => 20,
 		'y' => 20,
 	));
 	$myWindow->show();
+
+	$myTab = new Tab(array(
+		'name' => 'eyeProcess_tab',
+		'father' => 'eyeProcess_Window_Content',
+		'width' => $myWindow->width - 22,
+		'height' => $myWindow->height - 35,
+		'x' => 4,
+		'y' => 8
+	));
+	$myTab->show();
+	$applicationsTab=$myTab->addTab('Applications',1);
+	$processesTab=$myTab->addTab('Processes',1);
+	$myTab->selectTabContent($applicationsTab);
+
+	$myAppSortabletable = new Sortabletable(array(
+		'father' => $applicationsTab,
+		'height' => $myWindow->height - 104,
+		'name' => 'eyeProcess_appSortabletable',
+		'sortypes' => array('Hidden','Html'),
+		'theader' => array('Pid','Application'),
+		'width' => $myWindow->width - 31,
+		'x' => 9,
+		'y' => 5
+	));
+	$myAppSortabletable->show();
+	$GLOBALS['eyeProcess_appSortabletable'] = $myAppSortabletable;
 	
 	$mySortabletable = new Sortabletable(array(
-		'father' => 'eyeProcess_Window_Content',
-		'height' => $myWindow->height - 80,
+		'father' => $processesTab,
+		'height' => $myWindow->height - 104,
 		'name' => 'eyeProcess_Sortabletable',
 		'sortypes' => array('Number','String','String'),
 		'theader' => array('Pid','Process Name','Username'),
-		'width' => $myWindow->width - 22,
-		'x' => 10,
-		'y' => 10
+		'width' => $myWindow->width - 31,
+		'x' => 9,
+		'y' => 5
 	));
 	$mySortabletable->show();
 	$GLOBALS['eyeProcess_Sortabletable'] = $mySortabletable;
 	
 	$myButton = new Button(array(
 		'caption' => 'New process',
-		'father' => 'eyeProcess_Window_Content',
+		'father' => $processesTab,
 		'name' => 'eyeProcess_Button_New',
 		'signal' => 'New',
-		'vert' => 1,
-		'x' => 11,
-		'y' => 10
+		'x' => 9,
+		'y' => $myWindow->height - 87
 	));
-	$myButton->show();
+	$myButton->show(0);
 	
 	$myButton = new Button(array(
 		'caption' => 'Kill process',
-		'father' => 'eyeProcess_Window_Content',
+		'father' => $processesTab,
 		'horiz' => 1,
 		'name' => 'eyeProcess_Button_Kill',
 		'signal' => 'Kill',
-		'vert' => 1,
-		'x' => 11,
-		'y' => 10
+		'x' => 0,
+		'y' => $myWindow->height - 87
 	));
 	$myButton->addFriend($mySortabletable);
-	$myButton->show();
+	$myButton->show(0);
 	
+	$myKillAppButton = new Button(array(
+		'caption' => 'Close Application',
+		'father' => $applicationsTab,
+		'horiz' => 1,
+		'name' => 'eyeProcess_Button_appKill',
+		'signal' => 'Killapp',
+		'x' => 0,
+		'y' => $myWindow->height - 87
+	));
+	$myKillAppButton->addFriend($myAppSortabletable);
+	$myKillAppButton->show(0);
+
 	addListenerServiceCall('onClose','proc','close',1);
 	addListenerServiceCall('onLaunch','proc','launch',1);
 }

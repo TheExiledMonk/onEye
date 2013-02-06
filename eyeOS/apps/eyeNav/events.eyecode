@@ -128,20 +128,16 @@ function eyeNav_on_delBookmark($params = '') {
 	foreach($params as $key => $value) {
 		if(utf8_stristr($key,'eyeNav_box_hidden_del_')) {
 			eyex('messageBox',array(
+				'buttons' => array(array('delBookmark_yes','Yes'),array('delBookmark_no','No')),
 				'content' => 'Do you really want to delete this bookmark?',
-				'type' => 3,
-				'title' => 'Delete bookmark',
-				'win_name' => 'eyeNav_window_delBookmark',
-				'win_style' => TITLE + CLOSE,
-				'win_removepid' => 0,
-				'hidden_name' => 'eyeNav_hidden_delBookmark',
-				'hidden_text' => $value[0],
-				'btn1_capt' => 'Yes',
-				'btn1_name' => 'delBookmark_yes',
-				'btn2_capt' => 'No',
-				'btn2_name' => 'delBookmark_no',
 				'father' => 'eyeNav_window',
-				'img' => '?'
+				'hiddens' => array(array('eyeNav_hidden_delBookmark',$value[0])),
+				'img' => '?',
+				'title' => 'Delete bookmark',
+				'type' => 3,
+				'win_name' => 'eyeNav_window_delBookmark',
+				'win_removepid' => 0,
+				'win_style' => TITLE + CLOSE
 			));
 			return;
 		}
@@ -273,19 +269,16 @@ function eyeNav_on_OpenURL($params = '') {
 
 function eyeNav_on_saveUrl($params = '') {
 	eyex('messageBox',array(
+		'buttons' => array(array('saveUrl_add','Accept'),array('saveUrl_cancel','Cancel')),
 		'content' => 'Bookmark title',
-		'type' => 3,
-		'title' => 'Add bookmark',
-		'win_name' => 'eyeNav_window_saveUrl',
-		'win_style' => TITLE + CLOSE,
-		'win_removepid' => 0,
-		'btn1_capt' => 'Accept',
-		'btn1_name' => 'saveUrl_add',
-		'btn2_capt' => 'Cancel',
-		'btn2_name' => 'saveUrl_cancel',
+		'father' => 'eyeNav_window',
 		'textbox_event' => 'saveUrl_add',
 		'textbox_name' => 'eyeNav_textbox_saveUrl',
-		'father' => 'eyeNav_window'
+		'title' => 'Add bookmark',
+		'type' => 3,
+		'win_name' => 'eyeNav_window_saveUrl',
+		'win_removepid' => 0,
+		'win_style' => TITLE + CLOSE
 	));
 }
 

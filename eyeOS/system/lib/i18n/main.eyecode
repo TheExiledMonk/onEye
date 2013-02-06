@@ -75,42 +75,21 @@ function lib_i18n_init() {
 * 
 * @param $params array(app)
 * @param $app Name of the application.
-* @return If the application or the user's language file cannot be
-*	found, returns false.
 * @date 2008/03/11
 */
 function lib_i18n_loadLang($params) {
-	if(!isset($params[0])){
-		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
-		return false;
+	$paths[] = EYE_ROOT.'/i18n/' . DEFAULT_LANGUAGE . EYE_CODE_EXTENSION;
+	$paths[] = EYE_ROOT . '/i18n/' . $_SESSION['lang'] . EYE_CODE_EXTENSION;
+	if ($app = utf8_basename($params[0])) {
+		$paths[] = EYE_ROOT . '/' . APP_DIR . '/' . $app . '/lang/' . DEFAULT_LANGUAGE . EYE_CODE_EXTENSION;
+		$paths[] = EYE_ROOT . '/' . APP_DIR . '/' . $app . '/lang/' . $_SESSION['lang'] . EYE_CODE_EXTENSION;
+	}
+	foreach ($paths as $path) {
+		if (file_exists($path)) {
+			include_once($path);
 	}	
-	$app = utf8_basename($params[0]);
-	
-	//lang var should be set at least by the _init function.
-	if(isset($_SESSION['lang'])){
-		$lang = $_SESSION['lang'];
-		//loading the global strings
-		$i18nFile = EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION;
-		$i18nDefault = EYE_ROOT.'/i18n/'.DEFAULT_LANGUAGE.EYE_CODE_EXTENSION;
-		if(file_exists($i18nDefault) && is_readable($i18nDefault)){
-			include_once($i18nDefault);
-		}
-		if(file_exists($i18nFile) && is_readable($i18nFile)) {
-			include_once($i18nFile);
-		}
-
-		$i18nFile = EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION;
-		$i18nDefault = EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.DEFAULT_LANGUAGE.EYE_CODE_EXTENSION;
-		if(file_exists($i18nDefault) && is_readable($i18nDefault)){
-			include_once($i18nDefault);
-		}
-		if(file_exists($i18nFile) && is_readable($i18nFile)) {
-			include_once($i18nFile);
 		}
 		return true;
-	}else{
-		return false;
-	}
 }
 
 /**

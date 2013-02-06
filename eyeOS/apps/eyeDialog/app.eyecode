@@ -40,7 +40,8 @@ define('__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS', 'Groups');
  * 							3 => default_filename,
  * 							4 => array(filetypes)),
  * 							5 => default_path
- * 							6 => force_extension)
+ * 							6 => force_extension
+ * 							7 => callbackFunction_on_Cancel_event)
  * 				
  * 				Example of filestypes:
  * 					array(
@@ -69,7 +70,8 @@ function eyeDialog_run($params=null) {
 				'All types' => '*'
 			),
 		5 => './users/tt4/test/files/Documents',
-		6 => true
+		6 => true,
+		7 => 
 	);
 	$params[4] = array(
 		'Text files' => '*.txt',	//default
@@ -144,6 +146,7 @@ function eyeDialog_run($params=null) {
 			'All types' => '*'
 		);
 	}
+	$onCancelCallback = $params[7];
 	
 	$params = array(
 		$type,
@@ -152,7 +155,8 @@ function eyeDialog_run($params=null) {
 		$defaultFilename,
 		$filetypes,
 		$defaultPath,
-		$forceExtension
+		$forceExtension,
+		$onCancelCallback
 	);
 	
 	switch($type) {
@@ -280,6 +284,7 @@ function eyeDialog_run($params=null) {
 		'x' => 502,
 		'y' => 272,
 		'width' => 92,
+		'height' => 22,
 		'enabled' => 1
 	));
 	$okButton->addFriend($filenameTextbox);
@@ -293,6 +298,7 @@ function eyeDialog_run($params=null) {
 		'x' => 502,
 		'y' => 300,
 		'width' => 92,
+		'height' => 22,
 		'enabled' => 1
 	));
 	$cancelButton->show(0);

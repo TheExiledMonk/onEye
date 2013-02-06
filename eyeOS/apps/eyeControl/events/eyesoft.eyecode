@@ -25,22 +25,17 @@ define('EYECONTROL_DEFAULT_REPOSITORY','http://soft.eyeos.org/1.7/');
 
 function eyeControl_on_eyesoft_new($params = '') {
 	eyex('messageBox',array(
+		'buttons' => array(array('eyesoft_add','Add'),array('eyesoft_add_test','Test'),array('eyesoft_add_cancel','Cancel')),
 		'content' => 'Mirror address (example: %s)',
-		'type' => 3,
-		'tokens' => array(EYECONTROL_DEFAULT_REPOSITORY),
-		'title' => 'Add mirror',
-		'win_name' => 'eyeControl_eyesoft_add_window',
-		'win_style' => TITLE + CLOSE,
-		'win_removepid' => 0,
-		'btn1_capt' => 'Add',
-		'btn1_name' => 'eyesoft_add',
-		'btn2_capt' => 'Test',
-		'btn2_name' => 'eyesoft_add_test',
-		'btn3_capt' => 'Cancel',
-		'btn3_name' => 'eyesoft_add_cancel',
+		'father' => 'eyeControl_container_big',
 		'textbox_event' => 'eyesoft_add_save',
 		'textbox_name' => 'eyeControl_eyesoft_add_textbox',
-		'father' => 'eyeControl_container_big'
+		'title' => 'Add mirror',
+		'tokens' => array(EYECONTROL_DEFAULT_REPOSITORY),
+		'type' => 3,
+		'win_name' => 'eyeControl_eyesoft_add_window',
+		'win_removepid' => 0,
+		'win_style' => TITLE + CLOSE
 	));
 }
 
@@ -89,24 +84,18 @@ function eyeControl_on_eyesoft_edit($params = '') {
 	$mirror = $GLOBALS['eyeControl_eyesoft_sortabletable']->selected;
 	if ($mirror && $mirror != EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array(
+			'buttons' => array(array('eyesoft_edit_save','Save'),array('eyesoft_edit_test','Test'),array('eyesoft_edit_cancel','Cancel')),
 			'content' => 'Type the new mirror address:',
-			'type' => 3,
-			'title' => 'Edit mirror',
-			'win_name' => 'eyeControl_eyesoft_edit_window',
-			'win_style' => TITLE + CLOSE,
-			'win_removepid' => 0,
-			'btn1_capt' => 'Save',
-			'btn1_name' => 'eyesoft_edit_save',
-			'btn2_capt' => 'Test',
-			'btn2_name' => 'eyesoft_edit_test',
-			'btn3_capt' => 'Cancel',
-			'btn3_name' => 'eyesoft_edit_cancel',
+			'father' => 'eyeControl_container_big',
+			'hiddens' => array(array('eyeControl_eyesoft_edit_hidden',$mirror)),
 			'textbox_event' => 'eyesoft_edit_save',
 			'textbox_name' => 'eyeControl_eyesoft_edit_textbox',
 			'textbox_text' => $mirror,
-			'hidden_name' => 'eyeControl_eyesoft_edit_hidden',
-			'hidden_text' => $mirror,
-			'father' => 'eyeControl_container_big'
+			'title' => 'Edit mirror',
+			'type' => 3,
+			'win_name' => 'eyeControl_eyesoft_edit_window',
+			'win_removepid' => 0,
+			'win_style' => TITLE + CLOSE
 		));
 	} elseif ($mirror == EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array('content' => 'You cannot edit the default mirror!'));
@@ -164,20 +153,16 @@ function eyeControl_on_eyesoft_delete($params = '') {
 	$mirror = $GLOBALS['eyeControl_eyesoft_sortabletable']->selected;
 	if ($mirror && $mirror != EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array(
+			'buttons' => array(array('eyesoft_delete_yes','Yes'),array('eyesoft_delete_no','No')),
 			'content' => 'Do you really want to remove this mirror from eyeSoft?',
-			'type' => 3,
-			'title' => 'Delete mirror',
-			'win_name' => 'eyeControl_eyesoft_delete_window',
-			'win_style' => TITLE + CLOSE,
-			'win_removepid' => 0,
-			'btn1_capt' => 'Yes',
-			'btn1_name' => 'eyesoft_delete_yes',
-			'btn2_capt' => 'No',
-			'btn2_name' => 'eyesoft_delete_no',
-			'hidden_text' => $mirror,
-			'hidden_name' => 'eyesoft_delete_hidden',
 			'father' => 'eyeControl_container_big',
-			'img' => '?'
+			'hiddens' => array(array('eyesoft_delete_hidden',$mirror)),
+			'img' => '?',
+			'title' => 'Delete mirror',
+			'type' => 3,
+			'win_name' => 'eyeControl_eyesoft_delete_window',
+			'win_removepid' => 0,
+			'win_style' => TITLE + CLOSE
 		));
 	} elseif ($mirror == EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array('content' => 'You cannot delete the default mirror!'));

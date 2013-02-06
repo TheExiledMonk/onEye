@@ -23,13 +23,9 @@
 
 function addLink_run($params = '') {
 	eyex('messageBox',array(
-		'btn1_capt' => 'Create',
-		'btn1_name' => 'Do',
-		'btn2_capt' => 'Cancel',
-		'btn2_name' => 'Close',
+		'buttons' => array(array('Do','Create'),array('Close','Cancel')),
 		'content' => 'Please type the title of the link here:',
-		'hidden_name' => 'addLink_Hidden',
-		'hidden_text' => $params[1],
+		'hiddens' => array(array('addLink_Hidden',$params[1])),
 		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/rename.png',
 		'savePosition' => 1,
 		'textbox_event' => 'Do',

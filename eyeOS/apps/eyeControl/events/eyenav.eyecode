@@ -73,18 +73,15 @@ function eyeControl_on_eyenav_bookmarks_import_now($params = '') {
 
 function eyeControl_on_eyenav_bookmarks_default($params = '') {
 	eyex('messageBox',array(
+		'buttons' => array(array('eyenav_bookmarks_default_yes','Yes'),array('eyenav_bookmarks_default_no','No')),
 		'content' => 'Do you really want to restore the default eyeNav bookmarks?',
-		'type' => 3,
-		'title' => 'Use defaults',
-		'win_name' => 'eyeControl_eyenav_window_bookmarks_default',
-		'win_style' => TITLE + CLOSE,
-		'win_removepid' => 0,
-		'btn1_capt' => 'Yes',
-		'btn1_name' => 'eyenav_bookmarks_default_yes',
-		'btn2_capt' => 'No',
-		'btn2_name' => 'eyenav_bookmarks_default_no',
 		'father' => 'eyeControl_container_big',
-		'img' => '?'
+		'img' => '?',
+		'title' => 'Use defaults',
+		'type' => 3,
+		'win_name' => 'eyeControl_eyenav_window_bookmarks_default',
+		'win_removepid' => 0,
+		'win_style' => TITLE + CLOSE
 	));
 }
 

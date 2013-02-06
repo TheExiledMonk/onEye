@@ -22,10 +22,6 @@
 */
 
 function eyeControl_on_security_save($params = '') {
-	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/sec/';
-	if(!vfs('isdir',array($path))) {
-		vfs('real_mkdir',array($path));
-	}
 	$xml = eyeControl_lib_getXMLconfig(array('sec','conf.xml'));
 	$xml['security'][0]['PROTECTED_IP_SESSIONS'][0] = $GLOBALS['eyeControl_security_checkbox_fullname']->checked;
 	eyeControl_lib_setXMLconfig(array('sec','conf.xml',$xml));

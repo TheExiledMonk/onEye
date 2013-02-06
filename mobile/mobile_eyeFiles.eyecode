@@ -40,10 +40,11 @@ if(empty($currentUser) && isset($_REQUEST["username"]) && isset($_REQUEST["passw
 
 if(empty($currentUser)) {
 	//Draw login page
-	echo '<?xml version="1.0" encoding="UTF-8"?>
+	echo '<?xml version="1.0" encoding="UTF-8" ?>
 	<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 	<html>
 		<head>
+			<base href="' . INDEX_BASE . 'mobile/" />
 			<title>Welcome to eyeOS Mobile</title>
 			<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 		  	<style type="text/css">
@@ -87,10 +88,11 @@ if(empty($currentUser)) {
 	//Include some functions -create directory, upload files, download files-
 	include_once("../mobile/mobile_functions.eyecode");
 	
-	echo '<?xml version="1.0" encoding="UTF-8"?>
+	echo '<?xml version="1.0" encoding="UTF-8" ?>
 	<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
 	<html>
 	<head>
+		<base href="' . INDEX_BASE . '/" />
 		<title>eyeOS Mobile</title>
 		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 		<style type="text/css">

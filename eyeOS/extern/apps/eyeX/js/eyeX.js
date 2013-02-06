@@ -20,22 +20,21 @@
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
 
-document.onclick=clickedScreen;
-clickEvents = new Object();
-eyeDeskItems=0;
-eyeFlag=0;
-IEversion=0;
-TimeViewClock=2000;
+var eyeDeskItems=0;
+var eyeFlag=0;
+var IEversion=0;
+var TimeViewClock=2000;
 if (navigator.appVersion.indexOf("MSIE")!=-1){
 	NavSplit=navigator.appVersion.split("MSIE");
 	IEversion=parseFloat(NavSplit[1]);
 }
-minArrows = 0;
-spaceBetweenApps = 1;
-zLayers = 11;//One more than eyeApps (default and base layer for all apps)
-mouseX = 0;
-mouseY = 0;
-messageBoxDirection=0;
+
+var minArrows = 0;
+var spaceBetweenApps = 1;
+var zLayers = 11;//One more than eyeApps (default and base layer for all apps)
+var mouseX = 0;
+var mouseY = 0;
+var messageBoxDirection=0;
 
 var eyeKeyDown = 0;
 document.oncontextmenu = function(e) { if(!IEversion) { e.preventDefault(); e.cancelBubble = true; } return false; }
@@ -268,101 +267,108 @@ function localEngine(msg) {
 	//message is not set, could be an empty response to a request
 	notifyEndOfLoadingRequest();
 	if(msg.hasChildNodes()) {
-		var actions = msg.getElementsByTagName('action');
+		var actions = msg.firstChild.childNodes;
 		var mySize = actions.length;
 		for(count=0;count < mySize;count++) {
 			try {
 				task = getNodeValue(actions[count].getElementsByTagName('task')[0]);
 				if(task == 'createWidget') {
-					x = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('x')[0]);
-					y = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('y')[0]);
-					horiz = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('horiz')[0]);
-					vert = getNodeValue(actions[count].getElementsByTagName('position')[0].getElementsByTagName('vert')[0]);
-					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
-					checknum = getNodeValue(actions[count].getElementsByTagName('checknum')[0]);
-					father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
-					widgetname = getNodeValue(actions[count].getElementsByTagName('widgetname')[0]);
-					cent = getNodeValue(actions[count].getElementsByTagName('cent')[0]);
-					paramStr = getNodeValue(actions[count].getElementsByTagName('params')[0]);
+				    var position = actions[count].getElementsByTagName('position')[0];
+					var x = getNodeValue(position.getElementsByTagName('x')[0]);
+					var y = getNodeValue(position.getElementsByTagName('y')[0]);
+					var horiz = getNodeValue(position.getElementsByTagName('horiz')[0]);
+					var vert = getNodeValue(position.getElementsByTagName('vert')[0]);
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var checknum = getNodeValue(actions[count].getElementsByTagName('checknum')[0]);
+					var father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
+					var widgetname = getNodeValue(actions[count].getElementsByTagName('widgetname')[0]);
+					var cent = getNodeValue(actions[count].getElementsByTagName('cent')[0]);
+					var paramStr = getNodeValue(actions[count].getElementsByTagName('params')[0]);
 					try{
-						eval (widgetname+"_show("+paramStr+",'"+name+"','"+father+"','"+x+"','"+y+"','"+horiz+"','"+vert+"','"+checknum+"','"+cent+"');");
+						var run = new Function(widgetname+"_show("+paramStr+",'"+name+"','"+father+"','"+x+"','"+y+"','"+horiz+"','"+vert+"','"+checknum+"','"+cent+"');");
+						run();
 					}catch(err){
-
+					    try {
+					    	console.log('widget error: '+err);
+					    } catch(err) {
+						
+					    }
 					}
 				} else if(task == 'messageBox') {
-					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					content = tinyMCE.entityDecode(content);
-					type = getNodeValue(actions[count].getElementsByTagName('type')[0]);
+					var content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					var content = tinyMCE.entityDecode(content);
+					var type = getNodeValue(actions[count].getElementsByTagName('type')[0]);
 					if (!type || type == 1) {
 						eyeMessageBoxShow(content);
 					} else if (type == 2) {
 						alert(content);
 					}
 				} else if(task == 'setValue') {
-					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
+					var content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					var widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = content;
 					}
 				} else if(task == 'setValueB64') {
-					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
+					var content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					var widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = Base64.decode(content);
 					}
 				} else if(task == 'concatValue') {
-					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
+					var content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					var widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = document.getElementById(widget).value+content;
 					}
 				} else if(task == 'concatValueB64') {
-					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
+					var content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					var widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).value = document.getElementById(widget).value+Base64.decode(content);
 					}
 				} else if(task == 'concatDiv') {
-					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
+					var content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					var widget = getNodeValue(actions[count].getElementsByTagName('widget')[0]);
 					if(document.getElementById(widget)) {
 						document.getElementById(widget).innerHTML = document.getElementById(widget).innerHTML+content;
 					}
 				} else if(task == 'rawjs') {
-					js = getNodeValue(actions[count].getElementsByTagName('js')[0]);
+					var js = getNodeValue(actions[count].getElementsByTagName('js')[0]);
 					js=js.replace(/\n/,"");
 					js=js.replace(/\r/,"");
-					eval(js);
+					var run = new Function(js);
+					run();
 				} else if(task == 'setDiv') {
-					content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
-					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var content = getNodeValue(actions[count].getElementsByTagName('content')[0]);
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 					document.getElementById(name).innerHTML = content;
 				} else if(task == 'loadScript') {
-					url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
+					var url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
 					dhtmlLoadScript(url);
 				} else if(task == 'loadCSS') {
-					url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
-					id = getNodeValue(actions[count].getElementsByTagName('id')[0]);
+					var url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
+					var id = getNodeValue(actions[count].getElementsByTagName('id')[0]);
 					dhtmlLoadCSS(url,id);
 				} else if(task == 'removeCSS') {
-					id = getNodeValue(actions[count].getElementsByTagName('id')[0]);
+					var id = getNodeValue(actions[count].getElementsByTagName('id')[0]);
 					dhtmlRemoveCSS(id);
 				} else if(task == 'removeWidget') {
-					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
 					removeWidget(name);
 				} else if(task == 'createDiv') {
-					name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
-					myClass = getNodeValue(actions[count].getElementsByTagName('class')[0]);
-					father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
+					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
+					var myClass = getNodeValue(actions[count].getElementsByTagName('class')[0]);
+					var father = getNodeValue(actions[count].getElementsByTagName('father')[0]);
 					var myDiv = document.createElement('div');
 					myDiv.setAttribute("id", name);
 					myDiv.className = myClass;
 					var divFather = document.getElementById(father);
 					divFather.appendChild(myDiv);
 				} else if(task == 'setWallpaper') {
-					url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
-					repeat = getNodeValue(actions[count].getElementsByTagName('repeat')[0]);
-					center = getNodeValue(actions[count].getElementsByTagName('center')[0]);
+					var url = getNodeValue(actions[count].getElementsByTagName('url')[0]);
+					var repeat = getNodeValue(actions[count].getElementsByTagName('repeat')[0]);
+					var center = getNodeValue(actions[count].getElementsByTagName('center')[0]);
 					setWallpaper(url,repeat,center);
 				} else if(task == 'updateCss') {
 					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
@@ -395,9 +401,11 @@ function localEngine(msg) {
 					var func = getNodeValue(actions[count].getElementsByTagName('func')[0]);
 					var args = getNodeValue(actions[count].getElementsByTagName('args')[0]);
 					if(args == 0) {
-						eval('document.getElementById("'+name+'").'+event+'=function(){'+func+'}');
+						var run = new Function('document.getElementById("'+name+'").'+event+'=function(){'+func+'}');
+						run();
 					} else {
-						eval('document.getElementById("'+name+'").'+event+'=function('+args+'){'+func+'}');
+						var run = new Function('document.getElementById("'+name+'").'+event+'=function('+args+'){'+func+'}');
+						run();
 					}
 				} else if(task == 'createLayer') {
 					var name = getNodeValue(actions[count].getElementsByTagName('name')[0]);
@@ -428,7 +436,11 @@ function localEngine(msg) {
 					fadeInLayer(name,startAlpha,endAlpha,time);
 				}
 			} catch (err) {
+			    try {
+			    	console.log('Response error: '+err);
+			    } catch(err) {
 
+			    }
 			}
 		}
 	}
@@ -673,34 +685,86 @@ function eyeMessageBoxHid(i) {
 	}
 }
 
-function clickedScreen(e){
-	var target = (e && e.target) || (event && event.srcElement);
-	for(current in clickEvents) {
-		if (target.id != current) {
-			if(clickEvents[current] != null) {
-				for(var i=0; i < clickEvents[current]['friends'].length; i++ ){
-					if(clickEvents[current]['friends'][i] == target.id) {
-						return;
-					}
-				}
-				eval(clickEvents[current]['code']);
-			}
-		}
-	}
+function addClickHandler(element,code) {
+	EventHandler.Add('click',element,code);
 }
 
-function addClickHandler(div,code) {
-	clickEvents[div] = new Object();
-	clickEvents[div]['code'] = code;
-	clickEvents[div]['friends'] = new Array();
-}
-
-function addFriendClick(div,id) {
-	clickEvents[div]['friends'].push(id);
+function addFriendClick(element,friend) {
+	EventHandler.AddFriend('click',element,friend);
 }
 
 function delClickHandler(div) {
-	clickEvents[div] = null;
+	EventHandler.Remove('click',element);
+}
+
+var EventHandler = {
+	List : new Array(),
+	
+	Add : function (handler,element,code,option) {
+		if (typeof EventHandler.List[handler] != 'object') {
+			EventHandler.List[handler] = new Array();
+			xAddEventListener(window,handler,EventHandler.HandleEvent,false);
+		}
+		if (typeof EventHandler.List[handler][element] != 'object') {
+			EventHandler.List[handler][element] = new Array();
+			EventHandler.List[handler][element]['friends'] = new Array();
+		}
+		EventHandler.List[handler][element]['code'] = code;
+		if (typeof option != 'undefined') {
+			EventHandler.List[handler][element]['option'] = option;
+		}
+	},
+	
+	AddFriend : function (handler,element,friend) {
+		if (EventHandler.List[handler][element]) {
+			EventHandler.List[handler][element]['friends'].push(friend);
+		}
+	},
+	
+	HandleEvent : function (e) {
+		e = new xEvent(e);
+		var isfriend = 0;
+		for (var element in EventHandler.List[e.type]) {
+			if (element != e.target.id && EventHandler.List[e.type][element]) {
+				if (EventHandler.List[e.type][element]['option']) {
+					var t = e.target.parentNode;
+					while (!isfriend && t) {
+						if (element == t.id) {
+							isfriend = 1;
+						} else {
+							t = t.parentNode;
+						}
+					}
+				}
+				if (!isfriend) {
+					for (var friend in EventHandler.List[e.type][element]['friends']) {
+						if (EventHandler.List[e.type][element]['friends'][friend] == e.target.id) {
+							isfriend = 1;
+						}
+					}
+				}
+				if (!isfriend) {
+					var run = new Function(EventHandler.List[e.type][element]['code']);
+					run();
+				}
+				isfriend = 0;
+			}
+		}
+	},
+	
+	Remove : function (handler,element) {
+		EventHandler.List[handler][element] = 0;
+	},
+	
+	RemoveFriend : function (handler,element,friend) {
+		EventHandler.List[handler][element]['friends']
+		for (var f = 0; f < EventHandler.List[handler][element]['friends'].length; f++) {
+			if (EventHandler.List[handler][element]['friends'][f] == friend) {
+				EventHandler.List[handler][element]['friends'][f] = 0;
+				return;
+			}
+		}
+	}
 }
 
 function getArrayArg(arg) {
@@ -956,7 +1020,8 @@ function makeDrag (widgetid,father,afterfunction,checknum,content,noIndex) {
 			} else {
 				contentid = '';
 			}
-			eval (afterfunction+'(\''+widgetid+'\','+firstX+','+firstY+','+xLeft(widget)+','+xTop(widget)+',\''+checknum+'\''+contentid+');');
+			var run = new Function(afterfunction+'(\''+widgetid+'\','+firstX+','+firstY+','+xLeft(widget)+','+xTop(widget)+',\''+checknum+'\''+contentid+');');
+			run();
 		}
 	}
 
@@ -1035,7 +1100,8 @@ function fadeInLayer(layerId,startAlpha,endAlpha,time){
 	}
 }
 function updateCss(widgetid,prop,val) {
-	eval('document.getElementById("'+widgetid+'").style.'+prop+'="'+val+'";');
+    var run = new Function('document.getElementById("'+widgetid+'").style.'+prop+'="'+val+'";');
+    run();
 }
 
 //tty stuff
@@ -1167,7 +1233,64 @@ function xEnableDrag2(id,fS,fD,fE,x1,y1,x2,y2)
 xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xAddClass(e,c){if((e=xGetElementById(e))!=null){var s='';if(e.className.length&&e.className.charAt(e.className.length-1)!=' '){s=' ';}if(!xHasClass(e,c)){e.className+=s+c;return true;}}return false;}function xBackground(e,c,i){if(!(e=xGetElementById(e)))return'';var bg='';if(e.style){if(xStr(c)){e.style.backgroundColor=c;}if(xStr(i)){e.style.backgroundImage=(i!='')?'url('+i+')':null;}bg=e.style.backgroundColor;}return bg;}function xColor(e,s){if(!(e=xGetElementById(e)))return'';var c='';if(e.style&&xDef(e.style.color)){if(xStr(s))e.style.color=s;c=e.style.color;}return c;}function xDisplay(e,s){if((e=xGetElementById(e))&&e.style&&xDef(e.style.display)){if(xStr(s)){try{e.style.display=s;}catch(ex){e.style.display='';}}return e.style.display;}return null;}function xFindAfterByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToLast(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xFindBeforeByClassName(ele,clsName){var re=new RegExp('\\b'+clsName+'\\b','i');return xWalkToFirst(ele,function(n){if(n.className.search(re)!=-1)return n;});}function xGetCSSRules(ss){return ss.rules?ss.rules:ss.cssRules;}function xGetComputedStyle(e,p,i){if(!(e=xGetElementById(e)))return null;var s,v='undefined',dv=document.defaultView;if(dv&&dv.getComputedStyle){s=dv.getComputedStyle(e,'');if(s)v=s.getPropertyValue(p);}else if(e.currentStyle){v=e.currentStyle[xCamelize(p)];}else return null;return i?(parseInt(v)||0):v;}function xGetStyleSheetFromLink(cl){return cl.styleSheet?cl.styleSheet:cl.sheet;}function xHasClass(e,c){e=xGetElementById(e);if(!e||e.className=='')return false;var re=new RegExp("(^|\\s)"+c+"(\\s|$)");return re.test(e.className);}function xHasStyleSelector(ss){if(!xHasStyleSheets())return undefined;function testSelector(cr){return cr.selectorText.indexOf(ss)>=0;}return xTraverseDocumentStyleSheets(testSelector);}function xHasStyleSheets(){return document.styleSheets?true:false;}function xHide(e){return xVisibility(e,0);}function xInsertRule(ss,sel,rule,idx){if(!(ss=xGetElementById(ss)))return false;if(ss.insertRule){ss.insertRule(sel+"{"+rule+"}",(idx>=0?idx:ss.cssRules.length));}else if(ss.addRule){ss.addRule(sel,rule,idx);}else return false;return true;}function xOpacity(e,o){var set=xDef(o);if(!(e=xGetElementById(e)))return 2;if(xStr(e.style.opacity)){if(set)e.style.opacity=o+'';else o=parseFloat(e.style.opacity);}else if(xStr(e.style.filter)){if(set)e.style.filter='alpha(opacity='+(100*o)+')';else if(e.filters&&e.filters.alpha){o=e.filters.alpha.opacity/100;}}else if(xStr(e.style.MozOpacity)){if(set)e.style.MozOpacity=o+'';else o=parseFloat(e.style.MozOpacity);}else if(xStr(e.style.KhtmlOpacity)){if(set)e.style.KhtmlOpacity=o+'';else o=parseFloat(e.style.KhtmlOpacity);}return isNaN(o)?1:o;}function xRemoveClass(e,c){if(!(e=xGetElementById(e)))return false;e.className=e.className.replace(new RegExp("(^|\\s)"+c+"(\\s|$)",'g'),function(str,p1,p2){return(p1==' '&&p2==' ')?' ':'';});return true;}function xShow(e){return xVisibility(e,1);}function xStyle(sProp,sVal){var i,e;for(i=2;i<arguments.length;++i){e=xGetElementById(arguments[i]);if(e.style){try{e.style[sProp]=sVal;}catch(err){e.style[sProp]='';}}}}function xToggleClass(e,c){if(!(e=xGetElementById(e)))return null;if(!xRemoveClass(e,c)&&!xAddClass(e,c))return false;return true;}function xTraverseDocumentStyleSheets(cb){var ssList=document.styleSheets;if(!ssList)return undefined;for(i=0;i<ssList.length;i++){var ss=ssList[i];if(!ss)continue;if(xTraverseStyleSheet(ss,cb))return true;}return false;}function xTraverseStyleSheet(ss,cb){if(!ss)return false;var rls=xGetCSSRules(ss);if(!rls)return undefined;var result;for(var j=0;j<rls.length;j++){var cr=rls[j];if(cr.selectorText){result=cb(cr);if(result)return true;}if(cr.type&&cr.type==3&&cr.styleSheet)xTraverseStyleSheet(cr.styleSheet,cb);}if(ss.imports){for(var j=0;j<ss.imports.length;j++){if(xTraverseStyleSheet(ss.imports[j],cb))return true;}}return false;}function xVisibility(e,bShow){if(!(e=xGetElementById(e)))return null;if(e.style&&xDef(e.style.visibility)){if(xDef(bShow))e.style.visibility=bShow?'visible':'hidden';return e.style.visibility;}return null;}function xZIndex(e,uZ){if(!(e=xGetElementById(e)))return 0;if(e.style&&xDef(e.style.zIndex)){if(xNum(uZ))e.style.zIndex=uZ;uZ=parseInt(e.style.zIndex);}return uZ;}
 
 /*  (x_drag.js) Compiled from X 4.17 by XC 1.06 on 20Mar08*/
-xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xDisableDrag(id){xGetElementById(id).xDragEnabled=false;}function xDisableDrop(id){xGetElementById(id).xDropEnabled=false;}function xEnableDrag(id,fS,fD,fE){var mx=0,my=0,el=xGetElementById(id);if(el){el.xDragEnabled=true;xAddEventListener(el,'mousedown',dragStart,false);}function dragStart(e){if(el.xDragEnabled){var ev=new xEvent(e);xPreventDefault(e);if(ev.button != 0) {return false; }mx=ev.pageX;my=ev.pageY;xAddEventListener(document,'mousemove',drag,false);xAddEventListener(document,'mouseup',dragEnd,false);if(fS){fS(el,ev.pageX,ev.pageY,ev);}}}function drag(e){var ev,dx,dy;xPreventDefault(e);ev=new xEvent(e);dx=ev.pageX-mx;dy=ev.pageY-my;mx=ev.pageX;my=ev.pageY;if(fD){fD(el,dx,dy,ev);}else{xMoveTo(el,el.offsetLeft+dx,el.offsetTop+dy);}}function dragEnd(e){var ev=new xEvent(e);xPreventDefault(e);xRemoveEventListener(document,'mouseup',dragEnd,false);xRemoveEventListener(document,'mousemove',drag,false);if(fE){fE(el,ev.pageX,ev.pageY,ev);}if(xEnableDrag.drop){xEnableDrag.drop(el,ev);}}}xEnableDrag.drops=[];
+xLibrary={version:'4.17',license:'GNU LGPL',url:'http://cross-browser.com/'};function xDisableDrag(id){xGetElementById(id).xDragEnabled=false;}function xDisableDrop(id){xGetElementById(id).xDropEnabled=false;}
+
+function xEnableDrag(id,fS,fD,fE)
+{
+  var mx = 0, my = 0, el = xGetElementById(id);
+  if (el) {
+    el.xDragEnabled = true;
+    xAddEventListener(el, 'mousedown', dragStart, false);
+  }
+  // Private Functions
+  function dragStart(e)
+  {
+    if (el.xDragEnabled) {
+      var ev = new xEvent(e);
+      xPreventDefault(e);
+      mx = ev.pageX;
+      my = ev.pageY;
+      xAddEventListener(document, 'mousemove', drag, false);
+      xAddEventListener(document, 'mouseup', dragEnd, false);
+      if (fS) {
+        fS(el, ev.pageX, ev.pageY, ev);
+      }
+    }
+  }
+  function drag(e)
+  {
+    if (el && el.xDragEnabled) {
+      var ev, dx, dy;
+      xPreventDefault(e);
+      ev = new xEvent(e);
+      dx = ev.pageX - mx;
+      dy = ev.pageY - my;
+      mx = ev.pageX;
+      my = ev.pageY;
+      if (fD) {
+        fD(el, dx, dy, ev);
+      }
+      else {
+        xMoveTo(el, xLeft(el) + dx, xTop(el) + dy);
+      }
+    }
+  }
+  function dragEnd(e)
+  {
+    var ev = new xEvent(e);
+    xPreventDefault(e);
+    xRemoveEventListener(document, 'mouseup', dragEnd, false);
+    xRemoveEventListener(document, 'mousemove', drag, false);
+    if (fE) {
+      fE(el, ev.pageX, ev.pageY, ev);
+    }
+    if (xEnableDrag.drop) {
+      xEnableDrag.drop(el, ev);
+    }
+  }
+}
+
+xEnableDrag.drops = []; // static property
 
 function xEnableDrop(id, f) {
 	var e = xGetElementById(id);
@@ -1178,10 +1301,10 @@ function xEnableDrop(id, f) {
 }
 
 xEnableDrag.drop = function (el, ev) {
-	var i, z, hz = 'none', d = null, da = xEnableDrag.drops;
+	var i, hz = 'none', d = null, da = xEnableDrag.drops;
 	for (i = 0; i < da.length; ++i) {
 		if (da[i] && xHasPoint(da[i].e, ev.pageX, ev.pageY)) {
-			z = getZindex(da[i].e);
+			var z = getZindex(da[i].e);
 			if (hz == 'none' || z >= hz) {
 				hz = z;
 				if (!da[i].e.xDropEnabled) {

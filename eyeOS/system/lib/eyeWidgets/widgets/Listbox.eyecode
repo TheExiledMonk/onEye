@@ -51,7 +51,9 @@ class Listbox {
     var $signal;
     var $mode;
     var $rowSize;
-
+    var $disableMsg;
+    var $selected;
+    
 	function Listbox($params) {	
 		if(!is_array($params)){
 			//TODO: put this error handler in all widgets an use errorLib
@@ -79,6 +81,7 @@ class Listbox {
         isset($params['orientation']) ? $this->orientation = $params['orientation'] : $this->orientation = 'vertical';
         isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;
         isset($params['mode']) ? $this->mode = $params['mode'] : $this->mode = 1;
+        isset($params['disableMsg']) ? $this->disableMsg = $params['disableMsg'] : $this->disableMsg = 0;
 	}
 	
 	//event handling
@@ -157,15 +160,53 @@ class Listbox {
     function addItem($text,$id=null,$image=0) {
         global $myPid;
         global $checknum;
+        if ($text==null && $image==null) {
+            return false;
+        }
         if (empty($id)) {
             $id = md5(uniqid(rand()));
         }
         $tokens = array($text,$id,$image);
-        $js = 'Listbox_addItem('.$myPid.',"'.$this->name.'", '.$checknum.', "'.$this->signal.'", '.$this->rowSize.', %s , %s, %s);';
+        $js = 'Listbox_addItem('.$myPid.',"'.$this->name.'", '.$checknum.', "'.$this->signal.'", '.$this->rowSize.', '.$this->disableMsg.', %s , %s, %s);';
         eyex('runjs',array('js'=>$js,'tokens'=>$tokens));
         return $id;
     }
+    
+    function setText($id,$text) {
+        if (empty($id)) {
+            return false;
+        }
+        $js = 'document.getElementById("txt_'.$id.'").firstChild.nodeValue = "'.$text.'";';
+        eyex('rawjs',array('js' => $js));
+    }
+    
+    function selectItem($id) {
+        global $myPid;      
+        eyex('runjs',array('js' => 'Listbox_selectItem('.$myPid.', "'.$this->name.'", "'.$id.'");'));
+    }
+    
+    function delItem($id) {
+        global $myPid;
+        eyex('runjs',array('js' => 'var lbchild = document.getElementById("'.$myPid.'_'.$id.'"); var lbfather = lbchild.parentNode; 
+            if (lbfather.getAttribute("lastfocus") == "'.$id.'") { lbfather.setAttribute("lastfocus",""); } lbfather.removeChild(lbchild);'));
+    }
+    
+    function getSyncString() {
+        global $myPid;
+        return "eyeParam('$this->name',document.getElementById('$myPid".'_'."$this->name').getAttribute('lastfocus'))";
+    }
+    
+	function setValue($selected) {
+		$this->selected = $selected;	
+	}
+    
+    function sort($type) {
+        global $myPid;
+        eyex('runjs',array('js' => 'Listbox_sort("'.$myPid.'","'.$this->name.'", %s)', 'tokens' => array($type)));
 
+        // TODO This function
+    }
+    
 	function hide() {
 		global $myPid;
 		$this->visible = 0;

@@ -19,7 +19,7 @@ function SoundManager(smURL,smID) {
   this.useConsole = true;          // use firebug/safari console.log()-type debug console if available
   this.consoleOnly = false;        // if console is being used, do not create/write to #soundmanager-debug
   this.waitForWindowLoad = false;  // force SM2 to wait for window.onload() before trying to call soundManager.onload()
-  this.nullURL = 'index.php?version=' + EXTERN_CACHE_VERSION + '&extern=libs/eyeSound/null.mp3';       // path to "null" (empty) MP3 file, used to unload sounds (Flash 8 only) // eyeOS
+  this.nullURL = 'index.php?version=' + EXTERN_CACHE_VERSION + '&extern=libs/eyeSound/null.mp3'; // path to "null" (empty) MP3 file, used to unload sounds (Flash 8 only) // eyeOS
   this.allowPolling = true;        // allow flash to poll for status update (required for "while playing", peak, sound spectrum functions to work.)
   this.useMovieStar = false;	   // enable support for Flash 9.0r115+ (codename "MovieStar") MPEG4 audio + video formats (AAC, M4V, FLV, MOV etc.)
   this.bgColor = '#ffffff';	       // movie (.swf) background color, '#000000' useful if showing on-screen/full-screen video etc.
@@ -53,7 +53,7 @@ function SoundManager(smURL,smID) {
   };
 
   this.flash9Options = {           // flash 9-only options, merged into defaultOptions if flash 9 is being used
-    'isMovieStar': null,	   // "MovieStar" MPEG4 audio/video mode. Null (default) = auto detect MP4, AAC etc. based on URL. true = force on, ignore URL
+    'isMovieStar': null,	  	   // "MovieStar" MPEG4 audio/video mode. Null (default) = auto detect MP4, AAC etc. based on URL. true = force on, ignore URL
     'usePeakData': false,          // enable left/right channel peak (level) data
     'useWaveformData': false,      // enable sound spectrum (raw waveform data) - WARNING: CPU-INTENSIVE: may set CPUs on fire.
     'useEQData': false,            // enable sound EQ (frequency spectrum data) - WARNING: Also CPU-intensive.
@@ -62,7 +62,7 @@ function SoundManager(smURL,smID) {
   };
 
   this.movieStarOptions = {        // flash 9.0r115+ MPEG4 audio/video options, merged into defaultOptions if flash 9 + movieStar mode is enabled
-    'onmetadata': null,		   // callback for when video width/height etc. are received
+    'onmetadata': null,		   	   // callback for when video width/height etc. are received
     'useVideo': false,		   	   // if loading movieStar content, whether to show video
     'bufferTime': null		   	   // seconds of data to buffer before playback begins (null = flash default of 0.1 seconds - if AAC playback is gappy, try up to 3 seconds)
   };
@@ -644,9 +644,9 @@ function SoundManager(smURL,smID) {
     } else {
       oMovie = document.createElement('embed');
       for (tmp in oEmbed) {
-	if (oEmbed.hasOwnProperty(tmp)) {
+	    if (oEmbed.hasOwnProperty(tmp)) {
           oMovie.setAttribute(tmp,oEmbed[tmp]);
-	}
+	    }
       }
     }
 
@@ -1255,7 +1255,7 @@ function SoundManager(smURL,smID) {
         _s._wD('SMSound.load(): Using manually-assigned URL');
         _t._iO.url = _t.url;
         _t.url = null;
-    } 
+      }
     } 
 
     if (typeof _t._iO.url == 'undefined') {
@@ -1538,7 +1538,7 @@ function SoundManager(smURL,smID) {
 		_t._onbufferchange(0);
 	  }
       if (_t._iO.whileplaying) {
-	_t._iO.whileplaying.apply(_t); // flash may call after actual finish
+	    _t._iO.whileplaying.apply(_t); // flash may call after actual finish
       }
       if (_t.loaded && _t._iO.onbeforefinish && _t._iO.onbeforefinishtime && !_t.didBeforeFinish && _t.duration-_t.position <= _t._iO.onbeforefinishtime) {
         _s._wD('duration-position &lt;= onbeforefinishtime: '+_t.duration+' - '+_t.position+' &lt= '+_t._iO.onbeforefinishtime+' ('+(_t.duration-_t.position)+')');

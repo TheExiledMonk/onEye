@@ -25,7 +25,7 @@ function eyeDesk_run($params = '') {
 	global $checknum;
 	global $currentUser;
 	
-	eyex('runjs',array('js' => 'document.title = %s + "@" + %s;','tokens' => array($currentUser,EYEOS_HOSTNAME)));
+	eyex('runjs',array('js' => 'document.title = %s; EXTERN_CACHE_VERSION = "' . EXTERN_CACHE_VERSION . '"; window.onbeforeunload = function() { return ""; };','tokens' => array($currentUser . '@' . EYEOS_HOSTNAME)));
 	eyex('createDiv',array('class' => 'minimizedApps','father' => 'eyeScreen','name' => 'minimizedApps','nopid' => 1,'removepid' => 1));
 	eyex('createDiv',array('class' => 'minimizedAppsIn','father' => 'minimizedApps','name' => 'minimizedAppsIn','nopid' => 1,'removepid' => 1));
 	eyex('createDiv',array('class' => 'minimizedAppsRight','father' => 'eyeScreen','name' => 'minimizedAppsRight','nopid' => 1,'removepid'=>1));

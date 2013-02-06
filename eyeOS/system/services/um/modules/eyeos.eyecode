@@ -231,6 +231,49 @@ function service_um_userExist($params = null){
 }
 
 /**
+* Checks if a user exists. This function is an alias of userExist.
+* 
+* @param $params array(username)
+* @param $username Name of the user.
+* @return Returns a boolean value indicating whether or not a user
+*	with the given name exist. If some error occurs, returns
+*	false and sets the error accordingly.
+* @exception INCORRECT_PARAMS No username is specified.
+* @date 2009/05/04
+*/
+function service_um_userExists($params = null) {
+	return um('userExist', $params);
+}
+
+/**
+* Checks if a group exists.
+* 
+* @param $params array(group)
+* @param $group Name of the user.
+* @return Returns a boolean value indicating whether or not a group
+*	with the given name exist. If some error occurs, returns
+*	false and sets the error accordingly.
+* @exception INCORRECT_PARAMS No group is specified.
+* @date 2009/05/04
+*/
+function service_um_groupExists($params = null) {
+	if($params == null || count($params) < 1){
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}	
+	
+	$group = utf8_basename($params[0]);
+	$path = EYE_ROOT.'/'.GROUPS_DIR.'/'.$group;
+	
+	if(is_dir($path)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+/**
 * Updates a user's information contained in user's paramets file.
 * 
 * @param $params array(username,[password],[fullname],[email],[creationDate],[group])
@@ -654,6 +697,48 @@ function service_um_getAllUsersBy($params = '') {
 }
 
 /**
+* Returns a list with all the users that belong to a specific group.
+* 
+* @param $group String
+* @return Returns an array containing the names of all the users of the group.
+* @date 2009/05/04
+*/
+function service_um_getAllUsersByGroup($params = null) {
+	//I am forcing the group to be specified in the 'group' key in
+	//case this function is expanded in the future
+	if(!is_array($params) || empty($params['group'])) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	}
+
+	global $currentUser;
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER; //Switch needed due to the need of opening account files
+	
+	$allUsers = array();
+	$group = $params['group'];
+	$acronyms = vfs('real_getDirContent',array(EYE_ROOT . '/' . ACCOUNT_DIR . '/'));
+	foreach($acronyms as $acronymUrl) {
+		if (is_dir($acronymUrl)) {
+			$acronym = utf8_basename($acronymUrl);
+
+			$users = vfs('real_getDirContent',array($acronymUrl,'*.xml',2));
+			foreach ($users as $userUrl) {
+				$user = utf8_basename($userUrl, '.xml');
+				$userInfo = eyeXML('getXMLFile', array(EYE_ROOT.'/'.ACCOUNT_DIR.'/'.$acronym.'/'.$user.'.xml'));
+				if (is_array($userInfo) && in_array($group, $userInfo['eyeUser'][0]['group'])) {
+					$allUsers[] = $user;
+				}
+			}
+		}
+	}
+	
+	$currentUser = $oldUser;
+	
+	return $allUsers;
+}
+
+/**
 * Returns the path to the current user's directory.
 * 
 * @return Returns an string containing the path.
@@ -732,6 +817,8 @@ function service_um_getUserFilePath($params=null) {
 		return EYE_ROOT . '/' . ACCOUNT_DIR . '/' . getAcronim(array($username)) . '/' . $username . '.xml';
 	}
 }
+
+
 
 /*--------------------------------------------------------------------*/
 

@@ -25,22 +25,17 @@ function eyeControl_on_users_load($params = '') {
 	global $myPid;
 	
 	eyex('messageBox',array(
+		'buttons' => array(array('users_load_selected','Show users'),array('users_load_all','Show all'),array('users_load_cancel','Cancel')),
 		'content' => 'You can use /a (ending), /b (beginning) and /c (counts) to list users.',
-		'type' => 3,
 		'father' => 'eyeControl_container_big',
+		'textbox_event' => 'users_load_selected',
+		'textbox_name' => 'eyeControl_users_load_textbox',
+		'textbox_text' => $_SESSION['eyeControl'][$myPid]['content']['users'],
 		'title' => 'Show users...',
+		'type' => 3,
 		'win_name' => 'eyeControl_users_load_window',
 		'win_removepid' => 0,
-		'win_style' => TITLE + CLOSE,
-		'btn1_capt' => 'Show users',
-		'btn1_name' => 'users_load_selected',
-		'btn2_capt' => 'Show all',
-		'btn2_name' => 'users_load_all',
-		'btn3_capt' => 'Cancel',
-		'btn3_name' => 'users_load_cancel',
-		'textbox_name' => 'eyeControl_users_load_textbox',
-		'textbox_event' => 'users_load_selected',
-		'textbox_text' => $_SESSION['eyeControl'][$myPid]['content']['users']
+		'win_style' => TITLE + CLOSE
 	));
 }
 
@@ -73,20 +68,15 @@ function eyeControl_on_users_delete($params = '') {
 	$user = $GLOBALS['eyeControl_users_sortabletable']->selected;
 	if ($user && $user != REAL_ROOTUSER) {
 		eyex('messageBox',array(
+			'buttons' => array(array('users_delete_yes','Yes'),array('users_delete_no','No')),
 			'content' => 'Do you really want to remove this user from the system?',
-			'type' => 3,
-			'title' => 'Delete user',
-			'win_name' => 'eyeControl_users_delete_window',
-			'win_style' => TITLE + CLOSE,
-			'win_removepid' => 0,
-			'btn1_capt' => 'Yes',
-			'btn1_name' => 'users_delete_yes',
-			'btn2_capt' => 'No',
-			'btn2_name' => 'users_delete_no',
-			'hidden_text' => $user,
-			'hidden_name' => 'users_delete_hidden',
 			'father' => 'eyeControl_container_big',
-			'img' => '?'
+			'hiddens' => array(array('users_delete_hidden',$user)),
+			'img' => '?',
+			'title' => 'Delete user',
+			'type' => 3,
+			'win_name' => 'eyeControl_users_delete_window',
+			'win_style' => TITLE + CLOSE
 		));
 	} elseif ($user == REAL_ROOTUSER) {
 		eyex('messageBox',array('content' => 'You cannot delete the root user!'));

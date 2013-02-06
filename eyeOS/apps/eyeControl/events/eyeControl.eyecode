@@ -47,19 +47,16 @@ function eyeControl_on_selectUser($params = '') {
 			proc('end');
 		} else {
 			eyex('messageBox',array(
+				'buttons' => array(array('selectUser_select','Select'),array('selectUser_cancel','Cancel')),
 				'content' => 'Please type the username here:',
-				'type' => 3,
 				'father' => 'eyeControl_window',
+				'textbox_event' => 'selectUser_select',
+				'textbox_name' => 'eyeControl_searchuser_textbox',
 				'title' => 'Search user...',
+				'type' => 3,
 				'win_name' => 'eyeControl_searchuser_window',
 				'win_removepid' => 0,
-				'win_style' => TITLE + CLOSE,
-				'btn1_capt' => 'Select',
-				'btn1_name' => 'selectUser_select',
-				'btn2_capt' => 'Cancel',
-				'btn2_name' => 'selectUser_cancel',
-				'textbox_name' => 'eyeControl_searchuser_textbox',
-				'textbox_event' => 'selectUser_select'
+				'win_style' => TITLE + CLOSE
 			));
 		}
 	}

@@ -108,6 +108,67 @@ function service_vfs_create($params) {
 	return true;
 }
 
+/**
+* Restores a virtual file from trash.
+* 
+* @param $params array(file,destination)
+* @param $file Path to the file to restore
+* @param $destination Path
+* @return If the function succeeds, returns true. Otherwise, it returns false and sets the error code according to the error occurred.
+* @exception INCORRECT_PARAMS No file has been specified.
+* @date 2009/05/09
+*/
+function service_vfs_restore($params = '') {
+	if (!isset($params[0]) || !isset($params[1])) {
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	} elseif (vfs('real_fileExists',array($params[0] . '.' . EYEOS_FILE_EXT)) && !vfs('real_checkPermissions',array($params[0] . '.' . EYEOS_FILE_EXT)) || vfs('real_fileExists',array($params[0] . '.' . EYEOS_INFO_EXT)) && !vfs('real_checkPermissions',array($params[0] . '.' . EYEOS_INFO_EXT)) || !vfs('checkPermissions',array($params[1]))) {
+		return false;
+	} elseif (!vfs('real_fileExists',array($params[0] . '.' . EYEOS_FILE_EXT)) && !vfs('real_fileExists',array($params[0] . '.' . EYEOS_INFO_EXT))) {
+		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
+		return false;
+	} elseif (vfs('fileExists',array($params[1]))) {
+		errorCodes('setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
+		return false;
+	}
+	if (utf8_substr($params[0],- utf8_strlen('.' . EYEOS_TRASH_EXT)) == '.' . EYEOS_TRASH_EXT) {
+		$params[0] = utf8_substr($params[0],0,utf8_strlen('.' . EYEOS_TRASH_EXT));
+	}
+	if (vfs('real_fileExists',array($params[0] . '.' . EYEOS_INFO_EXT))) {
+		if (vfs('isGroupDir',array($params[1]))) {
+			return (!vfs('real_fileExists',array($params[0] . '.' . EYEOS_FILE_EXT)) || vfs('real_move',array($params[0] . '.' . EYEOS_FILE_EXT,$params[1] . '.' . EYEOS_FILE_EXT))) && (!vfs('real_fileExists',array($params[0] . '.' . EYEOS_INFO_EXT)) || vfs('real_move',array($params[0] . '.' . EYEOS_INFO_EXT,$params[1] . '.' . EYEOS_INFO_EXT))) && vfs('real_delete',array($params[0] . '.' . EYEOS_TRASH_EXT));
+		} elseif (vfs('real_move',array($params[0] . '.' . EYEOS_FILE_EXT,$params[1]))) {
+			return vfs('real_delete',array($params[0] . '.' . EYEOS_INFO_EXT)) && vfs('real_delete',array($params[0] . '.' . EYEOS_TRASH_EXT));
+		}
+	} elseif (vfs('real_move',array($params[0] . '.' . EYEOS_FILE_EXT,$params[1]))) {
+		return vfs('real_delete',array($params[0] . '.' . EYEOS_TRASH_EXT));
+	}
+	return false;
+}
+
+/**
+* Restores a virtual directory from trash.
+* 
+* @param $params array(dir,destination)
+* @param $dir Path to the file to restore
+* @param $destination Path
+* @return If the function succeeds, returns true. Otherwise, it returns false and sets the error code according to the error occurred.
+* @exception INCORRECT_PARAMS No dir has been specified.
+* @date 2009/05/09
+*/
+function service_vfs_restoreDir($params = '') {
+	if (!isset($params[0]) || !isset($params[1])) {
+		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	if (utf8_substr($params[0],- utf8_strlen('.' . EYEOS_TRASH_EXT)) == '.' . EYEOS_TRASH_EXT) {
+		$params[0] = utf8_substr($params[0],0,utf8_strlen('.' . EYEOS_TRASH_EXT));
+	}
+	if (vfs('real_move',array($params[0] . '/',$params[1] . '/'))) {
+		return vfs('real_delete',array($params[0] . '.' . EYEOS_TRASH_EXT));
+	}
+	return false;
+}
 
 /**
 * Deletes a virtual file.
@@ -365,7 +426,7 @@ function service_vfs_copy($params) {
 				$content = fread($fp,filesize($orig.'.'.EYEOS_INFO_EXT));
 				fclose($fp);
 				$xml = reqLib('eyeXML','xml2array',array($content));
-				$xml['filename'] = utf8_basename($subdest);
+				$xml['eyeFile'][0]['filename'][0] = utf8_basename($subdest);
 				$content = reqLib('eyeXML','array2xml',array($xml));
 				$fp = fopen($dest.'.'.EYEOS_INFO_EXT,'w');
 				fwrite($fp,$content);
@@ -604,8 +665,7 @@ function service_vfs_rename($params) {
 		return @rename($orig,$dest);
 	}else {
 		return vfs('move',array($orig,$dest));
-	} 
-	return true;
+	}
 }
 
 
@@ -900,11 +960,13 @@ function service_vfs_checkPermissions($params) {
 	$filename = "";
 	global $currentUser;
 	$userdir = service('um','getCurrentUserDir').'/';
+	$usertmpdir = service('um','getCurrentUserDir').'/'.TMP_USER_DIR.'/';
 	if(!is_dir($file)) {
 		$filename = utf8_basename($file);
 		$file = dirname($file);
 	}
 	$userdir_path = realpath($userdir);
+	$usertmpdir_path = realpath($usertmpdir);
 	$file_path = realpath($file);
 	
 	$groups = service('um','getCurrentGroups');
@@ -967,6 +1029,8 @@ function service_vfs_checkPermissions($params) {
 		}		
 	}
 	if (0 === utf8_strpos($file_path,$userdir_path)) {
+		return true;
+	} elseif (0 === utf8_strpos($file_path,$usertmpdir_path)) {
 		return true;
 	} elseif ($currentUser == ROOTUSER) {
 		//If the user is really an admin and the admins are jailed
@@ -2161,7 +2225,7 @@ function deleteDirContent($dir) {
 		while (false !== ($file = readdir($handler))) {
 			if($file != '..' && $file != '.') {
 				if(is_dir($dir.'/'.$file)) {
-					deleteDirContent($dir.'/'.$file,$first);
+					deleteDirContent($dir.'/'.$file);
 				} else {
 					unlink($dir.'/'.$file);
 				}
@@ -2204,13 +2268,13 @@ function dircopy($srcdir, $dstdir) {
 					if(is_file($dstfile)) $ow = filemtime($srcfile) - filemtime($dstfile); else $ow = 1;
 					if($ow > 0) {
 						if(copy($srcfile, $dstfile)) {
-							touch($dstfile, filemtime($srcfile)); $num++;
+							touch($dstfile, filemtime($srcfile));
 						} else {
 							return false;
 						}
 					}                  
 				} else if(is_dir($srcfile)) {
-					dircopy($srcfile, $dstfile, $verbose);
+					dircopy($srcfile, $dstfile);
 				}
 			}
 		}
@@ -2300,7 +2364,7 @@ function service_vfs_checkSpecialChars($params){
 }
 
 function service_vfs_isGroupDir($params) {
-	if(!is_dir($dir)) {
+	if(!is_dir($params[0])) {
 		$dir = dirname($params[0]);
 	} else {
 		$dir = $params[0];

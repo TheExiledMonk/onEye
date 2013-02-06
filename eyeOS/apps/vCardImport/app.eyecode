@@ -24,13 +24,9 @@
 function vCardImport_run($params = '') {
 	if ($params[0]) {
 		eyex('messageBox',array(
-			'btn1_capt' => 'Import',
-			'btn1_name' => 'Do',
-			'btn2_capt' => 'Cancel',
-			'btn2_name' => 'Close',
+			'buttons' => array(array('Do','Import'),array('Close','Cancel')),
 			'content' => 'Do you really want to import this vCard?',
-			'hidden_name' => 'vCardImport_Hidden',
-			'hidden_text' => $params[0],
+			'hiddens' => array(array('vCardImport_Hidden',$params[0])),
 			'img' => '?',
 			'savePosition' => 1,
 			'title' => i18n('translate',array('Import %s',array(utf8_basename($params[0])))),
