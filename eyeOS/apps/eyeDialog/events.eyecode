@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -56,9 +56,6 @@ function eyeDialog_on_open($params="") {
 		}		
 	}
 	
-	$userTheme = $_SESSION['usertheme'];
-	//TODO: UNHARCODE IT
-	
 	$myUserDir = realpath(service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$path);
 	
 	if(!$myUserDir) {
@@ -84,7 +81,7 @@ function eyeDialog_on_open($params="") {
 	$myTable->show();
 
 	if(is_array($content)) {
-		$myTable->addRow(array('<img src="index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/16x16/folder.png" />&nbsp;&nbsp;','..',' '));
+		$myTable->addRow(array('<img src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png" />&nbsp;&nbsp;','..',' '));
 		$type = $GLOBALS['dType']->text;
 				
 		foreach ($content as $current) {
@@ -93,7 +90,7 @@ function eyeDialog_on_open($params="") {
 			if($type != 2){
 				//Avoid listing eyeLinks
 				if(!is_dir($current) && vfs('fileExists', array($current))) {
-					$icon = '<img src="index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/16x16/file.png" />&nbsp;&nbsp;';
+					$icon = '<img src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/file.png" />&nbsp;&nbsp;';
 					$myArray = vfs('readInfo',array($current));
 					$fileName = $myArray['eyeFile'][0]['filename'][0];
 					//TODO: SIZE MUST BE EXTRACTED FROM EYEFILE, NOT EYEINFO
@@ -102,14 +99,14 @@ function eyeDialog_on_open($params="") {
 					$fileName = $fileName;
 					$files[] = array($icon,$fileName,$size);
 				} else if(is_dir($current)) {
-					$icon = '<img src="index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/16x16/folder.png" />&nbsp;&nbsp;';
+					$icon = '<img src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png" />&nbsp;&nbsp;';
 					$fileName = utf8_basename($current);
 					$fileName = $fileName;
 					$myTable->addRow(array($icon,$fileName,' '));
 				}
 			}else{
 				if(is_dir($current)){
-					$icon = '<img src="index.php?extern=/apps/eyeX/themes/'.$userTheme.'/icons/16x16/folder.png" />&nbsp;&nbsp;';
+					$icon = '<img src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png" />&nbsp;&nbsp;';
 					$fileName = utf8_basename($current);
 					$fileName = $fileName;
 					$myTable->addRow(array($icon,$fileName,' '));	

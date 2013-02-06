@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -86,7 +86,7 @@ function eyeFTP_browseRemote($path = '/') {
 		return;
 	}
 	
-	eyeFTP_logConsole('Listing directory \'%s\'...',
+	eyeFTP_logConsole('Listing directory "%s"...',
 		array(eyeFTP_getFormatedDirPath($path))
 	);
 	if (EYEFTP_USE_REQUEST_BOUNCING) {

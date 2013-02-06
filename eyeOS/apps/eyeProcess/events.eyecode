@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -35,4 +35,7 @@ function eyeProcess_on_kill() {
 	service('eyex','messageBox',array('content'=>'Process killed successfully.'));
 }
 
+function eyeProcess_on_launch() {
+	proc('launch',array('eyeLaunch'));
+}
 ?>

@@ -1,8 +1,8 @@
 <package>
 	<name>eyeProperties</name>
 	<category>File Management</category>
-	<version>1.0</version>
-	<description>Utility for get info from files</description>
+	<version>1.7</version>
+	<description>Utility to get information from files</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>
 	<type>Utility</type>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -24,12 +24,13 @@
 function eyeInstaller_run($params=null) {
 	global $currentUser;
 	if($currentUser != ROOTUSER) {
+		eyeX('messageBox', array('content' => 'Only root can install packages'));
 		proc('end');
 		return;
 	}
 	$myWindow = new Window(array('name'=>'Installing','father'=>'eyeApps',
 		'type'=>NORESIZE_WINDOW,'cent'=>1,'width'=>400,'height'=>150,
-		'title'=>'Installing'));
+		'title'=>'Installing','savePosition' => 1));
 	$myWindow->show();
 	
 	if(!$params[0]) {

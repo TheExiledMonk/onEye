@@ -20,7 +20,7 @@
 .mcePathItem, .mcePathItem:link, .mcePathItem:visited, .mcePathItem:hover {text-decoration: none; font-family: 'MS Sans Serif', sans-serif, Verdana, Arial; font-size: 9pt; color: #000000;}
 .mcePathItem:hover {text-decoration: underline;}
 .mceStatusbarPathText {float: left;}
-.mceStatusbarResize {float: right; background-image: url('index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/statusbar_resize.gif'); background-repeat: no-repeat; width: 11px; height: 20px; cursor: se-resize;}
+.mceStatusbarResize {float: right; background-image: url('index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/statusbar_resize.gif'); background-repeat: no-repeat; width: 11px; height: 20px; cursor: se-resize;}
 .mceResizeBox {width: 10px; height: 10px; display: none; border: 1px dotted gray; margin: 0; padding: 0;}
 .mceEditorIframe {border: 0;}
 
@@ -32,7 +32,7 @@ a.mceButtonNormal img, a.mceButtonSelected img {border: 1px solid #F0F0EE !impor
 a.mceButtonSelected img {border: 1px solid #6779AA !important; background-color: #D4D5D8;}
 a.mceButtonNormal img:hover, a.mceButtonSelected img:hover {border: 1px solid #0A246A !important; cursor: default; background-color: #B6BDD2;}
 a.mceButtonDisabled img {-moz-opacity:0.3; opacity: 0.3; border: 1px solid #F0F0EE !important; cursor: default;}
-a.mceTiledButton img {background-image: url('index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/buttons.gif'); background-repeat: no-repeat;}
+a.mceTiledButton img {background-image: url('index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/buttons.gif'); background-repeat: no-repeat;}
 
 /* Menu button CSS rules */
 
@@ -57,7 +57,7 @@ span.mceMenuButtonSelected.mceMenuHover img.mceMenuButton {border: 1px solid #0A
 .mceMenuTitle span {padding-left: 5px;}
 .mceMenuTitle {background-color: #DDDDDD; font-weight: bold;}
 .mceMenuDisabled {color: gray;}
-span.mceMenuSelectedItem {background-image: url('index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/menu_check.gif'); background-repeat: no-repeat; background-position: 5px 8px; padding-left: 20px;}
+span.mceMenuSelectedItem {background-image: url('index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/menu_check.gif'); background-repeat: no-repeat; background-position: 5px 8px; padding-left: 20px;}
 span.mceMenuCheckItem {padding-left: 20px;}
 span.mceMenuLine {display: block; position: absolute; left: 0; top: -1px; background-color: #F5F4F2; width: 30px; height: 1px; overflow: hidden; padding-left: 0; padding-right: 0;}
 .mceColors table, .mceColors td {margin: 0; padding: 2px;}

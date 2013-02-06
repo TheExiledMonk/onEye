@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -38,10 +38,14 @@ function eyeDownload_on_download($params=null) {
 		exit;
 	}
 	$myName = vfs('getRealName',array($myUserDir));
-	$size = service('vfs','filesize',array($myUserDir),1);
+	$size = service('vfs','filesize',array($myUserDir,1));
 	$name = utf8_basename($myUserDir);
-	header('Content-Type: application/octet-stream');
 	header('Content-Disposition: attachment; filename="'.$name.'"');
+	header('Content-Length: ' . $size);
+	$info = utf8_pathinfo($myUserDir);
+	header('Content-Type: ' . $info['mime']);
+	header('Accept-Ranges: bytes');
+	header('X-Pad: avoid browser bug');
 	readfile($myName);
 	reqLib('eyeWidgets','rawunserialize');
 	proc('end');

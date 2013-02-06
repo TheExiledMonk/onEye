@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -128,17 +128,17 @@ function eyeFTP_ftpListDir($dir) {
 	foreach($filesData as $id => $fileInfo) {
 		switch($fileInfo['type']) {
 			case 'd':
-				$urlIcon = 'index.php?extern=apps/eyeFTP/gfx/typefolder.png';
+				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typefolder.png';
 				$size = ' ';
 				break;
 			
 			case 'l':
-				$urlIcon = 'index.php?extern=apps/eyeFTP/gfx/typelink.png';
+				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typelink.png';
 				$size  = $fileInfo['size'];
 				break;
 			
 			default:
-				$urlIcon = 'index.php?extern=apps/eyeFTP/gfx/typedefault.png';
+				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/typedefault.png';
 				$size  = $fileInfo['size'];
 		}
 		$GLOBALS['eyeFTP_remoteFiles_TAB']->addRow(array(

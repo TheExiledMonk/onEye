@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -621,11 +621,11 @@ function eyeMessages_on_goto_trash($params=null) {
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeMessagesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_new.png','New');
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_open.png','Read',array($myTable));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_new.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_open.png','Read',array($myTable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('restore','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_restore.png','Restore', array($myTable));
-	$myToolbar->addItem('empty_trash','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_delete.png','Empty');
+	$myToolbar->addItem('restore','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_restore.png','Restore', array($myTable));
+	$myToolbar->addItem('empty_trash','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_delete.png','Empty');
 }
 
 function eyeMessages_on_goto_inbox($params=null) {
@@ -690,11 +690,11 @@ function eyeMessages_on_goto_inbox($params=null) {
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeMessagesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_new.png','New');
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_open.png','Read',array($myTable));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_new.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_open.png','Read',array($myTable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('delete','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_delete.png','Delete', array($myTable));
-	$myToolbar->addItem('refresh', 'index.php?extern=apps/eyeX/themes/default/images/toolbar/message_refresh.png', 'Refresh');
+	$myToolbar->addItem('delete','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_delete.png','Delete', array($myTable));
+	$myToolbar->addItem('refresh', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/message_refresh.png', 'Refresh');
 }
 
 function eyeMessages_on_goto_sent($params=null) {
@@ -757,10 +757,10 @@ function eyeMessages_on_goto_sent($params=null) {
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeMessagesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_new.png','New');
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_open.png','Read',array($myTable));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_new.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_open.png','Read',array($myTable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('delete','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_delete.png','Delete', array($myTable));
+	$myToolbar->addItem('delete','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_delete.png','Delete', array($myTable));
 }
 
 function eyeMessages_on_goto_read($params=null) {
@@ -822,10 +822,10 @@ function eyeMessages_on_goto_read($params=null) {
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeMessagesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_new.png','New');
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_open.png','Read',array($myTable));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_new.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_open.png','Read',array($myTable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('delete','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_delete.png','Delete', array($myTable));
+	$myToolbar->addItem('delete','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_delete.png','Delete', array($myTable));
 }
 
 function eyeMessages_on_goto_unread($params=null) {
@@ -877,11 +877,11 @@ function eyeMessages_on_goto_unread($params=null) {
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeMessagesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_new.png','New');
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_open.png','Read',array($myTable));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_new.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_open.png','Read',array($myTable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('delete','index.php?extern=apps/eyeX/themes/default/images/toolbar/message_delete.png','Delete', array($myTable));
-	$myToolbar->addItem('refresh', 'index.php?extern=apps/eyeX/themes/default/images/toolbar/message_refresh.png', 'Refresh');
+	$myToolbar->addItem('delete','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/message_delete.png','Delete', array($myTable));
+	$myToolbar->addItem('refresh', 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/message_refresh.png', 'Refresh');
 }
 
 function date_sort($list) {

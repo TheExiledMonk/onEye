@@ -1,10 +1,10 @@
 <package>
 	<name>eyeBoard</name>
 	<category>Networking</category>
-	<version>1.0</version>
+	<version>1.7</version>
 	<description>Simple comunication board</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>
 	<type>Application</type>
-	<icon>index.php?extern=apps/eyeX/themes/default/icons/48x48/eyeBoard.png</icon>
+	<icon>index.php?theme=1&amp;extern=icons/48x48/eyeBoard.png</icon>
 </package>

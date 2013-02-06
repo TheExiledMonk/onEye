@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -24,11 +24,11 @@
 function eyeInfo_run($params=null) {
 	global $myPid;
 	$content = "";
-	$myWindow = new Window(array('name'=>'eyeInfoWND','type'=>NOLIST_CLOSE_WINDOW,'father'=>'eyeApps', 'cent'=>1,
-		'width'=>400,'height'=>350,'title'=>'eyeInfo'));
+	$myWindow = new Window(array('name'=>'eyeInfoWND','style'=>TITLE + LISTED + CLOSE + MIN,'father'=>'eyeApps', 'cent'=>1,
+		'width'=>400,'height'=>350,'title'=>'About eyeOS','savePosition' => 1));
 	$myWindow->show();
 	$myImage3 = new Imagebox(array('name'=>'eyeos_logo','father'=>'eyeInfoWND_Content',
-		'url'=>'index.php?extern=apps/eyeX/gfx/logo.png',
+		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/logo.png',
 		'x'=>10,'y'=>15,'cent'=>2,'width'=>60,'height'=>49,'disableMsg'=>0,'cssClass'=>'cPointer','signal'=>'Logo_Clicked'));
 	$myImage3->show();
 
@@ -40,7 +40,7 @@ function eyeInfo_run($params=null) {
 	);
 	
 	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl_version_1",'father' => 'eyeInfoWND_Content',
-		'text' =>"eyeOS ".EYEOS_VERSION,'x' => 166,'y' => 75));
+		'text' =>"eyeOS ".EYEOS_VERSION,'x' => 156,'y' => 75));
 	$myLabel1->show();
 
 	$myLabel1->setCss($myCssText);
@@ -63,12 +63,11 @@ function eyeInfo_run($params=null) {
 	$x = 20;
 	$y = 20;
 
-	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl1",'father' => $teamTab,
+	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl1_1",'father' => $teamTab,
 		'text' =>"eyeOS Engineering Team",'x' => $x,'y' => $y));
 	$myLabel1->show();
 	
-	$y = $y + 20;
-	$y = $y + 20;
+	$y += 20;
 	
 	$names = array(
 		"Pau Garcia-Milà",
@@ -85,11 +84,11 @@ function eyeInfo_run($params=null) {
 		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2",'father' => $teamTab,
 			'text' =>$values,'x' => $x,'y' => $y));
 		$myLabel2->show();
-		$y = $y + 20;
+		$y += 22;
 	}
 	
-	$myImage3 = new Imagebox(array('name'=>'eyeos_logo','father'=>$teamTab,
-		'url'=>'index.php?extern=apps/eyeX/gfx/doowee.png',
+	$myImage3 = new Imagebox(array('name'=>'eyeos_logo_1','father'=>$teamTab,
+		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/doowee.png',
 		'x'=>10,'y'=>10, 'horiz'=>1, 'vert'=>1));
 	$myImage3->show();
 	
@@ -98,14 +97,14 @@ function eyeInfo_run($params=null) {
 	//developers tab
 	
 	$x = 20;
-	$y = 20;
+	$y = 0;
 	
 	$myWindowInv = new Window(array('title'=>'eyeApps','name'=>'wndInv','father' => $colTab,
-	'y'=>0,'type'=>INVISIBLE_WINDOW,'x'=>0,'width'=>260,'height'=>198));
+	'y'=>40,'type'=>INVISIBLE_WINDOW,'x'=>0,'width'=>260,'height'=>155));
 	$myWindowInv->show();	
 
-	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl1",'father' => 'wndInv',
-		'text' =>"eyeOS Community Developers",'x' => $x,'y' => $y));
+	$myLabel1 = new Label(array ('name' => "eyeInfo_lbl1_2",'father' => $colTab,
+		'text' =>"eyeOS Community Developers",'x' => 20,'y' => 20));
 	$myLabel1->show();
 	
 	$names = array(
@@ -119,18 +118,18 @@ function eyeInfo_run($params=null) {
 		"Edouard Daubin"
 	);
 	
-	$myImage3 = new Imagebox(array('name'=>'eyeos_logo','father'=>$colTab,
-		'url'=>'index.php?extern=apps/eyeX/gfx/doowee.png',
+	$myImage3 = new Imagebox(array('name'=>'eyeos_logo_2','father'=>$colTab,
+		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/doowee.png',
 		'x'=>10,'y'=>10, 'horiz'=>1, 'vert'=>1));
 	$myImage3->show();
 	
 	shuffle($names); 
 	
 	foreach($names as $values) {
-		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2",'father' => 'wndInv_Content',
+		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2",'father' => 'wndInv',
 			'text' =>$values,'x' => $x,'y' => $y));
 		$myLabel2->show();
-		$y = $y + 20;
+		$y += 22;
 	}
 	$myLabel1->setCss($myCssText);
 	
@@ -143,29 +142,28 @@ function eyeInfo_run($params=null) {
 		'text' =>"Thanks to",'x' => $x,'y' => $y));
 	$myLabel1->show();
 	
-	$y = $y + 20;
-	$y = $y + 20;
+	$y += 20;
 	
 	$names = array(
 		"Cross-Browser.com (X Library)",
-		"Moxiecode (tinyMCE)",
+		"Moxiecode (TinyMCE)",
 		"The phputf8 Project",
 		"Oxygen Icons",
 		"CodePress.org (CodePress)"
 	);
 	
-	$myImage3 = new Imagebox(array('name'=>'eyeos_logo','father'=>$thanksTab,
-		'url'=>'index.php?extern=apps/eyeX/gfx/doowee.png',
+	$myImage3 = new Imagebox(array('name'=>'eyeos_logo_3','father'=>$thanksTab,
+		'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeX/gfx/doowee.png',
 		'x'=>10,'y'=>10, 'horiz'=>1, 'vert'=>1));
 	$myImage3->show();
 	
 	shuffle($names); 
 	
 	foreach($names as $values) {
-		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2",'father' => $thanksTab,
+		$myLabel2 = new Label(array ('name' => "eyeInfo_lbl2_3",'father' => $thanksTab,
 			'text' =>$values,'x' => $x,'y' => $y));
 		$myLabel2->show();
-		$y = $y + 20;
+		$y += 22;
 	}
 	$myLabel1->setCss($myCssText);
 }

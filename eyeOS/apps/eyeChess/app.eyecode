@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -23,9 +23,9 @@
 
 function eyeChess_run($params=null) {
 	global $myPid,$checknum;
-	$myWindow = new Window(array('title'=>'eyeChess','name'=>'eyeChess_Window','type'=>NORESIZE_WINDOW,'father' => 'eyeApps', 'y'=>35,'x'=>0,'cent'=>2,'width'=>600,'height'=>550));
+	$myWindow = new Window(array('title'=>'Chess Game','name'=>'eyeChess_Window','type'=>NORESIZE_WINDOW,'father' => 'eyeApps', 'y'=>35,'x'=>0,'cent'=>2,'width'=>600,'height'=>550,'savePosition' => 1));
 	$myWindow->show();
-	service('eyex','loadScript',array('url'=>'index.php?extern=apps/eyeChess/eyeChess'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	service('eyex','loadScript',array('url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeChess/eyeChess'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 }
 
 function eyeChess_end($params=null) {

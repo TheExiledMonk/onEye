@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -33,7 +33,7 @@ function eyeRename_run($params = '') {
 	} elseif (service('vfs','real_fileExists',array($path)) && utf8_strtolower(strrchr($path,'.')) == utf8_strtolower('.' . EYEOS_LINK_EXT)) {
 		$name = utf8_basename($path,'.' . EYEOS_LINK_EXT);
 	} else {
-		service('eyex','messageBox',array('content'=>'Error renaming file.'));
+		service('eyex','messageBox',array('content'=>'Error renaming file!'));
 		proc('end');
 	}
 	eyex('messageBox',array(
@@ -53,7 +53,8 @@ function eyeRename_run($params = '') {
 		'hidden_name' => 'rnPath',
 		'hidden2_text' => $callback,
 		'hidden2_name' => 'rnCallback',
-		'img' => 'index.php?extern=apps/eyeFiles/gfx/rename_big.png'
+		'img' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFiles/gfx/rename_big.png',
+		'savePosition' => 1
 	));
 }
 

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -140,7 +140,7 @@ function eyeDesk_on_getWallpaper() {
 function eyeDesk_on_viewTempImg($params=null) {
 	$file = utf8_basename($params);
 	$udir = um('getCurrentUserDir').'/tmp/';
-	$info = getimagesize($udir.$file);
+	$info = @getimagesize($udir.$file);
 	header("Content-type: ".$info['mime']);
 	vfs('printFile',array($udir.$file));
 	exit;
@@ -206,7 +206,8 @@ function eyeDesk_on_delete($params=null) {
 		return false;
 	}
 	
-	proc('launch',array('eyeDelete',$file));
+	$callback = 'sendMsg(' . $checknum . ', "refreshDesk");';
+	proc('launch',array('eyeDelete',array($file,$callback)));
 }
 
 function eyeDesk_on_copy($params=null) {
@@ -272,8 +273,8 @@ function eyeDesk_on_deleteLink($params=null) {
 	if(is_dir($file)) {
 		return false;
 	}
-	vfs('real_delete',array($file));	
-	eyeX('sendMessage',array('msg'=>'refreshDesk'));
+	$callback = 'sendMsg(' . $checknum . ', "refreshDesk");';
+	proc('launch',array('eyeDelete',array($file,$callback)));
 }
 
 function eyeDesk_on_eyeTrashDroped($params=null){	
@@ -291,8 +292,8 @@ function eyeDesk_on_eyeTrashDroped($params=null){
 		$file = $udir.$file;
 	}
 	
-	proc('launch',array('eyeDelete',$file));
-	eyeX('sendMessage',array('msg'=>'refreshDesk'));
+	$callback = 'sendMsg(' . $checknum . ', "refreshDesk");';
+	proc('launch',array('eyeDelete',array($file,$callback)));
 }
 
 function eyeDesk_on_moveDrag($params=null){

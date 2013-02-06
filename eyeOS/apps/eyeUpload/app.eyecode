@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -23,31 +23,6 @@
 
 
 function eyeUpload_run($params=null) {
-	global $myPid;
-	global $checknum;
-	global $sessionId;
-	$XML = eyeXML('getXMLfile',array(um('getCurrentUserDir') . CONF_USER_DIR . '/eyeUpload/conf.xml'));
-	$isLinux = utf8_strpos(utf8_strtolower($_SERVER['HTTP_USER_AGENT']),'linux');
-	$isMac = utf8_strpos(utf8_strtolower($_SERVER['HTTP_USER_AGENT']),'mac os x');
-	
-	/*v && $params[2] != 1){
-		//If flash is not forced
-		if($XML['eyeUpload'][0]['forceFlash'][0] != '1'){
-			//And the platform don't have the flash bug
-			if($isLinux === false && $isMac === false){
-				proc('end');		
-				proc('launch',array('eyeUploadX',array($params[0],$params[1])));
-				return true;	
-			}				
-		//If flash is forced 
-		}elseif($XML['eyeUpload'][0]['forceFlash'][0] == '1'){
-			proc('end');		
-			proc('launch',array('eyeUploadX',array($params[0],$params[1])));
-			return true;
-		}		 		
-	}*/
-	
-	
 	if(is_array($params)) {
 		$path = $params[0];
 		$callback = $params[1];
@@ -65,12 +40,13 @@ function eyeUpload_run($params=null) {
 	$myWindow = new Window(array(
 		'name'=>'uploadWND_Parent',
 		'father'=>'eyeApps',
-		'type'=>NOLIST_CLOSE_WINDOW,
+		'style' => TITLE + CLOSE + LISTED + MIN,
 		'cent'=>1,
 		'width'=>$width,
 		'height'=>$height,
 		'title'=>'Upload files',
-		'showDragContent'=>true
+		'showDragContent'=>true,
+		'savePosition' => 1
 	));
 	$myWindow->show();
 	$myTab = new Tab(array(
@@ -85,9 +61,18 @@ function eyeUpload_run($params=null) {
 	$systemTab = $myTab->addTab('Simple',2);
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeUpload/tabs/normal.eyecode');
 	
-	if($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] >= 8) {
+	if ($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] > 8 && (IE || !$_SERVER['HTTPS'])) {
 		$flashTab = $myTab->addTab('Advanced',1);
 		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeUpload/tabs/flash.eyecode');
+	}
+	if (WEB_UPLOAD) {
+		$webTab = $myTab->addTab('Web',1);
+		include_once(EYE_ROOT.'/'.APP_DIR.'/eyeUpload/tabs/web.eyecode');
+		if ($_SESSION['SCREEN']['flash'] && $_SESSION['SCREEN']['flash_version'] > 8) {
+			$myTab->selectByName('Advanced');
+		} else {
+			$myTab->selectByName('Simple');
+		}
 	}
 }
 

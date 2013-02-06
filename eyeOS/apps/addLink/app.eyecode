@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -37,7 +37,8 @@ function addLink_run($params = '') {
 		'textbox_text' => $params[3],
 		'textbox_name' => 'addLink_textbox',
 		'textbox_event' => 'create',
-		'img' => 'index.php?extern=apps/eyeFiles/gfx/rename_big.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeFiles/gfx/rename_big.png',
+		'savePosition' => 1
 	));
 }
 

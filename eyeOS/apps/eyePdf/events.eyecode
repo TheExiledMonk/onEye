@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.3
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -44,7 +44,9 @@ function eyePdf_on_showPdf($params = '') {
 		'width' => 800,
 		'height' => 600,
 		'sendResizeMsg' => 1,
-		'sigResize' => 'Resize'
+		'showDragContent' => 1,
+		'sigResize' => 'Resize',
+		'savePosition' => 1
 	));
 	$myWindow->show();
 	

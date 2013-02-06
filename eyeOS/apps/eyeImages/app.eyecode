@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -29,7 +29,7 @@ function eyeImages_run($params=null) {
 	if($params[0]) {
 		$file = $params[0];
 		$rfile = service('vfs','getRealName',array($file));
-		$info = getimagesize($rfile);
+		$info = @getimagesize($rfile);
 		
 		if($info[0] > MAX_IMAGE_SIZE_W) {
 			$info[0] = MAX_IMAGE_SIZE_W;
@@ -73,17 +73,18 @@ function eyeImages_run($params=null) {
 			'name'=>'eyeImagesWND',
 			'father'=>'eyeApps',
 			'cent'=>1,
-			'title'=>'eyeImages',
+			'title'=>'View Images',
 			'width'=>$width,
 			'height'=>$height,
 			'type' => $type,
 			'x' => 0,
-			'y' => 0
+			'y' => 0,
+			'savePosition' => 1
 		));
 		$myWindow->show();
 		
 		if($isFullscreen) {
-			eyeX('rawjs',array('js' => 'document.getElementById("'.$myPid.'_eyeImagesWND_Content").style.top="0px";'));
+			eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeImagesWND").style.top = "0px"; document.getElementById("' . $myPid . '_eyeImagesWND").style.left = "0px";'));
 		}
 		
 		$myFrame = new Iframe(array(
@@ -99,9 +100,9 @@ function eyeImages_run($params=null) {
 		
 		$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeImagesWND_Content'));
 		$myToolbar->show();
-		$myToolbar->addItem('Previous','index.php?extern=apps/eyeX/themes/default/images/toolbar/previous.png','Previous');
-		$myToolbar->addItem('Next','index.php?extern=apps/eyeX/themes/default/images/toolbar/next.png','Next');
-		$myToolbar->addItem('Fullscreen','index.php?extern=apps/eyeX/themes/default/images/toolbar/fullScreen.png','Fullscreen');
+		$myToolbar->addItem('Previous','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/previous.png','Previous');
+		$myToolbar->addItem('Next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/next.png','Next');
+		$myToolbar->addItem('Fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Fullscreen');
 	} else {
 		proc('end');
 	}

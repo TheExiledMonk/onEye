@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -27,7 +27,7 @@ function restoreTrash_run($params=null) {
 		$callback = $params[1];
 	}
 	service('eyex','messageBox',array(
-		'content' => 'Are you sure you want to restore this element?',
+		'content' => 'Are you sure you want to restore this file?',
 		'type' => 3,
 		'title' => 'Restore trash',
 		'win_name' => 'restoreTrash_window',
@@ -40,7 +40,8 @@ function restoreTrash_run($params=null) {
 		'hidden_name' => 'nfFile',
 		'hidden2_text' => $callback,
 		'hidden2_name' => 'nfCallback',
-		'img' => '?'
+		'img' => '?',
+		'savePosition' => 1
 	));
 }
 

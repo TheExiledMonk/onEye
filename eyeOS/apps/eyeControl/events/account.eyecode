@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -25,8 +25,15 @@ function eyeControl_on_account_password($params = '') {
 	eyeControl_lib_loadContent('account','password');
 }
 
+function eyeControl_on_account_users($params = '') {
+	eyeControl_lib_loadContent('only_root','users');
+}
+
+function eyeControl_on_account_groups($params = '') {
+	eyeControl_lib_loadContent('only_root','groups');
+}
+
 function eyeControl_on_account_save($params = '') {
-	global $currentUser;
 	um('updateUser',array(
 		'username' => eyeControl_lib_getConfigUser(),
 		'email' => $GLOBALS['eyeControl_account_textbox_email']->text,
@@ -54,7 +61,7 @@ function eyeControl_on_account_delete($params = '') {
 
 function eyeControl_on_account_delete_yes($params = '') {
 	global $currentUser;
-	if (eyeControl_lib_getConfigUser() != ROOTUSER) {
+	if (eyeControl_lib_getConfigUser() != REAL_ROOTUSER) {
 		um('deleteUser',array(eyeControl_lib_getConfigUser()));
 		eyex('messageBox',array('content' => 'The account was successfully deleted.','type' => 2));
 		if ($currentUser == ROOTUSER) {

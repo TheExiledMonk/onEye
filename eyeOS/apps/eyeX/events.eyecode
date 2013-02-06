@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -25,35 +25,60 @@
 */
 
 function eyeX_on_baseapp($params=null){
+	// Set width
 	$width = intval($params['width'][0]);
+	if ($width < 500) {
+		$width = 500;
+	}
+	$_SESSION['SCREEN']['width'] = $width;
+	// Set height
 	$height = intval($params['height'][0]);
-	$flash = $params['flash'][0];
-	$flash_version = $params['flashmajor'][0];
-	$_SESSION['SCREEN']['width'] = $width; //TODO: MAYBE EYESESSIONS?
+	if ($height < 400) {
+		$height = 400;
+	}
 	$_SESSION['SCREEN']['height'] = $height;
-	$_SESSION['SCREEN']['flash'] = $flash;
-	$_SESSION['SCREEN']['flash_version'] = $flash_version;
+	// Set Flash infos
+	$_SESSION['SCREEN']['flash'] = $params['flash'][0];
+	$_SESSION['SCREEN']['flash_version'] = $params['flashmajor'][0];
 	if(!isset($_SESSION['SCREEN']['refresh'])){
 		$_SESSION['SCREEN']['refresh'] = 0;
 	}else{
 		$_SESSION['SCREEN']['refresh']++;
-	}	
+	}
 	$pid = service('proc','findPidByName',array(BASE_APP));
 	
-	if(!$pid) {
+	if ($params['user'][0] && $params['password'][0] && um('login',array($params['user'][0],base64_decode($params['password'][0])))) {
+		global $currentUser;
+		$currentUser = $params['user'][0];
+		proc('setProcessUser',array(proc('findPidByName',array('eyeX'))));
+		eyex('runjs',array('js' => 'document.title = %s + "@" + %s;','tokens' => array($currentUser,EYEOS_HOSTNAME)));
+		if (!$params['lang'][0]) {
+			$xml = eyeXML('getXMLconfig',array('i18n','lang.xml'));
+			if ($xml['lang'][0]) {
+				$params['lang'][0] = $xml['lang'][0];
+			} else {
+				$params['lang'][0] = 'en';
+			}
+		}
+		i18n('setLang',array($params['lang'][0]));
+		loadConfig('eyeLogin');
+		proc('launch',array(LOGIN_EXECUTE,'autorun'));
+	} elseif (!$pid) {
 		service('proc','launch',array(BASE_APP));
-	} else {		
+	} else {
 		service('proc','getTask',array($pid));
 	}
+	eyex('rawjs',array('js' => 'document.getElementById("eyex-powered").style.display = "none";'));
+	eyex('rawjs',array('js' => 'document.getElementById("eyex-info").style.display = "none";'));
 }
 
-function eyeX_on_saveWinPosition($params=''){	
-	//Top  and lef are arrays!
-	$top = 	$params['top'];
+function eyeX_on_saveWinPosition($params=''){
+	//Top and lef are arrays!
+	$top = $params['top'];
 	$left = $params['left'];
 	$appChecknum = $params['appChecknum'][0];
-	$winName = $params['winName'][0];		
-	$appName = service('proc','findNameByChecknum',array($appChecknum));	
+	$winName = $params['winName'][0];
+	$appName = service('proc','findNameByChecknum',array($appChecknum));
 	
 	$filePath = service('um','getCurrentUserDir').CONF_USER_DIR.'/eyex/';//Getting the user eyeX conf dir
 	$filePath .=$appName.'.xml';//Adding the appName
@@ -63,26 +88,31 @@ function eyeX_on_saveWinPosition($params=''){
 	$currentArray = reqLib('eyeXML','getXMLconfig',array('eyex',$appName.'.xml'));
 	if(!$currentArray){
 		//At the moment, use real_create etc, TODO: put setXMLfile.
-		$fp = service('vfs','real_create',array($filePath));	
+		$fp = service('vfs','real_create',array($filePath));
 		if(!$fp){
-			service('eyex','messageBox',array('content'=>'Unable to save position','type'=>1));		
+			service('eyex','messageBox',array('content'=>'Unable to save position','type'=>1));
 			return;
 		}else{
 			//Creating array
 			$saveInfo[$winName][0] = array('top'=>$top,'left'=>$left);
-			$xml = reqLib('eyeXML','array2xml',array($saveInfo));				
+			$xml = reqLib('eyeXML','array2xml',array($saveInfo));
 			$fp = service('vfs','real_open',array($filePath,'w'));
 			fwrite($fp,$xml);
-			fclose($fp);											
+			fclose($fp);
 		}
 	}elseif(is_array($currentArray)){
-		$currentArray[$winName][0] = array('top'=>$top,'left'=>$left);		
-		$xml = reqLib('eyeXML','array2xml',array($currentArray));				
+		$currentArray[$winName][0] = array('top'=>$top,'left'=>$left);
+		$xml = reqLib('eyeXML','array2xml',array($currentArray));
 		$fp = service('vfs','real_open',array($filePath,'w'));
 		fwrite($fp,$xml);
-		fclose($fp);	
+		fclose($fp);
 	}
-	
 }
 
+function eyeX_on_resizedBrowser($params = '') {
+	eyex('resizedBrowser',array(
+		'height' => intval($params['height'][0]),
+		'width' => intval($params['width'][0])
+	));
+}
 ?>

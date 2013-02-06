@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -60,7 +60,7 @@ function eyeDockClickHandler(id,pid){
 
 //Ever desactive the last menu.
 function dockDesactiveMenu(pid){
-	eyeDockLastObject.src="index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeDock/icons/"+eyeDockLastIcon+".png";	
+	eyeDockLastObject.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeDock/icons/"+eyeDockLastIcon+".png";	
 	if (eyeDockLastPid) {
 		fixPNG(pid+'_'+eyeDockLastPid);
 	}
@@ -107,7 +107,7 @@ function dockMenuHeight(id,inty,pid) {
 
 function dockButOnMouseOver(id,icon,pid) {
 	var but = document.getElementById(pid+'_'+id);
-	but.src="index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeDock/icons/"+icon+"_x.png";
+	but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeDock/icons/"+icon+"_x.png";
 	fixPNG(pid+'_'+id);
 	var txt = document.getElementById(pid+'_menu_text_items_'+id);
 	txt.style.display="block";
@@ -128,6 +128,6 @@ function dockButOnMouseOut(id,icon,pid) {
 		return;
 	}
 	var but = document.getElementById(pid+'_'+id);
-	but.src="index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeDock/icons/"+icon+".png";
+	but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeDock/icons/"+icon+".png";
 	fixPNG(pid+'_'+id);
 }

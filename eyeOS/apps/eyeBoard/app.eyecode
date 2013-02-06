@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -25,7 +25,7 @@ function eyeBoard_run($params=null) {
 	global $checknum;
 	$myWindow = new Window(array('name'=>'eyeBoard','father'=>'eyeApps',
 		'type'=>NORESIZE_WINDOW,'cent'=>1,'width'=>450,'height'=>380,
-		'title'=>'eyeBoard'));
+		'title'=>'Public Board','savePosition' => 1));
 	$myWindow->show();
 	$myTextBox = new Textbox(array('name'=>'MessageB','father'=>'eyeBoard_Content',
 		'x'=>5,'y'=>330,'width'=>310));

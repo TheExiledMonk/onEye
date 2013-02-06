@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -23,16 +23,16 @@
 
 function eyePresentation_run($params=null) {
 	$myWindow = new Window(array('name'=>'presentationWND','father'=>'eyeApps',
-		'cent'=>1,'width'=>680,'height'=>590,'title'=>'eyePresentation','sendResizeMsg'=>1,'sigResize'=>'Resize'));
+		'cent'=>1,'width'=>680,'height'=>590,'title'=>'Presentations','sendResizeMsg'=>1,'sigResize'=>'Resize','savePosition' => 1));
 	$myWindow->show();
 	$myToolbar = new Toolbar(array('name'=>'myToolbar','father'=>'presentationWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/fileopen.png','Open');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
 	$myToolbar->addLine();
-	$myToolbar->addItem('back','index.php?extern=apps/eyeX/themes/default/images/toolbar/previous.png','Back');
-	$myToolbar->addItem('next','index.php?extern=apps/eyeX/themes/default/images/toolbar/next.png','Next');
+	$myToolbar->addItem('back','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/previous.png','Back');
+	$myToolbar->addItem('next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/next.png','Next');
 	$myToolbar->addLine();
-	$myToolbar->addItem('fullscreen','index.php?extern=apps/eyeX/themes/default/images/toolbar/fullScreen.png','Full');
+	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full');
 
 	$myFrame = new Iframe(array('name'=>'imgFrame','father'=>'presentationWND_Content','x'=>5,
 		'y'=>55,'height'=>$myWindow->height-90,'width'=>$myWindow->width-15, 'url'=>"about:blank",'scroll'=>1));

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -35,7 +35,7 @@ function eyeDock_run($params=null) {
 		eyeX('sendMessage', array('msg' => 'Launch', 'params' => '.'));
 	} else {
 		//Load js if it wasn't loaded
-		eyeX('loadScript',array('url'=>'index.php?extern=apps/eyeDock/js/eyeDock'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+		eyeX('loadScript',array('url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeDock/js/eyeDock'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 	}
 }
 

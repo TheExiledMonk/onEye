@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -32,12 +32,32 @@ function restoreTrash_on_yes($params=null) {
 	$myArray = $myArray['eyeTrash'][0];
     $file = utf8_substr($file,0,utf8_strrpos($file,'.'));
     if($myArray['type'][0] == 'dir') {
-    	service('vfs','real_move',array($myUserDir.$file,$myArray['restorePoint'][0]));
-    	service('vfs','real_delete',array($myUserDir.'/'.$file.'.'.EYEOS_TRASH_EXT));
+    	if (vfs('real_move',array($myUserDir . $file,$myArray['restorePoint'][0]))) {
+			vfs('real_delete',array($myUserDir . '/' . $file . '.' . EYEOS_TRASH_EXT));
+		} else {
+			$url = um('getCurrentUserDir') . FILES_USER_DIR . '/' . utf8_basename($myArray['restorePoint'][0]) . '/';
+			if (vfs('real_move',array($myUserDir . $file . '.' . EYEOS_INFO_EXT,$url))) {
+				vfs('real_delete',array($myUserDir . '/' . $file . '.' . EYEOS_TRASH_EXT));
+				eyex('messageBox',array('content' => 'The file has been restored to the home folder!'));
+			} else {
+				eyex('messageBox',array('content' => 'The file could not be restored!'));
+			}
+		}
+		
     } else {
-		service('vfs','real_move',array($myUserDir.$file.'.'.EYEOS_INFO_EXT,$myArray['restorePoint'][0].'.'.EYEOS_INFO_EXT));
-		service('vfs','real_move',array($myUserDir.$file.'.'.EYEOS_FILE_EXT,$myArray['restorePoint'][0].'.'.EYEOS_FILE_EXT));
-		service('vfs','real_delete',array($myUserDir.$file.'.'.EYEOS_TRASH_EXT));
+		if (vfs('real_move',array($myUserDir . $file . '.' . EYEOS_INFO_EXT,$myArray['restorePoint'][0] . '.' . EYEOS_INFO_EXT))) {
+			vfs('real_move',array($myUserDir . $file . '.' . EYEOS_FILE_EXT,$myArray['restorePoint'][0] . '.' . EYEOS_FILE_EXT));
+			vfs('real_delete',array($myUserDir.$file.'.'.EYEOS_TRASH_EXT));
+		} else {
+			$url = um('getCurrentUserDir') . FILES_USER_DIR . '/' . utf8_basename($myArray['restorePoint'][0]);
+			if (vfs('real_move',array($myUserDir . $file . '.' . EYEOS_INFO_EXT,$url . '.' . EYEOS_INFO_EXT))) {
+				vfs('real_move',array($myUserDir . $file . '.' . EYEOS_FILE_EXT,$url . '.' . EYEOS_FILE_EXT));
+				vfs('real_delete',array($myUserDir.$file.'.'.EYEOS_TRASH_EXT));
+				eyex('messageBox',array('content' => 'The folder has been restored to the home folder!'));
+			} else {
+				eyex('messageBox',array('content' => 'The folder could not be restored!'));
+			}
+		}
 	}
 	$callback = $GLOBALS['nfCallback']->text;
 	if($callback) {

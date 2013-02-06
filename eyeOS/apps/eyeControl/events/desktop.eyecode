@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -21,25 +21,38 @@
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
-function eyeControl_on_desktop_repeat($params = '') {
-	global $myPid;
-	if ($params['selected'][0] == 'true') {
-		$repeatImg = 'repeat';
-	} else {
-		$repeatImg = 'norepeat';
+function eyeControl_on_desktop_reset_icons($params = '') {
+	global $currentUser;
+	$path = um('getUserDir',array(eyeControl_lib_getConfigUser())) . '/' . CONF_USER_DIR . '/eyeDesk/icons.xml';
+	vfs('real_delete',array($path));
+	if (eyeControl_lib_getConfigUser() == $currentUser) {
+		$desk_checknum = proc('findChecknumByName',array('eyeDesk'));
+		if ($desk_checknum) {
+			eyex('rawjs',array('js' => 'sendMsg(' . $desk_checknum . ',"refreshDesk","");'));
+		}
 	}
-	eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper").src = "index.php?extern=apps/eyeControl/gfx/' . $repeatImg . '.png";'));
 }
 
-function eyeControl_on_desktop_center($params = '') {
-	global $myPid;
-	if ($params['selected'][0] == 'true') {
-		eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.top = "103px";'));
-		eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.left = "104px";'));
+function eyeControl_on_desktop_savewinpos($params = '') {
+	$xml = eyeControl_lib_getXMLconfig(array('eyex','eyeX.xml'));
+	if ($params['selected'][0] == 'false') {
+		$xml['eyex'][0]['saveWindowPositions'][0] = '0';
 	} else {
-		eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.top = "70px";'));
-		eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.left = "60px";'));
+		$xml['eyex'][0]['saveWindowPositions'][0] = '1';
 	}
+	eyeControl_lib_setXMLconfig(array('eyex','eyeX.xml',$xml));
+	eyex('messageBox',array('content' => 'Changes successfully saved.'));
+}
+
+function eyeControl_on_desktop_reset_windows($params = '') {
+	$path = um('getUserDir',array(eyeControl_lib_getConfigUser())) . '/' . CONF_USER_DIR . '/eyex/';
+	$files = vfs('real_getDirContent',array($path,'*.xml'));
+	foreach ($files as $file) {
+		if (utf8_strtolower(utf8_basename($file)) != 'eyex.xml') {
+			vfs('real_delete',array($file));
+		}
+	}
+	eyex('messageBox',array('content' => 'Windows successfully restored. Please restart the applications now.'));
 }
 
 function eyeControl_on_desktop_select($params = '') {

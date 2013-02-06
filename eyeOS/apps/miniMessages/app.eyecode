@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -33,7 +33,7 @@ function miniMessages_run($params=null) {
 	
 	eyeX('createDiv', array('name' => 'miniMessagesOuter', 'father' => 'eyeApps', 'class' => 'miniMessagesOuter'));
 	eyeX('createDiv', array('name' => 'miniMessagesInner', 'father' => 'miniMessagesOuter', 'class' => 'miniMessagesInner'));
-	eyeX('loadCSS', array('url' => 'index.php?extern=apps/miniMessages/css/miniMessages.css', 'id' => 'miniMessages'));
+	eyeX('loadCSS', array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniMessages/css/miniMessages.css', 'id' => 'miniMessages'));
 	
 	//We want to list the messages of the eyeMessages namespace
 	$newMsgs = reqLib('eyeSwap', 'list', array('eyeMessages'));
@@ -43,7 +43,7 @@ function miniMessages_run($params=null) {
 		'father' => 'miniMessagesOuter',
 		'x' => 4,
 		'y' => 5,
-		'url' => 'index.php?extern=apps/eyeX/themes/default/images/desktop/open.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/open.png',
 		'disableMsg' => '0',
 		'signal' => 'Launch'
 	));
@@ -67,7 +67,7 @@ function miniMessages_run($params=null) {
 		'horiz' => 1,
 		'x' => 5,
 		'y' => 5,
-		'url' => 'index.php?extern=apps/eyeX/themes/default/images/desktop/close.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/close.png',
 		'disableMsg' => 0,
 		'signal' => 'Close'
 	));
@@ -80,7 +80,7 @@ function miniMessages_run($params=null) {
 		'horiz' => 1,
 		'x' => 20,
 		'y' => 4,
-		'url' => 'index.php?extern=apps/eyeX/themes/default/images/desktop/refresh.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/refresh.png',
 		'disableMsg' => 0,
 		'signal' => 'Refresh'
 	));

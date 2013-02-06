@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -27,7 +27,7 @@ function eyeContacts_run($params=null) {
 	$content = "";	
 			
 	if(!reqLib('eyeContacts','isReady')){
-		eyeX('messageBox',array('content'=>'eyeContacts can\'t initialize, contact with your administrator'));
+		eyeX('messageBox',array('content'=>'eyeContacts cannot initialize, contact with your administrator'));
 		return false;
 	}	
 	
@@ -35,12 +35,12 @@ function eyeContacts_run($params=null) {
 	$windowHeight = 605;
 	
 	$myWindow = new Window(array('name'=>'eyeContactsWND','father'=>'eyeApps','style'=>TITLE + MIN + LISTED + CLOSE,
-	'cent'=>1,'width'=>$windowWidth,'height'=>$windowHeight,'title'=>'eyeContacts'));
+	'cent'=>1,'width'=>$windowWidth,'height'=>$windowHeight,'title'=>'Contact Manager','savePosition' => 1));
 	$myWindow->show();
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeContactsWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('AddContact','index.php?extern=apps/eyeX/themes/default/images/toolbar/addcontact.png','Add Contact');		
+	$myToolbar->addItem('AddContact','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/addcontact.png','Add Contact');		
 		
 	//58 = toolbar height
 	$abc = array('123','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
@@ -71,13 +71,13 @@ function eyeContacts_run($params=null) {
 	
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeContacts/forms/show_contact_table'.EYE_CODE_EXTENSION);	
 	$myTable = eyeContacts_show_table('ALL',$windowWidth,$windowHeight);
-	$myToolbar->addItem('EditContact','index.php?extern=apps/eyeX/themes/default/images/toolbar/editcontact.png','View/Edit',array($myTable));
-	$myToolbar->addItem('Delete','index.php?extern=apps/eyeX/themes/default/images/toolbar/deletecontact.png','Delete',array($myTable));
+	$myToolbar->addItem('EditContact','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/editcontact.png','View/Edit',array($myTable));
+	$myToolbar->addItem('Delete','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/deletecontact.png','Delete',array($myTable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('Import','index.php?extern=apps/eyeX/themes/default/images/toolbar/importcontact.png','Import');
-	$myToolbar->addItem('Export','index.php?extern=apps/eyeX/themes/default/images/toolbar/exportcontact.png','Export');
+	$myToolbar->addItem('Import','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/importcontact.png','Import');
+	$myToolbar->addItem('Export','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/exportcontact.png','Export');
 	$myToolbar->addLine();
-	$myToolbar->addItem('SendMessage','index.php?extern=apps/eyeX/themes/default/images/toolbar/sendmessage.png','Send Message',array($myTable));
+	$myToolbar->addItem('SendMessage','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/sendmessage.png','Send Message',array($myTable));
 	
 	return true;	
 }

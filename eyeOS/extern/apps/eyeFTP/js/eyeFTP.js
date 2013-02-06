@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -35,7 +35,7 @@ function eyeFTP_logConsole(pid, text_b64, maxDisplayedLines, type, debug) {
 	else {
 		var now = new Date();		
 		var newText = "<span class=\"eyeFTP_logStyle_"+type+"\">";
-		newText += "<img src=\"index.php?extern=apps/eyeFTP/gfx/log_icons/"+type+".png\" style=\"vertical-align: middle;\" />&nbsp;";
+		newText += "<img src=\"index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeFTP/10x10/"+type+".png\" style=\"vertical-align: middle;\" />&nbsp;";
 		newText += "["+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+"] ";
 		newText += Base64.decode(text_b64)+"</span>";	
 		

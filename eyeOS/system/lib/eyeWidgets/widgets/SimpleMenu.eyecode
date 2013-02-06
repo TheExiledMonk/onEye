@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -89,11 +89,11 @@ class SimpleMenu {
 		service('eyex','createWidget',$mySimpleMenu);
 	}
 	
-	function addEntry($text,$Ename,$signal,$params="") {
+	function addEntry($text,$Ename,$signal,$params="",$imgId = '') {
 		global $checknum;
 		global $myPid;
-		$tokens = array($text,$params);
-		$js = "addSimpleMenuEntry('".$myPid.'_'.$this->name."', %s ,'".$myPid.'_'.$Ename."','".$signal."',".$checknum.", %s );";
+		$tokens = array($text,$params,$imgId);
+		$js = "addSimpleMenuEntry('".$myPid.'_'.$this->name."', %s ,'".$myPid.'_'.$Ename."','".$signal."',".$checknum.", %s , %s );";
 		eyeX('runjs',array('js'=>$js,'tokens'=>$tokens));
 	}
 }

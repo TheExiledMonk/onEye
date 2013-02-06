@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -39,13 +39,28 @@ function eyeLogin_on_doLogin($params="") {
 		
 	if(service('um','login',array($myUsername,$myPassword))) {
 		$currentUser = $myUsername;
-		
-		//set language (if selection is not "Auto")
+		$config = eyeXML('getXMLconfig',array('eyex','eyex.xml'));
+		if ($config && $config['changes'][0]['increase'][0]) {
+			$config['changes'][0]['times'][0] += $config['changes'][0]['increase'][0];
+			$config['changes'][0]['increase'][0] = '0';
+			eyeXML('setXMLconfig',array('eyex','eyex.xml',$config));
+		}
+		//set language
 		if ($myLanguage && $myLanguage != 'auto') {
 			i18n('setLang',array($myLanguage));
+		} else {
+			$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/conf/i18n/lang.xml'));	
+			if (is_array($xml) && $xml['lang'][0]) {
+				i18n('setLang',array($xml['lang'][0]));
+			} else {
+				i18n('setLang',array(DEFAULT_LANGUAGE));
+			}
+			
 		}
 		
 		service('proc','setProcessUser',array($myPid));
+		eyex('rawjs',array('js' => 'document.getElementById("eyex-powered").style.display = "block";'));
+		eyex('rawjs',array('js' => 'document.getElementById("eyex-info").style.display = "block";'));
 		service('eyex','rawjs',array('js' => 'eyeLogin_successLogin("'.service('sec','cleanOutPutString',array('var'=>$myUsername,'noreturn' =>1,'nohtml' =>1)).'","'.$checknum.'","'.$myPid.'");'));
 	} else {
 		service('eyex','rawjs',array('js' => 'eyeLogin_badLogin("'.service('sec','cleanOutPutString',array('var'=>$myUsername,'noreturn' =>1,'nohtml' =>1)).'","'.service('sec','cleanOutPutString',array('var'=>$myPassword,'noreturn' =>1,'nohtml' =>1)).'","'.$checknum.'","'.$myPid.'");'));
@@ -61,21 +76,10 @@ function eyeLogin_on_successLogin($params=null) {
 	$pid = service('proc','findPidByName',array('eyeX'));
 	service('proc','setProcessUser',array($pid)); //set eyeX to the currentUser
 	proc('end');
-	$tokens = array($currentUser,EYEOS_HOSTNAME);
-	service('eyex','runjs',array('js'=>"document.title =  %s +'@'+ %s ;",'tokens'=>$tokens));
 	
-	//if language has not been loaded (=> user selected "Auto")
-	if (! i18n('getLang')) {
-		$udir = um('getCurrentUserDir');
-		$xml = eyeXML('getXMLfile',array($udir.'/conf/i18n/lang.xml'));	
-		if(is_array($xml)) {
-			$lang = $xml['lang'][0];
-		} else {
-			$lang = 'en';
-		}
-		i18n('setLang',array($lang));
-	}
 	service('proc','launch',array(LOGIN_EXECUTE,'autorun'));
+	eyex('rawjs',array('js' => 'document.getElementById("eyex-powered").style.display = "none";'));
+	eyex('rawjs',array('js' => 'document.getElementById("eyex-info").style.display = "none";'));
 }
 
 function eyeLogin_on_doCreateUser($params="") {

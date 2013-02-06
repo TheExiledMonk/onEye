@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -53,7 +53,7 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	oCell = document.createElement("TD");
 	oRow = document.createElement("TR");
-	oCell.className='eyeBoxCent';	
+	oCell.className='eyeBoxCent';
 	oCell.width = '100%';
 	oCell.setAttribute('id',name);
 	oRow.appendChild(oCell);
@@ -63,7 +63,7 @@ function Box_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if (IEversion == 0) {
 		oCell = document.createElement("TD");
 		oRow = document.createElement("TR");
-		oCell.className='eyeBoxBottCent';	
+		oCell.className='eyeBoxBottCent';
 		oCell.width = '100%';
 		oRow.appendChild(oCell);
 		oTBody.appendChild(oRow);
@@ -81,6 +81,7 @@ function Line_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	var myLine = document.createElement('div');
 	myLine.setAttribute('id',name);
+	myLine.style.fontSize = '1px';
 	myLine.style.width = mywidth+'px';
 	myLine.style.height = myheight+'px';
 	myLine.style.backgroundColor = '#dddddd';
@@ -102,16 +103,16 @@ function File_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		var height = '90px';
 	}
 			
-	myIframe.setAttribute('id',name);	
+	myIframe.setAttribute('id',name);
 	myIframe.style.width = withs;
 	myIframe.style.height = height;
 	myIframe.style.border='none';
 	myIframe.frameBorder='no';
 	if(multiple == 1){
-		myIframe.setAttribute('src','index.php?extern=libs/eyeWidgets/getMultipleFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
+		myIframe.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/getMultipleFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
 	}else{
-		myIframe.setAttribute('src','index.php?extern=libs/eyeWidgets/getFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
-	}	
+		myIframe.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/getFile.eyecode&type=dynamic&params[]='+checknum+'&params[]='+callback+'&params[]='+filename+'&params[]='+pid)
+	}
 	createWidget(name+'_Container',father,myIframe,horiz,vert,x,y,-1,-1,'eyeLineContainer',cent,'px',visible);
 }
 function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -119,11 +120,11 @@ function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var mywidth = params["width"];
 	var visible = params["visible"];
 	
-	var divBox = document.createElement('div');		
+	var divBox = document.createElement('div');
 	divBox.setAttribute('id',name);
 	divBox.style.width = mywidth+'px';
 	divBox.style.height = myheight+'px';
-
+	
 	if(params["border"] == 1){
 		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible);
 	}else{
@@ -142,14 +143,23 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myImg = params["img"];
 	var myTop = params["imgY"];
 	var myLeft = parseInt(params["imgX"]);
+	var imgWidth = params["imgWidth"];
+	var imgHeight = params["imgHeight"];
 	var forceMsg = params["forceMsg"];
 	myLeft = myLeft + 5;
-
+	
 	var myContainer = document.createElement('div');
 	myContainer.setAttribute('id',name+'_GlobalContainer');
 	if (myImg != null) {
 		var myButton = document.createElement('img');
 		myButton.src=myImg;
+		myButton.setAttribute('id',name+'_cpt_img');
+		if (imgWidth > 0) {
+			myButton.style.width = imgWidth + 'px';
+		}
+		if (imgHeight > 0) {
+			myButton.style.height = imgHeight + 'px';
+		}
 		var myContent = document.createElement('div');
 		myContent.innerHTML = caption;
 		myContent.setAttribute('id',name+'_cpt');
@@ -161,18 +171,19 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		theText=document.createTextNode(caption);
 		myButton.appendChild(theText);
 	}
-
+	
 	if(enabled == 0) {
 		myButton.disabled=1;
 	}
 	
 	if(myWidth > 0) {
 		if(myImg != null) {
-			myContainer.style.width = myWidth+'px';			
+			myContainer.style.width = myWidth+'px';
+			myContent.style.width = (myWidth - imgWidth) + 'px';
 		} else {
-			myButton.style.width = myWidth+'px';			
+			myButton.style.width = myWidth+'px';
 		}
-	} 
+	}
 	
 	if(myHeight > 0) {
 		if(myImg != null) {
@@ -189,13 +200,13 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	} else {
 		myButton.className = "eyeButtonClass";
 	}
-
+	
 	if(dis == 0) {
 		if(forceMsg == 0){
-			myContainer.onclick = function(){sendMsg(checknum,sig,eval(sync))};				
+			myContainer.onclick = function(){sendMsg(checknum,sig,eval(sync))};
 		}else{
 			var myParam = eyeParam(sig,forceMsg);
-			myContainer.onclick = function(){sendMsg(checknum,sig,myParam)};				
+			myContainer.onclick = function(){sendMsg(checknum,sig,myParam)};
 		}
 	}
 	
@@ -204,23 +215,24 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myContainer.appendChild(myContent);
 	}
 	createWidget(name+'_Container',father,myContainer,horiz,vert,x,y,myWidth,myHeight,"eyeButton",cent,'px',visible);
+	fixPNG(name + '_cpt_img');
 }
 function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 {
 	var myWidth = params['width'];
 	var myHeight = params['height'];
-	var visible = params['visible'];	
+	var visible = params['visible'];
 	var selectFunc = params['selectFunc'];
 	var drawOnClick = params['drawOnClick'];
-	var drawHighlight = params['drawHighlight'];	
+	var drawHighlight = params['drawHighlight'];
 	var weekHighlight = false;
 	var globalDate = new Date();
-	if(params['forceDate'] != ''){		
-		globalDate.setTime(params['forceDate']);		
+	if(params['forceDate'] != ''){
+		globalDate.setTime(params['forceDate']);
 	}
 	if(params['drawServerDate'] != ''){
 		var drawServerDate = new Date();
-		drawServerDate.setTime(params['drawServerDate']);		
+		drawServerDate.setTime(params['drawServerDate']);
 	}else{
 		var drawServerDate = '';
 	}
@@ -229,7 +241,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	var myDay = globalDate.getDate();
 	var globalYear = globalDate.getFullYear();
 	var monthNames = getArrayArg(params['monthNames']);
-	var weekDays = getArrayArg(params['weekDays']);			
+	var weekDays = getArrayArg(params['weekDays']);
 	var calendarBase = document.createElement('div');
 	var lastSelect = false;
 	
@@ -238,8 +250,8 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	calendarBase.style.height = myHeight+'px';
 	calendarBase.style.position = 'absolute';
 		var rowsAndDate = getRowsAndDate();
- 		var weekDaysNames = getDaysNames();
- 		var calendarBody = getCalendarBody(globalDate);
+		var weekDaysNames = getDaysNames();
+		var calendarBody = getCalendarBody(globalDate);
 	calendarBase.appendChild(rowsAndDate);
 	calendarBase.appendChild(weekDaysNames);
 	calendarBase.appendChild(calendarBody);
@@ -249,11 +261,11 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 	function getRowsAndDate()
 	{
 		var rowsAndDate = document.createElement('div');
-		rowsAndDate.setAttribute('id',name+'rowsAndDate');		
+		rowsAndDate.setAttribute('id',name+'rowsAndDate');
 		rowsAndDate.style.position = 'absolute';
 		rowsAndDate.style.top = '2%';
 		rowsAndDate.style.width = '100%';
-		rowsAndDate.style.height = '12%';	
+		rowsAndDate.style.height = '12%';
 		rowsAndDate.style.color = params['rowsAndDate'];
 		rowsAndDate.style.fontSize = '9px';
 		rowsAndDate.style.fontWeight = 'bold';
@@ -273,23 +285,23 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			var dateMiddle = document.createElement('div');
 			dateMiddle.setAttribute('id',name+'dateMiddle');
 			dateMiddle.style.position = 'absolute';
-			dateMiddle.style.left = '24%';			
+			dateMiddle.style.left = '24%';
 			dateMiddle.style.width = '52%';
 			dateMiddle.style.height = '100%';
 			text = document.createTextNode(monthNames[globalMonth]+' '+globalYear);
 			dateMiddle.appendChild(text);
-
+			
 			var rowRight = document.createElement('div');
 			rowRight.setAttribute('id',name+'rowRight');
 			rowRight.style.position = 'absolute';
-			rowRight.style.right = '0%';			
+			rowRight.style.right = '0%';
 			rowRight.style.width = '24%';
 			rowRight.style.height = '100%';
-			rowRight.style.cursor = 'pointer';	
+			rowRight.style.cursor = 'pointer';
 			xAddEventListener(rowRight,'click',nextMonth);
 			text = document.createTextNode('>>');
 			rowRight.appendChild(text);
-
+		
 		rowsAndDate.appendChild(rowLeft);
 		rowsAndDate.appendChild(dateMiddle);
 		rowsAndDate.appendChild(rowRight);
@@ -306,9 +318,9 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		weekDaysNames.style.position = 'absolute';
 		weekDaysNames.style.top = '15%';
 		weekDaysNames.style.left = '1px';
-		weekDaysNames.style.backgroundColor = params['backgroundNames'];					
+		weekDaysNames.style.backgroundColor = params['backgroundNames'];
 			var dayNameContent = document.createElement('div');
-			dayNameContent.style.textAlign = 'center';				
+			dayNameContent.style.textAlign = 'center';
 				var left = 11;
 				for(x=0;x<7;x++)
 				{
@@ -321,20 +333,20 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 					dayName.style.fontSize = '1em';
 					var text = document.createTextNode(weekDays[x]);
 					dayName.appendChild(text);
-					dayNameContent.appendChild(dayName);			
+					dayNameContent.appendChild(dayName);
 					left = left+12;
-				}			
+				}
 		weekDaysNames.appendChild(dayNameContent);
 		return weekDaysNames;
 	}
-		
+	
 	function getCalendarBody()
 	{
 		var date = new Date();
 		date.setMonth(globalMonth);
 		date.setYear(globalYear);
 		var x,y = 0;//For bucles
-		date.setDate(1);//First day of month 
+		date.setDate(1);//First day of month
 		var dayOfWeek = date.getDay();
 		var calendarBody = document.createElement('div');
 		calendarBody.style.width = '100%';
@@ -342,12 +354,12 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		calendarBody.style.position = 'absolute';
 		calendarBody.style.top = '25%';
 		calendarBody.style.left = '1px';
-							
+		
 		//Calculating the the month lenght.
 		var preMonthLenght = getMonthDays(globalMonth-1);
 		var monthLenght = getMonthDays(globalMonth);
 		var nextMonthLenght = getMonthDays(globalMonth+1);
-
+		
 //Creating the array with day numbers.
 		//First fill the first days of first week.
 		var dayNums = new Array(0);//I will use push ,metoth
@@ -357,7 +369,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		{
 			dayNums.push(preMonthLenght-x);
 			
-			dayColors.push(params['preMonthDays']);//Hardcoded at the moment			
+			dayColors.push(params['preMonthDays']);//Hardcoded at the moment
 		}
 		//Fill all month day
 		for(x=1;x<=monthLenght;x++)
@@ -392,10 +404,10 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			weekMonth.style.top = top+'%';
 			weekMonth.style.left = '0%';
 			if(weekHighlight != false && weekHighlight == x && drawHighlight != 0){
-				weekMonth.style.backgroundColor = params['clickedWeek'];												
+				weekMonth.style.backgroundColor = params['clickedWeek'];
 				weekMonth.style.borderColor = params['clickedWeek'];
 				weekMonth.style.borderStyle = 'solid';
-				weekMonth.style.borderWidth = '1px';				
+				weekMonth.style.borderWidth = '1px';
 			}
 			var left = 11;
 			var vdate = new Date();
@@ -407,7 +419,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 				weekDay.style.width = '9%';
 				weekDay.style.textAlign = 'center';
 				weekDay.style.height = '90%';
-				weekDay.style.fontSize = '10px';				
+				weekDay.style.fontSize = '10px';
 				weekDay.style.fontFamily = 'verdana';
 				weekDay.style.color = dayColors[count];
 				//!!! the dayColors fix is only for some time, in the next version this days will send a correct data
@@ -420,33 +432,33 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 						weekDay.style.color = params['todayFontColor'];
 						weekDay.style.backgroundColor = params['todayBackground'];
 						
-						weekMonth.style.backgroundColor = params['toWeekBackground'];												
+						weekMonth.style.backgroundColor = params['toWeekBackground'];
 						weekMonth.style.borderColor = params['toWeekBackground'];
 						weekMonth.style.borderStyle = 'solid';
-						weekMonth.style.borderWidth = '1px';						
+						weekMonth.style.borderWidth = '1px';
 						
 						weekMonth.current = true;
 						weekDay.current = true;
 						weekHighlight = x;
 					}
 					if(drawServerDate != ''){
-						if(dayNums[count] == drawServerDate.getDate() && globalMonth == drawServerDate.getMonth() && globalYear == drawServerDate.getFullYear()){						
+						if(dayNums[count] == drawServerDate.getDate() && globalMonth == drawServerDate.getMonth() && globalYear == drawServerDate.getFullYear()){
 							weekDay.style.border = 'solid 1px';
 							weekDay.style.borderColor = params['clickedBorder'];
-						
-							weekMonth.style.backgroundColor = params['clickedWeek'];												
+							
+							weekMonth.style.backgroundColor = params['clickedWeek'];
 							weekMonth.style.borderColor = params['clickedWeek'];
 							weekMonth.style.borderStyle = 'solid';
 							weekMonth.style.borderWidth = '1px';
-						
-							lastSelect = weekDay;						
+							
+							lastSelect = weekDay;
 						}
-					}														
+					}
 				}else{
 					weekDay.style.cursor = 'default';
 				}
 				weekDay.day = dayNums[count];//Calcule the day of the month
-								
+				
 				var text = document.createTextNode(dayNums[count]);
 				//!!! the dayColors fix is only for some time, in the next version this days will send a correct data
 				if(selectFunc != '' && dayColors[count] != params['preMonthDays'] && dayColors[count] != params['nextMonthDays'])
@@ -455,7 +467,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 				}
 				weekDay.appendChild(text);
 			
-				weekMonth.appendChild(weekDay);				
+				weekMonth.appendChild(weekDay);
 				count++;
 				left = left + 12;
 			}
@@ -477,15 +489,15 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		}else{
 			globalMonth = globalMonth-1;
 		}
-		globalDate.setMonth(globalMonth);		
+		globalDate.setMonth(globalMonth);
 		calendarBody = getCalendarBody();
 		calendarBase.appendChild(calendarBody);
 		var dateMiddle = document.getElementById(name+'dateMiddle');
 		var textNode = dateMiddle.firstChild;
-		textNode.replaceData(0,textNode.length,monthNames[globalMonth]+' '+globalYear);	
+		textNode.replaceData(0,textNode.length,monthNames[globalMonth]+' '+globalYear);
 		
 		var newDate = new Date();
-		newDate.setMonth(globalMonth);		
+		newDate.setMonth(globalMonth);
 		newDate.setYear(globalYear);
 		newDate.setDate(myDay);
 		sendMsg(checknum,selectFunc,eyeParam('date',newDate.getTime()));
@@ -501,15 +513,15 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 		}else{
 			globalMonth = globalMonth+1;
 		}
-		globalDate.setMonth(globalMonth);		
+		globalDate.setMonth(globalMonth);
 		calendarBody = getCalendarBody();
 		calendarBase.appendChild(calendarBody);
 		var dateMiddle = document.getElementById(name+'dateMiddle');
 		var textNode = dateMiddle.firstChild;
-		textNode.replaceData(0,textNode.length,monthNames[globalMonth]+' '+globalYear);	
+		textNode.replaceData(0,textNode.length,monthNames[globalMonth]+' '+globalYear);
 		
 		var newDate = new Date();
-		newDate.setMonth(globalMonth);		
+		newDate.setMonth(globalMonth);
 		newDate.setYear(globalYear);
 		newDate.setDate(myDay);
 		sendMsg(checknum,selectFunc,eyeParam('date',newDate.getTime()));
@@ -523,55 +535,56 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 			/*A little hack for caculate if february have 28 or 29 days.*/
 			var date = new Date();
 			date.setMonth(2);
-			date.setDate(0);			
+			date.setDate(0);
 			return date.getDate();
 		}else{
 			return 31;
 		}
-	}	
+	}
 	
 	function selectFunctionParser(e)
 	{
 		var event = new xEvent(e);
 		var target = event.target;
-		if(drawOnClick != 0){		
-			if(lastSelect != false){			
+		if(drawOnClick != 0){
+			if(lastSelect != false){
 				if(lastSelect.current != true){
-					lastSelect.style.border = '';				
-				}			
-				if(lastSelect.parentNode && lastSelect.parentNode.current != true){				
+					lastSelect.style.border = '';
+				}
+				if(lastSelect.parentNode && lastSelect.parentNode.current != true){
 					lastSelect.parentNode.style.backgroundColor = '';
-					lastSelect.parentNode.style.border = '';				
-				}			
-			}				
+					lastSelect.parentNode.style.border = '';
+				}
+			}
 			if(target.current != true){
 				target.style.borderStyle = 'solid';
 				target.style.borderColor = params['clickedBorder'];
 				target.style.borderWidth = '1px';
-			}					
+			}
 			if(target.parentNode.current != true){
 				target.parentNode.style.borderStyle = 'solid';
-				target.parentNode.style.borderColor = params['clickedWeek'];			
+				target.parentNode.style.borderColor = params['clickedWeek'];
 				target.parentNode.style.borderWidth = '1px';
 				target.parentNode.style.backgroundColor = params['clickedWeek'];
-			}		
+			}
 		}
 		lastSelect = target;
 		
 		var dayClicked = target.day;
-		myDay = dayClicked;		
+		myDay = dayClicked;
 		var selectDate = new Date();
-		selectDate.setMonth(globalMonth);		
+		selectDate.setMonth(globalMonth);
 		selectDate.setYear(globalYear);
 		selectDate.setDate(dayClicked);
 		sendMsg(checknum,selectFunc,eyeParam('date',selectDate.getTime()));
-	}	
+	}
 }
 function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = tinyMCE.entityDecode(params["text"]);
 	var checked = params["checked"];
 	var enabled = params["enabled"];
 	var visible = params["visible"];
+	var myWidth = params["width"];
 	var myCheckbox = document.createElement('input');
 	myCheckbox.setAttribute('type', 'checkbox');
 	var myContainer = document.createElement('div');
@@ -579,13 +592,16 @@ function Checkbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(checked == 1) {
 		if(IEversion > 0) {
 			myCheckbox.defaultChecked = true;
-		} else { 
+		} else {
 			myCheckbox.setAttribute('checked',true);
 		}
 	}
 	
 	if (enabled == 0) {
 		myCheckbox.disabled = 1;
+	}
+	if (myWidth > 0) {
+		myContainer.style.width = myWidth + 'px';
 	}
 	
 	myCheckbox.setAttribute('id',name);
@@ -601,7 +617,7 @@ function Container_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var mywidth = parseInt(params["width"]);
 	var unit = params["unit"];
 	var visible = params["visible"];
-
+	
 	var myContainer = document.createElement("div");
 	if(myheight > 0) {
 		myContainer.style.height = myheight + unit;
@@ -662,7 +678,7 @@ function Flash_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 }
 function Hidden_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = params["text"];
-
+	
 	var myHidden = document.createElement('input');
 	myHidden.setAttribute('type','hidden');
 	
@@ -689,7 +705,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	var overBorder = params["overBorder"];
 	var overBorderBackground = params["overBorderBg"];
 	var overBorderColor = params["overBorderColor"];
-	var textColor = params["textColor"];		
+	var textColor = params["textColor"];
 	
 	var myGlobalContainer = document.createElement('div');
 	myGlobalContainer.style.width='65px';
@@ -714,7 +730,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	myIconText.className = 'eyeIcon_Text';
 	myIconText.setAttribute('align','center');
 	myIconText.setAttribute('id',name+'_text');
-	myIconText.style.width = '65px';	
+	myIconText.style.width = '65px';
 	
 	text = tinyMCE.entityDecode(text);
 	var theText = document.createTextNode(text);
@@ -746,7 +762,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 				myGlobalContainer.style.backgroundColor = 'transparent';
 				myIconText.innerHTML = "";
 				myIconText.appendChild(document.createTextNode(text));
-			}		
+			}
 			myGlobalContainer.style.border = '1px solid transparent';
 		}
 	}
@@ -755,72 +771,73 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	var globalContainer = xGetElementById(name+'_Container');
 	globalContainer.checknum = checknum;
 	globalContainer.style.color = textColor;
-	if (draggable==1) {			
+	if (draggable==1) {
 			makeDrag(name+'_Container',father,'iconDragUpdate',checknum,content,1);
 	}
 	if(onclick==1){
 		myGlobalContainer.onclick = function(){
-			var myContent = getArrayArg(content); 
+			var myContent = getArrayArg(content);
 			var result = '';
 			for (var i in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
 			}
 			sendMsg(checknum,'Icon_Clicked',result);
 		}
 	}
+	fixPNG('img_' + name);
 }
 widgetDrop_behaviours = [];
 widgetDrops_ie = [];
 dropIndex = 400;
 function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 	//I don't know how it works under ie 8
-	if(IEversion > 1 && IEversion < 8){		
+	if(IEversion > 1 && IEversion < 8){
 		if(!widgetDrops_ie[checknum]){
 			widgetDrops_ie[checknum] = [];
-		}		
-		widgetDrops_ie[checknum].push(father);		
+		}
+		widgetDrops_ie[checknum].push(father);
 	}
 	
 	var widget = xGetElementById(father);
 	var cOrder = params['cOrder'];
 	var callback = params['callback'];
-	var signal = params['signal'];	
+	var signal = params['signal'];
 	var sender = params['sender'];
 	var mySelf = params['mySelf'];
 	
 	//This is a wrapper function for handle the differents options when drop happens
-	var widgetDrop = function widgetDrop(drop,drag,x,y,event){				
+	var widgetDrop = function widgetDrop(drop,drag,x,y,event){
 		//If cOrder is 1 or 3, callback is called before send the msg.
 		if(drag.id && drop.id){
-			 if(drag.id == drop.id && mySelf == false){
-			 	return true;
-			 }
+			if(drag.id == drop.id && mySelf == false){
+				return true;
+			}
 		}
-		if((cOrder == 1 || cOrder == 3) && callback){			
-			_execDropCallback(callback,drop,drag,x,y,event,checknum,1);			
+		if((cOrder == 1 || cOrder == 3) && callback){
+			_execDropCallback(callback,drop,drag,x,y,event,checknum,1);
 		}
 		//If sendMsg is true, a msg will be send
 		if(signal){
-			if(drop.content){				
-				var myContent = getArrayArg(drop.content); 
+			if(drop.content){
+				var myContent = getArrayArg(drop.content);
 				var result = '';
 				for (var i in myContent) {
-					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
-				}					
+					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
+				}
 				sendMsg(checknum,signal,result);
 			}
 		}
 		if(sender){
 			if(drag.content){
-				var myContent = getArrayArg(drag.content); 
+				var myContent = getArrayArg(drag.content);
 				var result = '';
 				for (var i in myContent) {
-					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
+					result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
 				}
 				sendMsg(drag.checknum,sender,result);
-			}	
+			}
 		}
-		if(widgetDrop_behaviours[name]){			
+		if(widgetDrop_behaviours[name]){
 			try{
 				eval("var behaviour = new "+widgetDrop_behaviours[name][0]+"('"+name+"');");
 				behaviour.start(drop,drag,x,y,event,checknum);
@@ -829,15 +846,15 @@ function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 			}
 		}
 		//If cOrder is 2 or 3, callback is called after sendMsg
-		if((cOrder == 2 || cOrder == 3) && callback){			
+		if((cOrder == 2 || cOrder == 3) && callback){
 			_execDropCallback(callback,drop,drag,x,y,event,checknum,2);
 		}
 	}
-	function _execDropCallback(callback,drop,drag,x,y,event,checknum,num){		
+	function _execDropCallback(callback,drop,drag,x,y,event,checknum,num){
 		if(typeof(callback) == 'string'){
 			try{
-				eval(callback);					
-			}catch(err){								
+				eval(callback);
+			}catch(err){
 			}
 		}else{
 			callback(drop,drag,x,y,event,checknum,num);
@@ -846,15 +863,15 @@ function WidgetDrop_show(params,name,father,x,y,horiz,vert,checknum){
 	xEnableDrop(widget,widgetDrop);
 }
 
-function addDropBehaviour(params,name,type){		
-	//Adding the behaviour to behaviour array		
+function addDropBehaviour(params,name,type){
+	//Adding the behaviour to behaviour array
 	try{
-		//NOTE: I eval the classes directly for javascript load problems (in each browser is different)				
-		widgetDrop_behaviours[name] = [];		
+		//NOTE: I eval the classes directly for javascript load problems (in each browser is different)
+		widgetDrop_behaviours[name] = [];
 		widgetDrop_behaviours[name][0] = type;
 		widgetDrop_behaviours[name][1] = params;
 	}catch(err){
-		//Waiting to eyeOS debug 
+		//Waiting to eyeOS debug
 		try{
 			console.log(err);
 		}catch(err){
@@ -880,8 +897,8 @@ function widgetDrop_simpleMenu(name){
 			for (var x in myContent) {
 				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
 				i++;
-			}	
-		}		
+			}
+		}
 		//if simpleMenu behaviour
 		if(this.params['content']){
 			var myContent = getArrayArg(this.params['content']);
@@ -903,7 +920,7 @@ function widgetDrop_simpleMsg(name){
 	}
 	this.action = function (drop,drag,x,y,event,checknum){
 		//If drag have content
-		if(drop.father == drag.father || !drag.myPid){		
+		if(drop.father == drag.father || !drag.myPid){
 			return false;
 		}
 		var result = '';
@@ -913,48 +930,48 @@ function widgetDrop_simpleMsg(name){
 			for (var x in myContent) {
 				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
 				i++;
-			}	
-		}		
-		if(this.params['content']){						
+			}
+		}
+		if(this.params['content']){
 			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params['content']));
 			i++;
-		}		
+		}
 		sendMsg(checknum,this.params['signal'],result);
 	}
 }
 
-function moveAndClick(name){		
-	this.params = widgetDrop_behaviours[name][1];	
-	this.start = function start(drop,drag,x,y,event,checknum){		
-		if(!drag.myPid){			
+function moveAndClick(name){
+	this.params = widgetDrop_behaviours[name][1];
+	this.start = function start(drop,drag,x,y,event,checknum){
+		if(!drag.myPid){
 			return false;
 		}
 		var dropPid = this.params['pid'];
-		var iconPid = drag.myPid;		
+		var iconPid = drag.myPid;
 		//If drag is an eyeFiles icon child, only move it
-		//If not is a child, trhow th emenu		
-		if(dropPid == iconPid){		
+		//If not is a child, trhow th emenu
+		if(dropPid == iconPid){
 			this.moveAction(drop,drag,x,y,event,checknum);
 		}else{
 			this.menuAction(drop,drag,x,y,event,checknum);
 		}
-	}	
+	}
 	this.moveAction = function moveAction(drop,drag,x,y,event,checknum){
 		this.moveUpdate(drag.id,xLeft(drag),xTop(drag),drag.diffX,drag.diffY,drag.checknum,drag.content);
 		drag.style.left = drag.diffX+'px';
 		drag.style.top = drag.diffY+'px';
 	}
-	this.menuAction = function menuAction(drop,drag,x,y,event,checknum){		
+	this.menuAction = function menuAction(drop,drag,x,y,event,checknum){
 		var result = '';
-		var i = 0;				
-		if(drag.content){			
+		var i = 0;
+		if(drag.content){
 			var myContent = getArrayArg(drag.content);
 			for (var x in myContent) {
 				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[x]));
 				i++;
-			}	
-		}		
-		if(this.params['content']){						
+			}
+		}
+		if(this.params['content']){
 			result += eyeParam('arg'+i,tinyMCE.entityDecode(this.params['content']));
 			i++;
 		}
@@ -966,7 +983,7 @@ function moveAndClick(name){
 		var movedX = newX - ancientX;
 		var movedY = newY - ancientY;
 		var myContent = getArrayArg(content);
-				
+		
 		/*var result="";
 		for (var i in myContent) {
 			result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
@@ -991,11 +1008,11 @@ function moveAndClick(name){
 //clickSignal = if the user only click, a msg is send
 //cursor = the cursor that will be setted on global father (eyeapps)
 //cursorPos = 0: natural position, 1: the mouse is in the top-left corner.
-//overload = When overload is true, only the *Back functions are called. 
+//overload = When overload is true, only the *Back functions are called.
 //params,name,father,x,y,horiz,vert,checknum
 
-function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){	
-	//Initialing some local vars, needed in some browsers for share it between subfunctions	
+function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
+	//Initialing some local vars, needed in some browsers for share it between subfunctions
 	var widget= xGetElementById(father);
 	
 	var dragWidget = xGetElementById(father).cloneNode(true);
@@ -1003,9 +1020,9 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 	var dragCssContent = getArrayArg(params['dragCssContent']);
 	
 	var content = params['content'];
-	var clickCallback = params['clickCallback']; 
-	var clickSignal = params['clickSignal']; 
-	var cursor = params['cursor']; 
+	var clickCallback = params['clickCallback'];
+	var clickSignal = params['clickSignal'];
+	var cursor = params['cursor'];
 	var cursorPos = params['cursorPos'];
 	var dragAlpha = params['dragAlpha'];
 	var myPid = params['myPid'];
@@ -1016,29 +1033,29 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 	widget.content = content;
 	
 	var startX = 0;
-	var startY = 0; 
+	var startY = 0;
 	var cursorBack = '';
 	
 	var xBack = widget.style.left;
-	var yBack = widget.style.top;	
+	var yBack = widget.style.top;
 	
 	var dragStarted = false;
 	
 	//This is called when user mousedown in a drag element
-	var widgetDragStart = function widgetDragStart(ele,mouseX,mouseY,event){			
-		//If overLoad is true, call only the start callback function		
+	var widgetDragStart = function widgetDragStart(ele,mouseX,mouseY,event){
+		//If overLoad is true, call only the start callback function
 		//Restarting the initial values
 		
 		dragWidget.style.left = xBack;
-		dragWidget.style.top = yBack;		
-						
+		dragWidget.style.top = yBack;
+		
 		startX = 0;
 		startY = 0;
 		widget.diffX = xLeft(widget);
 		widget.diffY = xTop(widget);
 		
 		//The drag don't start if the mouse isn't moved
-		dragStarted = false;		
+		dragStarted = false;
 		
 		//Respect where de user click in the drag object
 		
@@ -1063,28 +1080,28 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 	}
 	
 	//Called when dragWidget is moved (onmousemove)
-	var widgetDragMove = function widgetDragMove(ele,mouseDX,mouseDY,bWithinRect,xEventObj){		
+	var widgetDragMove = function widgetDragMove(ele,mouseDX,mouseDY,bWithinRect,xEventObj){
 		
-		//If the drag isn't started, start it. Set some vars and create the real dragWidget		
-		if(dragStarted == false){			
-			dragStarted = true;//Now drag is started because mouse is moved 
-												
+		//If the drag isn't started, start it. Set some vars and create the real dragWidget
+		if(dragStarted == false){
+			dragStarted = true;//Now drag is started because mouse is moved
+			
 			var eyeApps = xGetElementById('eyeApps');//Getting global father
 			
 			//Setting the style
 			eyeApps.style.cursor = cursor;
 			dragWidget.style.cursor = cursor
 			
-			//Moving the dragWidget to start position		
+			//Moving the dragWidget to start position
 			xMoveTo(dragWidget,startX,startY);
 					
 			//Adding it to global father
-			dragWidget.setAttribute('id',father+'_drag');//Setting a unique id			 
+			dragWidget.setAttribute('id',father+'_drag');//Setting a unique id
 			eyeApps.appendChild(dragWidget);
-			xZIndex(dragWidget, zindex);zindex++;//Moving  it on top of layers
+			xZIndex(dragWidget, zindex);zindex++;//Moving it on top of layers
 			//updating the css style if it is set
 			if(dragCssNames){
-				for (var i in dragCssNames) {						
+				for (var i in dragCssNames) {
 					updateCss(dragWidget.id,dragCssNames[i],dragCssContent[i]);
 				}
 			}
@@ -1092,46 +1109,46 @@ function WidgetDrag_show(params,name,father,x,y,horiz,vert,checknum,cent){
 				updateOpacityOnce(dragAlpha,dragWidget.id);
 			}
 			
-		//If drag is started, only move the dragWidget		
-		}else{									
+		//If drag is started, only move the dragWidget
+		}else{
 			//Moving seamless
-			widget.diffX +=  mouseDX;
-			widget.diffY +=  mouseDY;
+			widget.diffX += mouseDX;
+			widget.diffY += mouseDY;
 			xMoveTo(dragWidget,xLeft(dragWidget)+mouseDX,xTop(dragWidget)+mouseDY);
 		}
 	}
 	//This is called when user "mouseup" the cursor.
-	var widgetDragEnd = function widgetDragEnd(ele,mouseX,mouseY,xEventObj){		
-		//If drag isn't started, only simulate a click with a custom function.		
-		if(dragStarted == false){			
+	var widgetDragEnd = function widgetDragEnd(ele,mouseX,mouseY,xEventObj){
+		//If drag isn't started, only simulate a click with a custom function.
+		if(dragStarted == false){
 			//If callback is passed as argument, call it
 			if(clickCallback){
 				_execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj);
-			}		
+			}
 			
 			var myContent = getArrayArg(content);
 			var result = '';
 			for (var i in myContent) {
-				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));				
+				result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
 			}
 			if(clickSignal){
 				sendMsg(checknum,clickSignal,result);
 			}
 		//If drag started, restart the initial values
-		}else{			
-			dragWidget.parentNode.removeChild(dragWidget);			
+		}else{
+			dragWidget.parentNode.removeChild(dragWidget);
 		}
 		xGetElementById('eyeApps').style.cursor=cursorBack;
 	}
 	
-	xEnableDrag(widget,widgetDragStart,widgetDragMove,widgetDragEnd,'eyeApps');	
+	xEnableDrag(widget,widgetDragStart,widgetDragMove,widgetDragEnd,'eyeApps');
 }
 
 function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){
 	if(typeof(callback) == 'string'){
 		try{
-			eval(callback);					
-		}catch(err){								
+			eval(callback);
+		}catch(err){
 		}
 	}else{
 		callback(ele,mouseX,mouseY,xEventObj);
@@ -1142,7 +1159,7 @@ function iconDragUpdate(widgetid,ancientX,ancientY,newX,newY,checknum,content) {
 	var movedX = newX - ancientX;
 	var movedY = newY - ancientY;
 	myContent = getArrayArg(content);
-
+	
 	var result="";
 	for (var i in myContent) {
 		result += eyeParam('arg'+i,tinyMCE.entityDecode(myContent[i]));
@@ -1184,28 +1201,29 @@ function Imagebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var sig = params["signal"];
 	var sync = params["sync"];
 	var dis = params["disableMsg"];
-
+	
 	var myImage = document.createElement('img');
 	myImage.src=url;
 	myImage.setAttribute('alt',alt);
-	if(myWidth > 0) { 
+	if(myWidth > 0) {
 		myImage.setAttribute('width',myWidth);
 	}
 	if(myHeight > 0) {
 		myImage.setAttribute('height',myHeight);
 	}
-
+	
 	myImage.setAttribute('id',name);
 	
 	if(dis == 0) {
 		myImage.onclick = function(){sendMsg(checknum,sig,eval(sync))};
 	}
-
+	
 	if(myClass != '') {
 		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,myClass,cent,'px',visible);
 	} else {
 		createWidget(name+'_Container',father,myImage,horiz,vert,x,y,myWidth,myHeight,"eyeImagebox",cent,'px',visible);
 	}
+	fixPNG(name);
 }
 function Label_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var text = params["text"];
@@ -1231,7 +1249,7 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myDiv = document.createElement("div");
 	var myRadio;
 	var currentValue;
-
+	
 	for(i=0;i<content.length;i++) {
 		currentValue = getArrayArg(content[i]);
 		myRadio = document.createElement('input');
@@ -1240,13 +1258,13 @@ function Radio_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myRadio.setAttribute('type','radio');
 		myRadio.setAttribute('value',currentValue[0]);
 		myRadio.innerHTML = currentValue[1];
-
+	
 		myDiv.appendChild(myRadio);
 	}
-
+	
 	if(checked && checked < content.length) {
 		myRadio = document.getElementById(name+'_'+checked);
-
+	
 		if(myRadio) {
 			myRadio.setAttribute('checked','checked');
 		}
@@ -1264,7 +1282,7 @@ function Select_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	
 	if(mywidth > 0) {
-		mySelect.style.width = mywidth+'px';	
+		mySelect.style.width = mywidth+'px';
 	}
 	mySelect.setAttribute('id',name);
 	mySelect.className = 'eyeSelect';
@@ -1339,10 +1357,10 @@ function Sortabletable_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	eval('table_'+name+' = new SortableTable(document.getElementById("'+name+'"),'+strSortypes+',"'+signal+'","'+master+'","'+realName+'","'+checknum+'","'+name+'","'+dsignal+'");');
 }
 function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireName, dsignal) {
-
+	
 	this.sortTypes = oSortTypes || [];
 	this.normalSort = oSortTypes;
-
+	
 	this.sortColumn = null;
 	this.descending = null;
 	this.lastClick = null;
@@ -1352,7 +1370,7 @@ function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireN
 	this.realName = rName;
 	this.mychecknum = checknum;
 	this.entName = entireName;
-
+	
 	var oThis = this;
 	this._headerOnclick = function (e) {
 		oThis.headerOnclick(e);
@@ -1374,8 +1392,7 @@ function SortableTable(oTable, oSortTypes, signal, master,rName,checknum,entireN
 	else {
 		this.document = document;
 	}
-
-
+	
 	// only IE needs this
 	var win = this.document.defaultView || this.document.parentWindow;
 	this._onunload = function () {
@@ -1508,7 +1525,7 @@ SortableTable.prototype.initHeader = function (oSortTypes) {
 		c = cells[i];
 		if (this.sortTypes[i] != null && this.sortTypes[i] != "None" && this.sortTypes[i] != "HtmlButNoSort") {
 			img = doc.createElement("IMG");
-			img.src = "index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/widgets/blank.png";
+			img.src = "index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/widgets/blank.png";
 			c.appendChild(img);
 			if (this.sortTypes[i] != null)
 				c._sortType = this.sortTypes[i];
@@ -1609,7 +1626,7 @@ SortableTable.prototype.headerOnclick = function (e) {
 	var el = e.target || e.srcElement;
 	while (el.tagName != "TD")
 		el = el.parentNode;
-
+	
 	this.sort(SortableTable.msie ? SortableTable.getCellIndex(el) : el.cellIndex);
 	
 };
@@ -1636,11 +1653,11 @@ SortableTable.prototype.sort = function (nColumn, bDescending, sSortType) {
 	if (!this.tBody) return;
 	if (sSortType == null)
 		sSortType = this.getSortType(nColumn);
-
+	
 	// exit if None or HtmlButNoSort
 	if (sSortType == "None" || sSortType == "HtmlButNoSort")
 		return;
-
+	
 	if (bDescending == null) {
 		if (this.sortColumn != nColumn)
 			this.descending = this.defaultDescending;
@@ -1649,42 +1666,42 @@ SortableTable.prototype.sort = function (nColumn, bDescending, sSortType) {
 	}
 	else
 		this.descending = bDescending;
-
+	
 	this.sortColumn = nColumn;
-
+	
 	if (typeof this.onbeforesort == "function")
 		this.onbeforesort();
-
+	
 	var f = this.getSortFunction(sSortType, nColumn);
 	var a = this.getCache(sSortType, nColumn);
 	var tBody = this.tBody;
-
+	
 	a.sort(f);
-
+	
 	if (this.descending)
 		a.reverse();
-
+	
 	if (SortableTable.removeBeforeSort) {
 		// remove from doc
 		var nextSibling = tBody.nextSibling;
 		var p = tBody.parentNode;
 		p.removeChild(tBody);
 	}
-
+	
 	// insert in the new order
 	var l = a.length;
 	for (var i = 0; i < l; i++)
 		tBody.appendChild(a[i].element);
-
+	
 	if (SortableTable.removeBeforeSort) {
 		// insert into doc
 		p.insertBefore(tBody, nextSibling);
 	}
-
+	
 	this.updateHeaderArrows();
-
+	
 	this.destroyCache(a);
-
+	
 	if (typeof this.onsort == "function")
 		this.onsort();
 };
@@ -1706,8 +1723,8 @@ SortableTable.prototype.getCache = function (sType, nColumn) {
 	for (var i = 0; i < l; i++) {
 		r = rows[i];
 		a[i] = {
-			value:		this.getRowValue(r, sType, nColumn),
-			element:	r
+			value: this.getRowValue(r, sType, nColumn),
+			element: r
 		};
 	};
 	return a;
@@ -1726,7 +1743,7 @@ SortableTable.prototype.getRowValue = function (oRow, sType, nColumn) {
 	// if we have defined a custom getRowValue use that
 	if (this._sortTypeInfo[sType] && this._sortTypeInfo[sType].getRowValue)
 		return this._sortTypeInfo[sType].getRowValue(oRow, nColumn);
-
+	
 	var s;
 	var c = oRow.cells[nColumn];
 	if (typeof c.innerText != "undefined")
@@ -1745,7 +1762,7 @@ SortableTable.getInnerText = function (oNode) {
 			case 1: //ELEMENT_NODE
 				s += SortableTable.getInnerText(cs[i]);
 				break;
-			case 3:	//TEXT_NODE
+			case 3: //TEXT_NODE
 				s += cs[i].nodeValue;
 				break;
 		}
@@ -1784,7 +1801,7 @@ SortableTable.prototype.getSortFunction = function (sType, nColumn) {
 SortableTable.prototype.destroy = function () {
 	this.uninitHeader();
 	var win = this.document.parentWindow;
-	if (win && typeof win.detachEvent != "undefined") {	// only IE needs this
+	if (win && typeof win.detachEvent != "undefined") { // only IE needs this
 		win.detachEvent("onunload", this._onunload);
 	}
 	this._onunload = null;
@@ -1801,22 +1818,22 @@ SortableTable.prototype.destroy = function () {
 // Adds a sort type to all instance of SortableTable
 // sType : String - the identifier of the sort type
 // fGetValueFromString : function ( s : string ) : T - A function that takes a
-//    string and casts it to a desired format. If left out the string is just
-//    returned
+//	string and casts it to a desired format. If left out the string is just
+//	returned
 // fCompareFunction : function ( n1 : T, n2 : T ) : Number - A normal JS sort
-//    compare function. Takes two values and compares them. If left out less than,
-//    <, compare is used
+//	compare function. Takes two values and compares them. If left out less than,
+//	<, compare is used
 // fGetRowValue : function( oRow : HTMLTRElement, nColumn : int ) : T - A function
-//    that takes the row and the column index and returns the value used to compare.
-//    If left out then the innerText is first taken for the cell and then the
-//    fGetValueFromString is used to convert that string the desired value and type
+//	that takes the row and the column index and returns the value used to compare.
+//	If left out then the innerText is first taken for the cell and then the
+//	fGetValueFromString is used to convert that string the desired value and type
 
 SortableTable.prototype.addSortType = function (sType, fGetValueFromString, fCompareFunction, fGetRowValue) {
 	this._sortTypeInfo[sType] = {
-		type:				sType,
-		getValueFromString:	fGetValueFromString || SortableTable.idFunction,
-		compare:			fCompareFunction || SortableTable.basicCompare,
-		getRowValue:		fGetRowValue
+		type: sType,
+		getValueFromString: fGetValueFromString || SortableTable.idFunction,
+		compare: fCompareFunction || SortableTable.basicCompare,
+		getRowValue: fGetRowValue
 	};
 };
 
@@ -1861,7 +1878,6 @@ SortableTable.prototype.addSortType("String");
 function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myheight = parseInt(params["height"]);
 	var mywidth = parseInt(params["width"]);
-	var caption = params["caption"];
 	var sig = params["signal"];
 	
 	var myObj = document.createElement('div');
@@ -1871,7 +1887,7 @@ function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myObj.style.width = mywidth+'px';
 	}
 	if(myheight > 0) {
-		myObj.style.height = myheight+'px';		
+		myObj.style.height = myheight+'px';
 	}
 	createWidget(name+'_Container',father,myObj,horiz,vert,x,y,-1,-1,"eyeTabContainer",cent);
 	eval('tab_'+name+' = new eyeTab(document.getElementById("'+name+'"),"'+sig+'","'+checknum+'","' + parseInt(params["tabwidth"]) + '");');
@@ -1887,7 +1903,7 @@ function eyeTab(oTab,signal,mychecknum,tabwidth) {
 	this.myName = oTab.id;
 	this.moTab = oTab;
 	this.myTabs= new Array();
-
+	
 	var oThis = this; //get the instance of our tab group
 	
 	var myHeader = document.createElement('div');
@@ -1937,7 +1953,7 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	myNewTab.style.position = 'absolute';
 	myNewTab.style.top = '0px';
 	myNewTab.style.height = this.tabHeight + 'px';
-	var offset = counter * this.tabWidth + this.initialOffset;
+	var offset = counter * (Number(this.tabWidth) + 1) + this.initialOffset;
 	offset += 3;
 	myNewTab.style.left = offset+'px';
 	myNewTab.appendChild(myTabName);
@@ -1963,10 +1979,10 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 }
 
 eyeTab.prototype.removeTab = function (tabname) {
-	var myObj = document.getElementById(tabname);	
+	var myObj = document.getElementById(tabname);
 	if(!myObj) {
 		return;
-	}	
+	}
 	for (var i in this.myTabs) {
 		if(this.myTabs[i] > this.myTabs[tabname]){
 			var num = this.tabWidth;
@@ -1977,7 +1993,7 @@ eyeTab.prototype.removeTab = function (tabname) {
 	var myContent = document.getElementById(myObj.id+'_Content');
 	this.oHeader.removeChild(myObj);
 	this.moTab.removeChild(myContent);
-	//TODO: delete the position, no set to null 
+	//TODO: delete the position, no set to null
 	this.myTabs[tabname] = null;
 }
 
@@ -1986,7 +2002,7 @@ eyeTab.prototype.selectTab = function (tabname) {
 	if(!myObj) {
 		return;
 	}
-	if(myObj.id != this.lastClick) { 
+	if(myObj.id != this.lastClick) {
 		myObj.className = 'eyeTabSelected';
 		var myContent = document.getElementById(myObj.id+'_Content');
 		myContent.style.display='block';
@@ -2012,7 +2028,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var enabled = params["enabled"];
 	var CcssClass = params["cssClass"];
 	var visible = params["visible"];
-
+	
 	var myTextarea = document.createElement('textarea');
 	if(code == 1) {
 		myTextarea.id = name + '_cp';
@@ -2034,7 +2050,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if (Hheight > 0) {
 		myTextarea.style.height = Hheight+'px';
 	}
-
+	
 	if (enabled == 0) {
 		myTextarea.readOnly = 1;
 	}
@@ -2052,7 +2068,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	} else if(code == 1) {
 			myTextarea.className ='codepress '+lang;
 			eval("cp_"+name+" = new CodePress('"+myTextarea.id+"');");
-			CodePress.path = 'index.php?extern=libs/eyeWidgets/codepress/';
+			CodePress.path = 'index.php?version='+EXTERN_CACHE_VERSION+'&extern=libs/eyeWidgets/codepress/';
 			myTextarea.parentNode.insertBefore(eval("cp_"+name), myTextarea);
 	}
 }function Textbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -2062,7 +2078,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myPassword = params["password"];
 	var mywidth = params["width"];
 	var noborder = params["noborder"];
-
+	
 	var myTextbox = document.createElement('input');
 	if(myPassword==1) {
 		myTextbox.setAttribute('type','password');
@@ -2077,7 +2093,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if(mywidth != null) {
 		myTextbox.style.width = mywidth+'px';
 	}
-
+	
 	if(enabled == 0) {
 		myTextbox.setAttribute('disabled',1);
 	}
@@ -2091,7 +2107,9 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myTextbox.className = 'eyeTextbox';
 	
 	createWidget(name+'_Container',father,myTextbox,horiz,vert,x,y,-1,-1,"eyeTextboxContainer",cent,'px',visible);
-}activeWindow = "";
+}
+
+activeWindow = "";
 
 min_apps_width = 100;
 min_apps_height = 70;
@@ -2124,7 +2142,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var removeWin = parseInt(params["removeWin"]);
 	var savePosition = params["savePosition"];
 	var saveFunc = params["saveFunc"];
-	var xChecknum = params["xChecknum"];	
+	var xChecknum = params["xChecknum"];
 	var sigClose = params["sigClose"];
 	var dragBgColor = params["dragBgColor"];
 	var dragBgAlpha = params["dragBgAlpha"];
@@ -2132,7 +2150,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var noZindex = params['noZindex'];
 	var allDrag = params['allDrag'];
 	
-	//Css classes for each window part	
+	//Css classes for each window part
 	var wCssMain = params['wMain'];
 	var wCssTitle = params['wTitle'];
 	var wCssTitleRight = params['wTitleRight'];
@@ -2148,7 +2166,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	
 	var theText = document.createTextNode('');
 	var createdWindow = createWidget(name,father,theText,horiz,vert,x,y,width,height,wCssMain,cent);
-
+	
 	createdWindow.dragBgColor = dragBgColor;
 	createdWindow.dragBgAlpha = dragBgAlpha;
 	createdWindow.showDragContent = showDragContent;
@@ -2162,22 +2180,18 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		var myImage = document.createElement('img');
 		myImage.setAttribute('id',name+'_background');
 		myImage.src=background;
-		if(IEversion == 6) {
-			fixPNG(myImage.id);
-		}
+		myImage.style.width = width + 'px';
 		var myDiv = document.createElement('div');
 		myDiv.style.overflow = "hidden";
 		myDiv.appendChild(myImage);
 		createWidget(name+"_Content",name,myDiv,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
+		myImage.style.position = 'static';
 		if(type == 3) {
 			makeWindow(name, title, father, "", checknum, null,null,null,null,null,0,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag);
 		} else {
 			makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag);
 		}
-		
-		if (IEversion != 0) {
-			fixPNG(myImage.id);
-		}
+		fixPNG(name + '_background','crop');
 	} else {
 		/* CreateWidgets for Title Bar */
 		createWidget(name+"_WindowTitle",name,theText,0,0,-1,-1,-1,-1,wCssTitle,0);
@@ -2253,7 +2267,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		if (resize == 0) {
 			resize = null;
 		} else {
-			createWidget(name+"_WindowResizeButton",name,theText,0,0,-1,-1,-1,-1,"eyeWindowResizeButton",0);		
+			createWidget(name+"_WindowResizeButton",name,theText,0,0,-1,-1,-1,-1,"eyeWindowResizeButton",0);
 			resize = name+"_WindowResizeButton";
 		}
 		
@@ -2267,7 +2281,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 }
 
-function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag) {	
+function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,resButton,barId,closeButton,minButton,notList,notDrag,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex,allDrag) {
 	var widget = xGetElementById(widgetid);
 	if (!widget) {
 		return;
@@ -2277,22 +2291,38 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	var minBtn = xGetElementById(minButton);
 	var rBtn = xGetElementById(resButton);
 	var cBtn = xGetElementById(closeButton);
-    var barX = xGetElementById(barId);
-    if (fatherid != "eyeApps") {
+	var barX = xGetElementById(barId);
+	if (fatherid != "eyeApps") {
 		var rightBorder = xWidth(xGetElementById(widgetid+"_WindowBottom_right"));
 		var leftBorder = xWidth(xGetElementById(widgetid+"_WindowBottom_left"));
-    	var barX_height = xHeight(barX);
-    	var grandfatid = fatherid;
-    	var height_minimized = 0;
-    	var height_minimized = 0;
+		var barX_height = xHeight(barX);
+		var grandfatid = fatherid;
+		var height_minimized = 0;
+		var height_minimized = 0;
 	} else {
 		var rightBorder = 0;
 		var leftBorder = 0;
-    	var barX_height = 0;
-    	var height_minimized = 55;
-    	var start_at_y = 30;
+		var barX_height = 0;
+		var height_minimized = 55;
+		var start_at_y = 30;
 		fatherid = "minimizedAppsIn";
 		var grandfatid = "minimizedApps";
+	}
+	
+	if (document.getElementById(widgetid + '_Content').className != 'eyeWindowContentInvisible') {
+		if (IEversion > 0 && IEversion < 7) {
+			aw = document.getElementById(activeWindow);
+			if (aw) {
+				selects = aw.getElementsByTagName('select');
+				for (i = 0;i < selects.length;i++) {
+					if (selects[i].style.visibility != 'hidden') {
+						selects[i].name = 'visible';
+						selects[i].style.visibility = 'hidden';
+					}
+				}
+			}
+		}
+		activeWindow = widgetid;
 	}
 	
 	if (notList != 1) {
@@ -2317,7 +2347,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			var minIconRight = document.getElementById("minIconRight");
 			var myImgRight = document.createElement('img');
 			myImgRight.setAttribute('id','minIconRight_img');
-			myImgRight.setAttribute('src','index.php?extern=apps/eyeX/themes/'+eyeTheme+'/images/desktop/right.png');
+			myImgRight.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/desktop/right.png');
 			myImgRight.onclick = function(e) {
 				minArrowRight();
 			}
@@ -2325,7 +2355,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			
 			var myImgLeft = document.createElement('img');
 			myImgLeft.setAttribute('id','minIconLeft_img');
-			myImgLeft.setAttribute('src','index.php?extern=apps/eyeX/themes/'+eyeTheme+'/images/desktop/left.png');
+			myImgLeft.setAttribute('src','index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/desktop/left.png');
 			myImgLeft.onclick = function(e) {
 				minArrowLeft();
 			}
@@ -2348,19 +2378,59 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 					widget.style.display = 'none';
 					barWin.className = "eyeWindowOnBar_Off";
 				}else{
+					if (IEversion > 0 && IEversion < 7) {
+						aw = document.getElementById(activeWindow);
+						if (aw) {
+							selects = aw.getElementsByTagName('select');
+							for (i = 0;i < selects.length;i++) {
+								if (selects[i].style.visibility != 'hidden') {
+									selects[i].name = 'visible';
+									selects[i].style.visibility = 'hidden';
+								}
+							}
+						}
+					}
 					xZIndex(widget, zindex);
 					zindex++;
 					activeWindow = this.id;
+					if (IEversion > 0 && IEversion < 7) {
+						selects = this.getElementsByTagName('select');
+						for (i = 0;i < selects.length;i++) {
+							if (selects[i].name == 'visible') {
+								selects[i].style.visibility = 'visible';
+							}
+						}
+					}
 				}
 			} else {
+				if (IEversion > 0 && IEversion < 7) {
+					aw = document.getElementById(activeWindow);
+					if (aw) {
+						selects = aw.getElementsByTagName('select');
+						for (i = 0;i < selects.length;i++) {
+							if (selects[i].style.visibility != 'hidden') {
+								selects[i].name = 'visible';
+								selects[i].style.visibility = 'hidden';
+							}
+						}
+					}
+				}
 				minimized = false;
 				widget.style.display = 'block';
 				barWin.className = "eyeWindowOnBar_On";
 				activeWindow = this.id;
 				xZIndex(widget, zindex);zindex++;
+				if (IEversion > 0 && IEversion < 7) {
+					selects = this.getElementsByTagName('select');
+					for (i = 0;i < selects.length;i++) {
+						if (selects[i].name == 'visible') {
+							selects[i].style.visibility = 'visible';
+						}
+					}
+				}
 			}
 		}
-		barWin.onclick = barWinOnClick;	
+		barWin.onclick = barWinOnClick;
 		if (minBtn) {
 			function minOnClick()
 			{
@@ -2371,11 +2441,11 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 				}
 			}
 			minBtn.onclick = minOnClick;
-		}	
+		}
 	} else {
 		var barWin_height = 0;
 	}
-
+	
 	if (mBtn) {
 		function maxOnClick()
 		{
@@ -2428,7 +2498,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	function wndsresize() {
 		if(!xGetElementById(widgetid).showDragContent){
 			widgetDragStart(widgetid);
-		}		
+		}
 	}
 	
 	function wndresize() {
@@ -2444,7 +2514,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	}
 	if (allDrag && !notDrag) {
 		xEnableDrag(widget, begindrag, barOnDrag, callafterfunction);
-	}	
+	}
 	function begindrag() {
 		if(!xGetElementById(widgetid).showDragContent){
 			widgetDragStart(widgetid);
@@ -2453,6 +2523,18 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	
 	function GoToTop()
 	{
+		if (IEversion > 0 && IEversion < 7) {
+			aw = document.getElementById(activeWindow);
+			if (aw) {
+				selects = aw.getElementsByTagName('select');
+				for (i = 0;i < selects.length;i++) {
+					if (selects[i].style.visibility != 'hidden') {
+						selects[i].name = 'visible';
+						selects[i].style.visibility = 'hidden';
+					}
+				}
+			}
+		}
 		activeWindow = this.id; //Set window active.
 		if(!noZindex){
 			xZIndex(widget, zindex);
@@ -2463,7 +2545,15 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 					xZIndex(widgetX, dropIndex);dropIndex++;
 				}
 			}
-		}		
+		}
+		if (IEversion > 0 && IEversion < 7) {
+			selects = this.getElementsByTagName('select');
+			for (i = 0;i < selects.length;i++) {
+				if (selects[i].name == 'visible') {
+					selects[i].style.visibility = 'visible';
+				}
+			}
+		}
 	}
 	
 	function barOnDrag(e, mdx, mdy)
@@ -2488,7 +2578,7 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 	}
 	
 	function callafterfunction()
-	{		
+	{
 		if(!xGetElementById(widgetid).showDragContent){
 			widgetDragEnd(widgetid);
 		}
@@ -2496,47 +2586,49 @@ function makeWindow (widgetid,title,fatherid,afterfunction,checknum,maxButton,re
 			if(saveFunc != ''){
 				try{
 					sendMsg(checknum,saveFunc,eyeParam('x',xLeft(widget))+eyeParam('y',xTop(widget))+eyeParam('winName',widget.id));
-				}catch(err){
-					//alert(err);
-				}
+				}catch(err){}
 			}else{
 				//Getting vars here because at the moment, callafterfunction only to anything if savePosition are setted
 				var top = xTop(widget);//Getting the top.
-				var left = xLeft(widget);//Getting the left			
+				var left = xLeft(widget);//Getting the left
 				sendMsgParam = eyeParam('top',top);
 				sendMsgParam = sendMsgParam + eyeParam('left',left);
 				sendMsgParam = sendMsgParam + eyeParam('winName',widget.id);
 				sendMsgParam = sendMsgParam + eyeParam('appChecknum',checknum);
 				sendMsg(xChecknum,'saveWinPosition',sendMsgParam);
 			}
-		}					
-	}	
-	widget.onmousedown = GoToTop; 
+		}
+	}
+	widget.onmousedown = GoToTop;
 	xShow(widget);
 }
 
 function widgetDragStart(widgetid){
-	document.getElementById(widgetid+'_Content').style.display = 'none';	
+	document.getElementById(widgetid+'_Content').style.display = 'none';
 	var window = document.getElementById(widgetid);
 	window.style.backgroundColor = window.dragBgColor;
-	updateOpacityOnce(window.dragBgAlpha, window)
+	if (!IEversion || IEversion > 6) {
+		updateOpacityOnce(window.dragBgAlpha, window.id);
+	}
 }
 function widgetDragEnd(widgetid){
 	document.getElementById(widgetid+'_Content').style.display = 'block';
 	xShow(widgetid+'_Content');
 	var window = document.getElementById(widgetid);
 	window.style.backgroundColor = 'transparent';
-	updateOpacityOnce(100, window)
+	if (!IEversion || IEversion > 6) {
+		updateOpacityOnce(100, window.id);
+	}
 }
 function slideClose(fatherid,widgetid) {
 	
 	if (fatherid != "eyeApps" && fatherid != "minimizedAppsIn" && fatherid != "minimizedApps") {
-    	var grandfatid = fatherid;
-    	var eyeAppsId = 1;
+		var grandfatid = fatherid;
+		var eyeAppsId = 1;
 	} else {
 		fatherid = "minimizedAppsIn";
 		var grandfatid = "minimizedApps";
-    	var eyeAppsId = 0;
+		var eyeAppsId = 0;
 	}
 	
 	var barWin = xGetElementById(widgetid+"_WindowOnBar");
@@ -2544,11 +2636,11 @@ function slideClose(fatherid,widgetid) {
 	minspace[fatherid] = minspace[fatherid] - barWin_width;
 	
 	if (openWindows.length > 0)
- 	{
- 		var minLeft = xLeft(barWin);
- 		var reduceWidth = xWidth(barWin);
- 		
-		for (var i = 0; i < openWindows.length; i++) 
+	{
+		var minLeft = xLeft(barWin);
+		var reduceWidth = xWidth(barWin);
+		
+		for (var i = 0; i < openWindows.length; i++)
 		{
 			var actWin = openWindows[i]+"_WindowOnBar";
 			if (xLeft(actWin) > minLeft) {
@@ -2599,7 +2691,7 @@ function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var visible = params["visible"];
 	var mywidth = params["width"];
 	var pogress = params['progress'];
-
+	
 	var myProgress = document.createElement('div');
 	
 	if(mywidth != null) {
@@ -2613,7 +2705,7 @@ function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myProgressBar.setAttribute('id',name+'_bar');
 	myProgressBar.className = 'eyeProgressBar';
 	myProgressBar.style.height = '100%';
-	myProgressBar.style.width = pogress+'%';	
+	myProgressBar.style.width = pogress+'%';
 	
 	var myProgressText = document.createElement('div');
 	myProgressText.setAttribute('id',name+'_txt');
@@ -2638,42 +2730,48 @@ function Toolbar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myBar = document.createElement('div');
 	myBar.setAttribute('id',name);
 	myBar.className = 'blockbar';
-	myBar.paintClick = params['paintOnClick'];	
+	myBar.paintClick = params['paintOnClick'];
 	myBar.select = params['select'];
 	obj.appendChild(myBar);
 }
 
 function addLineToBar(myToolbar) {
 	var obj = document.getElementById(myToolbar);
-	var container = document.createElement('div');	
+	var container = document.createElement('div');
 	container.className = 'blockbarline';
 	container.innerHTML = '&nbsp;';
 	obj.appendChild(container);
 }
 
-function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum) {
+function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum,myHeight,myWidth) {
 	var obj = document.getElementById(myToolbar);
 	var paintClick = obj.paintClick;
 	var select = obj.select;
-		
+	
 	var container = document.createElement('div');
 	var myFriends = Base64.decode(sync);
 	container.setAttribute('id',itemName+'_Container');
 	container.className = 'blockbarItem';
 	
-	if(paintClick == 1){		
-		container.onmousedown = function(){			
-			container.className = 'blockbarItemPress';			
+	if(paintClick == 1){
+		container.onmousedown = function(){
+			container.className = 'blockbarItemPress';
 		}
 		container.onmouseup = function(){
 			container.className = 'blockbarItem';
 		}
-	}		
+	}
 	
 	var myImg = document.createElement('img');
 	myImg.setAttribute('id',itemName+'_img');
 	myImg.className = 'blockbarImg';
 	myImg.setAttribute('src',itemImg);
+	if (myHeight > 0) {
+		myImg.style.height = myHeight + 'px';
+	}
+	if (myWidth > 0) {
+		myImg.style.width = myWidth + 'px';
+	}
 	container.appendChild(myImg);
 	
 	var myText = document.createElement('div');
@@ -2683,6 +2781,7 @@ function addItemToBar(myToolbar,itemName,itemImg,itemText,sync,checknum) {
 	container.appendChild(myText);
 	container.onclick = function(){sendMsg(checknum,itemName,eval(myFriends))};
 	obj.appendChild(container);
+	fixPNG(itemName + '_img');
 }
 
 function Tree_show(params,name,father,x,y,horiz,vert,checknum,cent) {
@@ -2714,16 +2813,16 @@ function Tree(father, signal, checknum, name, height, width, x, y, clickTree,syn
 	this.mySync = sync;
 	
 	var oThis = this;
-
+	
 	this._listOnClick = function (e) {
 		oThis.listOnClick(e);
 	}
-
+	
 	var oFather = document.getElementById(this.father);
 	if(!oFather) {
 		return;
 	}
-
+	
 	var tree = document.createElement('ul');
 	tree.setAttribute('id',this.name);
 	tree.className = "mktree";
@@ -2751,7 +2850,7 @@ Tree.prototype.setLBody = function (oLBody) {
 Tree.prototype.getValue = function(e) {
 	if(this.lastClick) {
 		var obj = this.lastClick;
-		if(obj.tagName != 'SPAN') { 
+		if(obj.tagName != 'SPAN') {
 			var str=obj.innerHTML;
 			str = str.replace(/^<[^>]+>[^>]+>/i,"");
 			var content = str;
@@ -2783,9 +2882,9 @@ Tree.prototype.listOnClick = function(e) {
 	if(this.myClickTree == 1) {
 		//send the path to the clicked element + its internal name
 		if (el.tagName == 'LI')
-			itemName = el.id.substring(6,el.id.length);							//simple item
+			itemName = el.id.substring(6,el.id.length); //simple item
 		else
-			itemName = el.parentNode.id.substring(6,el.parentNode.id.length);	//sublist
+			itemName = el.parentNode.id.substring(6,el.parentNode.id.length); //sublist
 		sendMsg(this.myChecknum,this.mySignal,eval(this.mySync)+eyeParam('itemName',itemName));
 	}
 }
@@ -2812,7 +2911,7 @@ function selectTreeItem(list,name) {
 			if (item.childNodes[i].tagName == 'SPAN') {
 				item = item.childNodes[i];
 				break;
-			}	
+			}
 		}
 	}
 	expandToItem(list,name);
@@ -2956,8 +3055,8 @@ function SimpleMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var sFather = params["sFather"];
 	var myFather = params["mFather"];
 	var rFather = params['rFather'];
-	var obj = document.getElementById(father);	
-	if(!obj) { 		
+	var obj = document.getElementById(father);
+	if(!obj) {
 		return false;
 	}
 	
@@ -2966,10 +3065,10 @@ function SimpleMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myMenu.className = 'eyeContextMenu';
 	myMenu.style.display = 'none';
 	if(IEversion == 6){
-		myMenu.style.position = 'absolute';	
+		myMenu.style.position = 'absolute';
 	}else{
-		myMenu.style.position = 'fixed';	
-	}	
+		myMenu.style.position = 'fixed';
+	}
 	myMenu.style.zIndex = 9000000;
 	if(myFather) {
 		document.getElementById(myFather).appendChild(myMenu);
@@ -2989,11 +3088,11 @@ function showSimpleMenu(e,menuName,rFather) {
 	var top = e.pageY;
 	var left = e.pageX;
 	if(IEversion == 6){
-		var father = document.getElementById(rFather);		
+		var father = document.getElementById(rFather);
 		top = e.offsetY;
 		left = e.offsetX;
 		top += xTop(father);
-		left += xLeft(father);		
+		left += xLeft(father);
 	}
 	myMenu = document.getElementById(menuName);
 	myMenu.style.top = top+'px';
@@ -3001,7 +3100,7 @@ function showSimpleMenu(e,menuName,rFather) {
 	myMenu.style.display = 'block';
 }
 
-function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params) {
+function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	var obj = document.getElementById(menuName);
 	if(!obj) {
 		return false;
@@ -3019,6 +3118,7 @@ function addSimpleMenuEntry(menuName,text,entryName,signal,checknum,params) {
 		myEntry.style.backgroundColor = 'white';
 	}
 	obj.appendChild(myEntry);
+	fixPNG(imgId);
 }
 
 function hideSimpleMenu(menuName) {
@@ -3034,7 +3134,7 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var myFather = params["mFather"];
 	var rFather = params['rFather'];
 	var obj = document.getElementById(father);
-	if(!obj) { 
+	if(!obj) {
 		return false;
 	}
 	
@@ -3043,10 +3143,10 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	myMenu.className = 'eyeContextMenu';
 	myMenu.style.display = 'none';
 	if(IEversion == 6){
-		myMenu.style.position = 'absolute';	
+		myMenu.style.position = 'absolute';
 	}else{
-		myMenu.style.position = 'fixed';	
-	}	
+		myMenu.style.position = 'fixed';
+	}
 	myMenu.style.zIndex = 9000000;
 	if(myFather) {
 		document.getElementById(myFather).appendChild(myMenu);
@@ -3056,32 +3156,38 @@ function ContextMenu_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	obj.oncontextmenu = function(e) {
 		var e = new xEvent(e);
 		if(e.target.id == father || ( (e.target.parentNode.id == father) && (sFather == 1) ) ) {
-			if(IEversion == 6){
-				showContextMenu(e,name,rFather);	
-			}else{
-				showContextMenu(e,name);	
-			}			
+			showContextMenu(e,name,rFather,myFather);
 			return false;
 		}
 	}
+	obj.onmousemove = function (e) {
+		if (eyeKeyDown == 17) {
+			var e = new xEvent(e);
+			if (e.target.id == father || ((e.target.parentNode.id == father) && (sFather == 1))) {
+				showContextMenu(e,name,rFather,myFather);
+				return false;
+			}
+		}
+	}
+	
 	var openedDiv = name;
 	var codeClick = "hideContextMenu('"+name+"');";
 	addClickHandler(openedDiv,codeClick);
 }
 lastMenu = "";
-function showContextMenu(e,menuName,rFather) {
+function showContextMenu(e,menuName,rFather,myFather) {
 	if(lastMenu != "") {
 		hideContextMenu(lastMenu);
 	}
 	lastMenu = menuName;
 	var top = e.pageY;
 	var left = e.pageX;
-	if(IEversion == 6){
-		var father = document.getElementById(rFather);		
+	if (IEversion == 6 && myFather != 'eyeApps') {
+		var father = document.getElementById(rFather);
 		top = e.offsetY;
 		left = e.offsetX;
 		top += xTop(father);
-		left += xLeft(father);		
+		left += xLeft(father);
 	}
 	myMenu = document.getElementById(menuName);
 	myMenu.style.top = top+'px';
@@ -3089,7 +3195,7 @@ function showContextMenu(e,menuName,rFather) {
 	myMenu.style.display = 'block';
 }
 
-function addContextEntry(menuName,text,entryName,signal,checknum,params) {
+function addContextEntry(menuName,text,entryName,signal,checknum,params,imgId) {
 	var obj = document.getElementById(menuName);
 	if(!obj) {
 		return false;
@@ -3107,6 +3213,7 @@ function addContextEntry(menuName,text,entryName,signal,checknum,params) {
 		myEntry.style.backgroundColor = 'white';
 	}
 	obj.appendChild(myEntry);
+	fixPNG(imgId);
 }
 
 function hideContextMenu(menuName) {

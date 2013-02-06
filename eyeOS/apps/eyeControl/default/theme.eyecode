@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -36,7 +36,7 @@ $mySelect->show();
 $dir = EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/';
 $oldUser = $currentUser;
 $currentUser = ROOTUSER;
-$openDir = vfs('real_getDirContent',array($dir,'*',2));
+$openDir = vfs('real_getDirContent',array($dir));
 foreach ($openDir as $theme) {
 	if (is_dir($theme) && file_exists($theme . '/info.xml')) {
 		$UserThemeXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
@@ -66,7 +66,7 @@ $myButton = new Button(array(
 ));
 $myButton->addFriend($mySelect);
 $myButton->show();
-$ContentY = $ContentY + 40;
+$ContentY += 40;
 $myLine = new Line(array(
 	'name' => 'eyeControl_theme_line',
 	'father' => $eyeContainer,
@@ -75,7 +75,7 @@ $myLine = new Line(array(
 	'y' => $ContentY
 ));
 $myLine->show();
-$ContentY = $ContentY + 20;
+$ContentY += 20;
 // Theme
 $myLabel = new Label(array(
 	'name' => 'eyeControl_theme_label_display_1',
@@ -94,7 +94,7 @@ $myLabel = new Label(array(
 	'tokens' => array($selectedXML['version'][0])
 ));
 $myLabel->show();
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // Author
 $myLabel = new Label(array(
 	'name' => 'eyeControl_theme_label_author_1',
@@ -112,7 +112,7 @@ $myLabel = new Label(array(
 	'text' => $selectedXML['author'][0]
 ));
 $myLabel->show();
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // Screenshot
 $myLabel = new Label(array(
 	'name' => 'eyeControl_theme_label_screenshot',
@@ -129,7 +129,7 @@ $myImagebox = new Imagebox(array(
 	'height' => 120,
 	'x' => 160,
 	'y' => $ContentY,
-	'url' => 'index.php?extern=' . THEMES_DIR . '/' . $UserThemeXML['eyeDesk'][0]['theme'][0] . '/screenshot.png'
+	'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . THEMES_DIR . '/' . $UserThemeXML['eyeDesk'][0]['theme'][0] . '/screenshot.png'
 ));
 $myImagebox->show();
 ?>

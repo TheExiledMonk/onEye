@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -24,8 +24,8 @@
 function eyeArchive_run($params=null) {
 	global $myPid,$checknum;		
 	
-	$myWindow = new Window(array('name'=>'mainWindow','title'=>'eyeArchive','father'=>'eyeApps',
-		'type'=>NORESIZE_WINDOW,'width'=>548,'height'=>535,'cent'=>1));
+	$myWindow = new Window(array('name'=>'mainWindow','title'=>'Archive Manager','father'=>'eyeApps',
+		'type'=>NORESIZE_WINDOW,'width'=>548,'height'=>535,'cent'=>1,'savePosition' => 1));
 	$myWindow->show();
 	
 	$actionLabel = new Label(array('name'=>'actionLabel','father'=>'mainWindow_Content','text'=>'Open a folder or file','y'=>70,'x'=>5));
@@ -36,13 +36,13 @@ function eyeArchive_run($params=null) {
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'mainWindow_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('Open','index.php?extern=apps/eyeX/themes/default/images/toolbar/fileopen.png','Open');
-	$myToolbar->addItem('Extract','index.php?extern=apps/eyeX/themes/default/images/toolbar/archive-extract.png','Extract',array($myTextBox));
-	$myToolbar->addItem('Compress','index.php?extern=apps/eyeX/themes/default/images/toolbar/archive-insert.png','Compress',array($myTextBox));	
+	$myToolbar->addItem('Open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
+	$myToolbar->addItem('Extract','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/archive-extract.png','Extract',array($myTextBox));
+	$myToolbar->addItem('Compress','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/archive-insert.png','Compress',array($myTextBox));	
 		
 	
 	$myButton = new Button(array('name'=>'selectDest','father'=>'mainWindow_Content','signal'=>'SelectDest',
-	'caption'=>'...','x'=>505,'y'=>85,'img'=>'index.php?extern=apps/eyeX/themes/default/icons/16x16/folder.png'));
+	'caption'=>'...','x'=>505,'y'=>85,'img'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'));
 	$myButton->show();
 	
 	

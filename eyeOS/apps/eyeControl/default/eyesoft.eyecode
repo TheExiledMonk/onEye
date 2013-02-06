@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -52,7 +52,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 10,
 	'y' => 0,
-	'img' => eyex('getThemeImage',array('icons/16x16/new.png',1))
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/new.png'
 ));
 $myButton->show();
 // Edit
@@ -64,7 +64,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 90,
 	'y' => 0,
-	'img' => eyex('getThemeImage',array('icons/16x16/paste.png',1))
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -77,7 +77,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 170,
 	'y' => 0,
-	'img' => eyex('getThemeImage',array('icons/16x16/properties.png',1))
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/properties.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -90,7 +90,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 250,
 	'y' => 0,
-	'img' => eyex('getThemeImage',array('icons/16x16/delete.png',1))
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/delete.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();

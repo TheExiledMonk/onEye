@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -199,6 +199,21 @@ class File {
 				if(!vfs('checkQuota',array($file))) {
 					exit;
 				}
+				
+				$countFiles = 0;
+				while (vfs('fileExists',array($finalPath))) {
+					$finalPathInfo = utf8_pathinfo($finalPath);
+					$extension = $finalPathInfo['extension'];
+					if (!$countFiles) {
+						$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+					} else {
+						$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+						$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPathTemp) - utf8_strlen(strrchr($finalPathTemp,'_')));
+					}
+					$countFiles++;
+					$finalPath = $finalPathTemp . '_' . $countFiles . '.' . $extension;
+				}
+				
 				move_uploaded_file($file,$finalPath);
 				vfs('realToVirtual',array($finalPath));		
 			}			
@@ -208,9 +223,24 @@ class File {
 			if(!vfs('checkQuota',array($_FILES[$this->filename]['tmp_name']))) {
 				exit;
 			}
-			move_uploaded_file($_FILES[$this->filename]['tmp_name'],$finalPath);			
-			vfs('realToVirtual',array($finalPath));	
-		}				
+			
+			$countFiles = 0;
+			while (vfs('fileExists',array($finalPath))) {
+				$finalPathInfo = utf8_pathinfo($finalPath);
+				$extension = $finalPathInfo['extension'];
+				if (!$countFiles) {
+					$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+				} else {
+					$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPath) - utf8_strlen($extension) - 1);
+					$finalPathTemp = utf8_substr($finalPath,0,utf8_strlen($finalPathTemp) - utf8_strlen(strrchr($finalPathTemp,'_')));
+				}
+				$countFiles++;
+				$finalPath = $finalPathTemp . '_' . $countFiles . '.' . $extension;
+			}
+			
+			move_uploaded_file($file,$finalPath);
+			vfs('realToVirtual',array($finalPath));
+		}
 		return true;
 	}
 	

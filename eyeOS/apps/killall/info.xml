@@ -1,7 +1,7 @@
 <package>
 	<name>killall</name>
 	<category>Utilities</category>
-	<version>1.0</version>
+	<version>1.7</version>
 	<description>Utility for killing one application's processes</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>

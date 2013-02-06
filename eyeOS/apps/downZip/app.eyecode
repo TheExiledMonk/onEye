@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -28,7 +28,7 @@ function downZip_run($params=null) {
 		$info = utf8_pathinfo($path);
 		$ext = utf8_strtolower($info['extension']);
 		if (service('vfs','real_fileExists',array($path)) && $ext == utf8_strtolower(EYEOS_LINK_EXT)) {
-			service('eyex','messageBox',array('content'=>'Links can\'t be downloaded.'));
+			service('eyex','messageBox',array('content'=>'Links cannot be downloaded!'));
 			proc('end');
 			return;
 		}
@@ -36,17 +36,21 @@ function downZip_run($params=null) {
 		proc('end');
 		return;
 	}
-	$myWindow = new Window(array('name'=>'downloadWND','father'=>'eyeApps',
-		'type'=>NOLIST_CLOSE_WINDOW,'cent'=>1,'width'=>5,'height'=>5));
-	$myWindow->show();
-	$myWindow->setCss(array('visibility'=>'hidden'));
-	$myHidden = new Hidden(array('name'=>'dPath','father'=>'newFolder_Content','text'=>$path));
-	reqLib('eyeWidgets','serialize',array($myHidden));
-	$myFrame = new Iframe(array('name'=>'downloadFrame','father'=>'downloadWND_Content','x'=>5,
-		'y'=>5,'height'=>5,'width'=>5,
-		'url'=>"index.php?checknum=$checknum&msg=downloadZip",
-		'scroll'=>0));
-	$myFrame->show();
+	if (IE < 0 && IE < 7) {
+		eyex('rawjs',array('js' => 'window.open("index.php?checknum=' . $checknum . '&msg=downloadZip");'));
+	} else {
+		$myWindow = new Window(array('name'=>'downloadWND','father'=>'eyeApps',
+			'type'=>NOLIST_CLOSE_WINDOW,'cent'=>1,'width'=>5,'height'=>5));
+		$myWindow->show();
+		$myWindow->setCss(array('visibility'=>'hidden'));
+		$myHidden = new Hidden(array('name'=>'dPath','father'=>'newFolder_Content','text'=>$path));
+		reqLib('eyeWidgets','serialize',array($myHidden));
+		$myFrame = new Iframe(array('name'=>'downloadFrame','father'=>'downloadWND_Content','x'=>5,
+			'y'=>5,'height'=>5,'width'=>5,
+			'url'=>"index.php?checknum=$checknum&msg=downloadZip",
+			'scroll'=>0));
+		$myFrame->show();
+	}
 }
 
 function downZip_end($params=null) {

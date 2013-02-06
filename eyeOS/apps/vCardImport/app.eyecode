@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -33,13 +33,15 @@ function vCardImport_run($params=null) {
 		'type' => 3,
 		'title' => 'Import vCard',
 		'win_name' => 'importVcard',
+		'win_style' => TITLE + CLOSE + LISTED + MIN,
 		'btn1_capt' => 'Yes',
 		'btn1_name' => 'Yes',
 		'btn2_capt' => 'No',
 		'btn2_name' => 'No',
 		'hidden_text' => $path,
 		'hidden_name' => 'path',
-		'img' => '?'
+		'img' => '?',
+		'savePosition' => 1
 	));
 }
 

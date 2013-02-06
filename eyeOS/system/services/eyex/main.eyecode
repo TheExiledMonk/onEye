@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -35,7 +35,9 @@
 define('GLOBAL_FATHER','eyeApps');//TODO: remove this?
 
 function service_eyex_init() {
-	header("Content-type:text/xml");//override header type
+	if ($_REQUEST['type'] != 'dynamic') {
+		header("Content-type:text/xml");//override header type
+	}
 }
 
 /**
@@ -238,48 +240,106 @@ function service_eyex_setWallpaper($params) {
 * Checks whether the image is available for that theme or not.
 * 
 * @param $params array(path,extension)
-* @param $path Path in the theme's directory.
-* @param $extension If 1 the index.php=?extern= path will be added before
-*	the $path if it's 2 the EYE_ROOT path will be added.
+* @param $path Path in any format.
+* @param $extend If 1 the index.php?extern= path will be added before
+*	the $path if it's 2 the real path will be added.
+*	the $path if it's 3 the real path will be used for output.
 * @return If the image is in the themes folder it returns the usertheme with
 *	the image path. Else it returns the default theme with the image path.
 * @exception INCORRECT_PARAMS No path is specified.
-* @date 2008/03/17
+* @date 2008/08/01
 */
 function service_eyex_getThemeImage($params) {
+// Check params
 	$path = $params[0];
+	$extend = $params[1];
 	if (!$path) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	
-	if ($params[1] === 1) {
-		$path = 'index.php?extern=' . THEMES_DIR . '/default/' . $path;
-	} elseif ($params[1] === 2) {
-		$path = EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/' . $path;
+	$themes_path = EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR;
+// Extend input and remove backslashes
+	if ($extend === 1 || $extend == 2) {
+		$path = $themes_path . '/default/' . $path;
 	}
-	
-	str_replace('//','/',$path);
-	str_replace('//','/',$path);
-	
-	if (utf8_strpos($path,'extern=' . THEMES_DIR . '/default/')) {
+	$path = str_replace('\\','/',$path);
+	$path = str_replace('//','/',$path);
+	$path = str_replace('//','/',$path);
+// Switch from an extern to a real url
+	if (utf8_strpos($path,'extern=')) {
 		$path = eyex('getRealFromExtern',array($path));
-		$return = 'index.php?extern=' . THEMES_DIR . '/';
-	} elseif (utf8_substr($path,0,strlen(EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/')) == EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/') {
-		$return = EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/';
+	}
+	$url = $path; // $url won't be changed and saves the original path.
+// Check if the path is a theme path
+	if (utf8_strpos($path,$themes_path . '/default/') !== false) {
+		$path = $themes_path . '/' . eyeSessions('getVar',array('usertheme')) . '/' . utf8_substr($url,utf8_strlen($themes_path . '/default/'));
+		$path = eyex_getExistingPath($path);
+		if (!$path) {
+			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/alias' . EYE_CODE_EXTENSION;
+			$temp = utf8_substr($url,utf8_strlen($themes_path . '/default/'));
+			if ($alias[0][$temp]) {
+				$path = $themes_path . '/' . eyeSessions('getVar',array('usertheme')) . '/' . $alias[0][$temp];
+				$path = eyex_getExistingPath($path);
+			} else {
+				$path = false;
+			}
+// If it does not exist in the current theme
+			if (!$path) {
+				$path = $themes_path . '/default/' . utf8_substr($url,utf8_strlen($themes_path . '/default/'));
+				$path = eyex_getExistingPath($path);
+				if (!$path) {
+					if ($alias[0][$temp]) {
+						$path = $themes_path . '/default/' . $alias[0][$temp];
+						$path = eyex_getExistingPath($path);
+					} else {
+						$path = false;
+					}
+					if (!$path) {
+						return eyex_returnWrongPath($url);
+					}
+				}
+			}
+		}
+// If it is no theme part
+	} else {
+		$path = eyex_getExistingPath($path);
+		if (!$path) {
+			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/alias' . EYE_CODE_EXTENSION;
+			$path = utf8_substr($url,utf8_strlen(EYE_ROOT . '/' . EXTERN_DIR . '/'));
+			if ($alias[1][$path]) {
+				$path = eyex('getThemeImage',array($themes_path . '/default/' . $alias[1][$path],3));
+			} else {
+				return eyex_returnWrongPath($path);
+			}
+		}
+	}
+// Return path
+	if ($extend == 2 || $extend == 3) {
+		return $path;
+	} else {
+		return 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . utf8_substr($path,utf8_strlen(EYE_ROOT . '/' . EXTERN_DIR . '/'));
+	}
+}
+
+function eyex_getExistingPath($path) {
+	if (IE > 0 && IE < 7 && utf8_substr($path,-4) == '.png' && vfs('real_fileExists',array(utf8_substr($path,0,-3) . 'gif'))) {
+		return utf8_substr($path,0,-3) . 'gif';
+	} elseif (vfs('real_fileExists',array($path))) {
+		return $path;
+	} else {
+		return false;
+	}
+}
+
+function eyex_returnWrongPath($path) {
+	errorCodes('setErrorCode',array(VFS_FILE_NOT_FOUND));
+	if ($extend == 2) {
+		return EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/' . $path;
+	} elseif ($extend === 1) {
+		return 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . $path;
 	} else {
 		return $path;
 	}
-	
-	$path = utf8_substr($path,strlen(EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/'));
-	
-	if (vfs('real_fileExists',array(EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/' . eyeSessions('getVar',array('usertheme')) . '/' . $path))) {
-		$return .= eyeSessions('getVar',array('usertheme')) . '/' . $path;
-	} else {
-		$return .= 'default/' . $path;
-	}
-	
-	return $return;
 }
 
 /**
@@ -291,6 +351,7 @@ function service_eyex_getThemeImage($params) {
 * @exception INCORRECT_PARAMS No path is specified.
 * @date 2008/03/17
 */
+// This function should only be a helper function for getThemeImage!
 function service_eyex_getRealFromExtern($params) {
 	$path = $params[0];
 	if (!$path) {
@@ -301,13 +362,13 @@ function service_eyex_getRealFromExtern($params) {
 	$return = EYE_ROOT . '/' . EXTERN_DIR . '/';
 	
 	if (utf8_strpos($path,'theme=1')) {
-		$return .= THEMES_DIR . '/' . eyeSessions('getVar',array('usertheme')) . '/';
+		$return .= THEMES_DIR . '/default/'; // We use the default theme to get no problem with getThemeImage!
 	}
 	
-	$path = strstr($path,'extern=');
-	$path = utf8_substr($path,strlen('extern='));
+	$path = utf8_stristr($path,'extern=');
+	$path = utf8_substr($path,utf8_strlen('extern='));
 	if (utf8_strpos($path,'&')) {
-		$path = utf8_substr($path,0,strlen(strstr($path,'&')));
+		$path = utf8_substr($path,0,- utf8_strlen(utf8_stristr($path,'&')));
 	}
 	
 	return $return . $path;
@@ -689,13 +750,13 @@ function service_eyex_messageBox($params) {
 		}
 		
 		if($params['img'] == 'i') {
-			$img = eyex('getThemeImage',array('icons/48x48/i.png',1));
+			$img = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/i.png';
 		} elseif($params['img'] == 'x') {
-			$img = eyex('getThemeImage',array('icons/48x48/x.png',1));
+			$img = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/x.png';
 		} elseif($params['img'] == '!') {
-			$img = eyex('getThemeImage',array('icons/48x48/e.png',1));
+			$img = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/e.png';
 		} elseif($params['img'] == '?') {
-			$img = eyex('getThemeImage',array('icons/48x48/q.png',1));
+			$img = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/q.png';
 		} elseif ($params['img']) {
 			$img = $params['img'];
 		}
@@ -712,8 +773,6 @@ function service_eyex_messageBox($params) {
 			$widthImg = 63;
 		}
 		
-		$content = i18n('translate',array($content,$tokens));
-		
 		$myWindow = new Window(array(
 			'name' => $win_name,
 			'father' => $father,
@@ -722,7 +781,8 @@ function service_eyex_messageBox($params) {
 			'height' => 150,
 			'title' => $title,
 			'style' => $style,
-			'removepid' => $removepid
+			'removepid' => $removepid,
+			'savePosition' => $params['savePosition']
 		));
 		$myWindow->show();
 		
@@ -784,7 +844,8 @@ function service_eyex_messageBox($params) {
 			'father' => 'msgbox_container',
 			'x' => 0,
 			'y' => 0,
-			'text' => $content
+			'text' => $content,
+			'tokens' => array($tokens)
 		));
 		$myLabel->show();
 		
@@ -850,7 +911,7 @@ function service_eyex_messageBox($params) {
 		}
 		
 		$content = i18n('translate',array($content,$tokens));
-		$content = htmlentities($content,ENT_QUOTES,'UTF-8');
+		$content = htmlspecialchars($content,ENT_QUOTES,'UTF-8');
 		
 		$atribs = array(
 			'task' => array('messageBox'),
@@ -1697,6 +1758,33 @@ function service_eyex_isLayer($params=''){
  		}
  	}
  	return false;
+ }
+ 
+/**
+* Runs, when the browser was resized
+* 
+* @param $params array(height,width)
+* @exception INCORRECT_PARAMS
+* @date 2008/09/28
+*/
+function service_eyex_resizedBrowser($params=''){
+ 	if(!is_array($params) || !isset($params['height']) || !isset($params['width'])){
+ 		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+ 		return false;
+ 	}
+	// Set width
+	$width = $params['width'];
+	if ($width < 500) {
+		$width = 500;
+	}
+	$_SESSION['SCREEN']['width'] = $width;
+	// Set height
+	$height = $params['height'];
+	if ($height < 400) {
+		$height = 400;
+	}
+	$_SESSION['SCREEN']['height'] = $height;
+ 	return true;
  }
  
 /**

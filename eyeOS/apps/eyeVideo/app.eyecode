@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -35,7 +35,7 @@ function eyeVideo_run($params=null) {
 	$myWindow = new Window(array('name'=>'win1','title'=>'eyeVideo','father'=>'eyeApps',
 		'type'=>NOLIST_CLOSE_WINDOW,'width'=>470,'height'=>374,'cent'=>1,'savePosition'=>1,'showDragContent'=>true));
 	$myWindow->show();
-	eyex('loadScript',array('url' => 'index.php?extern=apps/eyeVideo/swfobject'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	eyex('loadScript',array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeVideo/swfobject'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 }
 
 function eyeVideo_end($params=null) {

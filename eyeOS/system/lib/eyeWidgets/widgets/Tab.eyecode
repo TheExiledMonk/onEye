@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -43,7 +43,6 @@ class Tab {
 	
 	//custom widget options
 	var $visible;
-	var $caption;
 	var $width;
 	var $height;
 	var $signal;
@@ -74,18 +73,15 @@ class Tab {
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['tabwidth']) ? $this->tabwidth = $params['tabwidth'] : $this->tabwidth = 80;
 		
-		//especific button options
+		//especific tab options
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
-		isset($params['caption']) ? $this->caption = $params['caption'] : $this->caption = $this->name;
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;
 	}
 	
 	//widget show method, send a createWidget message
 	function show($noserialize=0) {
-		$this->caption = i18n('translate',array($this->caption));
 		$widgetsparams = array(
 			'visible' => $this->visible,
-			'caption' => $this->caption,
 			'width' => $this->width,
 			'height' => $this->height,
 			'signal' => $this->signal,

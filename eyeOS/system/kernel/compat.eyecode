@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -25,51 +25,56 @@
 	this file is used to emulate php functions when it are not availables on the current php installation/version
 */
 
-function get_tmp_dir(){
-	$path = '';		
-	if(!function_exists('sys_get_temp_dir')){	    
-		$path = try_get_temp_dir();
-	}else{				
-		$path = sys_get_temp_dir();
-		if(is_dir($path)){
-			return $path;	
-		}else{			
-			$path = try_get_temp_dir();
+function get_tmp_dir() {
+	// Try to use the function set_get_temp_dir()
+	if (function_exists('sys_get_temp_dir')) {
+		$array[] = sys_get_temp_dir();
+	}
+	// Try to get the temporary dir from an environment variable
+	$array[] = $_ENV['TMP'];
+	$array[] = $_ENV['TMPDIR'];
+	$array[] = $_ENV['TEMP'];
+	
+	foreach ($array as $path) {
+		if ($path) {
+			// Check non realpath first
+			if (is_dir($path) && is_readable($path) && is_writable($path)) {
+				return $path;
+			}
+			// Check realpath now
+			if (realpath($path) && is_dir(realpath($path)) && is_readable(realpath($path)) && is_writable(realpath($path))) {
+				return realpath($path);
+			}
 		}
 	}
-	return $path;
-}
-
-function try_get_temp_dir(){	        
-    // Try to get from environment variable
-	if(!empty($_ENV['TMP'])){
-		$path = realpath($_ENV['TMP']);
-	}else if(!empty($_ENV['TMPDIR'])){
-		$path = realpath( $_ENV['TMPDIR'] );
-	}else if(!empty($_ENV['TEMP'])){
-		$path = realpath($_ENV['TEMP']);
-	}
-	// Detect by creating a temporary file
-	else{
-		// Try to use system's temporary directory
-		// as random name shouldn't exist
-		$temp_file = tempnam(md5(uniqid(rand(),TRUE)),'');
-		if ($temp_file){
-			$temp_dir = realpath(dirname($temp_file));
-			unlink($temp_file);
-			$path = $temp_dir;
-		}else{
-			$path = EYE_ROOT.'/'.EYEOS_TMP_DIR;
+	
+	// Try to detect the temporary dir by creating a temporary file
+	$file = tempnam(md5(uniqid(rand(),1)),'');
+	if ($file) {
+		unlink($file);
+		$path = dirname($file);
+		if ($path) {
+			// Check non realpath first
+			if (is_dir($path) && is_readable($path) && is_writable($path)) {
+				return $path;
+			}
+			// Check realpath now
+			if (realpath($path) && is_dir(realpath($path)) && is_readable(realpath($path)) && is_writable(realpath($path))) {
+				return realpath($path);
+			}
 		}
-	}	
-	return $path;
+	}
+	// Return eyeOS' own temporary dir if no other one works
+	return EYE_ROOT . '/' . EYEOS_TMP_DIR;
 }
 
-function ini_get_size($sName) {
+function ini_get_size($sName)
+{
     $sSize = ini_get($sName);
     $sUnit = utf8_substr($sSize, -1);
     $iSize = (int) utf8_substr($sSize, 0, -1);
-    switch (utf8_strtoupper($sUnit)){
+    switch (utf8_strtoupper($sUnit))
+    {
         case 'Y' : $iSize *= 1024; // Yotta
         case 'Z' : $iSize *= 1024; // Zetta
         case 'E' : $iSize *= 1024; // Exa

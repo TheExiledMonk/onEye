@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -22,6 +22,7 @@
 */
 
 global $checknum;
+global $myPid;
 
 $ContentY = 0;
 $config = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
@@ -37,10 +38,10 @@ if ($config['eyeDesk'][0]['wallpaper'][0] && is_string($config['eyeDesk'][0]['wa
 }
 if($config['eyeDesk'][0]['wallpaperRepeat'][0] == '1') {
 	$repeat = 1;
-	$repeatUrl = 'index.php?extern=apps/eyeControl/gfx/repeat.png';
+	$repeatUrl = 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeControl/gfx/repeat.png';
 } else {
 	$repeat = 0;
-	$repeatUrl = 'index.php?extern=apps/eyeControl/gfx/norepeat.png';
+	$repeatUrl = 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeControl/gfx/norepeat.png';
 }
 if($config['eyeDesk'][0]['wallpaperCenter'][0] == '0') {
 	$center = 0;
@@ -63,7 +64,7 @@ $myCheckbox_use = new Checkbox(array(
 ));
 $myCheckbox_use->show();
 $myCheckbox_use->focus();
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // New wallpaper
 $myLabel = new Label(array(
 	'name' => 'eyeControl_desktop_label_select',
@@ -92,7 +93,7 @@ $myButton = new Button(array(
 	'signal' => 'desktop_select'
 ));
 $myButton->show();
-$ContentY = $ContentY + 40;
+$ContentY += 40;
 // $myImagebox
 $myImagebox = new Imagebox(array(
 	'name' => 'eyeControl_desktop_imagebox',
@@ -101,7 +102,7 @@ $myImagebox = new Imagebox(array(
 	'height' => 120,
 	'x' => 60,
 	'y' => $ContentY,
-	'url' => eyex('getThemeImage',array('screenshot.png',1))
+	'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=screenshot.png'
 ));
 $myImagebox->show();
 $myImagebox = new Imagebox(array(
@@ -112,7 +113,7 @@ $myImagebox = new Imagebox(array(
 	'url' => $repeatUrl
 ));
 $myImagebox->show();
-$ContentY = $ContentY + 20;
+$ContentY += 20;
 // Repeat wallpaper
 $myCheckbox_repeat = new Checkbox(array(
 	'name' => 'eyeControl_desktop_checkbox_repeat',
@@ -123,8 +124,8 @@ $myCheckbox_repeat = new Checkbox(array(
 	'checked' => $repeat
 ));
 $myCheckbox_repeat->show();
-$myCheckbox_repeat->addEvent('onchange','sendMsg(' . $checknum . ',"desktop_repeat",eyeParam("selected",this.checked));');
-$ContentY = $ContentY + 60;
+$myCheckbox_repeat->addEvent('onclick','if (this.checked) { document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper").src = "index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeControl/gfx/repeat.png"; } else { document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper").src = "index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeControl/gfx/norepeat.png"; } fixPNG("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper");');
+$ContentY += 60;
 // Center wallpaper
 $myCheckbox_center = new Checkbox(array(
 	'name' => 'eyeControl_desktop_checkbox_center',
@@ -135,8 +136,8 @@ $myCheckbox_center = new Checkbox(array(
 	'checked' => $center
 ));
 $myCheckbox_center->show();
-$myCheckbox_center->addEvent('onchange','sendMsg(' . $checknum . ',"desktop_center",eyeParam("selected",this.checked));');
-$ContentY = $ContentY + 60;
+$myCheckbox_center->addEvent('onclick','if (this.checked) { document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.left = "104px"; document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.top = "103px"; } else { document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.left = "60px"; document.getElementById("' . $myPid . '_eyeControl_desktop_imagebox_wallpaper_Container").style.top = "70px"; }');
+$ContentY += 60;
 // Save changes
 $myButton = new Button(array(
 	'name' => 'eyeControl_dektop_save',
@@ -150,5 +151,63 @@ $myButton->addFriend($myCheckbox_use);
 $myButton->addFriend($myTextbox);
 $myButton->addFriend($myCheckbox_repeat);
 $myButton->addFriend($myCheckbox_center);
+$myButton->show();
+$ContentY += 50;
+// Additional desktop options
+$myLabel = new Label(array(
+	'name' => 'eyeControl_eyenav_label_reset',
+	'father' => $eyeContainer,
+	'x' => 20,
+	'y' => $ContentY,
+	'text' => 'Additional desktop options'
+));
+$myLabel->show();
+$myLabel->setCss(array(
+	'font-weight' => 'bold'
+));
+$ContentY += 30;
+// Reset icon positions
+$myButton = new Button(array(
+	'name' => 'eyeControl_dektop_reset_icons',
+	'father' => $eyeContainer,
+	'x' => 50,
+	'y' => $ContentY,
+	'width' => 400,
+	'caption' => 'Reset icon positions',
+	'signal' => 'desktop_reset_icons',
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/refresh.png'
+));
+$myButton->show();
+$ContentY += 30;
+$xml = eyeControl_lib_getXMLconfig(array('eyex','eyeX.xml'));
+if ($xml['eyex'][0]['saveWindowPositions'][0] == '0') {
+	$saveWinPos = 0;
+} else {
+	$saveWinPos = 1;
+}
+// Save window positions
+$myCheckbox = new Checkbox(array(
+	'name' => 'eyeControl_desktop_checkbox_savewinpos',
+	'father' => $eyeContainer,
+	'x' => 50,
+	'y' => $ContentY,
+	'text' => 'Save window positions',
+	'checked' => $saveWinPos
+));
+$myCheckbox->show();
+$myCheckbox->addEvent('onclick','if (this.checked) { document.getElementById("' . $myPid . '_eyeControl_dektop_reset_windows_Container").style.display = "block"; } else { document.getElementById("' . $myPid . '_eyeControl_dektop_reset_windows_Container").style.display = "none"; } sendMsg(' . $checknum . ',"desktop_savewinpos",eyeParam("selected",this.checked));');
+$ContentY += 30;
+// Reset window positions
+$myButton = new Button(array(
+	'name' => 'eyeControl_dektop_reset_windows',
+	'father' => $eyeContainer,
+	'x' => 75,
+	'y' => $ContentY,
+	'width' => 400,
+	'caption' => 'Reset window positions',
+	'signal' => 'desktop_reset_windows',
+	'visible' => $saveWinPos,
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/refresh.png'
+));
 $myButton->show();
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -74,10 +74,10 @@ class widgetDrag {
 		if(!is_array($this->content)){
 			$this->content = array($this->content);
 		}
-		$myContent = service("mmap","array2jsArg",array($this->content));
+		$myContent = service("mmap","array2jsArg",array($this->content,1));
 		if(is_array($this->dragCss)){
-			$dragCssNames = service("mmap","array2jsArg",array($this->dragCss[0]));
-			$dragCssContent = service("mmap","array2jsArg",array($this->dragCss[1]));
+			$dragCssNames = service("mmap","array2jsArg",array($this->dragCss[0],1));
+			$dragCssContent = service("mmap","array2jsArg",array($this->dragCss[1],1));
 		}else{
 			$dragCssNames = '';
 			$dragCssContent = '';

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -41,7 +41,7 @@ function eyePresentation_on_SelectFileOpen($params=null) {
 		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
 		//TODO: SECURITY: MAYBE VFS HERE
 		if(is_dir($file)) {
-			service('eyex','messageBox',array('content'=>'You have to select a file to open'));
+			service('eyex','messageBox',array('content'=>'You need to select a file to open!'));
 			return;
 		}
 		$fp = service('vfs','open',array($file,'r'));
@@ -74,12 +74,12 @@ function eyePresentation_on_fullscreen($params=null) {
 		$myWindow1->show();
 		$myToolbar = new Toolbar(array('name'=>'myToolbar','father'=>'eyePresentationWNDFull_Content'));
 		$myToolbar->show();
-		$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/fileopen.png','Open');
+		$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
 		$myToolbar->addLine();
-		$myToolbar->addItem('back','index.php?extern=apps/eyeX/themes/default/images/toolbar/previous.png','Back');
-		$myToolbar->addItem('next','index.php?extern=apps/eyeX/themes/default/images/toolbar/next.png','Next');
+		$myToolbar->addItem('back','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/previous.png','Back');
+		$myToolbar->addItem('next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/next.png','Next');
 		$myToolbar->addLine();
-		$myToolbar->addItem('fullscreen','index.php?extern=apps/eyeX/themes/default/images/toolbar/fullScreen.png','Full');
+		$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full');
 	
 		$myFrame = new Iframe(array('name'=>'imgFrame','father'=>'eyePresentationWNDFull_Content','x'=>5,
 			'y'=>55,'height'=>$myWindow1->height-90,'width'=>$myWindow1->width-20, 'url'=>"about:blank",'scroll'=>1));
@@ -102,7 +102,7 @@ function eyePresentation_on_back($params=null) {
 	global $checknum;
 	$myNumber = intval($GLOBALS['currentSlide']->text);
 	if($myNumber == 0) {
-		eyeX('messagebox',array('content'=>'You are on the first slide, you can\'t go back'));	
+		eyeX('messagebox',array('content'=>'You are already on the first slide, you cannot go back anymore!'));	
 	} else {
 		$myNumber--;
 		gotoSlide($myNumber);
@@ -127,7 +127,7 @@ function eyePresentation_on_getSlide($params=null) {
 		return;
 	}
 	$len = filesize($file);
-	$info = getimagesize($file);
+	$info = @getimagesize($file);
 	$fp = service('vfs','real_open',array($file,'r'),1);
 	if(!$fp) {
 		return;
@@ -177,7 +177,13 @@ function gotoSlide($num) {
 	if(is_dir($myFile) || !is_file($myFile) || !is_readable($myFile)) {
 		return false;
 	}
-	if(OFFICE_USE_DISPLAY == 1) { 
+	if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) { // Check for windows systems
+		$myFile = str_replace('/','\\',$myFile);
+		$dir = str_replace('/','\\',$dir);
+		$content = 'cd "' . OFFICE_COMMAND . '"' . "\n" . 'soffice.exe -headless -norestore macro:///Tools.eyeOS.getSingleSlide(' . OFFICE_SEPARATOR_ARG . $myFile . OFFICE_SEPARATOR_ARG . ',' . OFFICE_SEPARATOR_ARG . intval($num) . OFFICE_SEPARATOR_ARG . ',' . OFFICE_SEPARATOR_ARG . $dir . OFFICE_SEPARATOR_ARG . ')';
+		file_put_contents($myFile . '.bat',$content);
+		$cmd = '"' . $myFile . '.bat"';
+	} elseif (OFFICE_USE_DISPLAY == 1) { 
 		$cmd = OFFICE_COMMAND.' -headless -norestore -display :'.intval(OFFICE_SCREEN).'.0 '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.getSingleSlide('.$myFile.','.intval($num).','.$dir.')'.OFFICE_SEPARATOR_ARG;
 	} else {
 		$cmd = OFFICE_COMMAND.' -headless -norestore '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.getSingleSlide('.$myFile.','.intval($num).','.$dir.')'.OFFICE_SEPARATOR_ARG;

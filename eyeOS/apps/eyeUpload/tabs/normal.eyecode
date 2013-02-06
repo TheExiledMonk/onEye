@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -47,11 +47,11 @@ $myFile = new File(array(
 	'multiple'=>$multiple
 ));
 $myFile->show();
-$myFile->setHeight(130);
-$myFile->setWidth(355);
+$myFile->setHeight(190);
+$myFile->setWidth(375);
 
 $myImage = new Imagebox(array('name'=>'image_upload','father'=>$systemTab,
-	'url'=>'index.php?extern=apps/eyeFiles/gfx/upload_big.png',
+	'url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFiles/gfx/upload_big.png',
 	'x'=>22,'y'=>43));
 $myImage->show();
 ?>

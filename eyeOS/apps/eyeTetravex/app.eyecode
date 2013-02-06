@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -38,8 +38,9 @@ function eyeTetravex_run($params=null) {
 		'cent'=>1,
 		'width'=>702,
 		'height'=>424,
-		'title'=>'eyeTetravex',
-		'showDragContent'=>true
+		'title'=>'Tetravex Game',
+		'showDragContent'=>true,
+		'savePosition' => 1
 	));
 	$myWindow->show();
 	
@@ -65,7 +66,7 @@ function eyeTetravex_run($params=null) {
 		'y' => 0,
 		'width' => 700,
 		'height' => 400,
-		'src' => "index.php?extern=apps/eyeTetravex/swf/eyetetravex.swf&type=swf",
+		'src' => "index.php?version=".EXTERN_CACHE_VERSION."&extern=apps/eyeTetravex/swf/eyetetravex.swf&type=swf",
 		'flashParamsNames' => $flashParamsNames,
 		'flashParamsValues' => $flashParamsValues
 	));

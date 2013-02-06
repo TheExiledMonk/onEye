@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -24,11 +24,11 @@
 function eyeImport_run($params=null) {
 	global $myPid;
 	$myWindow = new Window(array('name'=>'eyeImportWND','type'=>NOLIST_CLOSE_WINDOW,'father'=>'eyeApps', 
-		'cent'=>1,'width'=>400,'height'=>150,'title'=>'eyeImport'));
+		'cent'=>1,'width'=>400,'height'=>150,'title'=>'eyeImport','savePosition' => 1));
 	$myWindow->show();
 	
 	$myButton = new Button(array('name'=>'Import','father'=>'eyeImportWND_Content','signal'=>'Import',
-		'caption'=>'Browse','x'=>230,'y'=>15,'img'=>'index.php?extern=apps/eyeX/themes/default/icons/16x16/folder.png'));
+		'caption'=>'Browse','x'=>230,'y'=>15,'img'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'));
 	$myButton->show();
 	
 	$myTextBox = new Textbox(array('name'=>'mtextbox','father'=>'eyeImportWND_Content',
@@ -36,7 +36,7 @@ function eyeImport_run($params=null) {
 	$myTextBox->show();
 	
 	$myButton2 = new Button(array('name'=>'doImport','father'=>'eyeImportWND_Content','signal'=>'doImport',
-	'caption'=>'Import','x'=>320,'y'=>15,'img'=>'index.php?extern=apps/eyeSoft/gfx/install.png'));
+	'caption'=>'Import','x'=>320,'y'=>15,'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeSoft/gfx/install.png'));
 	$myButton2->addFriend($myTextBox);
 	$myButton2->show();
 	

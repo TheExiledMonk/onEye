@@ -1,7 +1,7 @@
 <package>
 	<name>eyeInstaller</name>
 	<category>System</category>
-	<version>1.0</version>
+	<version>1.7</version>
 	<description>Application local installer</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>

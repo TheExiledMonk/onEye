@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -31,7 +31,7 @@ function eyeSoft_run($params=null) {
 	}
 	$config = reqLib('eyeXML','getXMLfile',array(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports.xml'));
 	$myWindow = new Window(array('name'=>'eyeSoft','father'=>'eyeApps',
-	'cent'=>1,'width'=>650,'height'=>570,'title'=>'App Manager','style' => TITLE + LISTED + MIN + CLOSE));
+	'cent'=>1,'width'=>650,'height'=>570,'title'=>'Packages Manager','style' => TITLE + LISTED + MIN + CLOSE,'savePosition' => 1));
 	$myWindow->show();
 	
 	$myWindow = new Window(array('name'=>'eyeSoftHidden','father'=>'eyeSoft_Content',
@@ -60,16 +60,16 @@ function eyeSoft_run($params=null) {
 	$myTable->show();
 	
 	$myButton = new Button(array('name'=>'Install','father'=>'eyeSoft_Content','signal'=>'Install',
-	'caption'=>'Install','x'=>20,'y'=>15,'img'=>'index.php?extern=apps/eyeSoft/gfx/install.png'));
+	'caption'=>'Install','x'=>20,'y'=>15,'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeSoft/gfx/install.png'));
 	$myButton->addFriend($myTable);
 	$myButton->show();
 	
 	$myButton = new Button(array('name'=>'Update','father'=>'eyeSoft_Content','signal'=>'Update',
-	'caption'=>'Update','x'=>120,'y'=>15,'img'=>'index.php?extern=apps/eyeSoft/gfx/refresh.png'));
+	'caption'=>'Update','x'=>120,'y'=>15,'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeSoft/gfx/refresh.png'));
 	$myButton->show();
 	
 	$myButton = new Button(array('name'=>'Uninstall','father'=>'eyeSoft_Content','signal'=>'Uninstall',
-	'caption'=>'Uninstall','x'=>210,'y'=>15,'img'=>'index.php?extern=apps/eyeFiles/gfx/delete.png'));
+	'caption'=>'Uninstall','x'=>210,'y'=>15,'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeSoft/gfx/uninstall.png'));
 	$myButton->addFriend($myTable);
 	$myButton->show();
 	

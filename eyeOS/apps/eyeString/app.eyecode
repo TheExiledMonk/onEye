@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,8 @@ function eyeString_run($params=null)
 									'width' => 655,
 									'height' => 560,
 									'title' => 'eyeString',
-									'type' => 3));
+									'type' => 3,
+									'savePosition' => 1));
 						
 	$myWindow1->SHOW();
 
@@ -183,13 +184,13 @@ function eyeString_run($params=null)
 	));
 	$myToolbar->show();
 	
-	$myToolbar->addItem('clear','index.php?extern=apps/eyeX/themes/default/images/toolbar/delete.png','Clear');
+	$myToolbar->addItem('clear','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/delete.png','Clear');
 	
 	$myLabel3 = new Label(array(
 									'name' => 'timerlbl',
-									'father' => 'eyeString_box',
-									'x' => 6,
-									'y' => 175,
+									'father' => 'eyeString_wnd_Content',
+									'x' => 459,
+									'y' => 280,
 									'text' => ''));
 									
 	$myLabel3->show(0);

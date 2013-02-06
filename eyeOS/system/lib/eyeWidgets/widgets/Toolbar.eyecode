@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -116,7 +116,7 @@ class Toolbar {
 		eyeX('rawjs',array('js'=>$js));
 	}
 	
-	function addItem($itemName,$img,$text,$ofriends=null) {
+	function addItem($itemName,$img,$text,$ofriends=null,$height = 22,$width = 22) {
 		global $myPid;
 		global $checknum;
 		$friends="''";
@@ -134,7 +134,7 @@ class Toolbar {
 		$text = i18n('translate',array($text));
 		$friends = base64_encode($friends);
 		$tokens = array($itemName,$img,$text);
-		$js = 'addItemToBar("'.$myPid.'_'.$this->name.'", %s , %s , %s ,"'.$friends.'",'.$checknum.');';
+		$js = 'addItemToBar("'.$myPid.'_'.$this->name.'", %s , %s , %s ,"'.$friends.'",'.$checknum.',' . $height . ',' . $width . ');';
 		eyex('runjs',array('js'=>$js,'tokens'=>$tokens));
 	}
 }

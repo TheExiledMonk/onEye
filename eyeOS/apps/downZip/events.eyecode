@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -30,8 +30,11 @@ function downZip_on_downloadZip($params=null) {
 	$path = $GLOBALS['dPath']->text;
 	$content = reqLib('simpleZip','createZip',array($path)); //deprecated library
 	$name = utf8_basename($path);
-	header('Content-Type: application/octet-stream');
 	header('Content-Disposition: attachment; filename="'.$name.'.zip"');
+	header('Content-Length: ' . strlen($content));
+	header('Content-Type: application/zip');
+	header('Accept-Ranges: bytes');
+	header('X-Pad: avoid browser bug');
 	echo $content;
 	eyeWidgets('rawunserialize');
 	proc('end');

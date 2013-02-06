@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -173,7 +173,7 @@ function eyeFTP_on_eyeFTP_delete_deleteYes_BTN($params="") {
 	$conf = eyeFTP_getConf();
 	$fileInfos = unserialize($GLOBALS['eyeFTP_delete_serializedFileInfos_HID']->text);
 	
-	eyeFTP_logConsole('Attempting to delete \'%s\'...',
+	eyeFTP_logConsole('Attempting to delete "%s"...',
 		array($fileInfos['location'])
 	);
 	
@@ -277,11 +277,11 @@ function eyeFTP_on_eyeFTP_uploadRemote_initForm($params="") {
 <body>
 	<form enctype="multipart/form-data" action="index.php?checknum='.$checknum.'&msg=eyeFTP_uploadRemote_uploadComplete" method="POST">
 		<div style="font-family:Verdana;font-size:11px;position:absolute;top:20px;left:5px;">
-			'.i18n("translate",array("Select a file to upload to path:")).'<br>' .
+			' . htmlspecialchars(i18n("translate",array("Select a file to upload to path:")),ENT_QUOTES,'UTF-8') . '<br>' .
 					'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>'.$pathDisplayed.'</i>
 		</div>
 		<input type="file" name="myFile" style="font-family:Verdana;font-size:11px;position:absolute;top:60px;left:5px;" />
-		<input type="submit" value="'.i18n("translate",array("Upload")).'" style="font-family:Verdana;font-size:11px;position:absolute;top:90px;left:5px;" />
+		<input type="submit" value="' . htmlspecialchars(i18n("translate",array("Upload")),ENT_QUOTES,'UTF-8') . '" style="font-family:Verdana;font-size:11px;position:absolute;top:90px;left:5px;" />
 	</form>
 </body>
 </html>';

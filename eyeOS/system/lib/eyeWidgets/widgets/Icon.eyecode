@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -59,7 +59,6 @@ class Icon {
 	//event handling
 	var $disableMsg = 0;
 	var $events;
-	var $fixIE=0;
 	var $overBorder;
 	var $overBorderBg;
 	var $overBorderColor;
@@ -92,21 +91,17 @@ class Icon {
 		isset($params['overBorderBg']) ? $this->overBorderBg = $params['overBorderBg'] : $this->overBorderBg = '#c7ddf8';
 		isset($params['overBorderColor']) ? $this->overBorderColor = $params['overBorderColor'] : $this->overBorderColor = '1px solid #9ec8fb';
 		isset($params['moveout']) ? $this->moveout = $params['moveout'] : $this->moveout = 0;
-		if(strstr($params['image'],'extern=') && IE == 6) {
-			$realName = eyex('getRealFromExtern',array($params['image']));
-			$realName = EYE_ROOT.'/'.EXTERN_DIR.'/'.$realName;
-			$info = @getimagesize($realName);
+		if (strstr($this->image,'extern=') && IE == 6) {
+			$info = @getimagesize(eyex('getThemeImage',array($this->image,3)));
 			$this->width = $info[0];
 			$this->height = $info[1];
-			$this->fixIE = 1;
-		}else {
+		} else {
 			$this->width = -1;
 			$this->height = -1;
 		}
 	}
 	
 	function show() {
-		global $myPid;
 		$eventString = "";
 		if(is_array($this->events)) {
 			foreach($this->events as $key => $value) {
@@ -120,7 +115,7 @@ class Icon {
 		for($i=0;$i<count($this->content);$i++) {
 			$this->content[$i] = $this->content[$i];
 		}
-		$this->content=service("mmap","array2jsArg",array($this->content));
+		$this->content=service("mmap","array2jsArg",array($this->content,1));
 		
 		$realname = $this->text;
 		if(utf8_strpos($this->text,"\n") > 10 || (!utf8_strpos($this->text,"\n") && utf8_strlen($this->text) > 12)) {
@@ -135,7 +130,7 @@ class Icon {
 		$widgetsparams = array(
 			'content' => $this->content,
 			'image' => $this->image,
-			'text' => $this->text,
+			'text' => htmlspecialchars($this->text,ENT_QUOTES,'UTF-8'),
 			'draggable' => $this->draggable,
 			'onclick' => $this->onclick,
 			'width' => $this->width,
@@ -161,9 +156,6 @@ class Icon {
 		);
 		service('eyex','createWidget',$myButton);
 		$this->showed=1;
-		if($this->fixIE == 1) {
-			service('eyex','rawjs',array('js' => "fixPNG('img_".$myPid.'_'.$this->name."')"));
-		}
 	}
 	
 	function setWidth($width) {
@@ -221,7 +213,6 @@ class Icon {
 	}
 	
 	function remove() {
-		global $myPid;
 		$name = $this->name.'_Container';
 		service('eyex','removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));

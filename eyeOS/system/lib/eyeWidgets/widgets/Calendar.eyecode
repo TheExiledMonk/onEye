@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -124,16 +124,16 @@ class Calendar{
 							i18n('translate',array('September')),
 							i18n('translate',array('October')),
 							i18n('translate',array('November')),
-							i18n('translate',array('December')));				
-		$months = service('mmap','array2jsArg',array($i18nMonths));
+							i18n('translate',array('December')));
+		$months = service('mmap','array2jsArg',array($i18nMonths,1));
 		$i18nWeekDays = array(i18n('translate',array('S')),
 							i18n('translate',array('M')),
 							i18n('translate',array('T')),
 							i18n('translate',array('W')),
 							i18n('translate',array('TH')),
 							i18n('translate',array('F')),
-							i18n('translate',array('SA')));				
-		$weekDays = service('mmap','array2jsArg',array($i18nWeekDays));				
+							i18n('translate',array('SA')));
+		$weekDays = service('mmap','array2jsArg',array($i18nWeekDays,1));
 		$widgetsparams = array(
 			'height' => $this->height,
 			'width' => $this->width,
@@ -148,7 +148,7 @@ class Calendar{
 			'todayBackground'=>$this->todayBackground,
 			'todayFontColor'=>$this->todayFontColor,
 			'toWeekBackground'=>$this->toWeekBackground,
-			'backgroundNames'=>$this->backgroundNames,			
+			'backgroundNames'=>$this->backgroundNames,
 			'dayName'=>$this->dayName,
 			'clickedWeek'=>$this->clickedWeek,
 			'clickedBorder'=>$this->clickedBorder,

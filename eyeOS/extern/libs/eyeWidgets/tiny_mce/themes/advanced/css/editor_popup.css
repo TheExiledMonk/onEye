@@ -43,7 +43,7 @@ input, select, textarea {
    width: 90px;
    height: 21px;
    border: 0;
-   background-image: url('index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/insert_button_bg.gif');
+   background-image: url('index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/insert_button_bg.gif');
    cursor: pointer;
 }
 
@@ -52,7 +52,7 @@ input, select, textarea {
    width: 90px;
    height: 21px;
    border: 0;
-   background-image: url('index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/cancel_button_bg.gif');
+   background-image: url('index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/cancel_button_bg.gif');
    cursor: pointer;
 }
 
@@ -157,7 +157,7 @@ input.checkbox {
 	float: left;
 	width: 100%;
 	line-height: normal;
-	background-image: url("index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tabs_bg.gif");
+	background-image: url("index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tabs_bg.gif");
 }
 
 .tabs ul {
@@ -168,7 +168,7 @@ input.checkbox {
 
 .tabs li {
 	float: left;
-	background: url("index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_bg.gif") no-repeat left top;
+	background: url("index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_bg.gif") no-repeat left top;
 	margin: 0;
 	margin-left: 0;
 	margin-right: 2px;
@@ -177,19 +177,19 @@ input.checkbox {
 }
 
 .tabs li.current {
-	background: url("index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_sel_bg.gif") no-repeat left top;
+	background: url("index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_sel_bg.gif") no-repeat left top;
 	margin-right: 2px;
 }
 
 .tabs span {
 	float: left;
 	display: block;
-	background: url("index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_end.gif") no-repeat right top;
+	background: url("index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_end.gif") no-repeat right top;
 	padding: 0px 10px 0 0;
 }
 
 .tabs .current span {
-	background: url("index.php?extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_sel_end.gif") no-repeat right top;
+	background: url("index.php?version=EXTERN_CACHE_VERSION&extern=libs/eyeWidgets/tiny_mce/themes/advanced/images/xp/tab_sel_end.gif") no-repeat right top;
 }
 
 .tabs a {

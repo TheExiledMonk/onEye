@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -36,7 +36,7 @@ function eyeDialog_run($params=null) {
 	
 	if($type == 0) {
 		$caption = "Open";
-		$title = "Select file to open";
+		$title = "Select a file to open";
 	} elseif($type == 2) {
 		$caption = "Select";
 		$title = "Select a folder";
@@ -47,7 +47,7 @@ function eyeDialog_run($params=null) {
 
 	$myWindow = new Window(array('name'=>'dialogWND','father'=>'eyeApps',
 		'type'=>NOLIST_CLOSE_WINDOW,'cent'=>1,'width'=>390,'height'=>310,
-		'title'=>$title));
+		'title'=>$title,'savePosition' => 1));
 	$myWindow->show();
 	
 	$myWindow3 = new Window(array('name'=>'WND_1','father'=>'dialogWND_Content','type'=>100,

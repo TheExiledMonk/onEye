@@ -1,6 +1,6 @@
 <fileType>
-	<name>tar Bziped</name>
-	<description>tar bzip compressed file</description>
+	<name>Tar.Bz file</name>
+	<description>Compressed file</description>
 	<app>eyeArchive</app>
 </fileType>
 

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -32,7 +32,7 @@ function eyeControl_on_lang_change($params = '') {
 	eyex('messageBox',array('content' => 'Language changed. Please restart eyeOS now.'));
 }
 
-function eyeControl_on_lang_eyeosappsorg($params = '') {
-	proc('launch',array('eyeNav','http://eyeos-apps.org/?xcontentmode=813'));
+function eyeControl_on_lang_eyeosorg($params = '') {
+	proc('launch',array('eyeNav','http://eyeos.org/?section=downloads&part=translations&lang=' . i18n('getLang')));
 }
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -23,19 +23,21 @@
 
 function eyeApps_run($params=null) {
 	global $currentUser;
-	$myWindow1 = new Window(array('title'=>'eyeApps','name'=>'eyeApplications','father' => 'eyeApps',
-	'y'=>0,'type'=>NORESIZE_WINDOW,'x'=>0,'cent'=>1,'width'=>520,'height'=>400));
-	$myWindow1->show();	
+	global $myPid;
+	$myWindow1 = new Window(array('title'=>'Applications','name'=>'eyeApplications','father' => 'eyeApps',
+	'y'=>0,'type'=>NORESIZE_WINDOW,'x'=>0,'cent'=>1,'width'=>520,'height'=>400,'savePosition' => 1));
+	$myWindow1->show();
 	
 	$myWindowInv = new Window(array('title'=>'eyeApps','name'=>'wndInv','father' => 'eyeApplications_Content',
-	'y'=>36,'type'=>INVISIBLE_WINDOW,'x'=>0,'width'=>515,'height'=>330));
-	$myWindowInv->show();	
+	'y'=>36,'type'=>INVISIBLE_WINDOW,'x'=>0,'width'=>518,'height'=>340));
+	$myWindowInv->show();
+	eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_wndInv_Content").style.height = "317px";'));
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeApplications_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('Manage','index.php?extern=apps/eyeX/themes/default/images/toolbar/lin_agt_wrench.png','Manage Dock');
+	$myToolbar->addItem('Manage','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/lin_agt_wrench.png','Manage Dock');
 	if ($currentUser == ROOTUSER) {
-		$myToolbar->addItem('InstallApps','index.php?extern=apps/eyeX/themes/default/images/toolbar/installapps.png','Install Apps');
+		$myToolbar->addItem('InstallApps','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/installapps.png','Install Apps');
 	}
 	$AppDir  = EYE_ROOT.'/'.APP_DIR.'/';
 	$x = 20;
@@ -68,7 +70,6 @@ function eyeApps_run($params=null) {
 }
 
 function eyeApps_end($params=null) {
-	global $myPid;
 	eyeWidgets('unserialize');
 }
 

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -264,11 +264,15 @@ function eyeFeeds_on_windowResize($params=null) {
 	
 	//LEFT PANEL - BOX
 	$GLOBALS['left_BOX']->setHeight(504 + $dHeight);
+	$GLOBALS['tree_CTN']->setHeight(480 + $dHeight);
+	$GLOBALS['feeds_TREE']->setHeight(470 + $dHeight);
 	
 	//RIGHT PANEL - ITEMS BOX
+	$GLOBALS['right_CTNR']->setWidth(580 + $dWidth);
+	$GLOBALS['right_CTNR']->setHeight(504 + $dHeight);
 	$GLOBALS['itemsList_BOX']->setHeight(300 + ($dHeight / 2));
 	$GLOBALS['itemsList_BOX']->setWidth(580 + $dWidth);
-	$GLOBALS['feedItems_TAB']->setWidth(574 + $dWidth);
+	$GLOBALS['feedItems_TAB']->setWidth(570 + $dWidth);
 	$GLOBALS['feedItems_TAB']->setHeight(270 + ($dHeight / 2));
 	
 	//RIGHT PANEL - CONTENT BOX

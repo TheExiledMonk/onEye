@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -34,14 +34,14 @@ function miniCalendar_run($params=null) {
 	eyeX('createDiv', array('name' => 'miniCalendarOuter', 'father' => 'eyeApps', 'class' => 'miniCalendarOuter'));
 	eyeX('createDiv', array('name' => 'miniCalendarInnerLeft', 'father' => 'miniCalendarOuter', 'class' => 'miniCalendarInnerLeft'));
 	eyeX('createDiv', array('name' => 'miniCalendarInnerRight', 'father' => 'miniCalendarOuter', 'class' => 'miniCalendarInnerRight'));
-	eyeX('loadCSS', array('url' => 'index.php?extern=apps/miniCalendar/css/miniCalendar.css', 'id' => 'miniCalendar'));
+	eyeX('loadCSS', array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniCalendar/css/miniCalendar.css', 'id' => 'miniCalendar'));
 	
 	$myImage = new Imagebox(array(
 		'name' => 'imgLaunch',
 		'father' => 'miniCalendarOuter',
 		'x' => 4,
 		'y' => 4,
-		'url' => 'index.php?extern=apps/eyeX/themes/default/images/desktop/open.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/open.png',
 		'disableMsg' => 0,
 		'signal' => 'Launch'
 	));
@@ -65,7 +65,7 @@ function miniCalendar_run($params=null) {
 		'horiz' => 1,
 		'x' => 5,
 		'y' => 4,
-		'url' => 'index.php?extern=apps/eyeX/themes/default/images/desktop/close.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/close.png',
 		'disableMsg' => 0,
 		'signal' => 'Close'
 	));

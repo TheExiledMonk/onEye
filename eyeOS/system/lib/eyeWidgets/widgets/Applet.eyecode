@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.1
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -82,8 +82,8 @@ class Applet {
 	function show($noserialize=1) {
 		global $myPid;
 		if(is_array($this->appletParamsNames) && is_array($this->appletParamsValues)){
-			$appletParamsNames =service("mmap","array2jsArg",array($this->appletParamsNames));
-			$appletParamsValues =service("mmap","array2jsArg",array($this->appletParamsValues));
+			$appletParamsNames =service("mmap","array2jsArg",array($this->appletParamsNames,1));
+			$appletParamsValues =service("mmap","array2jsArg",array($this->appletParamsValues,1));
 		}else{
 			$appletParamsNames = '';
 			$appletParamsValues ='';

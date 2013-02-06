@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -38,8 +38,9 @@ function eyeMessages_run($params=null) {
 		'cent'=> 1,
 		'width'=> 700,
 		'height'=> 500,
-		'title'=> 'eyeMessages',
-		'type'=> NORESIZE_WINDOW
+		'title'=> 'Internal Messaging',
+		'type'=> NORESIZE_WINDOW,
+		'savePosition' => 1
 	));
 	$myWindow->show();
 	eyeX('updateCSS', array('name' => $myPid.'_'.$myWindow->name.'_Content', 'property' => 'overflow', 'value' => 'hidden'));
@@ -68,7 +69,7 @@ function eyeMessages_run($params=null) {
 	$inboxicon = new Imagebox(array(
 		'name' => 'inbox_img',
 		'father' => 'inbox_container',
-		'url' => 'index.php?extern=apps/eyeX/themes/default/icons/16x16/inbox.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/inbox.png',
 		'alt' => 'inbox folder',
 		'x' => 5,
 		'y' => 2
@@ -101,7 +102,7 @@ function eyeMessages_run($params=null) {
 	$unreadicon = new Imagebox(array(
 		'name' => 'unread_img',
 		'father' => 'unread_container',
-		'url' => 'index.php?extern=apps/eyeX/themes/default/icons/16x16/unread.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/unread.png',
 		'x' => 5,
 		'y' => 2,
 		'alt' => 'unread folder'
@@ -134,7 +135,7 @@ function eyeMessages_run($params=null) {
 	$readicon = new Imagebox(array(
 		'name' => 'read_img',
 		'father' => 'read_container',
-		'url' => 'index.php?extern=apps/eyeX/themes/default/icons/16x16/read.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/read.png',
 		'x' => 5,
 		'y' => 2,
 		'alt' => 'read folder'
@@ -167,7 +168,7 @@ function eyeMessages_run($params=null) {
 	$senticon = new Imagebox(array(
 		'name' => 'sent_img',
 		'father' => 'sent_container',
-		'url' => 'index.php?extern=apps/eyeX/themes/default/icons/16x16/sent.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/sent.png',
 		'x' => 5,
 		'y' => 2,
 		'alt' => 'sent folder'
@@ -200,7 +201,7 @@ function eyeMessages_run($params=null) {
 	$trashicon = new Imagebox(array(
 		'name' => 'trash_img',
 		'father' => 'trash_container',
-		'url' => 'index.php?extern=apps/eyeX/themes/default/icons/16x16/message_trash.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/message_trash.png',
 		'x' => 5,
 		'y' => 2,
 		'alt' => 'trash folder'

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -37,12 +37,28 @@ function lib_eyeBoard_getMessages($params=null) {
 }
 
 function lib_eyeBoard_getMessagesHtml($params=null) {
+	global $currentUser;
 	$msg = getConfig('eyeBoard','conf.xml');
-	echo "<script>setTimeout('location.reload();',5000);</script>";
+	$conf = eyeXML('getXMLconfig',array('eyeBoard','conf.xml'));
+	if (is_numeric($conf['eyeBoard'][0]['reloadTime'][0])) {
+		$reloadTime = round($conf['eyeBoard'][0]['reloadTime'][0],3) * 1000;
+	} else {
+		$reloadTime = 5000;
+	}
+	echo "<script>setTimeout('location.reload();'," . $reloadTime . ");</script>";
 	$ret = "";
 	if(isset($msg['messages'][0]['message']) && is_array($msg['messages'][0]['message'])) {
 		foreach($msg['messages'][0]['message'] as $value) {
 			$author = $value['author'][0];
+			if ($conf['eyeBoard'][0]['showFullname'][0] == '1') {
+				$oldUser = $currentUser;
+				$currentUser = ROOTUSER;
+				$authorXML = um('retrieveUser',array($author));
+				$currentUser = $oldUser;
+				if (utf8_strlen($authorXML['eyeUser'][0]['fullname'][0]) >= 2 && utf8_strlen($authorXML['eyeUser'][0]['fullname'][0]) <= MAX_USERNAME_LEN) {
+					$author = $authorXML['eyeUser'][0]['fullname'][0];
+				}
+			}
 			$content = $value['content'][0];
 			$time = $value['time'][0];
 			$ret .= "

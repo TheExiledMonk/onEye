@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -291,28 +291,32 @@ if(!function_exists('eyeCode_drawTree_addContextMenu')) {
 		$myMenu->show();
 		
 		$myMenu->addEntry(
-			'<img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/rename.png" /> &nbsp; Rename',
+			'<img id="' . $menuName . '_rename" style="height: 16px; width: 16px;" src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/rename.png" /> &nbsp; ' . htmlspecialchars(i18n('translate',array('Rename')),ENT_QUOTES,'UTF-8'),
 			'rename',
 			'rename',
-			$arg
+			$arg,
+			$menuName . '_rename'
 		);
 		$myMenu->addEntry(
-			'<img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/folder.png" /> &nbsp; New Folder',
+			'<img id="' . $menuName . '_folder" style="height: 16px; width: 16px;" src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png" /> &nbsp; ' . htmlspecialchars(i18n('translate',array('New Folder')),ENT_QUOTES,'UTF-8'),
 			'nfolder',
 			'nfolder',
-			$arg
+			$arg,
+			$menuName . '_folder'
 		);
 		$myMenu->addEntry(
-			'<img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/file.png" /> &nbsp; New File',
+			'<img id="' . $menuName . '_file" style="height: 16px; width: 16px;" src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/file.png" /> &nbsp; ' . htmlspecialchars(i18n('translate',array('New File')),ENT_QUOTES,'UTF-8'),
 			'nfile',
 			'nfile',
-			$arg
+			$arg,
+			$menuName . '_file'
 		);
 		$myMenu->addEntry(
-			'<img src="index.php?extern=apps/eyeX/themes/default/icons/16x16/delete.png" /> &nbsp; Delete',
+			'<img id="' . $menuName . '_delete" style="height: 16px; width: 16px;" src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/delete.png" /> &nbsp; ' . htmlspecialchars(i18n('translate',array('Delete')),ENT_QUOTES,'UTF-8'),
 			'delete',
 			'delete',
-			$arg
+			$arg,
+			$menuName . '_delete'
 		);
 	}
 }
@@ -340,7 +344,7 @@ function eyeCode_on_nfolder($params=null) {
 		'textbox_event' => 'newfolder',
 		'hidden_text' => $params,
 		'hidden_name' => 'nfPath',
-		'img' => 'index.php?extern=apps/eyeX/themes/default/icons/48x48/folder.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/folder.png'
 	));
 }
 
@@ -387,7 +391,7 @@ function eyeCode_on_nfile($params=null) {
 		'textbox_event' => 'newfile',
 		'hidden_text' => $params,
 		'hidden_name' => 'nfPath',
-		'img' => 'index.php?extern=apps/eyeX/themes/default/icons/48x48/file.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/file.png'
 	));	
 }
 
@@ -409,7 +413,8 @@ function eyeCode_on_delno($params=null) {
 function eyeCode_on_delete($params=null) {
 	$file = basename($params);
 	service('eyex','messageBox',array(
-		'content' => 'Are you sure you want to delete '.$file.'?',
+		'content' => 'Are you sure you want to delete %s?',
+		'tokens' => array($file),
 		'type' => 3,
 		'title' => 'Empty trash',
 		'win_name' => 'emptyTrash_window',

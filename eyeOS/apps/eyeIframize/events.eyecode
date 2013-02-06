@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -31,8 +31,8 @@ function eyeIframize_on_resize($params='') {
 	$height = $params['arg'][1];
 	$width = intval($width);
 	$height = intval($height);
-	$width = $width - 4;
-	$height = $height - 20;
+	$width = $width - 2;
+	$height = $height - 24;
 	$GLOBALS['iframize_IFRM_1']->setWidth($width);
 	$GLOBALS['iframize_IFRM_1']->setHeight($height);
 }
@@ -60,11 +60,26 @@ function eyeIframize_on_iframeEvent($params='') {
 		'father'=>'iframize_WND_1_Content',
 		'x'=>0,
 		'y'=>0,
-		'height'=>430,
-		'width'=>446,
+		'height'=>426,
+		'width'=>448,
 		'url'=>$url,
 	));
 	$myFrame->show();
+}
+
+function eyeIframize_on_getFile($params = '') {
+	$url = $GLOBALS['eyeIframize_hidden']->text;
+	$length = vfs('filesize',array($url));
+	if (utf8_substr($url,-3) == 'swf') {
+		header("Content-type: application/x-shockwave-flash");
+	} else {
+		header('Content-type: text/plain');
+	}
+	header('Content-Length: ' . $length);
+	header('Accept-Ranges: bytes');
+	header('X-Pad: avoid browser bug');
+	vfs('printFile',array(service('vfs','getRealName',array($url))));
+	exit;
 }
 
 function eyeIframize_on_cancel($params = '') {

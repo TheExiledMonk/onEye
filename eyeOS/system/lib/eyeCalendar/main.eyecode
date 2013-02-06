@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -445,7 +445,20 @@ function lib_eyeCalendar_getConfig(){
 	$info = eyeXML('getXMLconfig',array('eyeCalendar','conf.xml'));
 	return $info;
 }
+function lib_eyeCalendar_setConfig($params=''){
+	$info = $params[0];
+	eyeXML('setXMLconfig',array('eyeCalendar','conf.xml',$info));	
+}
 
+function lib_eyeCalendar_geti10n(){
+	$info = eyeXML('getXMLconfig',array('eyeCalendar','conf.xml'));
+//TODO: extens it if we need
+	if(isset($info['eyeCalendar'][0]['startMonday'][0])){
+		return array('startDay'=>$info['eyeCalendar'][0]['startMonday'][0]);
+	}else{
+		return array('startDay'=>1);
+	}
+}
 
 //Tools
 function getDirTime($time,$calendar){
@@ -481,6 +494,5 @@ function mkDirTime($time,$calendar){
 	}
 	return true;
 }
-
 
 ?>

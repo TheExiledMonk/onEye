@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -20,8 +20,6 @@
 
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
-
-global $currentUser;
 
 $ContentY = 10;
 // Configure the startpage
@@ -36,7 +34,7 @@ $myLabel->show();
 $myLabel->setCss(array(
 	'font-weight' => 'bold'
 ));
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 $NavUserConf = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
 // Startpage
 $myLabel = new Label(array(
@@ -52,6 +50,7 @@ $myTextbox = new Textbox(array(
 	'father' => $eyeContainer,
 	'x' => 160,
 	'y' => $ContentY,
+	'width' => 140,
 	'text' => $NavUserConf['eyeNav'][0]['home'][0]
 ));
 $myTextbox->show();
@@ -73,7 +72,7 @@ $myLabel->setCss(array(
 	'color' => '#004488',
 	'cursor' => 'Pointer'
 ));
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // Browse Plugin
 $myLabel = new Label(array(
 	'name' => 'eyeControl_eyenav_label_plugin',
@@ -86,14 +85,14 @@ $myLabel->show();
 $mySelect = new Select(array(
 	'name' => 'eyeControl_eyenav_select_plugin',
 	'father' => $eyeContainer,
-	'width' => 125,
+	'width' => 145,
 	'x' => 160,
 	'y' => $ContentY + 3
 ));
 $mySelect->show();
-$mySelect->addOption('Iframe ' . i18n('translate',array('(Default)')),'iframe');
+$mySelect->addOption('Iframe (' . i18n('translate',array('Default')) . ')','iframe');
 $conf = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
-$openDir = vfs('real_getDirContent',array(EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/','*' . EYE_CODE_EXTENSION,2));
+$openDir = vfs('real_getDirContent',array(EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/','*' . EYE_CODE_EXTENSION));
 foreach ($openDir as $plugin) {
 	$plugin = utf8_basename($plugin,EYE_CODE_EXTENSION);
 	if ($plugin != 'iframe') {
@@ -105,7 +104,7 @@ foreach ($openDir as $plugin) {
 		$mySelect->addOption(ucfirst($plugin),$plugin,$select);
 	}
 }
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // Save changes
 $myButton = new Button(array(
 	'name' => 'eyeControl_eyenav_button_save',
@@ -118,7 +117,7 @@ $myButton = new Button(array(
 $myButton->addFriend($myTextbox);
 $myButton->addFriend($mySelect);
 $myButton->show();
-$ContentY = $ContentY + 60;
+$ContentY += 60;
 // Export default bookmarks and search engines
 $myLabel = new Label(array(
 	'name' => 'eyeControl_eyenav_label_export',
@@ -131,7 +130,7 @@ $myLabel->show();
 $myLabel->setCss(array(
 	'font-weight' => 'bold'
 ));
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // Export
 $myButton = new Button(array(
 	'name' => 'eyeControl_eyenav_button_export',
@@ -141,10 +140,10 @@ $myButton = new Button(array(
 	'width' => 90,
 	'x' => 50,
 	'y' => $ContentY,
-	'img' => eyex('getThemeImage',array('icons/16x16/download.png',1))
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/download.png'
 ));
 $myButton->show();
-$ContentY = $ContentY + 60;
+$ContentY += 60;
 // Manage default bookmarks
 $myLabel = new Label(array(
 	'name' => 'eyeControl_eyenav_label_bookmarks_import',
@@ -157,7 +156,7 @@ $myLabel->show();
 $myLabel->setCss(array(
 	'font-weight' => 'bold'
 ));
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // Import
 $myButton = new Button(array(
 	'name' => 'eyeControl_eyenav_button_bookmarks_import',
@@ -167,7 +166,7 @@ $myButton = new Button(array(
 	'width' => 90,
 	'x' => 50,
 	'y' => $ContentY,
-	'img' => eyex('getThemeImage',array('icons/16x16/folder.png',1))
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'
 ));
 $myButton->show();
 if (eyeControl_lib_getConfigUser() != '[skel]') {
@@ -180,11 +179,11 @@ if (eyeControl_lib_getConfigUser() != '[skel]') {
 		'width' => 100,
 		'x' => 200,
 		'y' => $ContentY,
-		'img' => eyex('getThemeImage',array('icons/16x16/save.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/save.png'
 	));
 	$myButton->show();
 }
-$ContentY = $ContentY + 60;
+$ContentY += 60;
 // Manage default search engines
 $myLabel = new Label(array(
 	'name' => 'eyeControl_eyenav_label_search_import',
@@ -197,7 +196,7 @@ $myLabel->show();
 $myLabel->setCss(array(
 	'font-weight' => 'bold'
 ));
-$ContentY = $ContentY + 30;
+$ContentY += 30;
 // Import
 $myButton = new Button(array(
 	'name' => 'eyeControl_eyenav_button_search_import',
@@ -207,7 +206,7 @@ $myButton = new Button(array(
 	'width' => 90,
 	'x' => 50,
 	'y' => $ContentY,
-	'img' => eyex('getThemeImage',array('icons/16x16/folder.png',1))
+	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'
 ));
 $myButton->show();
 if (eyeControl_lib_getConfigUser() != '[skel]') {
@@ -220,7 +219,7 @@ if (eyeControl_lib_getConfigUser() != '[skel]') {
 		'width' => 100,
 		'x' => 200,
 		'y' => $ContentY,
-		'img' => eyex('getThemeImage',array('icons/16x16/save.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/save.png'
 	));
 	$myButton->show();
 }

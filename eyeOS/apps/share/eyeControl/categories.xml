@@ -44,7 +44,7 @@
 		<description>Change your desktop wallpaper</description>
 		<display>Desktop</display>
 		<name>desktop</name>
-		<permissions>all</permissions>
+		<permissions>only_this</permissions>
 		<title>yes</title>
 		<img>index.php?theme=1&amp;extern=icons/48x48/desktop.png</img>
 	</content>
@@ -73,7 +73,7 @@
 		<description>Manage your system's users</description>
 		<display>Manage users</display>
 		<name>users</name>
-		<permissions>root</permissions>
+		<permissions>maintainer</permissions>
 		<title>yes</title>
 		<img>index.php?theme=1&amp;extern=icons/48x48/manageusers.png</img>
 	</content>
@@ -81,7 +81,7 @@
 		<description>Manage your system's groups</description>
 		<display>Manage groups</display>
 		<name>groups</name>
-		<permissions>root</permissions>
+		<permissions>maintainer</permissions>
 		<title>yes</title>
 		<img>index.php?theme=1&amp;extern=icons/48x48/managegroups.png</img>
 	</content>
@@ -89,7 +89,7 @@
 		<description>Add a new user to your eyeOS system</description>
 		<display>New user</display>
 		<name>newuser</name>
-		<permissions>root</permissions>
+		<permissions>maintainer</permissions>
 		<title>yes</title>
 		<show>no</show>
 	</content>
@@ -97,7 +97,7 @@
 		<description>Edit the chosen user</description>
 		<display>Edit user</display>
 		<name>edituser</name>
-		<permissions>root</permissions>
+		<permissions>maintainer</permissions>
 		<title>yes</title>
 		<show>no</show>
 	</content>
@@ -123,6 +123,14 @@
 	<name>system</name>
 	<permissions>all</permissions>
 	<content>
+		<description>Change your eyeBoard settings</description>
+		<display>eyeOS Board</display>
+		<name>eyeboard</name>
+		<permissions>all</permissions>
+		<title>yes</title>
+		<img>index.php?theme=1&amp;extern=icons/48x48/eyeBoard.png</img>
+	</content>
+	<content>
 		<description>Manage your autorun commands</description>
 		<display>Autorun Commands</display>
 		<name>eyedesk</name>
@@ -136,6 +144,6 @@
 		<name>eyenav</name>
 		<permissions>all</permissions>
 		<title>yes</title>
-		<img>index.php?theme=1&amp;extern=icons/48x48/eyeNav.png</img>
+		<img>index.php?theme=1&amp;extern=icons/48x48/webbrowser.png</img>
 	</content>
 </category>

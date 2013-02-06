@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -39,6 +39,62 @@ function eyeGroups_on_gotoDir($params=null) {
 	eyex('runjs',array('js'=>"eyeFiles_reloadFiles($myPid,$checknum, %s );",'tokens'=>$tokens));
 }
 
+function eyeGroups_loadTree($dir) {
+	eyex('removeWidget',array('name' => 'filesTree'));
+	eyeWidgets('singleUnserialize',array('filesTree'));
+	
+	$myTree = new Tree(array(
+		'name'=>'filesTree',
+		'father'=>'WND_BOX_1_Content',
+		'width'=>155,
+		'height'=>185,
+		'x'=>0,
+		'y'=>0,
+		'clickTree'=>1,
+		'signal'=>'gotoDir'
+	));
+	$myTree->show();
+	
+	$myTree->addItem('filesTree','home_item','Groups');
+	$myTree->addSubList('home_item','home_list');
+	$myGroups = um('getCurrentGroups');
+	foreach($myGroups as $key=>$value) {
+		$path = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.FILES_GROUP_DIR;
+		$rnd = md5(realpath($path));
+		$myTree->addItem('home_list','item_'.FILES_GROUP_DIR.$rnd,$key);
+		$myTree->addSubList('item_'.FILES_GROUP_DIR.$rnd,'list_'.FILES_GROUP_DIR.$rnd);
+		eyeGroups_drawTree($myTree,'list_'.FILES_GROUP_DIR.$rnd,$path.'/',realpath($dir));
+	}
+	
+	$myTree->processList();
+	
+	if (realpath($dir) != realpath(EYE_ROOT . '/' . '/' . GROUPS_DIR)) {
+		$content = vfs('getDirContent',array($dir));
+		if ($content[0] && is_dir($content[0])) {
+			$dir .= '/' . utf8_basename($content[0]);
+		}
+		$myTree->expandTree('item_'.utf8_basename($dir).md5(realpath($dir)));
+	} else {
+		$myTree->expandTree('item_'.FILES_GROUP_DIR.md5(realpath(EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.FILES_GROUP_DIR)));
+	}
+}
+
+function eyeGroups_drawTree($object,$tree,$dir,$expand) {
+	$content = vfs('getDirContent',array($dir));
+	if (is_array($content)) {
+		foreach ($content as $value) {
+			if (is_dir($value)) {
+				$rnd = md5(realpath($value));
+				$object->addItem($tree,'item_'.utf8_basename($value).$rnd,utf8_basename($value));
+				$object->addSubList('item_'.utf8_basename($value).$rnd,'list_'.utf8_basename($value).$rnd);
+				if (!strstr(realpath($dir),$expand)) {
+					eyeGroups_drawTree($object,'list_'.utf8_basename($value).$rnd,$value.'/',$expand);
+				}
+			}
+		}
+	}
+}
+
 function eyeGroups_on_openFile($params=null) {
 	global $myPid;
 	global $checknum;
@@ -65,7 +121,7 @@ function eyeGroups_on_openFile($params=null) {
 	$myUserDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$group.'/'.FILES_GROUP_DIR.'/';	
 	$realFile = EYE_ROOT.'/'.GROUPS_DIR.$realFileToShow;
 	
-	$userTheme = eyeSessions('getVar',array('usertheme'));
+	eyeGroups_loadTree($realFile);
 	$windowWidth = $params['size'];	
 	
 	//
@@ -100,9 +156,9 @@ function eyeGroups_on_openFile($params=null) {
 	if(is_array($pxml['eyeFiles'][0]['plugin'])) {
 		foreach($pxml['eyeFiles'][0]['plugin'] as $value) {
 			if($value['context'][0] == 'current') {				
-				$myContextMenu->addEntry("<img src=".$value['icon'][0]." /> &nbsp;".$value['label'][0],'MNU_main_eyeFiles_'.i18n('translate',array($value['appName'][0])),'actionExecute',"<arg1>".$params['file']."</arg1><arg2>".$value['appName'][0]."</arg2>");
+				$myContextMenu->addEntry("<img id='" . $myPid . "_main_eyeFiles_menu_" . $value['appName'][0] . "' style='height: 16px; width: 16px;' src=".$value['icon'][0]." /> &nbsp;".htmlspecialchars(i18n('translate',array($value['label'][0])),ENT_QUOTES,'UTF-8'),'MNU_main_eyeFiles_'.$value['appName'][0],'actionExecute',"<arg1>".$params['file']."</arg1><arg2>".$value['appName'][0]."</arg2>",$myPid . '_main_eyeFiles_menu_' . $value['appName'][0]);
 			}else if($value['context'][0] == 'dnd'){
-				$mySimpleMenu->addEntry("<img src=".$value['icon'][0]." /> &nbsp;".i18n('translate',array($value['label'][0])),'MNU_main_eyeFiles_'.i18n('translate',array($value['appName'][0])),'actionExecute',"<arg1>".$params['file']."</arg1><arg2>".$value['appName'][0]."</arg2>");
+				$mySimpleMenu->addEntry("<img id='" . $myPid . "_drop_simpleMenu_" . $value['appName'][0] . "' style='height: 16px; width: 16px;' src=".$value['icon'][0]." /> &nbsp;".htmlspecialchars(i18n('translate',array($value['label'][0])),ENT_QUOTES,'UTF-8'),'MNU_main_eyeFiles_'.$value['appName'][0],'actionExecute',"<arg1>".$params['file']."</arg1><arg2>".$value['appName'][0]."</arg2>",$myPid . '_drop_simpleMenu_' . $value['appName'][0]);
 			}
 		}
 	}	
@@ -125,7 +181,7 @@ function eyeGroups_on_openFile($params=null) {
 						$fileName = false;
 						$picWidth = array();
 						if(is_dir($current)) {
-							$icon = 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/folder.png';
+							$icon = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/'.EYEFILES_ICON_SIZE.'/filetypes/folder.png';
 							$fileName = utf8_basename($current);
 							$realFileName = str_replace($myUserDir,'',$current);
 							$realFileName = '/'.$group.'/'.$realFileName;
@@ -142,7 +198,7 @@ function eyeGroups_on_openFile($params=null) {
 								$icon = 'index.php?checknum='.$checknum.'&msg=getTh&params=<arg>'.$realFileName.'</arg>';								
 								$iconImageDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.eyeGroups_parsePath($realFileName,1);
 								$iconImageName = vfs('getRealName',array($iconImageDir));
-								$info = getimagesize($iconImageName);
+								$info = @getimagesize($iconImageName);
 								$max = 60;						
 								if($info[0] > $info[1]) {
 									$porc = $max * 100 / $info[0];
@@ -158,7 +214,7 @@ function eyeGroups_on_openFile($params=null) {
 										$icon = $value['type'][0];
 									}
 								} 
-								$icon = 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png';
+								$icon = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png';
 							}
 							//TODO: HANDLE ICONS
 						}
@@ -180,7 +236,7 @@ function eyeGroups_on_openFile($params=null) {
 							//if the icon is a pic
 							if(!empty($picWidth)){
 								$halfWidth = $picWidth[0] / 2;
-								eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.left = "50%;"'));
+								eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.left = "50%";'));
 								eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.marginLeft = "-'.$halfWidth.'px";'));
 								eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.position = "relative";'));
 							}
@@ -203,9 +259,9 @@ function eyeGroups_on_openFile($params=null) {
 							if(is_array($pxml['eyeFiles'][0]['plugin'])) {
 								foreach($pxml['eyeFiles'][0]['plugin'] as $value) {
 									if($value['context'][0] == 'select') {
-										$myContextMenu->addEntry("<img src=".$value['icon'][0]." /> &nbsp;".i18n('translate',array($value['label'][0])),'MNU_eyeFiles_'.$counter,'actionExecute',"<arg1>$realFileName</arg1><arg2>".$value['appName'][0]."</arg2>");
+										$myContextMenu->addEntry("<img id='" . $myPid . "_eyeFiles_icon_menu_" . $counter . "_" . $value['appName'][0] . "' style='height: 16px; width: 16px;' src=".$value['icon'][0]." /> &nbsp;".htmlspecialchars(i18n('translate',array($value['label'][0])),ENT_QUOTES,'UTF-8'),'MNU_eyeFiles_'.$counter,'actionExecute',"<arg1>$realFileName</arg1><arg2>".$value['appName'][0]."</arg2>",$myPid . '_eyeFiles_icon_menu_' . $counter . '_' . $value['appName'][0]);
 									}else if($value['context'][0] == 'dnd' && $isIconDir){
-										$iconMenu->addEntry("<img src=".$value['icon'][0]." /> &nbsp;".i18n('translate',array($value['label'][0])),'MNU_main_eyeFiles_'.i18n('translate',array($value['appName'][0])),'actionExecute',"<arg1>".$isIconDir."</arg1><arg2>".$value['appName'][0]."</arg2>");
+										$iconMenu->addEntry("<img id='" . $myPid . '_' . $myName . '_drop_simpleMenu_' . $value['appName'][0] . "' style='height: 16px; width: 16px;' src=".$value['icon'][0]." /> &nbsp;".htmlspecialchars(i18n('translate',array($value['label'][0])),ENT_QUOTES,'UTF-8'),'MNU_main_eyeFiles_'.$value['appName'][0],'actionExecute',"<arg1>".$isIconDir."</arg1><arg2>".$value['appName'][0]."</arg2>",$myPid . '_' . $myName . '_drop_simpleMenu_' . $value['appName'][0]);
 									}
 								}
 							}
@@ -238,14 +294,14 @@ function eyeGroups_on_openFile($params=null) {
 					//create new icon using a folder icon.
 					$myName = "eyeFiles_icon_$counter";	
 					//get icon size using eyeGraphics
-					$info = getimagesize(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png');
+					$info = @getimagesize(eyex('getThemeImage',array('icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',2)));
 					$myWidth = $info[0];
 					$myHeight = $info[1];
 					//TODO: MAKE A BETTER AND CONFIGURABLE TOOLTIPS
 					$myTooltip = $key;
 					$myIcon = new Icon(array('name'=>$myName,'text'=>$key,'father'=>'WND_2_Content',
-					'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
-					'realname'=>EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
+					'image'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
+					'realname'=>eyex('getThemeImage',array('icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',2)),
 					'content'=>array($key,$windowWidth),'x'=>$x,'y'=>$y,'tooltip'=>$myTooltip,'overBorder'=>1));	        			
 					$myIcon->show();
 					
@@ -333,7 +389,7 @@ function eyeGroups_thumbimg($image,$max) {
 	} else {
 		return;
 	}
-	$info = getimagesize($name);
+	$info = @getimagesize($name);
 	if($info[0] > $info[1]) {
 		$porc = $max * 100 / $info[0];
 	} else {

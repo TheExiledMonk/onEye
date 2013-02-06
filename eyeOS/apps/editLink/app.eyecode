@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -30,8 +30,8 @@ function editLink_run($params=null) {
 		return;
 	}
 	$myWindow = new Window(array('name'=>'editLink','father'=>'eyeApps',
-		'type'=>NOLIST_CLOSE_WINDOW,'cent'=>1,'width'=>350,'height'=>170,
-		'title'=>'Edit link'));
+		'style' => TITLE + CLOSE + LISTED + MIN,'cent'=>1,'width'=>350,'height'=>170,
+		'title'=>'Edit link','savePosition' => 1));
 	$myWindow->show();
 	
 	$data = eyeXML('getXMLfile',array($path));
@@ -51,7 +51,7 @@ function editLink_run($params=null) {
 		'x'=>22,'y'=>100));
 	$mySelect->show();
 	$icon.='.png';
-	if ($handle = opendir(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/default/icons/48x48/')) {
+	if ($handle = opendir(eyex('getThemeImage',array('icons/48x48/',2)))) {
 	    while (false !== ($file = readdir($handle))) {
 	        if ($file != "." && $file != ".." && $file{0} != "." && utf8_strtolower(utf8_ltrim(strrchr($file,'.'),'.')) == 'png' && $file != $icon) {
 	        	$mySelect->addOption(utf8_basename($file,'.png'),$file);
@@ -60,12 +60,12 @@ function editLink_run($params=null) {
 	    closedir($handle);
 	}
 	$mySelect->addOption(utf8_basename($icon,'.png'),$icon,1);
-	$mySelect->addEvent('onchange','document.getElementById("'.$myPid.'_image_link").src="index.php?extern='.THEMES_DIR.'/default/icons/48x48/"+this.value'.';');
+	$mySelect->addEvent('onchange','document.getElementById("'.$myPid.'_image_link").src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/"+this.value'.';');
 	$myTextBox = new Textbox(array('name'=>'edTextbox','father'=>'editLink_Content',
 		'x'=>105,'y'=>55,'width'=>200,'text'=>$content));
 	$myTextBox->show();
 	$myImage = new Imagebox(array('name'=>'image_link','father'=>'editLink_Content',
-		'url'=>'index.php?extern=apps/eyeX/themes/default/icons/48x48/'.$icon,
+		'url'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/'.$icon,
 		'x'=>25,'y'=>28));
 	$myImage->show();
 	$myButton = new Button(array('name'=>'edButton','father'=>'editLink_Content',

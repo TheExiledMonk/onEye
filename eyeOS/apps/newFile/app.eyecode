@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -44,7 +44,8 @@ function newFile_run($params=null) {
 		'hidden_name' => 'nfPath',
 		'hidden2_text' => $callback,
 		'hidden2_name' => 'nfCallback',
-		'img' => 'index.php?extern=apps/eyeX/themes/default/icons/48x48/file.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/file.png',
+		'savePosition' => 1
 	));
 }
 

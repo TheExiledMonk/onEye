@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -23,8 +23,8 @@
 
 function eyeProcess_run($params=null) {
 	$sortypes = array("number","String","String");
-	$myWindow = new Window(array('name'=>'wnd1','title'=>'eyeProcess','father'=>'eyeApps',
-		'type'=>NORESIZE_WINDOW,'width'=>300,'height'=>450,'x'=>20,'y'=>20));
+	$myWindow = new Window(array('name'=>'wnd1','title'=>'Process Manager','father'=>'eyeApps',
+		'type'=>NORESIZE_WINDOW,'width'=>300,'height'=>450,'x'=>20,'y'=>20,'savePosition' => 1));
 	$myWindow->show();
 	$myHeader = array('Pid','Process Name','Username');
 
@@ -40,8 +40,13 @@ function eyeProcess_run($params=null) {
 		$myTable->addRow(array($key,$value['appName'],$value['currentUser']));
 	}
 	
+	$myButton = new Button(array('name'=>'button_new','father'=>'wnd1_Content','signal'=>'launch',
+		'caption'=>'New process','vert'=>1,'x'=>11,'y'=>10));
+	$myButton->addFriend($myTable);
+	$myButton->show();
+	
 	$myButton = new Button(array('name'=>'button_close','father'=>'wnd1_Content','signal'=>'kill',
-		'caption'=>'Kill Process','vert'=>1,'horiz'=>1,'x'=>11,'y'=>10));
+		'caption'=>'Kill process','vert'=>1,'horiz'=>1,'x'=>11,'y'=>10));
 	$myButton->addFriend($myTable);
 	$myButton->show();
 	addListenerServiceCall('onKill','proc','close',1);

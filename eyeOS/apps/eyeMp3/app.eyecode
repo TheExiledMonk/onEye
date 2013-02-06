@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -42,7 +42,7 @@ function eyeMp3_run($params=null) {
 		$myPid = $checkResult['pid'];
 	}
 			
-	service('eyex','loadScript',array('url' => 'index.php?extern=apps/eyeMp3/js/eyeMp3'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	service('eyex','loadScript',array('url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeMp3/js/eyeMp3'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 	
 	if($mp3FilePath){
 		//Make a hidden widget for store the info. This will give access in all app/request without disclosure
@@ -71,10 +71,10 @@ function eyeMp3_run($params=null) {
 	$myWindow->show();
 	
 	$myLabel = new Label(array('name'=>'infoLabel','father'=>'win1_Content',
-		'text'=>'This is not a bug! Is a problem with flash players! Sorry.','y'=>20,'x'=>20));
+		'text'=>'This is not a bug, unfortunately it is a problem with Flash players!','y'=>20,'x'=>20));
 	$myLabel->show();
 	
-	$flashPlayerPath = "index.php?extern=apps/eyeMp3/swf/webplayer.swf&type=swf";//This is hardcoded because it shouldn't change		
+	$flashPlayerPath = "index.php?version=".EXTERN_CACHE_VERSION."&extern=apps/eyeMp3/swf/webplayer.swf&type=swf";//This is hardcoded because it shouldn't change		
 	//flashParamsNames and flashParamsValues.
 	//Vars for mp3 player.
 	$flashParamsNames[] = 'flashvars';

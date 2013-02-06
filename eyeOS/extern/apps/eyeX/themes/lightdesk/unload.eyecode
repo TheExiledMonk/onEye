@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -22,21 +22,17 @@
 */
 
 function theme_lightdesk_unload() {
-	$config = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeDesk/conf.xml';
-	$xml = eyeXML('getXMLfile',array($config));
-	$defaultAutorunApps = array("eyeDock","eyeBar","eyeDesk_extras","miniActions");
-	$autorun = $xml['eyeDesk'][0]['autolaunch'];
-	for($i=0;$i < count($autorun);$i++) {
-		if($autorun[$i] == 'eyeLightDesk'){
-			unset($xml['eyeDesk'][0]['autolaunch'][$i]);
+	$xml = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
+	$autolaunch = $xml['eyeDesk'][0]['autolaunch'];
+	unset($xml['eyeDesk'][0]['autolaunch']);
+	foreach ($autolaunch as $autorun) {
+		if (!in_array($autorun,array('eyeLightDesk','eyeBar','eyeDock','miniActions'))) {
+			$xml['eyeDesk'][0]['autolaunch'][] = $autorun;
 		}
 	}
-	foreach ($defaultAutorunApps as $app) {
-		if (!in_array($app,$autorun)) {
-			$xml['eyeDesk'][0]['autolaunch'][] = $app;
-		}
-	}
-	eyeXML('setXMLfile',array($config,$xml));
+	$xml['eyeDesk'][0]['autolaunch'][] = 'eyeBar';
+	$xml['eyeDesk'][0]['autolaunch'][] = 'eyeDock';
+	$xml['eyeDesk'][0]['autolaunch'][] = 'miniActions';
+	eyeXML('setXMLconfig',array('eyeDesk','conf.xml',$xml));
 }
-
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -60,7 +60,7 @@ $myFlash = new Flash(array(
 	'y' => 10,
 	'height' => 175,
 	'width' => 400,
-	'src' => "index.php?extern=apps/eyeUpload/swf/eyeuploadx.swf&type=swf",
+	'src' => "index.php?version=".EXTERN_CACHE_VERSION."&extern=apps/eyeUpload/swf/eyeuploadx.swf&type=swf",
 	'flashParamsNames' => $flashParamsNames,
 	'flashParamsValues' => $flashParamsValues
 ));

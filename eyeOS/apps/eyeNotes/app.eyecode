@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -24,48 +24,53 @@
 function eyeNotes_run($params=null) {
 	global $myPid;
 	$myWindow = new Window(array('name'=>'eyeNotesWND','father'=>'eyeApps',
-	'cent'=>1,'width'=>600,'height'=>500,'title'=>'eyeNotes','sendResizeMsg'=>1,'sigResize'=>'Resize'));
+	'cent'=>1,'width'=>600,'height'=>500,'title'=>'Text Editor','sendResizeMsg'=>1,'sigResize'=>'Resize','savePosition' => 1));
 	$myWindow->show();
 	
-	if($params[0]) {
-		$info = pathinfo($params[0]);
-		$ext = strtolower($info['extension']);
-		if($ext == 'asp') {
-			$lang = 'asp';
-		} else if($ext == 'cs') {
-			$lang = 'csharp';
-		} else if($ext == 'css') {
-			$lang = 'css';
-		} else if($ext == 'html') {
-			$lang = 'html';
-		} else if($ext == 'java') {
-			$lang = 'java';
-		} else if($ext == 'js') {
-			$lang = 'javascript';
-		} else if($ext == 'pl') {
-			$lang = 'perl';
-		} else if($ext == 'php') {
-			$lang = 'php';
-		} else if($ext == 'rb') {
-			$lang = 'ruby';
-		} else if($ext == 'sql') {
-			$lang = 'sql';
-		} else if($ext == 'vbs') {
-			$lang = 'vbscript';
-		} else if($ext == 'xsl') {
-			$lang = 'xsl';
-		} else if($ext == 'c' || $ext == 'cc' || $ext == 'cpp') {
-			$lang = 'c';
-		} else if($ext == 'eyecode') {
-			$lang = 'eyecode';
+	if (IE && IE < 7 || eregi('safari',$_SERVER['HTTP_USER_AGENT'])) {
+		$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
+			'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60));
+	} else {
+		if($params[0]) {
+			$info = pathinfo($params[0]);
+			$ext = strtolower($info['extension']);
+			if($ext == 'asp') {
+				$lang = 'asp';
+			} else if($ext == 'cs') {
+				$lang = 'csharp';
+			} else if($ext == 'css') {
+				$lang = 'css';
+			} else if($ext == 'html') {
+				$lang = 'html';
+			} else if($ext == 'java') {
+				$lang = 'java';
+			} else if($ext == 'js') {
+				$lang = 'javascript';
+			} else if($ext == 'pl') {
+				$lang = 'perl';
+			} else if($ext == 'php') {
+				$lang = 'php';
+			} else if($ext == 'rb') {
+				$lang = 'ruby';
+			} else if($ext == 'sql') {
+				$lang = 'sql';
+			} else if($ext == 'vbs') {
+				$lang = 'vbscript';
+			} else if($ext == 'xsl') {
+				$lang = 'xsl';
+			} else if($ext == 'c' || $ext == 'cc' || $ext == 'cpp') {
+				$lang = 'c';
+			} else if($ext == 'eyecode') {
+				$lang = 'eyecode';
+			} else {
+				$lang = 'text';
+			}
 		} else {
 			$lang = 'text';
 		}
-	} else {
-		$lang = 'text';
+		$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
+			'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60,'code'=>1,'lang'=>$lang));
 	}
-	$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
-		'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60,'code'=>1,'lang'=>$lang));
 	$myTextArea->show();
 	$myTextArea->focus();
 	
@@ -78,10 +83,10 @@ function eyeNotes_run($params=null) {
 		
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeNotesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?extern=apps/eyeX/themes/default/images/toolbar/filenew.png','New');
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/fileopen.png','Open');
-	$myToolbar->addItem('save','index.php?extern=apps/eyeX/themes/default/images/toolbar/filesave.png','Save',array($myTextArea));
-	$myToolbar->addItem('saveAs','index.php?extern=apps/eyeX/themes/default/images/toolbar/filesaveas.png','Save As',array($myTextArea));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filenew.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
+	$myToolbar->addItem('save','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesave.png','Save',array($myTextArea));
+	$myToolbar->addItem('saveAs','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesaveas.png','Save As',array($myTextArea));
 	
 	if($params[0]) {
 		$file = $params[0];

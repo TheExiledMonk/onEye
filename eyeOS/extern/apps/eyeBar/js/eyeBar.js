@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -31,7 +31,7 @@ function ButOnClick(e,pid,checknum) {
 		eyeSystemClickHandler(pid);
 	}
 	if (eyeBarMenuState == 0) {
-		but.src="index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeBar/pressed.png";
+		but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeBar/pressed.png";
 		fixPNG(eyeSystem_but);
 		
 		if(IEversion == 0) {
@@ -43,7 +43,7 @@ function ButOnClick(e,pid,checknum) {
 		}
 		eyeBarMenuState = 1;	
 	} else {
-		but.src="index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeBar/default.png";
+		but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeBar/default.png";
 		fixPNG(eyeSystem_but);
 		if(IEversion == 0) {
 			updateOpacity(pid+'_eyeMenu', 100, 0, 150,'eyeSystem_hideMenu('+pid+');');
@@ -58,7 +58,7 @@ function ButOnMouseOver(e,pid,checknum) {
 	var eyeSystem_but=pid+'_eyeBut';
 	if (eyeBarMenuState == 0) {
 		var but = document.getElementById(pid+"_eyeBut");
-		but.src="index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeBar/hover.png";
+		but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeBar/hover.png";
 		fixPNG(eyeSystem_but);
 	}
 }
@@ -67,7 +67,7 @@ function ButOnMouseOut(e,pid,checknum) {
 	var eyeSystem_but=pid+'_eyeBut';
 	if (eyeBarMenuState == 0) {
 		var but = document.getElementById(pid+"_eyeBut");
-		but.src="index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeBar/default.png";
+		but.src="index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeBar/default.png";
 		fixPNG(eyeSystem_but);
 	}
 }
@@ -80,7 +80,7 @@ function eyeSystem_hideMenu(pid) {
 function eyeSystemClickHandler(pid) {
 	eyeSystem_handled = 1;
 	var openedDiv = pid+"_eyeMenu_content";
-	var codeClick = "if (eyeBarMenuState == 1) { document.getElementById('"+pid+"_eyeBut').src='index.php?extern=apps/eyeX/themes/"+eyeTheme+"/images/apps/eyeBar/default.png'; if(IEversion==0) {updateOpacity('"+pid+"_eyeMenu', 100, 0, 150,'eyeSystem_hideMenu("+pid+")'); } else {fixPNG('"+pid+"_eyeBut');hideIEmenu("+pid+"); } eyeBarMenuState = 0; }";
+	var codeClick = "if (eyeBarMenuState == 1) { document.getElementById('"+pid+"_eyeBut').src='index.php?version="+EXTERN_CACHE_VERSION+"&theme=1&extern=images/apps/eyeBar/default.png'; if(IEversion==0) {updateOpacity('"+pid+"_eyeMenu', 100, 0, 150,'eyeSystem_hideMenu("+pid+")'); } else {fixPNG('"+pid+"_eyeBut');hideIEmenu("+pid+"); } eyeBarMenuState = 0; }";
 	addClickHandler(openedDiv,codeClick);
 	addFriendClick(openedDiv,pid+'_eyeBut');
 	addFriendClick(openedDiv,pid+'_eyeMenu_top');
@@ -90,9 +90,6 @@ function eyeSystemClickHandler(pid) {
 
 function init_eyeBar(pid,checknum) {
 	var obj=document.getElementById(pid+'_eyeBut');
-	if(IEversion > 0 && IEversion < 7 ) {
-		document.getElementById(pid+'_eyeMenu').style.filter = "progid:DXImageTransform.Microsoft.Fade(duration=0.6,overlap=0.0) alpha(opacity=100)";
-	}
 	obj.onmousedown=function(e) {ButOnClick(e,pid,checknum);};
 	obj.onmouseover=function(e) {ButOnMouseOver(e,pid,checknum);};
 	obj.onmouseout=function(e) {ButOnMouseOut(e,pid,checknum)};
@@ -104,10 +101,7 @@ function showIEmenu(pid) {
 		document.getElementById(eyeSystem_menu).style.visibility='visible';
 	} else {
 		var eyeSystem_menu=pid+'_eyeMenu';
-		document.getElementById(eyeSystem_menu).filters[0].Apply();
 		document.getElementById(eyeSystem_menu).style.visibility='visible';
-		document.getElementById(eyeSystem_menu).filters[0].Play();
-		document.getElementById(eyeSystem_menu).style.filter = "progid:DXImageTransform.Microsoft.Fade(duration=0.6,overlap=0.0) alpha(opacity=100)";
 	}
 
 }
@@ -118,36 +112,23 @@ function hideIEmenu(pid) {
 		document.getElementById(eyeSystem_menu).style.visibility='hidden';
 	} else {
 		var eyeSystem_menu=pid+'_eyeMenu';
-		document.getElementById(eyeSystem_menu).filters[0].Apply();
 		document.getElementById(eyeSystem_menu).style.visibility='hidden';
-		document.getElementById(eyeSystem_menu).filters[0].Play();
 	}
 
 }
 function updateMenuStateOn(menu) {
-	if(IEversion==0) {
-		var imgmenu = document.getElementById(menu+"_miniIcon");
-		var imgpath = 'index.php?extern=apps/eyeX/themes/'+eyeTheme+'/images/apps/eyeBar/icons/';
-		var textmenu = 	document.getElementById(menu+"_textId");
-		textmenu.style.color = '#ffffff';
-		imgmenu.src = imgpath+imgmenu.alt+'_on.png';
-	} else {
-		var textmenu = 	document.getElementById(menu+"_textId");
-		textmenu.style.color = '#ffffff';
-	}
+	var imgmenu = document.getElementById(menu + "_miniIcon");
+	var imgpath = 'index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/apps/eyeBar/icons/';
+	var textmenu = document.getElementById(menu + "_textId");
+	textmenu.style.color = '#ffffff';
+	imgmenu.src = imgpath+imgmenu.alt+'_on.png';
+	fixPNG(menu + "_miniIcon");
 }
 function updateMenuStateOff(menu) {
-	if(IEversion==0) {
-		var imgmenu = document.getElementById(menu+"_miniIcon");
-		var imgpath = 'index.php?extern=apps/eyeX/themes/'+eyeTheme+'/images/apps/eyeBar/icons/';
-		var textmenu = 	document.getElementById(menu+"_textId");
-		textmenu.style.color = '#dddddd';
-		imgmenu.src = imgpath+imgmenu.alt+'.png';
-		if(IEversion!=0) {
-			fixPNG(imgmenu.id);
-		}
-	} else {
-		var textmenu = 	document.getElementById(menu+"_textId");
-		textmenu.style.color = '#ffffff';		
-	}
+	var imgmenu = document.getElementById(menu + "_miniIcon");
+	var imgpath = 'index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=images/apps/eyeBar/icons/';
+	var textmenu = document.getElementById(menu + "_textId");
+	textmenu.style.color = '#dddddd';
+	imgmenu.src = imgpath + imgmenu.alt + '.png';
+	fixPNG(menu + "_miniIcon");
 }

@@ -109,13 +109,6 @@
 				<exec>eyeMessages</exec>
 			</item>
 			<item>
-				<name>eyeMail</name>
-				<desc>Mail Client</desc>
-				<text>Send and receive e-mails with your usual POP3 mail accounts</text>
-				<icon>eyeMail.png</icon>
-				<exec>eyeMail</exec>
-			</item>
-			<item>
 				<name>eyeNav</name>
 				<desc>Navigator</desc>
 				<text>Navigate through Internet and save your bookmarks</text>

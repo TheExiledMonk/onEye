@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -64,7 +64,7 @@ function eyeDocs_on_Save($params=null) {
 		} else {
 			$fp = service('vfs','open',array($GLOBALS['notePath']->text,'w'));
 			if(!$fp) {
-				service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+				service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
 				return;
 			}
 			fwrite($fp,$GLOBALS['noteContent']->text);
@@ -106,7 +106,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 			service('vfs','create',array($file,'eyeDocs'));
 			$fp = service('vfs','open',array($file,'w'));
 			if(!$fp) {
-				service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+				service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
 				return;
 			}
 			fwrite($fp,$GLOBALS['noteContent']->text);
@@ -127,7 +127,7 @@ function eyeDocs_on_SelectFileOpen($params=null) {
 		$tCheckNum = proc('findChecknumByName',array('eyeDesk'));
 		$real = vfs('getRealName',array($file));
 		if(!vfs('checkPermissions',array($real))) {
-			eyeX('messageBox',array('content'=>'You don\'t have sufficient permissions'));
+			eyeX('messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
 			return false;
 		}
 		$extension = utf8_strtolower($info['extension']);

@@ -23,6 +23,7 @@
 
 var myPid = $myPid;
 var myChecknum = $checknum;
+var EXTERN_CACHE_VERSION = $EXTERN_CACHE_VERSION;
 
 var agent = navigator.userAgent.toLowerCase();
 if (agent.indexOf("konqueror")!=-1) agent = "konqueror";
@@ -74,7 +75,7 @@ var saveMethod = "save('js')";
 var closeMethod = "";
 var isWriteable = true;
 var tab = String.fromCharCode(9);
-var printstyle = "index.php?extern=apps/eyeSheets/print.css";
+var printstyle = "index.php?version=" + EXTERN_CACHE_VERSION + "&extern=apps/eyeSheets/print.css";
 
 function trans(key) {
   if (strings[key]) return strings[key]; else return key;
@@ -283,52 +284,52 @@ function display() {
   	
   	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="load(init_data); resetPath(); return false;" class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/filenew.png"/>';
+	out += '	<img onclick="load(init_data); resetPath(); return false;" class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/filenew.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="load(init_data); resetPath(); return false;" accesskey="n">'+trans('New')+'</a></div>';
 	out += '</div>';
 	
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="loadCode(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/fileopen.png"/>';
+	out += '	<img onclick="loadCode(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/fileopen.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="loadCode(); return false;">'+trans('Open')+'</a></div>';
 	out += '</div>';
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="saveCode(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/filesave.png"/>';
+	out += '	<img onclick="saveCode(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/filesave.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="saveCode(); return false;">'+trans('Save')+'</a></div>';
 	out += '</div>';
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="saveAs(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/filesaveas.png"/>';
+	out += '	<img onclick="saveAs(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/filesaveas.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="saveAs(); return false;">'+trans('Save As')+'</a></div>';
 	out += '</div>';
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="insertRow(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/newrow.png"/>';
+	out += '	<img onclick="insertRow(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/newrow.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="insertRow(); return false;">'+trans('Ins. Row')+'</a></div>';
 	out += '</div>';
 
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="insertColumn(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/newcolumn.png"/>';
+	out += '	<img onclick="insertColumn(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/newcolumn.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="insertColumn(); return false;">'+trans('Ins. Column')+'</a></div>';
 	out += '</div>';
 
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="deleteRow(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/deleterow.png"/>';
+	out += '	<img onclick="deleteRow(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/deleterow.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick"=deleteRow(); return false;">'+trans('Del. Row')+'</a></div>';
 	out += '</div>';
 
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="deleteColumn(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/deletecolumn.png"/>';
+	out += '	<img onclick="deleteColumn(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/deletecolumn.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="deleteColumn(); return false;">'+trans('Del. Column')+'</a></div>';
 	out += '</div>';
 
 	
 	out += '<div class="blockbarItem">';
-	out += '	<img onclick="print(); return false;"class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/images/toolbar/agt_print.png"/>';
+	out += '	<img onclick="print(); return false;"class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/toolbar/agt_print.png"/>';
 	out += '	<div class="blockbarText"><a href="#" onclick="print(); return false;">'+trans('Print')+'</a></div>';
 	out += '</div>';
 
@@ -419,18 +420,18 @@ function display() {
 
   if (allowPaging) {
     if (col0-cols>=0) {
-      out += "<a href='#' onclick='col0 -= cols; currCol -= cols; display(); return false;'><img border='0' src='index.php?extern=apps/eyeFTP/gfx/toleft.png'></a> ";
-    } else out += "<img border='0' src='index.php?extern=apps/eyeFTP/gfx/toleft.png'> ";
-    out += "<a href='#' onclick='col0 += cols; currCol += cols; display(); return false;'><img border='0' src='index.php?extern=apps/eyeFTP/gfx/toright.png'></a> ";
+      out += "<a href='#' onclick='col0 -= cols; currCol -= cols; display(); return false;'><img border='0' src='index.php?version="+EXTERN_CACHE_VERSION+"&extern=apps/eyeFTP/gfx/toleft.png'></a> ";
+    } else out += "<img border='0' src='index.php?version="+EXTERN_CACHE_VERSION+"&extern=apps/eyeFTP/gfx/toleft.png'> ";
+    out += "<a href='#' onclick='col0 += cols; currCol += cols; display(); return false;'><img border='0' src='index.php?version="+EXTERN_CACHE_VERSION+"&extern=apps/eyeFTP/gfx/toright.png'></a> ";
 
     /*if (col0-cols>=0 || row0-rows>=0) {
       out += "<a href='#' onclick='row0=0; col0=0; currCol=0; currRow=0; scroll(); display(); return false;'>"+trans("Home")+"</a> - ";
 	}*/
     
     if (row0-rows>=0) {
-      out += "<a href='#' onclick='row0 -= rows; currRow -= rows; display(); return false;'><img border='0' src='index.php?extern=apps/eyeX/themes/default/icons/16x16/restore.png'></a> ";
-    } else out += " <img border='0' src='index.php?extern=apps/eyeX/themes/default/icons/16x16/restore.png'> ";
-    out += "<a href='#' onclick='row0 += rows; currRow += rows; display(); return false;'><img border='0' src='index.php?extern=apps/eyeX/themes/default/icons/16x16/download.png'></a> ";
+      out += "<a href='#' onclick='row0 -= rows; currRow -= rows; display(); return false;'><img border='0' src='index.php?version="+EXTERN_CACHE_VERSION+"&theme=1&extern=icons/16x16/restore.png'></a> ";
+    } else out += " <img border='0' src='index.php?version="+EXTERN_CACHE_VERSION+"&theme=1&extern=icons/16x16/restore.png'> ";
+    out += "<a href='#' onclick='row0 += rows; currRow += rows; display(); return false;'><img border='0' src='index.php?version="+EXTERN_CACHE_VERSION+"&theme=1&extern=icons/16x16/download.png'></a> ";
 
   }
   out += "</div>";

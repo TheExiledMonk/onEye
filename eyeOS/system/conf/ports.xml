@@ -1,18 +1,18 @@
 <eyePorts>
 	<mirrors>
-		<mirror>http://soft.eyeos.org/ports.xml</mirror>
+		<mirror>http://soft.eyeos.org/1.7/</mirror>
 	</mirrors>
 	<categories>
 		<category>All</category>
-		<category>Development</category>
+		<category>Desktop</category>
+		<category>Administration</category>
+		<category>Internet</category>
 		<category>Multimedia</category>
 		<category>Office</category>
-		<category>Utilities</category>
-		<category>Networking</category>
+		<category>Education</category>
 		<category>Games</category>
-		<category>Desktop</category>
-		<category>Extras</category>
-		<category>File Management</category>
-		<category>System</category>
+		<category>Themes</category>
+		<category>Translations</category>
+		<category>Other Apps</category>
 	</categories>
 </eyePorts>

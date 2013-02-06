@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -29,11 +29,12 @@ function eyeCalc_run($params=null) {
 	$myWindow = new Window(array(
 		'name' => 'eyeCalcWND',
 		'father' => 'eyeApps',
-		'title' => 'eyeCalc',
+		'title' => 'Calculator',
 		'cent' => 1,
 		'width' => 147,
 		'height' => 240,
-		'type'=>NORESIZE_WINDOW
+		'type'=>NORESIZE_WINDOW,
+		'savePosition' => 1
 	));
 	$myWindow->show();
 	
@@ -182,7 +183,7 @@ function eyeCalc_run($params=null) {
 	));
 	$bttnClear->show();
 
-	service('eyex','loadScript',array('url'=>'index.php?extern=apps/eyeCalc/eyeCalc'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	service('eyex','loadScript',array('url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeCalc/eyeCalc'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 }
 
 function eyeCalc_end($params=null) {

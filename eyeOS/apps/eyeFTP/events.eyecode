@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -90,7 +90,7 @@ function eyeFTP_on_eyeFTP_connect_ITM($params="") {
 
 	//the "host" textfield must be filled in
 	if (! $conf['host']){
-		eyeX('messageBox',array('content'=> 'Please specify a hostname to connect to'));
+		eyeX('messageBox',array('content'=> 'Please specify a host to connect to'));
 		return;
 	}
 	if (! $conf['username']){
@@ -362,11 +362,14 @@ function eyeFTP_on_windowResize($params="") {
 	
 	//log console
 	$GLOBALS['eyeFTP_log_CTNR']->setWidth(786 + $dWidth);
+	$GLOBALS['eyeFTP_connectionData_CTNR']->setWidth(780 + $dWidth);
 	
 	//left browser (local files)
 	$GLOBALS['eyeFTP_localPath_TXTBOX']->setWidth(343 + ($dWidth / 2));
 	$GLOBALS['eyeFTP_localFiles_TAB']->setWidth(375 + ($dWidth / 2));
 	$GLOBALS['eyeFTP_localFiles_TAB']->setHeight(375 + $dHeight);
+	$GLOBALS['eyeFTP_localBrowser_CTNR']->setHeight(375 + $dHeight);
+	$GLOBALS['eyeFTP_localBrowser_CTNR']->setWidth(375 + ($dWidth / 2));
 	
 	//transfer arrows
 	$GLOBALS['eyeFTP_transferToRight_IMG']->setX(388 + ($dWidth / 2));
@@ -377,6 +380,8 @@ function eyeFTP_on_windowResize($params="") {
 	//right browser (remote files)
 	$GLOBALS['eyeFTP_remotePath_TXTBOX']->setWidth(343 + ($dWidth / 2));
 	$GLOBALS['eyeFTP_remoteBrowser_CTNR']->setX(410 + ($dWidth / 2));
+	$GLOBALS['eyeFTP_remoteBrowser_CTNR']->setHeight(375 + $dHeight);
+	$GLOBALS['eyeFTP_remoteBrowser_CTNR']->setWidth(375 + ($dWidth / 2));
 	$GLOBALS['eyeFTP_remoteFiles_TAB']->setWidth(375 + ($dWidth / 2));
 	$GLOBALS['eyeFTP_remoteFiles_TAB']->setHeight(375 + $dHeight);
 	

@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -52,7 +52,7 @@ d=document
 A=E=d.all
 if(!E)event=0
 DM=d.getElementsByTagName||null
-if(DM||E){ windowd.innerHTML += "<img src=index.php?extern=apps/eyeChess/IE/0.png id=PI name=PI width=47 height=48>";
+if(DM||E){ windowd.innerHTML += "<img src=index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=images/apps/eyeChess/IE/0.png id=PI name=PI width=47 height=48>";
 A=(E||d.getElementsByTagName("img"))
 Ic=A["PI"].style}cp=new Function('a','b','return b[0]-a[0]')
 function Z(c,U,C,s,e,A,B,K){var z=-1,C=-C,V=8-U,b=Al,r=R,S,E=r[e],g,d
@@ -206,13 +206,13 @@ function dr(e){e=e||event
 Ic.left=(e.clientX+1)+'px'
 Ic.top=(e.clientY-4)+'px'}
 function O(x,y,z){if((A||x!='PI')&&z)x="i"+(P?119-x:x)
-d.images[x].src='index.php?extern=apps/eyeChess/IE/'+y+'.png'}
+d.images[x].src='index.php?version='+EXTERN_CACHE_VERSION+'&extern=apps/eyeChess/IE/'+y+'.png'}
 h='<table cellpadding=4 class="eyeChess_t">'
 for(y=90;y>10;y-=10){h+="<tr>"
 for(x=0;x<10;x++){z=y+x
-if(x&&x<9){h+=('<td class="'+(x+(y/10)&1?'eyeChess_b':'eyeChess_w')+'"><a href="#" onclick="B(P?119-'+z+':'+z+'); return false"><img src="index.php?extern=apps/eyeChess/IE/0.png" width="0" height="48" border="0"><img src="index.php?extern=apps/eyeChess/IE/0.png" width="47" height="48" name="i'+z+'" border="0"><img src="index.php?extern=apps/eyeChess/IE/0.png" width="0" height="48" border="0"></a></td>\n')}}h+='</tr>\n'}h+='</table>'
+if(x&&x<9){h+=('<td class="'+(x+(y/10)&1?'eyeChess_b':'eyeChess_w')+'"><a href="#" onclick="B(P?119-'+z+':'+z+'); return false"><img src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeChess/IE/0.png" width="0" height="48" border="0"><img src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeChess/IE/0.png" width="47" height="48" name="i'+z+'" border="0"><img src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=images/apps/eyeChess/IE/0.png" width="0" height="48" border="0"></a></td>\n')}}h+='</tr>\n'}h+='</table>'
 windowd.innerHTML += h;
 Rf(0)
 
-windowd.innerHTML += "<form name='FF'><center><table class='eyeChess_Table' border='0'><tr><td></td><td><textarea name='b' cols='12' rows='24' class='eyeChess_textarea'></textarea></td></tr></table><div class='eyeChess_TextUndo'><p><a href='#' onclick='Gb();return false;'>Undo</a></div> <div class='eyeChess_Text'><p>Next pawn becomes:<select name='h'><option selected>Queen<option>Bishop<option>Knight<option>Rook</select>Computer level:<select name='i'><option>Stupid<option selected>Middling<option>Slow</select></center></div></form>";
+windowd.innerHTML += "<form name='FF'><center><table class='eyeChess_Table' border='0'><tr><td></td><td><textarea name='b' cols='12' rows='24' class='eyeChess_textarea'></textarea></td></tr></table><div class='eyeChess_TextUndo'><p><a href='#' onclick='Gb();return false;'>$lang:Undo</a></div> <div class='eyeChess_Text'><p>$lang:Next pawn becomes:<select name='h'><option selected>$lang:Queen<option>$lang:Bishop<option>$lang:Knight<option>$lang:Rook</select>$lang:Computer level:<select name='i'><option>$lang:Stupid<option selected>$lang:Middling<option>$lang:Slow</select></center></div></form>";
 H();

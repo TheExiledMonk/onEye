@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -44,7 +44,6 @@ function eyeManageApps_on_ListApps() {
 		$GLOBALS['appsContainer']->setContent("");
 	}
 	$myConfig = eyeXML('getXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml'));
-	$userTheme = eyeSessions('getVar',array('usertheme'));
 	$gCounter = 1;
 	
 	foreach($myConfig['eyeDock'][0]['Group'] as $group) {
@@ -58,7 +57,7 @@ function eyeManageApps_on_ListApps() {
 			'text' => i18n('translate',array($group['name'][0])),
 			'breaktext' => 0,
 			'content' => array('Group', $group['name'][0], $group['icon'][0], $gCounter),
-			'image' => 'index.php?extern='.APP_DIR.'/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/'.$group['icon'][0]
+			'image' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/'.$group['icon'][0]
 		));
 		$groupIcon->show();
 		eyeX('rawjs', array('js' => 'document.getElementById("img_'.$myPid.'_groupIcon'.$gCounter.'").style.backgroundColor = "#BBB";'));
@@ -78,7 +77,7 @@ function eyeManageApps_on_ListApps() {
 				}
 				
 				$aicon = $app['icon'][0];
-				if(!vfs('real_fileExists',array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon))){
+				if(!vfs('real_fileExists',array(eyex('getThemeImage',array('icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon,2))))){
 					$aicon = DEFAULT_APP_ICON;
 				}
 				$appIcon = new Icon(array(
@@ -88,8 +87,8 @@ function eyeManageApps_on_ListApps() {
 				 	'y' => $myY+40,
 				 	'onclick' => 1,
 				 	'draggable' => 0,
-				 	'text' => $app['name'][0],
-					'image' => 'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon,
+				 	'text' => $app['desc'][0],
+					'image' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon,
 				 	'content' => array('Application', $aicon, $app['name'][0], $group['name'][0], $app['exec'][0], $app['desc'][0], $aCounter, $gCounter)
 				));
 				$appIcon->show();
@@ -413,9 +412,8 @@ function eyeManageApps_on_doAdd($params=null) {
 		return;
 	}
 	
-	$userTheme = eyeSessions('getVar',array('usertheme'));
 	$aicon = $aname.'.png';
-	if(!vfs('real_fileExists',array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon))) {
+	if(!vfs('real_fileExists',array(eyex('getThemeImage',array('icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$aicon,2))))) {
 		$aicon = DEFAULT_APP_ICON;
 	}
 
@@ -538,8 +536,7 @@ function eyeManageApps_on_properties($params) {
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		
-		$userTheme = eyeSessions('getVar', array('usertheme'));
-		$gIconList = vfs('real_getDirContent', array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons', '*.png'));
+		$gIconList = vfs('real_getDirContent', array(eyex('getThemeImage',array('images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/',2)), '*.png'));
 	    foreach($gIconList as $file) {
 	    	$file = basename($file);
 	        if (!strpos($file, '_')) {
@@ -552,7 +549,7 @@ function eyeManageApps_on_properties($params) {
 	    }
 	    $currentUser = $oldUser;
 	    
-		$currentPath = 'index.php?'.EXTERN_DIR.'=/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/'.$icon;
+		$currentPath = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/'.$icon;
 		
 		$myGroupImage = new Imagebox(array(
 			'name' => 'imgIcon',
@@ -567,7 +564,7 @@ function eyeManageApps_on_properties($params) {
 		$myGroupImage->show();
 		$myGroupImage->setCss(array('background-color' => '#BBBBBB'));
 		
-		$mySelect1->addEvent('onchange','document.getElementById("'.$myPid.'_imgIcon").src="index.php?extern=apps/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/"+this.value'.';');
+		$mySelect1->addEvent('onchange','document.getElementById("'.$myPid.'_imgIcon").src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/"+this.value'.';');
 			
 		$myButton = new Button(array(
 			'name'=>'CancelWND',
@@ -716,8 +713,7 @@ function eyeManageApps_on_properties($params) {
 		$myTextbox4->setText($desc);
 		
 		//Icon
-		$userTheme = eyeSessions('getVar',array('usertheme'));
-		$currentPath = 'index.php?'.EXTERN_DIR.'=/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$icon;
+		$currentPath = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/'.ICON_SIZE.'x'.ICON_SIZE.'/'.$icon;
 	
 		$lblIcon = new Label(array(
 			'name' => 'label4',
@@ -742,7 +738,7 @@ function eyeManageApps_on_properties($params) {
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		
-		$appIconList = vfs('real_getDirContent', array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/', '*.png'));
+		$appIconList = vfs('real_getDirContent', array(eyex('getThemeImage',array('icons/'.ICON_SIZE.'x'.ICON_SIZE.'/',2)), '*.png'));
 		foreach($appIconList as $file) {
 			$file = basename($file);
 			if($file != $icon) {
@@ -764,7 +760,7 @@ function eyeManageApps_on_properties($params) {
 		));
 		$myAppImage->show();	
 	
-		$mySelect2->addEvent('onchange','document.getElementById("'.$myPid.'_imageIcon").src="index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/"+this.value'.';');
+		$mySelect2->addEvent('onchange','document.getElementById("'.$myPid.'_imageIcon").src="index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/'.ICON_SIZE.'x'.ICON_SIZE.'/"+this.value'.';');
 	
 		//Window Buttons
 		$myButton1 = new Button(array(
@@ -810,7 +806,7 @@ function eyeManageApps_on_doUpdateGroup($params=null) {
 	
 	//Trying to pass no group name or an existing group name?
 	if(!$newGroupName || strcmp($oldGroupName, $newGroupName) && isGroup($newGroupName)) {
-		eyeX('messageBox', array('content' => "The specified group name is not valid"));
+		eyeX('messageBox', array('content' => "Group name invalid!"));
 		return;
 	}
 	

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -24,7 +24,7 @@
 function eyeDelete_run($params=null) {
 	global $myPid;
 	if(is_array($params)) {
-		$path = $params[0];
+		$path = utf8_trim($params[0],'/');
 		$callback = $params[1];
 	}
 	if(!$path) {
@@ -33,27 +33,64 @@ function eyeDelete_run($params=null) {
 	}
 	if(is_dir($path)) {
 		if (service('vfs','rmdir',array($path,1))) {
+			if (realpath($path . '/') == realpath(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/')) {
+				$xml = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
+				if (is_array($xml['icon'])) {
+					foreach ($xml['icon'] as $key => $value) {
+						if ($value['name'][0] == utf8_basename($path)) {
+							unset($xml['icon'][$key]);
+						}
+					}
+					eyeXML('setXMLconfig',array('eyeDesk','icons.xml',$xml));
+				}
+			}
 			service('eyex','messageBox',array('content' => 'Directory moved to trash.'));
 		} else  {
-			service('eyex','messageBox',array('content' => 'Unable to delete directory.'));
+			service('eyex','messageBox',array('content' => 'Unable to delete directory!'));
+			$callback = '';
 		}
 	} elseif (service('vfs','fileExists',array($path))) {
 		if (service('vfs','delete',array($path,1))) {
-			service('eyex','messageBox',array('content' => 'File moved to trash.'));
+			if (realpath(utf8_substr($path,0,- utf8_strlen(strrchr($path,'/'))) . '/') == realpath(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/')) {
+				$xml = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
+				if (is_array($xml['icon'])) {
+					foreach ($xml['icon'] as $key => $value) {
+						if ($value['name'][0] == utf8_basename($path)) {
+							unset($xml['icon'][$key]);
+						}
+					}
+					eyeXML('setXMLconfig',array('eyeDesk','icons.xml',$xml));
+				}
+			}
+			service('eyex','messageBox',array('content' => 'File removed successfully.'));
 		} else {
-			$error = reqLib('errorCodes','getErrorCode');
-			service('eyex','messageBox',array('content' => 'Unable to delete file.'));
+			service('eyex','messageBox',array('content' => 'Unable to delete file!'));
+			$callback = '';
 		}
-	} elseif (service('vfs','real_fileExists',array($path)) && strtolower(strrchr($path,'.')) == strtolower('.' . EYEOS_LINK_EXT)) {
+	} elseif (service('vfs','real_fileExists',array($path)) && utf8_strtolower(strrchr($path,'.')) == strtolower('.' . EYEOS_LINK_EXT)) {
+		$xmlLink = eyeXML('getXMLfile',array($path));
 		if (service('vfs','real_delete',array($path))) {
+			$xml = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
+			if (is_array($xml['icon'])) {
+				foreach ($xml['icon'] as $key => $value) {
+					if ($value['name'][0] == $xmlLink['eyeLink'][0]['content'][0]) {
+						unset($xml['icon'][$key]);
+					}
+				}
+				eyeXML('setXMLconfig',array('eyeDesk','icons.xml',$xml));
+			}
 			service('eyex','messageBox',array('content' => 'File removed successfully.'));
 		} else  {
-			service('eyex','messageBox',array('content' => 'Error deleting file.'));
+			service('eyex','messageBox',array('content' => 'Error deleting file!'));
+			$callback = '';
 		}
 	} else {
-		service('eyex','messageBox',array('content' => 'Error deleting file.'));
+		service('eyex','messageBox',array('content' => 'Error deleting file!'));
+		$callback = '';
 	}
-	service('eyex','rawjs',array('js'=>$callback));
+	if ($callback != '') {
+		eyex('rawjs',array('js' => $callback));
+	}
 	proc('end');
 }
 ?>

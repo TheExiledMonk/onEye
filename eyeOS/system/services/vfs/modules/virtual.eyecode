@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -385,10 +385,6 @@ function service_vfs_copyDir($params) {
 	//Check if exists	 
 	if(!service('vfs','isdir',array($orig))) {		
 		reqLib('errorCodes','setErrorCode',array(VFS_FILE_NOT_EXISTS));
-		return false;
-	}	 
-	if(service('vfs','isdir',array($dest)) || service('vfs','fileExists',array($dest))) {		
-		reqLib('errorCodes','setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
 		return false;
 	}
 	
@@ -814,6 +810,10 @@ function service_vfs_checkPermissions($params) {
 				return false;
 			} 
 			if (0 === utf8_strpos($file_path,$groupDir)) {
+				$xml = um('retrieveUser',array($currentUser));
+				if (in_array($key,$xml['eyeUser'][0]['maintain'])) {
+					return true;
+				}
 				if($filename) {
 					$myFile = $file_path.'/'.$filename;
 					$myRealName = vfs('getRealName',array($myFile));
@@ -995,7 +995,7 @@ function service_vfs_printFile($params) {
 	}	
 	$file = $params[0];
 	//Check the permissions.	
-	if(!service('vfs','real_checkPermissions',array($file))) {
+	if(!service('vfs','real_checkPermissions',array($file,'r'))) {
 		return false;
 	}	
 	readfile($file);
@@ -1009,7 +1009,7 @@ function service_vfs_readFile($params) {
 	}	
 	$file = $params[0];
 	//Check the permissions.	
-	if(!service('vfs','checkPermissions',array($file))) {
+	if(!service('vfs','checkPermissions',array($file,'r'))) {
 		return false;
 	}	
 	readfile(vfs('getRealName',array($file)));
@@ -1123,10 +1123,6 @@ function service_vfs_real_copyDir($params) {
 	//Check if exists	 
 	if(!service('vfs','isdir',array($orig))) {		
 		reqLib('errorCodes','setErrorCode',array(VFS_FILE_NOT_EXISTS));
-		return false;
-	}	 
-	if(service('vfs','isdir',array($dest)) || service('vfs','fileExists',array($dest))) {		
-		reqLib('errorCodes','setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
 		return false;
 	}
 	
@@ -1980,7 +1976,9 @@ function getRealFileName($file) {
 }
 
 function dircopy($srcdir, $dstdir) {
-	mkdir($dstdir);
+	if (!file_exists($dstdir)) {
+		mkdir($dstdir);
+	}
 	if($curdir = opendir($srcdir)) {
 		while($file = readdir($curdir)) {
 			if($file != '.' && $file != '..') {
@@ -2210,5 +2208,6 @@ function service_vfs_appendToFileBinary($params) {
 	fclose($fp);
 	return true;
 }
+
 
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -21,11 +21,13 @@
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
+define('EYECONTROL_DEFAULT_REPOSITORY','http://soft.eyeos.org/1.7/');
+
 function eyeControl_on_eyesoft_new($params = '') {
 	eyex('messageBox',array(
 		'content' => 'Mirror address (example: %s)',
 		'type' => 3,
-		'tokens' => array('http://soft.eyeos.org/ports.xml'),
+		'tokens' => array(EYECONTROL_DEFAULT_REPOSITORY),
 		'title' => 'Add mirror',
 		'win_name' => 'eyeControl_eyesoft_add_window',
 		'win_style' => TITLE + CLOSE,
@@ -85,7 +87,7 @@ function eyeControl_on_eyesoft_add_cancel($params = '') {
 
 function eyeControl_on_eyesoft_edit($params = '') {
 	$mirror = $GLOBALS['eyeControl_eyesoft_sortabletable']->selected;
-	if ($mirror && $mirror != 'http://soft.eyeos.org/ports.xml') {
+	if ($mirror && $mirror != EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array(
 			'content' => 'Type the new mirror address:',
 			'type' => 3,
@@ -106,7 +108,7 @@ function eyeControl_on_eyesoft_edit($params = '') {
 			'hidden_text' => $mirror,
 			'father' => 'eyeControl_container_big'
 		));
-	} elseif ($mirror == 'http://soft.eyeos.org/ports.xml') {
+	} elseif ($mirror == EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array('content' => 'You cannot edit the default mirror!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose a mirror to edit.'));
@@ -116,7 +118,7 @@ function eyeControl_on_eyesoft_edit($params = '') {
 function eyeControl_on_eyesoft_edit_save($params = '') {
 	$mirror_old = $GLOBALS['eyeControl_eyesoft_edit_hidden']->text;
 	$mirror_new = $GLOBALS['eyeControl_eyesoft_edit_textbox']->text;
-	if ($mirror_new && $mirror_new != 'http://soft.eyeos.org/ports.xml') {
+	if ($mirror_new && $mirror_new != EYECONTROL_DEFAULT_REPOSITORY) {
 		$dir = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/ports.xml';
 		$mirrorXML = eyeXML('getXMLfile',array($dir));
 		$x = eyeControl_lib_findIdByText(array($mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'],$mirror_old));
@@ -129,7 +131,7 @@ function eyeControl_on_eyesoft_edit_save($params = '') {
 		} else {
 			eyex('messageBox',array('content' => 'Mirror does not exist!'));
 		}
-	} elseif ($mirror == 'http://soft.eyeos.org/ports.xml') {
+	} elseif ($mirror == EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array('content' => 'You cannot save a mirror as the default mirror!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please type an address!'));
@@ -160,7 +162,7 @@ function eyeControl_on_eyesoft_edit_cancel($params = '') {
 
 function eyeControl_on_eyesoft_delete($params = '') {
 	$mirror = $GLOBALS['eyeControl_eyesoft_sortabletable']->selected;
-	if ($mirror && $mirror != 'http://soft.eyeos.org/ports.xml') {
+	if ($mirror && $mirror != EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array(
 			'content' => 'Do you really want to remove this mirror from eyeSoft?',
 			'type' => 3,
@@ -177,7 +179,7 @@ function eyeControl_on_eyesoft_delete($params = '') {
 			'father' => 'eyeControl_container_big',
 			'img' => '?'
 		));
-	} elseif ($mirror == 'http://soft.eyeos.org/ports.xml') {
+	} elseif ($mirror == EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array('content' => 'You cannot delete the default mirror!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose a mirror to delete.'));
@@ -186,7 +188,7 @@ function eyeControl_on_eyesoft_delete($params = '') {
 
 function eyeControl_on_eyesoft_delete_yes($params = '') {
 	$mirror = $GLOBALS['eyesoft_delete_hidden']->text;
-	if ($mirror && $mirror != 'http://soft.eyeos.org/ports.xml') {
+	if ($mirror && $mirror != EYECONTROL_DEFAULT_REPOSITORY) {
 		$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/ports.xml';
 		$mirrorXML = eyeXML('getXMLfile',array($file));
 		$x = eyeControl_lib_findIdByText(array($mirrorXML['eyePorts'][0]['mirrors'][0]['mirror'],$mirror));

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -56,6 +56,7 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 	$myContainer->setCss(array(
 		'direction' => 'ltr'
 	));
+	eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeNav_window_box_Content").style.top = "0";'));
 	
 	if (!is_object($GLOBALS['eyeNav_hidden_bookmarks_url'])) {
 		// $myHidden
@@ -123,7 +124,7 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 					'father' => 'eyeNav_box',
 					'x' => 30,
 					'y' => $boxY,
-					'url' => 'index.php?extern=apps/eyeNav/gfx/link.png'
+					'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/link.png'
 				));
 				$myImagebox->show();
 				$myImagebox->setCss(array(
@@ -158,7 +159,7 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 						'y' => $boxY,
 						'disableMsg' => 0,
 						'signal' => 'delBookmark',
-						'url' => 'index.php?extern=apps/eyeNav/gfx/delete.png'
+						'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/delete.png'
 					));
 					$myImagebox->addFriend($myHidden);
 					$myImagebox->show();
@@ -187,10 +188,10 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 		'father' => 'eyeNav_box',
 		'signal' => 'open_bookmarks',
 		'caption' => 'Open bookmarks',
-		'width' => 140,
+		'width' => 100,
 		'x' => 10,
 		'y' => $boxY + 10,
-		'img' => eyex('getThemeImage',array('icons/16x16/folder.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'
 	));
 	$myButton->show();
 	/*$boxY += 25;
@@ -200,10 +201,10 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 		'father' => 'eyeNav_box',
 		'signal' => 'manage_bookmarks',
 		'caption' => 'Manage bookmarks',
-		'width' => 140,
+		'width' => 100,
 		'x' => 10,
 		'y' => $boxY + 10,
-		'img' => eyex('getThemeImage',array('icons/16x16/paste.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png'
 	));
 	$myButton->show();*/
 }
@@ -243,6 +244,7 @@ function eyeNav_lib_ShowSearch($params = array()) {
 	$myContainer->setCss(array(
 		'direction' => 'ltr'
 	));
+	eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeNav_window_box_Content").style.top = "0";'));
 	
 	if (!is_object($GLOBALS['eyeNav_hidden_search_url'])) {
 		// $myHidden
@@ -328,7 +330,7 @@ function eyeNav_lib_ShowSearch($params = array()) {
 				'father' => 'eyeNav_box',
 				'x' => 30,
 				'y' => $boxY,
-				'url' => 'index.php?extern=apps/eyeNav/gfx/link.png'
+				'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/link.png'
 			));
 			$myImagebox->show();
 			$myImagebox->setCss(array(
@@ -370,10 +372,10 @@ function eyeNav_lib_ShowSearch($params = array()) {
 		'father' => 'eyeNav_box',
 		'signal' => 'open_searches',
 		'caption' => 'Open searches',
-		'width' => 140,
+		'width' => 100,
 		'x' => 10,
 		'y' => $boxY + 10,
-		'img' => eyex('getThemeImage',array('icons/16x16/folder.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'
 	));
 	$myButton->show();
 	/*$boxY += 25;
@@ -383,10 +385,10 @@ function eyeNav_lib_ShowSearch($params = array()) {
 		'father' => 'eyeNav_box',
 		'signal' => 'configure_search',
 		'caption' => 'Configure searches',
-		'width' => 140,
+		'width' => 100,
 		'x' => 10,
 		'y' => $boxY + 10,
-		'img' => eyex('getThemeImage',array('icons/16x16/paste.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png'
 	));
 	$myButton->show();*/
 }

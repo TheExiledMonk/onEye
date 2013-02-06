@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -42,7 +42,7 @@ function eyeLightDesk_on_AllApps_Img(){
 	$allAppsShadow = new Imagebox(array(
 		'name' => 'eLD_AllApps_ImgBG',
 		'father' => 'eyeLightDeskWND_AllApps',
-		'url' => 'index.php?extern=apps/eyeLightDesk/allapps_shadow.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeLightDesk/allapps_shadow.png',
 		'x' => 0,
 		'y' => 0,
 		'vert'=>1
@@ -75,12 +75,10 @@ function eyeLightDesk_on_AllApps_Img(){
 		$y = $y + 25;
 		
 		foreach($value['items'][0]['item'] as $intValue) {
-			$intKey = i18n("translate",array($intValue['desc'][0]));
-			$intDesc = i18n("translate",array($intValue['name'][0]));
-			$intText = i18n("translate",array($intValue['text'][0]));
+			$intKey = $intValue['desc'][0];
 		
 			$aicon = $intValue["icon"][0];
-			if(!vfs('real_fileExists',array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon))) {
+			if(!vfs('real_fileExists',array(eyex('getThemeImage',array('icons/16x16/apps/'.$aicon,2))))) {
 				$aicon = 'exec.png';
 			}
 			$myHidden = new Hidden(array('name'=>'allAppsPressed_hid_'.$i,
@@ -106,7 +104,7 @@ function eyeLightDesk_on_AllApps_Img(){
 			$imageValue = new Imagebox(array(
 				'name' => 'eAP_Imagebox_'.$i,
 				'father' => 'eyeLightDeskWND_AllApps',
-				'url' => 'index.php?extern=apps/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon,
+				'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/apps/'.$aicon,
 				'y' => $y,
 				'x' => 25,
 				'disableMsg'=>0,
@@ -131,7 +129,7 @@ function eyeLightDesk_on_AllApps_Img(){
 	$allAppsButton = new Imagebox(array(
 		'name' => 'eLD_AllApps_Img2',
 		'father' => 'eyeLightDeskWND',
-		'url' => 'index.php?extern=apps/eyeLightDesk/allapps_x.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeLightDesk/allapps_x.png',
 		'x' => 0,
 		'y' => 0,
 		'disableMsg' => 0,
@@ -165,7 +163,7 @@ function eyeLightDesk_on_AllApps_Img_x(){
 	$allAppsButton = new Imagebox(array(
 		'name' => 'eLD_AllApps_Img',
 		'father' => 'eyeLightDeskWND',
-		'url' => 'index.php?extern=apps/eyeLightDesk/allapps.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeLightDesk/allapps.png',
 		'x' => 0,
 		'y' => 0,
 		'disableMsg' => 0,

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -37,7 +37,6 @@ function eyeTrash_on_openFile($params=null) {
 	$myUserDir = service('um','getCurrentUserDir');
 	$file = $myUserDir.'/'.TRASH_USER_DIR.'/';
 	
-	$userTheme = eyeSessions('getVar',array('usertheme'));
 	//TODO: hardcoded
 	$windowWidth = $params['size'];
 	
@@ -84,14 +83,14 @@ function eyeTrash_on_openFile($params=null) {
 					//create new icon using a folder icon.
 					$myName = "eyeFiles_icon_$counter";	
 					//get icon size using eyeGraphics
-					$info = getimagesize(EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png');
+					$info = @getimagesize(eyex('getThemeImage',array('icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',2)));
 					$myWidth = $info[0];
 					$myHeight = $info[1];
 					//TODO: MAKE A BETTER AND CONFIGURABLE TOOLTIPS
 					$myTooltip = filesize($current);
 					$myIcon = new Icon(array('name'=>$myName,'text'=>$fileName,'father'=>'WND_2_Content',
-					'image'=>'index.php?extern=apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
-					'realname'=>EYE_ROOT.'/'.EXTERN_DIR.'/apps/eyeX/themes/'.$userTheme.'/icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
+					'image'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',
+					'realname'=>eyex('getThemeImage',array('icons/'.EYEFILES_ICON_SIZE.'/filetypes/'.$icon.'.png',2)),
 					'content'=>array($realFileName,$windowWidth),'x'=>$x,'y'=>$y,'tooltip'=>$myTooltip,'overBorder'=>1));	        			
 					$myIcon->show();
 					$counter++;

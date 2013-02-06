@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -39,9 +39,10 @@ function eyeFeeds_run($params=null) {
 		'cent' => 1,
 		'width' => EYEFEEDS_WIN_WIDTH,
 		'height' => EYEFEEDS_WIN_HEIGHT,
-		'title' => 'eyeFeeds',
+		'title' => 'RSS Feed Reader',
 		'sigResize' => 'windowResize',
-		'sendResizeMsg' => 1
+		'sendResizeMsg' => 1,
+		'savePosition' => 1
 	));
 	$mainWindow->show();
 	
@@ -58,50 +59,50 @@ function eyeFeeds_run($params=null) {
 	$toolbar->show();
 	$toolbar->addItem(
 		'addFeed_ITM',
-		'index.php?extern=apps/eyeFeeds/gfx/addfeed.png',
+		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/addfeed.png',
 		'Add feed'
 	);
 	$toolbar->addItem(
 		'addFolder_ITM',
-		'index.php?extern=apps/eyeFeeds/gfx/newfolder.png',
+		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/newfolder.png',
 		'Add folder'
 	);
 	$toolbar->addLine();
 	$toolbar->addItem(
 		'editFeedFolder_ITM',
-		'index.php?extern=apps/eyeFeeds/gfx/editfeedfolder.png',
+		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/editfeedfolder.png',
 		'Edit'
 	);
 	$toolbar->addItem(
 		'delFeedFolder_ITM',
-		'index.php?extern=apps/eyeFeeds/gfx/delfeedfolder.png',
+		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/delfeedfolder.png',
 		'Delete'
 	);
 	$toolbar->addLine();
 	$toolbar->addItem(
 		'refreshFeed_ITM',
-		'index.php?extern=apps/eyeX/themes/default/images/toolbar/refresh.png',
+		'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/refresh.png',
 		'Refresh'
 	);
 	$toolbar->addItem(
 		'import_ITM',
-		'index.php?extern=apps/eyeFeeds/gfx/import.png',
+		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/import.png',
 		'Import'
 	);
 	$toolbar->addItem(
 		'export_ITM',
-		'index.php?extern=apps/eyeFeeds/gfx/export.png',
+		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/export.png',
 		'Export'
 	);
 	$toolbar->addLine();
 	$toolbar->addItem(
 		'settings_ITM',
-		'index.php?extern=apps/eyeFeeds/gfx/settings.png',
+		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/settings.png',
 		'Settings'
 	);
 	$toolbar->addItem(
 		'help_ITM',
-		'index.php?extern=apps/eyeX/themes/default/images/toolbar/help.png',
+		'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/help.png',
 		'Help'
 	);
 	
@@ -130,6 +131,7 @@ function eyeFeeds_run($params=null) {
 		'height'=>460
 	));
 	$treeContainer->show();
+	eyeWidgets('serialize',array($treeContainer));
 	service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_tree_CTN_Container").style.overflow="auto";'));
 	
 	//FEEDS TREE
@@ -147,6 +149,7 @@ function eyeFeeds_run($params=null) {
 		'height' => 504
 	));
 	$rightContainer->show();
+	eyeWidgets('serialize',array($rightContainer));
 	
 	//ITEMS BOX
 	$titlesBox = new Box(array(

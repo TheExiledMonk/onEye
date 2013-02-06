@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -51,9 +51,6 @@ class Imagebox {
 	var $height;
 	var $myClass;
 	
-	//especial vars
-	var $fixIE=0;
-	
 	//friends abstraction
 	var $friends="''";
 	
@@ -78,25 +75,25 @@ class Imagebox {
 		//especific button options
 		isset($params['url']) ? $this->url = $params['url'] : $this->url = 0; //TODO: PUT A DEFAULT IMAGE
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
-		isset($params['alt']) ? $this->alt = $params['alt'] : $this->alt = $this->name;
+		isset($params['alt']) ? $this->alt = $params['alt'] : $this->alt = ' ';
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = -1;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = -1;
 		isset($params['cssClass']) ? $this->myClass = $params['cssClass'] : $this->myClass = '';
 		isset($params['disableMsg']) ? $this->disableMsg = $params['disableMsg'] : $this->disableMsg = 1;
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;
-		if(strstr($params['url'],'extern=') && IE == 6) {
-			$realName = eyex('getRealFromExtern',array($params['url']));
-			$realName = EYE_ROOT.'/'.EXTERN_DIR.'/'.$realName;
-			$info = @getimagesize($realName);
-			$this->width = $info[0];
-			$this->height = $info[1];
-			$this->fixIE = 1;
+		if (strstr($this->url,'extern=') && IE == 6) {
+			$info = @getimagesize(eyex('getThemeImage',array($this->url,3)));
+			if (!$this->width || $this->width == -1) {
+				$this->width = $info[0];
+			}
+			if (!$this->height || $this->height == -1) {
+				$this->height = $info[1];
+			}
 		}
 	}
 	
 	//widget show method, send a createWidget message
 	function show($noserialize=1) {
-		global $myPid;
 		$widgetsparams = array(
 			'url' => $this->url,
 			'visible' => $this->visible,
@@ -125,9 +122,6 @@ class Imagebox {
 		$this->showed=1;
 		if($noserialize == 0) {
 			reqLib('eyeWidgets','serialize',array($this));
-		}
-		if($this->fixIE == 1) {
-			service('eyex','rawjs',array('js' => "fixPNG('".$myPid.'_'.$this->name."')"));
 		}
 	}
 	

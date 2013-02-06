@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -31,7 +31,7 @@ function eyeDocs_run($params=null) {
 		$tCheckNum = proc('findChecknumByName',array('eyeDesk'));
 		$real = vfs('getRealName',array($file));
 		if(!vfs('checkPermissions',array($real))) {
-			eyeX('messageBox',array('content'=>'You don\'t have sufficient permissions'));
+			eyeX('messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
 			return false;
 		}
 		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
@@ -72,7 +72,7 @@ function eyeDocs_run($params=null) {
 		fclose($fp);
 	}
 	$myWindow = new Window(array('name'=>'eyeDocsWND','father'=>'eyeApps',
-	'cent'=>1,'width'=>600,'height'=>500,'title'=>'eyeDocs','sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>0));
+	'cent'=>1,'width'=>600,'height'=>500,'title'=>'Word Processor','sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>0,'savePosition' => 1));
 	$myWindow->show();
 	if (IE > 0) {
 		$restWidth = 19;
@@ -86,10 +86,10 @@ function eyeDocs_run($params=null) {
 	$myTextArea->show();
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeDocsWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?extern=apps/eyeX/themes/default/images/toolbar/filenew.png','New');
-	$myToolbar->addItem('open','index.php?extern=apps/eyeX/themes/default/images/toolbar/fileopen.png','Open');
-	$myToolbar->addItem('save','index.php?extern=apps/eyeX/themes/default/images/toolbar/filesave.png','Save',array($myTextArea));
-	$myToolbar->addItem('saveAs','index.php?extern=apps/eyeX/themes/default/images/toolbar/filesaveas.png','Save As',array($myTextArea));
+	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filenew.png','New');
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fileopen.png','Open');
+	$myToolbar->addItem('save','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesave.png','Save',array($myTextArea));
+	$myToolbar->addItem('saveAs','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/filesaveas.png','Save As',array($myTextArea));
 }
 
 function eyeDocs_end($params=null) {

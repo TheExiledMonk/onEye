@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -74,7 +74,7 @@ function service_mmap_releaseBuffer() {
 * @return The output buffer of the system, updated.
 * @date 2008/03/11
 */
-function service_mmap_routemsg($params) {	
+function service_mmap_routemsg($params) {
 	if(!$params[0] || !$params[1]) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -120,6 +120,12 @@ function service_mmap_routemsg($params) {
 		define('ROOTUSER',REAL_ROOTUSER);
 	}
 	
+	$version = CACHE_VERSION;
+	$config = eyeXML('getXMLconfig',array('eyex','eyex.xml'));
+	if ($config && $config['changes'][0]['times'][0]) {
+		$version += $config['changes'][0]['times'][0];
+	}
+	define('EXTERN_CACHE_VERSION',$version);
 	
 	//If events.eyecode can be included, then include it, else exit.
 	if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/'.'events'.EYE_CODE_EXTENSION)) {
@@ -190,10 +196,12 @@ function service_mmap_array2jsArg($params) {
 	$arrayInPHP = $params[0];
 	$code = '';
 	foreach ($arrayInPHP as $value) {
-		if(! is_null($value)) {
-			$value = str_replace("\\","\\\\",$value);
-			$value = str_replace('"','\\"',$value);
-			$value = str_replace("'","\\'",$value);
+		if (!is_null($value)) {
+			if (!$params[1]) {
+				$value = str_replace("\\","\\\\",$value);
+				$value = str_replace('"','\\"',$value);
+				$value = str_replace("'","\\'",$value);
+			}
 			$code .= $value.'""';
 		}
 	}

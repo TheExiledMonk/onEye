@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -32,7 +32,7 @@ function eyePdf_run($params=null) {
 	}
 	eyex('runjs',array(
 		'js' => '
-			if (navigator.mimeTypes["application/pdf"] && navigator.mimeTypes["application/pdf"].enabledPlugin != null) {
+			if (IEversion > 0 || navigator.mimeTypes["application/pdf"] && navigator.mimeTypes["application/pdf"].enabledPlugin != null) {
 				sendMsg(' . $checknum . ',"showPdf",eyeParam("url",%s));
 			} else {
 				sendMsg(' . $checknum . ',"downloadPdf",eyeParam("url",%s));

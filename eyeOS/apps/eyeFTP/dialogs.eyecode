@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -33,10 +33,10 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/hosts'.EYE_CODE_EXTENSION);
 /*********************************************************************************************/
 /*   IMAGES URL                                                                              */
 /*********************************************************************************************/
-define('EYEFTP_IMG_CREATEFOLDERDLG_ICON', 'index.php?extern=apps/eyeFTP/gfx/newfolder_big.png');
-define('EYEFTP_IMG_RENAMEDLG_ICON', 'index.php?extern=apps/eyeFTP/gfx/rename_big.png');
-define('EYEFTP_IMG_DELETEDLG_ICON', 'index.php?extern=icons/48x48/q.png&theme=1');
-define('EYEFTP_IMG_UPLOADDLG_ICON', 'index.php?extern=apps/eyeFTP/gfx/upload_big.png');
+define('EYEFTP_IMG_CREATEFOLDERDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/newfolder_big.png');
+define('EYEFTP_IMG_RENAMEDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/rename_big.png');
+define('EYEFTP_IMG_DELETEDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=icons/48x48/q.png&theme=1');
+define('EYEFTP_IMG_UPLOADDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/upload_big.png');
 /*********************************************************************************************/
 
 

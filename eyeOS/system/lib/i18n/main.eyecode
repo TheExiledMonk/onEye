@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -21,6 +21,54 @@
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)
 
 */
+function lib_i18n_init() {
+	if (!$_SESSION['lang'] || $_REQUEST['lang']) {
+		$dir = EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/i18n/';
+		if (file_exists($dir) && $handler = opendir($dir)) {
+			while (($folder = readdir($handler)) !== false) {
+				if ($folder{0} != '.' && $folder != 'en' && utf8_substr($folder,-4) == '.xml') {
+					$langs[] = utf8_basename($folder,'.xml');
+				}
+			}
+			closedir($handler);
+		}
+		$langs[] = 'en';
+		sort($langs);
+		// Use lang from URL
+		$request_lang = htmlspecialchars($_REQUEST['lang'],ENT_QUOTES,'UTF-8');
+		if ($request_lang) {
+			if (in_array($request_lang,$langs)) {
+				$_SESSION['lang'] = $request_lang;
+			} elseif (in_array(substr($request_lang,0,2),$langs)) {
+				$_SESSION['lang'] = substr($request_lang,0,2);
+			}
+		}
+		// Use lang from the user's browser
+		if (!$_SESSION['lang']) {
+			$temp_user_langs = explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+			foreach ($temp_user_langs as $user_lang) {
+				$user_lang = substr($user_lang,0,strlen($user_lang) - strlen(strstr($user_lang,';')));
+				$user_langs[] = substr($user_lang,0,strlen($user_lang) - strlen(strstr($user_lang,'-')));
+			}
+			foreach ($user_langs as $user_lang) {
+				if (!$_SESSION['lang'] && in_array($user_lang,$langs)) {
+					$_SESSION['lang'] = $user_lang;
+				}
+			}
+			if (!$_SESSION['lang']) {
+				foreach ($user_langs as $user_lang) {
+					if (!$_SESSION['lang'] && in_array(substr($user_lang,0,2),$langs)) {
+						$_SESSION['lang'] = substr($user_lang,0,2);
+					}
+				}
+				// If the current session doesn't have a lang, set the default
+				if (!$_SESSION['lang']) {
+					$_SESSION['lang'] = DEFAULT_LANGUAGE;
+				}
+			}
+		}
+	}
+}
 
 /**
 * Loads the desired language file of the specified application.
@@ -38,21 +86,31 @@ function lib_i18n_loadLang($params) {
 	}	
 	$app = utf8_basename($params[0]);
 	
+	//lang var should be set at least by the _init function.
 	if(isset($_SESSION['lang'])){
 		$lang = $_SESSION['lang'];
 		//loading the global strings
-		if(file_exists(EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION) &&
-		is_readable(EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION)) {
-			include_once(EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION);
+		$i18nFile = EYE_ROOT.'/i18n/'.$lang.EYE_CODE_EXTENSION;
+		$i18nDefault = EYE_ROOT.'/i18n/'.DEFAULT_LANGUAGE.EYE_CODE_EXTENSION;
+		if(file_exists($i18nDefault) && is_readable($i18nDefault)){
+			include_once($i18nDefault);
 		}
-		if(file_exists(EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION) &&
-		is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION)) {
-			include_once(EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION);
+		if(file_exists($i18nFile) && is_readable($i18nFile)) {
+			include_once($i18nFile);
+		}
+
+		$i18nFile = EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.$lang.EYE_CODE_EXTENSION;
+		$i18nDefault = EYE_ROOT.'/'.APP_DIR.'/'.$app.'/lang/'.DEFAULT_LANGUAGE.EYE_CODE_EXTENSION;
+		if(file_exists($i18nDefault) && is_readable($i18nDefault)){
+			include_once($i18nDefault);
+		}
+		if(file_exists($i18nFile) && is_readable($i18nFile)) {
+			include_once($i18nFile);
 		}
 		return true;
 	}else{
-		return false;		
-	}	
+		return false;
+	}
 }
 
 /**

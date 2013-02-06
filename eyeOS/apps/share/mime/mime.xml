@@ -105,6 +105,10 @@
 	</mime>
 	<mime>
 		<type>source_html</type>
+		<extension>htm</extension>
+	</mime>
+	<mime>
+		<type>source_html</type>
 		<extension>html</extension>
 	</mime>
 	<mime>
@@ -214,5 +218,9 @@
 	<mime>
 		<type>vcard</type>
 		<extension>vcf</extension>
+	</mime>
+	<mime>
+		<type>link</type>
+		<extension>swf</extension>
 	</mime>
 </mimeTypes>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -29,25 +29,25 @@ function vCardImport_on_Yes($params=null) {
 	$path = $GLOBALS['path']->text;	
 	
 	if(!reqLib('eyeContacts','isReady')){
-		eyeX('messageBox',array('content'=>'vCardImport can\'t initialize, contact with your administrator'));
+		eyeX('messageBox',array('content'=>'vCardImport cannot initialize, contact with your administrator'));
 		return false;
 	}
 	if(!reqLib('eyeContacts','import',array($path))){
 		$error = errorCodes('getErrorCode');
 		if($error == VFS_FILE_NOT_EXISTS){
-			eyeX('messageBox',array('content'=>'The file was not found.'));
+			eyeX('messageBox',array('content'=>'The file was not found!'));
 			return false;
 		}else if($error == CONTACT_EXISTS){
-			eyeX('messageBox',array('content'=>'The contact already exists.'));
+			eyeX('messageBox',array('content'=>'The contact already exists!'));
 			return false;
 		}else if($error == NO_CONTACT_FOUND){
-			eyeX('messageBox',array('content'=>'Sorry, no contacts found in the file'));
+			eyeX('messageBox',array('content'=>'No contacts were found in the file!'));
 			return false;
 		}else if($error == NO_SUPPORTED_FORMAT){
 			eyeX('messageBox',array('content'=>'Format unsupported!'));
 			return false;
 		}else{
-			eyeX('messageBox',array('content'=>'Error exporting file.'));
+			eyeX('messageBox',array('content'=>'Error exporting file!'));
 			return false;
 		}
 	}

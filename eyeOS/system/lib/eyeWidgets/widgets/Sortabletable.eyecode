@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -88,7 +88,7 @@ class Sortabletable {
 			}
 			$this->theader = $newHeader;
 		}
-		$myHeader = service("mmap","array2jsArg",array($this->theader));
+		$myHeader = service("mmap","array2jsArg",array($this->theader,1));
 		$widgetsparams = array(
 			'visible' => $this->visible,
 			'theader' => $myHeader,
@@ -156,7 +156,7 @@ class Sortabletable {
 		for($i=0;$i<count($params);$i++) {
 			$params[$i] = htmlentities($params[$i],ENT_QUOTES,'UTF-8');
 		}
-		$row = service('mmap','array2jsArg',array($params));
+		$row = service('mmap','array2jsArg',array($params,1));
 		$tokens[] = $row;
 		service('eyex','runjs',array('js' => "if($name){".$name.".addEntry( %s );}",'tokens'=>$tokens));
 	}
@@ -226,6 +226,23 @@ class Sortabletable {
 		service('eyex','removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
+	
+	function sort($column, $descending = true) {
+		global $myPid;
+		$name = 'table_'.$myPid.'_'.$this->name;
+		$tokens = array($column, $descending);
+		eyeX('runjs', array('js' => 'if('.$name.'){'.$name.'.sort( %s , %s );}', 'tokens' => $tokens));
+	}
+	
+	function delAllRows() {
+		global $myPid;
+		$name = $myPid.'_'.$this->name.'_Body';
+		if(IE == 0) {
+			eyeX('rawjs', array('js' => 'document.getElementById("'.$name.'").innerHTML = "";'));
+		} else {
+			eyeX('rawjs', array('js' => 't = document.getElementById("'.$name.'");while(t.firstChild){t.removeChild(t.firstChild);}'));
+		}
+	}
 }
 
 class SortabletableSelected {
@@ -254,7 +271,7 @@ class SortabletableSelected {
 		for($i=0;$i<count($params);$i++) {
 			$params[$i] = htmlentities($params[$i],ENT_QUOTES,'UTF-8');
 		}
-		$row = service('mmap','array2jsArg',array($params));
+		$row = service('mmap','array2jsArg',array($params,1));
 		$tokens[] = $row;
 		service('eyex','runjs',array('js' => "if($name){".$name.".addEntry( %s );}",'tokens'=>$tokens));
 	}
@@ -311,6 +328,23 @@ class SortabletableSelected {
 		$name = $this->name.'_Container';
 		service('eyex','removeWidget',array('name'=>$name));
 		eyeWidgets('singleUnserialize',array($this->name));
+	}
+	
+	function sort($column, $descending = true) {
+		global $myPid;
+		$name = 'table_'.$myPid.'_'.$this->name;
+		$tokens = array($column, $descending);
+		eyeX('runjs', array('js' => 'if('.$name.'){'.$name.'.sort( %s , %s );}', 'tokens' => $tokens));
+	}
+	
+	function delAllRows() {
+		global $myPid;
+		$name = $myPid.'_'.$this->name.'_Body';
+		if(IE == 0) {
+			eyeX('rawjs', array('js' => 'document.getElementById("'.$name.'").innerHTML = "";'));
+		} else {
+			eyeX('rawjs', array('js' => 't = document.getElementById("'.$name.'");while(t.firstChild){t.removeChild(t.firstChild);}'));
+		}
 	}
 }
 ?>

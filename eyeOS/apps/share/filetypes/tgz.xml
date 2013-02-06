@@ -1,5 +1,5 @@
 <fileType>
-	<name>tgz</name>
-	<description>tar gzip compressed file</description>
+	<name>Tar.Gz file</name>
+	<description>Compressed file</description>
 	<app>eyeArchive</app>
 </fileType>

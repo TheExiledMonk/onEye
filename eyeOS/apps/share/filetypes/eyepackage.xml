@@ -1,5 +1,5 @@
 <fileType>
-	<name>eyeOS application package</name>
-	<description>Installable package with eyeOS software</description>
+	<name>eyeInstaller package</name>
+	<description>Installable package for eyeOS systems</description>
 	<app>eyeInstaller</app>
 </fileType>

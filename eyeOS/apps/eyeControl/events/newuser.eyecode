@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -22,23 +22,47 @@
 */
 
 function eyeControl_on_newuser_save($params = '') {
+	global $currentUser;
+	global $myPid;
+	
+	if ($currentUser != ROOTUSER && !um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
+		eyex('messageBox',array('content' => 'You are not allowed to manage users!'));
+		eyeControl_lib_loadContent();
+		return;
+	} elseif (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
+		$myUserXml = um('retrieveUser',array(eyeControl_lib_getConfigUser()));
+	}
+	
 	$username = $GLOBALS['eyeControl_newuser_textbox_username']->text;
 	$password = $GLOBALS['eyeControl_newuser_textbox_password']->text;
 	$pwd_again = $GLOBALS['eyeControl_newuser_textbox_pwd_again']->text;
 	$fullname = $GLOBALS['eyeControl_newuser_textbox_fullname']->text;
 	$email = $GLOBALS['eyeControl_newuser_textbox_email']->text;
-	$dir = EYE_ROOT . '/' . GROUPS_DIR . '/';
-	$x = 0;
-	$openDir = vfs('real_getDirContent',array($dir,'*',2));
-	foreach ($openDir as $group) {
-		$group = utf8_basename($group);
-		if (is_dir($dir . $group) && $GLOBALS['eyeControl_newuser_checkbox_group_' . $group]->checked == 1) {
-			$groups[$x] = $group;
-			$x++;
-		}
+	
+	$oldUser = $currentUser;
+	$currentUser = ROOTUSER;
+	$permissions = $GLOBALS['eyeControl_newuser_select_permissions']->selected;
+	if ($permissions == 'admin') {
+		$admin = 1;
+		$maintainer = 0;
+	} elseif ($permissions == 'maintainer') {
+		$admin = 0;
+		$maintainer = 1;
+	} else {
+		$admin = 0;
+		$maintainer = 0;
 	}
-	if (!is_array($groups)) {
-		$groups = DEFAULT_GROUP;
+	$openDir = vfs('real_getDirContent',array(EYE_ROOT . '/' . GROUPS_DIR . '/'));
+	foreach ($openDir as $group) {
+		if (is_dir($group)) {
+			$group = utf8_basename($group);
+			if ($GLOBALS['eyeControl_newuser_checkbox_maintain_' . $group]->checked == 1 && $maintainer) {
+				$groups[] = $group;
+				$maintain[] = $group;
+			} elseif ($GLOBALS['eyeControl_newuser_checkbox_group_' . $group]->checked == 1) {
+				$groups[] = $group;
+			}
+		}
 	}
 	if ($username && $password && $pwd_again && preg_match("/^[-_a-zA-Z0-9]+$/",$username) && !um('userExists',array($username)) && $password == $pwd_again && utf8_strlen($username) > 2 && utf8_strlen($username) <= MAX_USERNAME_LEN) {
 		um('createUser',array(
@@ -46,10 +70,18 @@ function eyeControl_on_newuser_save($params = '') {
 			'password' => $password,
 			'fullname' => $fullname,
 			'email' => $email,
-			'groups' => $groups
+			'groups' => $groups,
+			'maintain' => $maintain,
+			'admin' => $admin,
+			'maintainer' => $maintainer
 		));
+		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
+			$myUserXml['eyeUser'][0]['mngUser'][] = $username;
+			um('updateUser',array('username' => $oldUser,'mngUser' => $myUserXml['eyeUser'][0]['mngUser']));
+		}
 		eyex('messageBox',array('content' => 'User successfully created.'));
-		eyeControl_lib_loadContent('only_root','users');
+		$currentUser = $oldUser;
+		eyeControl_lib_loadContent('only_root','users',array($_SESSION['eyeControl'][$myPid]['content']['users']));
 	} elseif (!$username || !$password || !$pwd_again) {
 		eyex('messageBox',array('content' => 'Please fill in all necessary fields!'));
 	} elseif (!preg_match("/^[-_a-zA-Z0-9]+$/",$username)) {
@@ -65,5 +97,6 @@ function eyeControl_on_newuser_save($params = '') {
 	} else {
 		eyex('messageBox',array('content' => 'Please correct your typed settings.'));
 	}
+	$currentUser = $oldUser;
 }
 ?>

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -78,7 +78,7 @@ function eyeContacts_on_Import(){
 	$myTextBox->show();
 	
 	$myButton = new Button(array('name'=>'selectDest','father'=>'importContact_Content','signal'=>'SelectImportDest',
-	'caption'=>'...','x'=>260,'y'=>50,'img'=>'index.php?extern=apps/eyeX/themes/default/icons/16x16/folder.png'));
+	'caption'=>'...','x'=>260,'y'=>50,'img'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'));
 	$myButton->show();
 	
 	$myButton = new Button(array('name'=>'importFromFile','father'=>'importContact_Content','signal'=>'importFromFile',
@@ -116,7 +116,7 @@ function eyeContacts_on_Export(){
 	$myTextBox->show();
 	
 	$myButton = new Button(array('name'=>'selectDest','father'=>'exportContact_Content','signal'=>'SelectExportDest',
-	'caption'=>'...','x'=>260,'y'=>75,'img'=>'index.php?extern=apps/eyeX/themes/default/icons/16x16/folder.png'));
+	'caption'=>'...','x'=>260,'y'=>75,'img'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'));
 	$myButton->show();
 	
 	$myButton = new Button(array('name'=>'importFromFile','father'=>'exportContact_Content','signal'=>'exportToFile',
@@ -178,13 +178,13 @@ function eyeContacts_on_Create() {
 	$contactInfo['company']['address'] = $GLOBALS['eyeContacts_txtb_15']->text;
 	
 	if (utf8_trim($contactInfo['normal']['name']) == "" || utf8_trim($contactInfo['normal']['surname']) == "") {
-		service('eyex','messageBox',array('content'=>'Please, fill the name and surname.'));
+		service('eyex','messageBox',array('content'=>'Please fill in the name and surname.'));
 		return;
 	}
 	
 	$result = eyeContacts('create',array($contactInfo));
 	if(!$result){
-		eyeX('messageBox',array('content'=>'The contact can\'t be added'));
+		eyeX('messageBox',array('content'=>'The contact cannot be added!'));
 	}
 	
 	$GLOBALS['eyeContacts_txtb_1']->setText("");
@@ -277,7 +277,7 @@ function eyeContacts_on_Update() {
 		
 	
 	if (utf8_trim($contactInfo['normal']['name']) == "" || utf8_trim($contactInfo['normal']['surname']) == "") {
-		service('eyex','messageBox',array('content'=>'Please, fill the name and surname.'));
+		service('eyex','messageBox',array('content'=>'Please fill in the name and surname.'));
 		return;
 	}
 	

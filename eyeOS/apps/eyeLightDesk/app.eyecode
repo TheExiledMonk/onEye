@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -26,8 +26,7 @@ $_SESSION['layerTable']['eyeScreen'] = '';
 function eyeLightDesk_run($params=null) {
 	global $myPid;
 	//Preparing eyeapps
-	$js = 'xGetElementById("eyeApps").style.marginLeft = "220px";';
-	eyeX('rawjs',array('js'=>$js));
+	eyex('rawjs',array('js' => 'xGetElementById("eyeApps").style.width = "auto"; xGetElementById("eyeApps").style.left = "220px"; xGetElementById("eyeApps").style.right = "0";'));
 	$myWindow = new Window(array('name'=>'eyeLightDeskWND','type'=>INVISIBLE_WINDOW,'father'=>'eyeScreen',
 	'cent'=>0,'width'=>220,'height'=>1300,'title'=>'eyeLightDesk'));
 	$myWindow->show();
@@ -36,7 +35,7 @@ function eyeLightDesk_run($params=null) {
 		'height'=>'100%',
 		'top'=>'0px',
 		'left'=>'0px',
-		'background-image'=>'url(index.php?extern=apps/eyeLightDesk/menubg.png)',
+		'background-image'=>'url(index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeLightDesk/menubg.png)',
 		'background-repeat'=>'repeat-y',
 	);
 	$myWindow->setCss($myCssText);
@@ -45,7 +44,7 @@ function eyeLightDesk_run($params=null) {
 	$allAppsButton = new Imagebox(array(
 		'name' => 'eLD_AllApps_Img',
 		'father' => 'eyeLightDeskWND',
-		'url' => 'index.php?extern=apps/eyeLightDesk/allapps.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeLightDesk/allapps.png',
 		'x' => 0,
 		'y' => 0,
 		'disableMsg' => 0,
@@ -96,12 +95,10 @@ function eyeLightDesk_run($params=null) {
 			continue;
 		} else {
 			foreach($value['items'][0]['item'] as $intValue) {
-				$intKey = i18n("translate",array($intValue['desc'][0]));
-				$intDesc = i18n("translate",array($intValue['name'][0]));
-				$intText = i18n("translate",array($intValue['text'][0]));
+				$intKey = $intValue['desc'][0];
 			
 				$aicon = $intValue["icon"][0];
-				if(!vfs('real_fileExists',array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon))) {
+				if(!vfs('real_fileExists',array(eyex('getThemeImage',array('icons/16x16/apps/'.$aicon,2))))) {
 					$aicon = 'exec.png';
 				}
 				$myHidden = new Hidden(array('name'=>'appPressed_hid_'.$i,
@@ -127,7 +124,7 @@ function eyeLightDesk_run($params=null) {
 				$imageValue = new Imagebox(array(
 					'name' => 'eListFav_Imagebox_'.$i,
 					'father' => 'eyeLightDeskWND',
-					'url' => 'index.php?extern=apps/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon,
+					'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/apps/'.$aicon,
 					'y' => $y,
 					'x' => 25,
 					'disableMsg'=>0,
@@ -167,12 +164,10 @@ function eyeLightDesk_run($params=null) {
 			continue;
 		} else {
 			foreach($value['items'][0]['item'] as $intValue) {
-				$intKey = i18n("translate",array($intValue['desc'][0]));
-				$intDesc = i18n("translate",array($intValue['name'][0]));
-				$intText = i18n("translate",array($intValue['text'][0]));
+				$intKey = $intValue['desc'][0];
 			
 				$aicon = $intValue["icon"][0];
-				if(!vfs('real_fileExists',array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon))) {
+				if(!vfs('real_fileExists',array(eyex('getThemeImage',array('icons/16x16/apps/'.$aicon,2))))) {
 					$aicon = 'exec.png';
 				}
 				$myHidden = new Hidden(array('name'=>'placePressed_hid_'.$j,
@@ -198,7 +193,7 @@ function eyeLightDesk_run($params=null) {
 				$imageValue = new Imagebox(array(
 					'name' => 'eListPlaces_Imagebox_'.$j,
 					'father' => 'eyeLightDeskWND',
-					'url' => 'index.php?extern=apps/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon,
+					'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/apps/'.$aicon,
 					'y' => $y,
 					'x' => 25,
 					'disableMsg'=>0,
@@ -235,9 +230,9 @@ function eyeLightDesk_run($params=null) {
 	
 	$myArray = getConfig('eyeLightDesk','system.xml');
 	foreach($myArray['eyeLightDeskSystem'][0]['items'][0]['item'] as $intValue) {
-			$intDesc = i18n("translate",array($intValue['text'][0]));
+			$intDesc = $intValue['text'][0];
 			$aicon = $intValue["icon"][0];
-			if(!vfs('real_fileExists',array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon))) {
+			if(!vfs('real_fileExists',array(eyex('getThemeImage',array('icons/16x16/apps/'.$aicon,2))))) {
 				$aicon = 'exec.png';
 			}
 			$myHidden = new Hidden(array('name'=>'sysPressed_hid_'.$k,
@@ -263,7 +258,7 @@ function eyeLightDesk_run($params=null) {
 			$imageValue = new Imagebox(array(
 				'name' => 'eListSystem_Imagebox_'.$k,
 				'father' => 'eyeLightDeskWND',
-				'url' => 'index.php?extern=apps/eyeX/themes/lightdesk/icons/16x16/apps/'.$aicon,
+				'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/apps/'.$aicon,
 				'y' => $y,
 				'x' => 25,
 				'disableMsg'=>0,

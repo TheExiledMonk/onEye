@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -44,7 +44,7 @@ if ($folder != array()) {
 		'y' => 50,
 		'caption' => 'Remove now!',
 		'signal' => 'cleantemp_do',
-		'img' => eyex('getThemeImage',array('icons/16x16/delete.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/delete.png'
 	));
 	$myButton->show();
 	$myButton->focus();

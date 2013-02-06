@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -31,9 +31,11 @@ function eyeSheets_run($params=null) {
 		'cent'=>1,
 		'width'=>950,
 		'height'=>600,
-		'title'=>'eyeSheets',
+		'title'=>'Spreadsheet',
 		'sendResizeMsg'=>1,
-		'sigResize'=>'Resize'));
+		'sigResize'=>'Resize',
+		'savePosition' => 1
+	));
 	$myWindow->show();
 	
 	if($params[0]) {
@@ -46,7 +48,7 @@ function eyeSheets_run($params=null) {
 		}
 		$fp = service('vfs','open',array($file,'r'));
 		if(!$fp) {
-			service('eyex','messageBox',array('content'=>'File not found'));
+			service('eyex','messageBox',array('content'=>'File not found!'));
 			return;
 		}
 		$myHidden = new Hidden(array(
@@ -66,7 +68,7 @@ function eyeSheets_run($params=null) {
 		'height'=>$myWindow->height-30,
 		'width'=>$myWindow->width-4,
 		'scroll'=>0,
-		'url'=>"index.php?extern=apps/eyeSheets/spread.eyecode&type=dynamic&type=dynamic&params[]=".$myPid."&params[]=".$checknum."&params[]=".$useCode));
+		'url'=>"index.php?version=".EXTERN_CACHE_VERSION."&extern=apps/eyeSheets/spread.eyecode&type=dynamic&type=dynamic&params[]=".$myPid."&params[]=".$checknum."&params[]=".$useCode));
 	$myFrame->show();
 }
 

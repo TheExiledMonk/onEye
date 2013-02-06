@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -26,11 +26,11 @@ function eyeVisor_run($params=null) {
 	$myHidden = new Hidden(array('name'=>'vPath','father'=>'eyeApps','text'=>$file));
 	reqLib('eyeWidgets','serialize',array($myHidden));
 	$myWindow = new Window(array('name'=>'eyeVisorWND','father'=>'eyeApps',
-	'cent'=>1,'width'=>600,'height'=>600,'title'=>'eyeVisor','sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>0));
+	'cent'=>1,'width'=>600,'height'=>600,'title'=>'eyeVisor','sendResizeMsg'=>1,'sigResize'=>'Resize','removeWin'=>0,'savePosition' => 1));
 	$myWindow->show();	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeVisorWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('Edit','index.php?extern=apps/eyeX/themes/default/images/toolbar/edit.png','Edit');
+	$myToolbar->addItem('Edit','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit.png','Edit');
 	$myFrame = new Iframe(array('name'=>'eyeVisorFrame','father'=>'eyeVisorWND_Content','x'=>15,
 		'y'=>80,'height'=>$myWindow->height-110,'width'=>$myWindow->width-35,
 		'url'=>"index.php?checknum=".$checknum."&msg=getFile"));

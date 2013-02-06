@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -186,7 +186,7 @@ function eyeFeeds_createAddFeedDialog($params=null) {
 		'y' => 184,
 		'width' => 100,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFeeds/gfx/addfeed.png'
+		'img' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/addfeed.png'
 	));
 	$addButton->addFriend($urlTextbox);
 	$addButton->addFriend($nameTextbox);
@@ -201,7 +201,7 @@ function eyeFeeds_createAddFeedDialog($params=null) {
 		'y' => 184,
 		'width' => 70,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeX/themes/default/images/toolbar/button_cancel.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/button_cancel.png'
 	));
 	$cancelButton->show(0);
 	
@@ -361,7 +361,7 @@ function eyeFeeds_createAddFolderDialog($params=null) {
 		'y' => 184,
 		'width' => 100,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFeeds/gfx/newfolder.png'
+		'img' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/newfolder.png'
 	));
 	$addButton->addFriend($nameTextbox);
 	$addButton->show(0);
@@ -375,7 +375,7 @@ function eyeFeeds_createAddFolderDialog($params=null) {
 		'y' => 184,
 		'width' => 70,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeX/themes/default/images/toolbar/button_cancel.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/button_cancel.png'
 	));
 	$cancelButton->show(0);
 	
@@ -603,7 +603,7 @@ function eyeFeeds_createEditFeedDialog($params=null) {
 		'y' => 184,
 		'width' => 60,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFeeds/gfx/editfeed.png'
+		'img' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/editfeed.png'
 	));
 	$applyButton->addFriend($urlTextbox);
 	$applyButton->addFriend($nameTextbox);
@@ -618,7 +618,7 @@ function eyeFeeds_createEditFeedDialog($params=null) {
 		'y' => 184,
 		'width' => 70,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeX/themes/default/images/toolbar/button_cancel.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/button_cancel.png'
 	));
 	$cancelButton->show(0);
 	
@@ -788,7 +788,7 @@ function eyeFeeds_createEditFolderDialog($params=null) {
 		'y' => 184,
 		'width' => 60,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFeeds/gfx/editfolder.png'
+		'img' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/editfolder.png'
 	));
 	$applyButton->addFriend($nameTextbox);
 	$applyButton->show(0);
@@ -802,7 +802,7 @@ function eyeFeeds_createEditFolderDialog($params=null) {
 		'y' => 184,
 		'width' => 70,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeX/themes/default/images/toolbar/button_cancel.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/button_cancel.png'
 	));
 	$cancelButton->show(0);
 	
@@ -1001,7 +1001,7 @@ function eyeFeeds_createImportFeedsDialog($params=null) {
 		'y' => 184,
 		'width' => 100,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeFeeds/gfx/import.png'
+		'img' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/import.png'
 	));
 	$importButton->addFriend($filePathTextbox);
 	$importButton->addFriend($folderNameTextbox);
@@ -1016,7 +1016,7 @@ function eyeFeeds_createImportFeedsDialog($params=null) {
 		'y' => 184,
 		'width' => 70,
 		'enabled' => 1,
-		'img' => 'index.php?extern=apps/eyeX/themes/default/images/toolbar/button_cancel.png'
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/button_cancel.png'
 	));
 	$cancelButton->show(0);
 	

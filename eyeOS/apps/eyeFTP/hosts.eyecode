@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -33,12 +33,12 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/events'.EYE_CODE_EXTENSION);
 /*********************************************************************************************/
 /*   IMAGES URL                                                                              */
 /*********************************************************************************************/
-define('EYEFTP_IMG_MANAGEHOSTSDLG_HOST', 'index.php?extern=apps/eyeFTP/gfx/host.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_ADD', 'index.php?extern=apps/eyeFTP/gfx/addhost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_EDIT', 'index.php?extern=apps/eyeFTP/gfx/edithost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_DELETE', 'index.php?extern=apps/eyeFTP/gfx/deletehost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_LOAD', 'index.php?extern=apps/eyeFTP/gfx/loadhost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON', 'index.php?extern=apps/eyeFTP/gfx/minihost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_HOST', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/host.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_ADD', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/addhost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_EDIT', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/edithost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_DELETE', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/deletehost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_LOAD', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/loadhost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/minihost.png');
 
 /*********************************************************************************************/
 /*********************************************************************************************/
@@ -341,7 +341,7 @@ function showManageHostsDialog($params="") {
 		'father' => 'eyeFTP_manageHosts_DLG_Content',
 		'x' => 10,
 		'y' => 10,
-		'url' => 'index.php?extern=apps/eyeFTP/gfx/managehosts_logo.png'
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFTP/gfx/managehosts_logo.png'
 	));
 	$logo->show();
 	
@@ -413,7 +413,7 @@ function showManageHostsDialog($params="") {
 		'name' => 'eyeFTP_manageHosts_delete_BTN',
 		'father' => 'eyeFTP_manageHosts_actions_CTNR',
 		'caption' => 'Delete Selection',
-		'x' => 200,
+		'x' => 220,
 		'y' => 0,
 		'enabled' => 1,
 		'img' => EYEFTP_IMG_MANAGEHOSTSDLG_DELETE
@@ -424,7 +424,7 @@ function showManageHostsDialog($params="") {
 		'name' => 'eyeFTP_manageHosts_load_BTN',
 		'father' => 'eyeFTP_manageHosts_actions_CTNR',
 		'caption' => 'Load Selection',
-		'x' => 430,
+		'x' => 420,
 		'y' => 0,
 		'enabled' => 1,
 		'img' => EYEFTP_IMG_MANAGEHOSTSDLG_LOAD

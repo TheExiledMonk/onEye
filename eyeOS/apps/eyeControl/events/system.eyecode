@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -45,6 +45,7 @@ function eyeControl_on_system_system($params = '') {
 	$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
 	$xml = eyeXML('getXMLfile',array($file));
 	$xml['CONFIG'][0]['EYEOS_HOSTNAME'][0] = $GLOBALS['eyeControl_system_system_textbox_hostname']->text;
+	$xml['CONFIG'][0]['DEFAULT_LANGUAGE'][0] = $GLOBALS['eyeControl_system_system_select_language']->selected;
 	$xml['CONFIG'][0]['DEFAULT_QUOTA'][0] = strval($quota);
 	eyeXML('setXMLFile',array($file,$xml));
 	
@@ -69,11 +70,30 @@ function eyeControl_on_system_permissions($params = '') {
 	eyex('messageBox',array('content' => 'Changes successfully saved.'));
 }
 
+function eyeControl_on_system_office($params = '') {
+	if (strpos(realpath(EYE_ROOT . '/'),'\\')) {
+		$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
+		$xml = eyeXML('getXMLfile',array($file));
+		$xml['CONFIG'][0]['OFFICE_COMMAND'][0] = $GLOBALS['eyeControl_system_office_textbox_folder']->text;
+		$xml['CONFIG'][0]['OFFICE_SEPARATOR_ARG'][0] = '"';
+		eyeXML('setXMLFile',array($file,$xml));
+		eyex('messageBox',array('content' => 'Changes successfully saved.'));
+	}
+}
+
+function eyeControl_on_system_office_openofficeorg($params = '') {
+	proc('launch',array('eyeNav','http://openoffice.org/'));
+}
+
+function eyeControl_on_system_office_howtolinux($params = '') {
+	proc('launch',array('eyeNav','http://wiki.eyeos.org/HOWTO_Install_eyeOS_Office_Support'));
+}
+
 function eyeControl_on_system_uninstall($params = '') {
 	global $currentUser;
 	$password = $GLOBALS['eyeControl_system_uninstall_textbox_password']->text;
 	$userInfo = um('retrieveUser',array($currentUser));
-	if ($currentUser == ROOTUSER && md5($password . md5($password)) == $userInfo['eyeUser'][0]['password'][0]) {
+	if ($currentUser == REAL_ROOTUSER && md5($password . md5($password)) == $userInfo['eyeUser'][0]['password'][0]) {
 		eyex('messageBox',array(
 			'content' => 'Do you really want to delete the eyeOS system? This removes all data from eyeOS\' directory!',
 			'type' => 3,
@@ -95,7 +115,7 @@ function eyeControl_on_system_uninstall($params = '') {
 
 function eyeControl_on_system_uninstall_yes($params = '') {
 	global $currentUser;
-	if ($currentUser == ROOTUSER) {
+	if ($currentUser == REAL_ROOTUSER) {
 		eyeWidgets('unserialize');
 		eyex('messageBox',array('content' => 'Your eyeOS system was successfully deleted.'));
 		eyex('rawjs',array('js' => 'window.setTimeout("home()",2000);'));

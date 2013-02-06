@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -25,7 +25,7 @@
 	Session handling lib for eyeOS
 */
 define('COOKIE_ID','PHPSESSID');
-define('COOKIE_EXPIRE','9999999999');
+define('COOKIE_EXPIRE','2147483647');
 define('IPC_TYPE','File');
 define('FLASH_UPLOAD_FIX','flash_fix');
 /**
@@ -47,7 +47,7 @@ function lib_eyeSessions_startSession($params=null){
 		$sessionId = $_REQUEST[COOKIE_ID];
 	}
 	
-	if(!empty($sessionId)){		
+	if(!empty($sessionId)){
 		//If session exists
 		if(reqLib('eyeIPC','isSet',array($sessionId,IPC_TYPE))){						
 			$_SESSION = reqLib('eyeIPC','getVar',array($sessionId,IPC_TYPE));			
@@ -63,6 +63,18 @@ function lib_eyeSessions_startSession($params=null){
 	setcookie(COOKIE_ID,$sessionId,COOKIE_EXPIRE);
 	$_SESSION = array();	
 	return true;
+}
+
+/**
+* Check if there are a sessionID in the request, and if is true startSession
+*
+* @return This function doesn't return anything
+* @date 2008/03/11
+*/
+function lib_eyeSessions_checkAndSstartSession(){
+	if(isset($_GET[FLASH_UPLOAD_FIX]) && isset($_GET[COOKIE_ID]) || isset($_REQUEST[COOKIE_ID])){
+		eyeSessions('startSession');
+	}
 }
 
 //single var operations

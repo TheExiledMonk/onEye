@@ -1,10 +1,10 @@
 <package>
 	<name>eyeProcess</name>
 	<category>System</category>
-	<version>1.0</version>
+	<version>1.7</version>
 	<description>eyeOS process manager</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>
 	<type>Application</type>
-	<icon>index.php?extern=apps/eyeX/themes/default/icons/48x48/eyeProcess.png</icon>
+	<icon>index.php?theme=1&amp;extern=icons/48x48/eyeProcess.png</icon>
 </package>

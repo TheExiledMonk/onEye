@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -62,7 +62,8 @@ class Button {
 	var $forceMsg;
 	var $imgX;
 	var $imgY;
-	var $fixIE;
+	var $imgWidth;
+	var $imgHeight;
 	
 	//constructor
 	function Button($params) {
@@ -93,30 +94,23 @@ class Button {
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;
 		isset($params['forceMsg']) ? $this->forceMsg = $params['forceMsg'] : $this->forceMsg = 0;
 		if(isset($params['img'])) {
-			if(strstr($params['img'],'extern=') && IE == 6) {
-				$realName = eyex('getRealFromExtern',array($params['url']));
-				$realName = EYE_ROOT.'/'.EXTERN_DIR.'/'.$realName;
-				$info = @getimagesize($realName);
-				$this->width = $info[0];
-				$this->height = $info[1];
-				$this->fixIE = 1;
-			}
+			$info = @getimagesize(eyex('getThemeImage',array($this->img,3)));
+			$this->imgWidth = $info[0];
+			$this->imgHeight = $info[1];
 		}
 	}
 	
 	//widget show method, send a createWidget message
 	function show($noserialize=1) {
 		$this->caption = i18n('translate',array($this->caption,$this->tokens));
-		$this->caption = $this->caption;
 		if($this->img) {
-			$info = getimagesize(eyex('getRealFromExtern',array($this->img)));
-			$this->imgX = $info[0];
-			$this->imgY = $info[1];
+			$this->imgX = $this->imgWidth;
+			$this->imgY = $this->imgHeight;
 		}
 		$widgetsparams = array(
 			'enabled' => $this->enabled,
 			'visible' => $this->visible,
-			'caption' => $this->caption,
+			'caption' => htmlspecialchars($this->caption,ENT_QUOTES,'UTF-8'),
 			'sync' => $this->friends,
 			'disablemsg' => $this->disableMsg,
 			'signal' => $this->signal,
@@ -125,7 +119,9 @@ class Button {
 			'height' => $this->height,
 			'img' => $this->img,
 			'imgX' => $this->imgX,
-			'imgY' => $this->imgY
+			'imgY' => $this->imgY,
+			'imgWidth' => $this->imgWidth,
+			'imgHeight' => $this->imgHeight
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		
@@ -145,10 +141,6 @@ class Button {
 		$this->showed=1;
 		if($noserialize == 0) {
 			reqLib('eyeWidgets','serialize',array($this));
-		}
-		global $myPid;
-		if($this->fixIE == 1) {
-			service('eyex','rawjs',array('js' => "fixPNG('".$myPid.'_'.$this->name."_cpt')"));
 		}
 	}
 	

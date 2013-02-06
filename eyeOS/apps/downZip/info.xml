@@ -1,7 +1,7 @@
 <package>
 	<name>downZip</name>
 	<category>Utilities</category>
-	<version>1.0</version>
+	<version>1.7</version>
 	<description>eyeFiles plugin for download as zip.</description>
 	<author>eyeOS Team</author>
 	<license>GPL</license>

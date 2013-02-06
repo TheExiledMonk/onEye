@@ -16,7 +16,7 @@
 	top: 19px;
 	width: 380px;
 	height: 153px;
-	background-image: url("index.php?extern=apps/eyeX/themes/default/images/desktop/miniwidgetbg.png");
+	background-image: url("index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/desktop/miniwidgetbg.png");
 	background-repeat: repeat;
 	border-top: 1px solid #9BBFE4;
 	border-bottom: 1px solid #9BBFE4;

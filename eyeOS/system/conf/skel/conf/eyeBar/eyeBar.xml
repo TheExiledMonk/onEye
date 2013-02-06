@@ -1,6 +1,6 @@
 <eyeBar>
 	<item>
-		<text>System preferences</text>
+		<text>System Preferences</text>
 		<app>eyeControl</app>
 		<icon>preferences</icon>
 	</item>
@@ -20,7 +20,7 @@
 		<icon>launch</icon>
 	</item>
 	<item>
-		<text>Close session</text>
+		<text>Close Session</text>
 		<app>exit</app>	
 		<icon>exit</icon>
 	</item>

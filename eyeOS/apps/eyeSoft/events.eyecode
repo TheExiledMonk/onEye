@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
  
                      Web Operating System
                            eyeOS.org
@@ -243,7 +243,7 @@ function eyeSoft_on_stepInstall($params=null) {
 	$path = $info['path'][0].'/'.$info['filename'][0];
 	$url = "http://".$host.$path;
 	$content = reqLib('eyeURL','getRawFile',array('url'=>$url));
-	$fpath = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/swap/'.$info['filename'][0];
+	$fpath = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/swap/'.utf8_basename($info['filename'][0]);
 	$fp = fopen($fpath,'w');
 	fwrite($fp,$content);
 	fclose($fp);
@@ -351,7 +351,7 @@ function eyeSoft_on_Uninstall_yes($params = '') {
 				}
 				eyeXML('setXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/ports/status.xml',$xml));
 		} else {
-			eyex('messageBox',array('content' => 'The application can\'t be uninstalled.'));
+			eyex('messageBox',array('content' => 'The application cannot be uninstalled.'));
 			return;
 		}
 		eyex('messageBox',array('content' => 'The application was successfully uninstalled.'));

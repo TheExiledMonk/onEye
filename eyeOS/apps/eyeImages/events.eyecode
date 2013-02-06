@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -34,7 +34,7 @@ function eyeImages_on_getImage($params=null) {
 	}
 	$len = service('vfs','filesize',array($file));
 	$rfile = service('vfs','getRealName',array($file));
-	$info = getimagesize($rfile);
+	$info = @getimagesize($rfile);
 	$fp = service('vfs','open',array($file,'r'),1);
 	if(!$fp) {
 		return;

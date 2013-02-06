@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -23,30 +23,43 @@
 
 function eyeIframize_run($params=null) {
 	if($params[0]) {
-		$url = $params[0];
-		$portion = substr($url,0,strlen('http://'));
-		if($portion != 'http://') {
-			$url = 'http://'.$url;
-		}
 		$myWindow = new Window(array(
 			'name'=>'iframize_WND_1',
 			'father'=>'eyeApps',
 			'type'=>NORMAL_WINDOW,
 			'width'=>450,
 			'height'=>450,
-			'title'=>'iframize',
+			'title'=>'eyeIframize',
 			'sendResizeMsg'=>1,
 			'sigResize'=>'Resize',
-			'showDragContent'=>1
+			'showDragContent'=>1,
+			'savePosition' => 1
 		));
 		$myWindow->show();
+		
+		$url = $params[0];
+		if (vfs('fileExists',array($url))) {
+			$myHidden = new Hidden(array(
+				'name' => 'eyeIframize_hidden',
+				'father' => 'eyeIframize_Content',
+				'text' => $url
+			));
+			reqLib('eyeWidgets','serialize',array($myHidden));
+			global $checknum;
+			$url = 'index.php?checknum=' . $checknum . '&msg=getFile';
+		} else {
+			$portion = substr($url,0,strlen('http://'));
+			if($portion != 'http://') {
+				$url = 'http://'.$url;
+			}
+		}
 		$myFrame = new Iframe(array(
 			'name'=>'iframize_IFRM_1',
 			'father'=>'iframize_WND_1_Content',
 			'x'=>0,
 			'y'=>0,
-			'height'=>430,
-			'width'=>446,
+			'height'=>426,
+			'width'=>448,
 			'url'=>$url,
 		));
 		$myFrame->show();
@@ -63,7 +76,7 @@ function eyeIframize_run($params=null) {
 			'btn2_name' => 'cancel',
 			'textbox_name' => 'iframeUrl',
 			'textbox_event' => 'iframeEvent',
-			'img' => 'index.php?extern=apps/eyeX/themes/default/icons/48x48/file.png'
+			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/file.png'
 		));
 	}
 }

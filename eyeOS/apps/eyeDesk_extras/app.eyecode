@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -24,7 +24,7 @@
 function eyeDesk_extras_run($params=null) {
 	global $myPid;
 	global $checknum;
-	service('eyex','loadScript',array('url'=>'index.php?extern=apps/eyeDesk_extras/js/eyeDesk_extras'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	service('eyex','loadScript',array('url'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeDesk_extras/js/eyeDesk_extras'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
 }
 
 ?>

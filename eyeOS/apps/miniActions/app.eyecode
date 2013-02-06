@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -42,11 +42,11 @@ function miniActions_run($params=null) {
 		'name'=>'miniActionsWND',
 		'father'=>'eyeApps',
 		'type'=>WIN_IMAGE_DRAGGABLE_NOTLISTED, 
-		'title'=>'miniActions widget',
-		'background'=>'index.php?extern=apps/miniActions/images/bg.png',
+		'title'=>'Actions widget',
+		'background'=>'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/bg.png',
 		'width'=>191,
 		'height'=>200,
-		'savePosition'=>1,
+		'forceSavePosition'=>1,
 		'x'=>$width,
 		'y'=>165,
 	));
@@ -58,7 +58,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 28,
-		'url' => 'index.php?extern=apps/miniActions/images/button.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
 		'signal' => 'Launch1',
 		'disableMsg'=>0
 	));
@@ -69,7 +69,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 35,
-		'url' => 'index.php?extern=apps/miniActions/images/upload.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/upload.png',
 		'signal' => 'Launch1',
 		'disableMsg'=>0
 	));
@@ -99,7 +99,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 64,
-		'url' => 'index.php?extern=apps/miniActions/images/button.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
 		'signal' => 'Launch2',
 		'disableMsg'=>0
 	));
@@ -110,7 +110,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 71,
-		'url' => 'index.php?extern=apps/miniActions/images/message.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/message.png',
 		'signal' => 'Launch2',
 		'disableMsg'=>0
 	));
@@ -140,7 +140,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 100,
-		'url' => 'index.php?extern=apps/miniActions/images/button.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
 		'signal' => 'Launch3',
 		'disableMsg'=>0
 	));
@@ -151,7 +151,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 107,
-		'url' => 'index.php?extern=apps/miniActions/images/document.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/document.png',
 		'signal' => 'Launch3',
 		'disableMsg'=>0
 	));
@@ -163,7 +163,7 @@ function miniActions_run($params=null) {
 		'x' => 38,
 		'y' => 109,
 		'signal' => 'Launch3',
-		'text' => 'Start a new document',
+		'text' => 'Create a new document',
 		'disablemsg'=>0
 	));
 	$myLabel3->show();
@@ -181,7 +181,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => 136,
-		'url' => 'index.php?extern=apps/miniActions/images/button.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/button.png',
 		'signal' => 'Launch4',
 		'disableMsg'=>0
 	));
@@ -192,7 +192,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => 143,
-		'url' => 'index.php?extern=apps/miniActions/images/spreadsheet.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/spreadsheet.png',
 		'signal' => 'Launch4',
 		'disableMsg'=>0
 	));
@@ -204,7 +204,7 @@ function miniActions_run($params=null) {
 		'x' => 38,
 		'y' => 145,
 		'signal' => 'Launch4',
-		'text' => 'Start a new spreadsheet',
+		'text' => 'Create a new spreadsheet',
 		'disablemsg'=>0
 	));
 	$myLabel4->show();
@@ -223,7 +223,7 @@ function miniActions_run($params=null) {
 		'x' => 90,
 		'y' => 15,
 		'vert'=>1,
-		'url' => 'index.php?extern=apps/miniActions/images/close.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/miniActions/images/close.png',
 		'signal' => 'closeApp',
 		'disableMsg'=>0
 	));
@@ -236,7 +236,7 @@ function miniActions_run($params=null) {
 }
 
 function miniActions_end() {
-	eyeX('removeWidget', array('name' => 'miniActionsOuter'));
+	eyeWidgets('unserialize');
 }
 
 ?>

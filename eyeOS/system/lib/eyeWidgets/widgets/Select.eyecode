@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -171,12 +171,16 @@ class Select {
 		global $myPid;
 		$this->visible = 0;
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="none"'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.visibility="hidden"'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").name="hidden"'));
 	}
 	
 	function unhide() {
 		global $myPid;
 		$this->visible = 1;
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.visibility="visible"'));
+		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").name="visible"'));
 	}
 //set properties functions
 	function disable() {

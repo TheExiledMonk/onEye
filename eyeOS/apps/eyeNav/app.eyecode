@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -41,13 +41,14 @@ function eyeNav_run($params = '') {
 	$myWindow = new Window(array(
 		'name' => 'eyeNav_window',
 		'father' => 'eyeApps',
-		'title' => 'eyeNav',
+		'title' => 'Navigator',
 		'cent' => 1,
 		'width' => 800,
 		'height' => 600,
 		'sendResizeMsg' => 1,
 		'sigResize' => 'Resize',
-		'showDragContent'=>1
+		'showDragContent'=>1,
+		'savePosition' => 1
 	));
 	$myWindow->show();
 	
@@ -70,7 +71,7 @@ function eyeNav_run($params = '') {
 	$myTextbox->show();
 	$myTextbox->focus();
 	$myTextbox->setCss(array(
-		'background-image' => 'url(index.php?extern=apps/eyeFiles/gfx/PathCenter.png)',
+		'background-image' => 'url(index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeFiles/gfx/PathCenter.png)',
 		'background-repeat' => 'repeat-x',
 		'border' => 'none',
 		'height' => '20px',
@@ -86,7 +87,7 @@ function eyeNav_run($params = '') {
 		'caption' => '',
 		'x' => 20,
 		'y' => $myY,
-		'img' => eyex('getThemeImage',array('icons/16x16/save.png',1))
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/save.png'
 	));
 	$myButton->addFriend($myTextbox);
 	$myButton->show();
@@ -94,7 +95,7 @@ function eyeNav_run($params = '') {
 	$myImage = new Imagebox(array(
 		'name' => 'eyeNav_image_url_left',
 		'father' => 'eyeNav_window_Content',
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFiles/gfx/PathLeft.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeFiles/gfx/PathLeft.png',
 		'x' => $myTextbox->x - 11,
 		'y' => $myYimg
 	));
@@ -103,7 +104,7 @@ function eyeNav_run($params = '') {
 	$myImage = new Imagebox(array(
 		'name' => 'eyeNav_image_url_right',
 		'father' => 'eyeNav_window_Content',
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFiles/gfx/PathGo.png',
+		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeFiles/gfx/PathGo.png',
 		'x' => $myImage->x + $myTextbox->width,
 		'y' => $myYimg,
 		'disableMsg' => 0,
@@ -154,15 +155,15 @@ function eyeNav_run($params = '') {
 		'father' => 'eyeNav_window_Content'
 	));
 	$myToolbar->show();
-	$myToolbar->addItem('Back',eyex('getThemeImage',array('images/toolbar/previous.png',1)),'Back',array($myIframe));
-	$myToolbar->addItem('Forward',eyex('getThemeImage',array('images/toolbar/next.png',1)),'Forward',array($myIframe));
+	$myToolbar->addItem('Back','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/previous.png','Back',array($myIframe));
+	$myToolbar->addItem('Forward','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/next.png','Forward',array($myIframe));
 	$myToolbar->addLine();
-	$myToolbar->addItem('Startpage',eyex('getThemeImage',array('images/toolbar/home.png',1)),'Startpage',array($myTextbox,$myIframe));
+	$myToolbar->addItem('Startpage','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/home.png','Startpage',array($myTextbox,$myIframe));
 	$myToolbar->addLine();
-	$myToolbar->addItem('Bookmarks',eyex('getThemeImage',array('images/toolbar/bookmark.png',1)),'Bookmarks');
-	$myToolbar->addItem('Search',eyex('getThemeImage',array('images/toolbar/search.png',1)),'Search');
+	$myToolbar->addItem('Bookmarks','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/bookmark.png','Bookmarks');
+	$myToolbar->addItem('Search','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/search.png','Search');
 	$myToolbar->addLine();
-	$myToolbar->addItem('Settings',eyex('getThemeImage',array('images/toolbar/lin_agt_wrench.png',1)),'Settings');
+	$myToolbar->addItem('Settings','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/lin_agt_wrench.png','Settings');
 	
 	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeNav/libs.eyecode');
 	eyeNav_lib_ShowBookmarks();

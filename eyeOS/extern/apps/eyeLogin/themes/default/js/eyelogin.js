@@ -6,7 +6,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -45,6 +45,8 @@ function eyeLogin_successLogin(user,checknum,pid) {
 function block(pid) {
 	document.getElementById(pid+'_eyeLogin_Username').disabled=true;
 	document.getElementById(pid+'_eyeLogin_Password').disabled=true;
+	document.getElementById(pid + '_wnd1_Container').style.left = String(xClientWidth() / 2) + 'px';
+	document.getElementById(pid + '_wnd1_Container').style.top = String(xClientHeight() / 2) + 'px';
 	movecount=0;
 	setTimeout("mover('"+pid+"_wnd1_Container','"+pid+"')", 500);
 }
@@ -61,7 +63,8 @@ function mover(widget,pid) {
 		xLeft(widget,left+40);
 	}
 	if(movecount > 5) {
-		xLeft(widget,left+20);
+		document.getElementById(widget).style.left = '50%';
+		document.getElementById(widget).style.top = '50%';
 		unblock(pid);
 		return;
 	}
@@ -82,7 +85,7 @@ function finish(checknum) {
 
 function makeLight(id) {
 	if (IEversion == 0){
-		document.getElementById(id).style.backgroundImage ='url(index.php?extern=apps/eyeLogin/themes/default/gfx/box_x.png)';	
+		document.getElementById(id).style.backgroundImage ='url(index.php?version=' + EXTERN_CACHE_VERSION + '&extern=apps/eyeLogin/themes/default/gfx/box_x.png)';	
 	}
 }
 
@@ -90,12 +93,14 @@ function removeLight(id) {
 	if (IEversion == 0){
 		obj = document.getElementById(id);
 		if(obj) {
-			obj.style.backgroundImage='url(index.php?extern=apps/eyeLogin/themes/default/gfx/box.png)';
+			obj.style.backgroundImage='url(index.php?version=' + EXTERN_CACHE_VERSION + '&extern=apps/eyeLogin/themes/default/gfx/box.png)';
 		}
 	}
 }
 
 function init_login(pid,checknum) {
+	document.getElementById(pid + '_wnd1_Container').style.left = '50%';
+	document.getElementById(pid + '_wnd1_Container').style.top = '50%';
 	var tmpObj = document.getElementById(pid+'_wnd2_Container');
 	if(tmpObj) {
 		tmpObj.style.display='block';

@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -137,7 +137,7 @@ if(empty($currentUser)) {
 	//Display the path links
 	$link = "";
 	$splittedPath = explode ('/', $userPath);
-	echo "<div class='path'><img style='margin-bottom: -3px;' src='../index.php?extern=apps/eyeX/themes/default/icons/16x16/folder_open.png' /> <a href='index.php'>Home</a>";
+	echo "<div class='path'><img style='margin-bottom: -3px;' src='../index.php?theme=1&extern=icons/16x16/folder_open.png' /> <a href='index.php'>Home</a>";
 	foreach ($splittedPath as $i) {
 		if (!empty($i)) {
 			$link .= $i."/";
@@ -153,10 +153,10 @@ if(empty($currentUser)) {
 		foreach($fileList as $file) {
 			if(vfs('isdir', array($file))) {
 				$file = utf8_basename($file);
-				echo "\n\t\t<div class='listfile'><a href='index.php?path=".$userPath.$file."/'><img style='margin-bottom: -1px;' border='0' src='../index.php?extern=apps/eyeX/themes/default/icons/16x16/folder.png' /> $file</a></div>";
+				echo "\n\t\t<div class='listfile'><a href='index.php?path=".$userPath.$file."/'><img style='margin-bottom: -1px;' border='0' src='../index.php?theme=1&extern=icons/16x16/folder.png' /> $file</a></div>";
 			} else {
 				$file = utf8_basename($file);
-				echo "\n\t\t<div class='listfile'><a href='index.php?download=".$userPath.$file."'><img style='margin-bottom: -1px;' border='0' src='../index.php?extern=apps/eyeX/themes/default/icons/16x16/file.png' /> $file</a></div>";
+				echo "\n\t\t<div class='listfile'><a href='index.php?download=".$userPath.$file."'><img style='margin-bottom: -1px;' border='0' src='../index.php?theme=1&extern=icons/16x16/file.png' /> $file</a></div>";
 			}
 		}
 	} else {
@@ -165,13 +165,13 @@ if(empty($currentUser)) {
 	
 	//Draw the bottom forms -create directory, upload files-
 	echo '<div class="graybg">
-	  <img style="margin-bottom: -2px;" border="0" src="../index.php?extern=apps/eyeX/themes/default/icons/16x16/upload.png" /> <span class="optionsText">Upload a file:</span> <br />
+	  <img style="margin-bottom: -2px;" border="0" src="../index.php?theme=1&extern=icons/16x16/upload.png" /> <span class="optionsText">Upload a file:</span> <br />
 	  <form action="index.php?action=upload" enctype="multipart/form-data" method="post">
 	    <input name="file" type="file" />
 	    <input type="hidden" name="path" value="'.$userPath.'" />
 	    <input name="Submit" type="Submit" value="Upload" />
 	  </form><br />
-	  <img style="margin-bottom: -2px;" border="0" src="../index.php?extern=apps/eyeX/themes/default/icons/16x16/newfolder.png" /> <span class="optionsText">Create a directory:</span><br />
+	  <img style="margin-bottom: -2px;" border="0" src="../index.php?theme=1&extern=icons/16x16/newfolder.png" /> <span class="optionsText">Create a directory:</span><br />
 	  <form action="index.php" method="post">
 	    <input type="hidden" name="path" value="'.$userPath.'" />
 	    <input type="text" name="dirname" maxlength="15" />

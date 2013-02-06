@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -36,8 +36,8 @@ function get_dynamic_content($params) {
 		$random = uniqid(time());
 		fclose($fp);
 		$content1 = str_replace('$myPid',$myPid,$content1);
-		$content1 = str_replace('$checknum',$checknum,$content1);	
-			
+		$content1 = str_replace('$checknum',$checknum,$content1);
+		$content1 = str_replace('$EXTERN_CACHE_VERSION',EXTERN_CACHE_VERSION,$content1);
 	}		
 	return $content1;
 	exit;

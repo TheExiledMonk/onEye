@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -97,6 +97,16 @@ function eyeDesk_com_onMkdir($params=null) {
 		drawDesktop(true);
 		$myPid = $oldPid;
 	}
+}
+
+function eyeDesk_com_onResized($params = '') {
+	global $myPid;
+	$oldPid = $myPid;
+	$info = getEyeDeskInfo();
+	$myPid = $info['pid'];
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDesk/draw' . EYE_CODE_EXTENSION);
+	drawDesktop(true);
+	$myPid = $oldPid;
 }
 
 function getEyeDeskInfo(){

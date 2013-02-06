@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -82,8 +82,8 @@ class Flash {
 	function show($noserialize=1) {
 		global $myPid;
 		if(is_array($this->flashParamsNames) && is_array($this->flashParamsValues)){
-			$flashParamsNames =service("mmap","array2jsArg",array($this->flashParamsNames));
-			$flashParamsValues =service("mmap","array2jsArg",array($this->flashParamsValues));
+			$flashParamsNames =service("mmap","array2jsArg",array($this->flashParamsNames,1));
+			$flashParamsValues =service("mmap","array2jsArg",array($this->flashParamsValues,1));
 		}else{
 			$flashParamsNames = '';
 			$flashParamsValues ='';

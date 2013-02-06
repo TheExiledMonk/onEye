@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -65,7 +65,7 @@ define('UM_MODULE','eyeos');
 //Extras
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('ROOTUSER','root');
-define('EYEOS_VERSION','1.6.0.3');
+define('REAL_ROOTUSER','root');
+define('EYEOS_VERSION','1.7.0.0');
 
 ?>

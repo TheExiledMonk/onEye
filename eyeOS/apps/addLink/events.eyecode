@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -26,14 +26,11 @@ function addLink_on_Message($params = '') {
 }
 
 function addLink_on_create($params = '') {
-	global $currentUser;
 	$linkName = $GLOBALS['addLink_textbox']->text;
 	$linkName = utf8_basename($linkName);
 	$callback = $GLOBALS['addLink_hidden']->text;
 	$file = service('um','getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/' . $linkName . '.eyeLink';
 	if ($linkName && !vfs('real_fileExists',array($file))) {
-		$oldUser = $currentUser;
-		$currentUser = ROOTUSER;
 		$xml = getConfig('addLink','default.eyeLink');
 		eyeXML('setXMLfile',array($file,$xml));
 		if ($callback) {

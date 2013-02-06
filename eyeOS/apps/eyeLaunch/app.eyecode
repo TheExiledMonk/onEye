@@ -7,7 +7,7 @@
                 |  __/ |_| |  __/ |__| |____) |
                  \___|\__, |\___|\____/|_____/ 
                        __/ |                   
-                      |___/              1.6
+                      |___/              1.7
 
                      Web Operating System
                            eyeOS.org
@@ -30,7 +30,7 @@ function eyeLaunch_run($params=null) {
 	global $myPid;
 	
 	$myWindow = new Window(array('name'=>'wnd1','title'=>'Run...','father'=>'eyeApps','type'=>NORESIZE_WINDOW,'width'=>280,
-		'height'=>150,'cent'=>1));
+		'height'=>150,'cent'=>1,'savePosition' => 1));
 	$myWindow->show();
 	
 	$myLabel1 = new Label(array('name'=>'label1','text'=>'Type the name of the app or command to run',
