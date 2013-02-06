@@ -458,7 +458,7 @@ function service_proc_findNameByChecknum($params) {
 	}
 	$processTable = proc('getProcessTable');
 	foreach ($processTable as $array){
-		if($array['checknum'] == $checknum) {		
+		if ($array['checknum'] == $checknum || $array['checknum'] === $checknum) { // workaround to prevent infinite loops on some servers
 			return $array['appName'];
 		}
 	}
@@ -524,7 +524,7 @@ function service_proc_findChecknum($params){//Find the checkNum in processTable 
 	$processTable = proc('getProcessTable');
 	
 	foreach ($processTable as $array){
-		if($array['checknum'] == $checkNum) {//array[1] is the position where checkNum is localted in the process table.	
+		if ($array['checknum'] == $checknum || $array['checknum'] === $checknum) { // workaround to prevent infinite loops on some servers
 			return true;
 		}
 	}
@@ -581,7 +581,7 @@ function service_proc_getProcByChecknum($params) {
 	
 	$processTable = proc('getProcessTable');	
 	foreach ($processTable as $key => $array){
-		if($array['checknum'] == $checknum){
+		if ($array['checknum'] == $checknum || $array['checknum'] === $checknum) { // workaround to prevent infinite loops on some servers
 			return $array;
 		}
 	}	

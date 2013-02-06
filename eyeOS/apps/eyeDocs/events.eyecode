@@ -85,32 +85,32 @@ function eyeDocs_on_Save($params=null) {
 	if(is_object($GLOBALS['notePath']) && $GLOBALS['notePath']->text) {
 		$info = utf8_pathinfo($GLOBALS['notePath']->text);
 		$udir = um('getCurrentUserDir').'/tmp/'.$myPid.'_new.html';
-		if(vfs('real_fileExists',array($udir))){
-			$realContent = vfs('real_getFileContent',array($udir));
-			$match = array();
-			//Getting the old header style from temporal file
-			//If the original file doesn't have style header, a new one is not needed, really?
-			if(preg_match("/<\!--.+?-->/su",$realContent,$match)){
-				$toBeReplaced = $match[0];
-				//Getting the new header style from tinyMCE content
-				if(preg_match("/(<\!--.+?-->)/su",$GLOBALS['noteContent']->text,$match)){
-					$toBeReplaced = $match[0];
-					//Replacing the header style from the old (tmp file) to the new tinyMCE
-					$realContent = str_replace($toBeReplaced,$toReplace,$realContent);
-				}
-			}
-			//Getting the original body
-			if(preg_match("/<BODY.*?>(.+)<\/BODY>/sui",$realContent,$match)){
-				$toBeReplaced = $match[1];
-				//Getting the tinyMCE "body"
-
-				if(preg_match("/-->(.*)/sui",$GLOBALS['noteContent']->text,$match)){
-					$toReplace = $match[1];
-					//Replacing the old body with the new one
-					$realContent = str_replace($toBeReplaced,$toReplace,$realContent);
-				}
-			}
-			$realContent = vfs('real_putFileContent',array($udir,$realContent));
+		if(vfs('fileExists',array($GLOBALS['notePath']->text))){
+			$content = $GLOBALS['noteContent']->text;
+			$content = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>ddwdwdw</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.0  (Unix)">
+	<META NAME="AUTHOR" CONTENT="WinuE">
+	<META NAME="CREATED" CONTENT="20090604;18060000">
+	<META NAME="CHANGEDBY" CONTENT="WinuE">
+	<META NAME="CHANGED" CONTENT="20090604;18060000">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { size: 8.27in 11.69in; margin-right: 1.18in; margin-top: 0.98in; margin-bottom: 0.98in }
+		P { margin-bottom: 0.08in; direction: ltr; color: #000000; text-align: left; widows: 2; orphans: 2
+ }
+		P.western { font-family: "Times New Roman", serif; font-size: 12pt; so-language: es-ES }
+		P.cjk { font-family: "Times New Roman", serif; font-size: 12pt; so-language:  }
+		P.ctl { font-family: "Times New Roman", serif; font-size: 12pt; so-language: ar-SA }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" DIR="LTR">
+'.$content.'</BODY></HTML>';
+                       	vfs('real_putFileContent',array($udir,$content));
 			if(utf8_strtolower($info['extension'] == 'odt')) {
 				eyeConverter('convert',array($udir,vfs('getRealName',array($GLOBALS['notePath']->text)),'writerglobal8_writer',1));
 			} elseif(utf8_strtolower($info['extension'] == 'doc')) {
@@ -125,7 +125,7 @@ function eyeDocs_on_Save($params=null) {
 			fclose($fp);
 		}
 		service('eyex','messageBox',array('content'=>'Document saved successfully.'));
-} else {
+	} else {
 		service('proc','launch',array('eyeDialog',$options));
 	}
 }
@@ -275,6 +275,10 @@ function eyeDocs_on_SelectFileOpen($params=null) {
 			$content = fread($fp,vfs('real_filesize',array($myHTML)));
 			fclose($fp);
 			$content = str_replace('<IMG SRC="','<IMG SRC="index.php?checknum='.$tCheckNum.'&msg=viewTempImg&params=',$content);
+			$content = str_replace("\n","",$content);
+			$content = str_replace("\r","",$content);
+			preg_match("/<BODY[^>]+>(.*)<\/BODY>/",$content,$matches);
+			$content = $matches[1];
 		} else {
 			$pattern = '/<img[^\/]*\/>/i';
 			$replacement = '';

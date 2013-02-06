@@ -62,12 +62,15 @@ function eyeDocs_run($params=null) {
 			$content = fread($fp,vfs('real_filesize',array($myHTML)));
 			fclose($fp);
 			$content = str_replace('<IMG SRC="','<IMG SRC="index.php?checknum='.$tCheckNum.'&msg=viewTempImg&params=',$content);
+			$content = str_replace("\n","",$content);
+			$content = str_replace("\r","",$content);
+			preg_match("/<BODY[^>]+>(.*)<\/BODY>/",$content,$matches);
+			$content = $matches[1];
 		} else {
 			$pattern = '/<img[^\/]*\/>/i';
 			$replacement = '';
 			$content = preg_replace($pattern, $replacement, $content);
 		}
-
 		$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
 		reqLib('eyeWidgets','serialize',array($myHidden));
 	} else {

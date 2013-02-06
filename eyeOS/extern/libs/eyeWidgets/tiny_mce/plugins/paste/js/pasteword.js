@@ -18,7 +18,7 @@ var PasteWordDialog = {
 
 		// Write content into iframe
 		doc.open();
-		doc.write('<html><head>' + cssHTML + '</head><body spellcheck="false"></body></html>');
+		doc.write('<html><head>' + cssHTML + '</head><body class="mceContentBody" spellcheck="false"></body></html>');
 		doc.close();
 
 		doc.designMode = 'on';
@@ -33,7 +33,7 @@ var PasteWordDialog = {
 		var h = document.getElementById('iframe').contentWindow.document.body.innerHTML;
 
 		tinyMCEPopup.editor.execCommand('mceInsertClipboardContent', false, h);
-	tinyMCEPopup.close();
+		tinyMCEPopup.close();
 	},
 
 	resize : function() {
@@ -44,7 +44,7 @@ var PasteWordDialog = {
 		if (el) {
 			el.style.width  = (vp.w - 20) + 'px';
 			el.style.height = (vp.h - 90) + 'px';
-	}
+		}
 	}
 };
 
