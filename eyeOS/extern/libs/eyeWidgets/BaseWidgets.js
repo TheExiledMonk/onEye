@@ -147,7 +147,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	var myContainer = document.createElement('div');
 	myContainer.setAttribute('id',name+'_GlobalContainer');
-	if (myImg != "") {
+	if (myImg != null) {
 		var myButton = document.createElement('img');
 		myButton.src=myImg;
 		var myContent = document.createElement('div');
@@ -167,7 +167,7 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 	
 	if(myWidth > 0) {
-		if(myImg != "") {
+		if(myImg != null) {
 			myContainer.style.width = myWidth+'px';			
 		} else {
 			myButton.style.width = myWidth+'px';			
@@ -175,14 +175,14 @@ function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	} 
 	
 	if(myHeight > 0) {
-		if(myImg != "") {
+		if(myImg != null) {
 			myContainer.style.height = myHeight+'px';
 		} else {
 			myButton.style.height = myHeight+'px';
 		}
 	}
 	
-	if(myImg != "") {
+	if(myImg != null) {
 		myContent.style.top = '2px';
 		myContent.style.left = myLeft+'px';
 		myContainer.style.cursor = 'Pointer';
@@ -696,7 +696,7 @@ function Icon_show(params,name,father,x,y,horiz,vert,checknum) {
 	myGlobalContainer.setAttribute('id',name+'_globalContainer');
 	
 	var myImage = document.createElement('img');
-	if(myOnLoad != "") {
+	if(myOnLoad != null) {
 		myImage.onload=function(){eval(myOnLoad);};
 	}
 	myImage.src = image;
@@ -2074,7 +2074,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 		myTextbox.value = text;
 	}
 	
-	if(mywidth != "") {
+	if(mywidth != null) {
 		myTextbox.style.width = mywidth+'px';
 	}
 
@@ -2158,7 +2158,7 @@ function Window_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	if (type == 2) {
 		createWidget(name+"_Content",name,theText,0,0,-1,-1,-1,-1,"eyeWindowContentInvisible",0);
 		makeWindow(name, title, father, "", checknum, null,null,null,null,null,1,1,0,sendCloseMsg,sendResizeMsg,sigResize,removeWin,savePosition,saveFunc,xChecknum,sigClose,noZindex);
-	} else if ((type == 3 || type == 4) && background != "") {
+	} else if ((type == 3 || type == 4) && background != null) {
 		var myImage = document.createElement('img');
 		myImage.setAttribute('id',name+'_background');
 		myImage.src=background;
@@ -2602,7 +2602,7 @@ function ProgressBar_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 
 	var myProgress = document.createElement('div');
 	
-	if(mywidth != "") {
+	if(mywidth != null) {
 		myProgress.style.width = mywidth+'px';
 	}
 	

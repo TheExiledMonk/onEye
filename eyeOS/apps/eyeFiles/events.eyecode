@@ -184,10 +184,7 @@ function eyeFiles_on_openFile($params=null) {
 					
 					//if the icon is a pic
 					if(!empty($picWidth)){
-						$halfWidth = $picWidth[0] / 2;
-						eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.left = "50%;"'));
-						eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.marginLeft = "-'.$halfWidth.'px";'));
-						eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.position = "relative";'));
+						eyeX('rawjs',array('js'=>'xGetElementById("img_'.$myPid.'_eyeFiles_icon_'.$counter.'").style.marginLeft = "2px";'));
 					}
 					if($isIconDir){
 						//SimpleMenuShow for drop called by behaviour

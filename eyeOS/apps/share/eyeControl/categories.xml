@@ -64,7 +64,7 @@
 	<content>
 		<description>Update your system's settings</description>
 		<display>System</display>
-		<name>general</name>
+		<name>system</name>
 		<permissions>root</permissions>
 		<title>yes</title>
 		<img>index.php?theme=1&amp;extern=icons/48x48/admingeneral.png</img>

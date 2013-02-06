@@ -22,7 +22,7 @@
 */
 
 function miniMessages_on_Message($params) {
-	eyeWidgets('updateContent', array($params));
+	eyeWidgets('updateContent', $params);
 }
 
 function miniMessages_on_Close($params=null) {

@@ -29,8 +29,12 @@ function eyeManageApps_run($params=null) {
 		'title' => 'eyeManageApps',
 		'width' => 775,
 		'height' => 525,
+		'type' => NORESIZE_WINDOW
 	));
 	$myWindow->show();
+	eyeX('rawjs',array('js' => 'document.getElementById("'.$myPid.'_eyeManageAppsWND_Content").style.overflow="hidden";'));
+	
+	eyeX('loadCSS', array('url' => 'index.php?extern=apps/eyeManageApps/css/eyeManageApps.css', 'id' => 'eyeManageApps'));
 	
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeManageAppsWND_Content'));
 	$myToolbar->show();
@@ -50,8 +54,8 @@ function eyeManageApps_run($params=null) {
 		'father' => 'eyeManageAppsWND_Content',
 		'x' => 2,
 		'y' => 60,
-		'width' => 765,
-		'height' => 435
+		'width' => 771,
+		'height' => 441
 	));
 	$myContainer->show();
 	eyeX('rawjs',array('js' => 'document.getElementById("'.$myPid.'_appsContainer_Container").style.overflowX="hidden";document.getElementById("'.$myPid.'_appsContainer_Container").style.overflowY="auto";'));
@@ -64,7 +68,7 @@ function eyeManageApps_run($params=null) {
 	));
 	eyeWidgets('serialize', array($myHidden));
 	
-	eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
+	eyeX('sendMessage', array('msg' => 'ListApps'));
 }
 
 function eyeManageApps_end() {

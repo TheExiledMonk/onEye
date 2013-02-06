@@ -32,7 +32,11 @@
 define('MAX_FILE_EXTENSION',8);
 define('MAX_FILE_NAME_LEN',40);
 
-
+function service_extern_init(){
+	global $externRequest;	
+	$externRequest = true;
+	
+}
 /**
 * Retrieves a file located in the eyeOS extern directory.
 * 

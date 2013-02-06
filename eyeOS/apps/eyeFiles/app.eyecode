@@ -163,7 +163,8 @@ function eyeFiles_run($params=null) {
 		}
 	}
 	
-	service('eyex','loadScript',array('url' => 'index.php?extern=apps/eyeFiles/js/eyeFiles'.EYE_CODE_EXTENSION.'&type=dynamic&params[]='.$myPid.'&params[]='.$checknum));
+	service('eyex','loadScript',array('url' => 'index.php?extern=apps/eyeFiles/js/eyefiles.js'));
+	service('eyex','rawjs',array('js' => 'init_eyeFiles('.$myPid.', '.$checknum.');'));
 		
 	global $eyeFilesText;
 	$eyeFilesText=$myTextBox;

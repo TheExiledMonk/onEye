@@ -22,13 +22,18 @@
 */
 
 function eyeControl_on_eyenav_test($params = '') {
-	proc('launch',array('eyeNav',$GLOBALS['eyeControl_eyenav_textbox']->text));
+	proc('launch',array('eyeNav',$GLOBALS['eyeControl_eyenav_textbox_startpage']->text));
 }
 
 function eyeControl_on_eyenav_save($params = '') {
-	global $currentUser;
 	$xml = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
-	$xml['eyeNav'][0]['home'][0] = $GLOBALS['eyeControl_eyenav_textbox']->text;
+	$xml['eyeNav'][0]['home'][0] = $GLOBALS['eyeControl_eyenav_textbox_startpage']->text;
+	$plugin = $params['eyeControl_eyenav_select_plugin'][0];
+	if (vfs('real_fileExists',array(EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/' . $plugin . EYE_CODE_EXTENSION))) {
+		$xml['eyeNav'][0]['plugin'][0] = $plugin;
+	} else {
+		$xml['eyeNav'][0]['plugin'][0] = 'iframe';
+	}
 	eyeControl_lib_setXMLconfig(array('eyeNav','conf.xml',$xml));
 	eyex('messageBox',array('content' => 'Changes successfully saved.'));
 }

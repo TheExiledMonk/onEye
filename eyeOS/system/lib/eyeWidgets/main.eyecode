@@ -136,6 +136,9 @@ function lib_eyeWidgets_unserialize() {
 			}
 		}
 	}
+	foreach($_SESSION[WTABLE][$myPid] as $name=>$value){
+		unset($GLOBALS[$name]);
+	}	
 	unset($_SESSION[WTABLE][$myPid]);
 }
 
@@ -155,6 +158,7 @@ function lib_eyeWidgets_singleUnserialize($params) {
 	global $myPid;
 	$name = $params[0];
 	unset($_SESSION[WTABLE][$myPid][$name]);
+	unset($GLOBALS[$name]);
 }
 
 /**
@@ -166,6 +170,9 @@ function lib_eyeWidgets_singleUnserialize($params) {
 */
 function lib_eyeWidgets_rawunserialize() {
 	global $myPid;
+	foreach($_SESSION[WTABLE][$myPid] as $name){
+		unset($GLOBALS[$name]);
+	}
 	unset($_SESSION[WTABLE][$myPid]);
 }
 

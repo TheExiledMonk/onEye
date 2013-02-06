@@ -129,6 +129,10 @@ function eyeContacts_on_Export(){
 function eyeContacts_on_Delete() {
 	global $myPid;	
 	$mySelect = $GLOBALS['eyeContacts_Contacts']->selected;
+	if(empty($mySelect)){
+		eyeX('messageBox',array('content'=>'Please choose a contact'));
+		return true;
+	}
 	$myHidden = new Hidden(array('name'=>'contactSelected','father'=>$GLOBALS['eyeContacts_Contacts']->father,'text'=>$mySelect));
 	eyeWidgets('serialize',array($myHidden));
 	

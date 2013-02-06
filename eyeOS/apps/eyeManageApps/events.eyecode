@@ -39,10 +39,10 @@ function eyeManageApps_on_Close() {
 
 //Specific events
 function eyeManageApps_on_ListApps() {
+	global $myPid;
 	if(is_object($GLOBALS['appsContainer'])) {
 		$GLOBALS['appsContainer']->setContent("");
 	}
-	
 	$myConfig = eyeXML('getXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml'));
 	$userTheme = eyeSessions('getVar',array('usertheme'));
 	$gCounter = 1;
@@ -57,19 +57,12 @@ function eyeManageApps_on_ListApps() {
 			'draggable' => 0,
 			'text' => i18n('translate',array($group['name'][0])),
 			'breaktext' => 0,
-			'content' => array('Group', $group['name'][0], $group['icon'][0], $gCounter)
+			'content' => array('Group', $group['name'][0], $group['icon'][0], $gCounter),
+			'image' => 'index.php?extern='.APP_DIR.'/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/'.$group['icon'][0]
 		));
 		$groupIcon->show();
-		$groupIcon->setCssText(array(
-								'font-size'=>'14px',
-								'position'=>'absolute',
-								'top' => '0px',
-								'left'=>'0px',
-								'width' => '100px',
-								'font-weight'=>'normal',
-								'text-align'=>'left',
-								'color' => '#044d85',
-								'cursor' => 'Pointer'));
+		eyeX('rawjs', array('js' => 'document.getElementById("img_'.$myPid.'_groupIcon'.$gCounter.'").style.backgroundColor = "#BBB";'));
+		eyeX('rawjs', array('js' => 'document.getElementById("'.$myPid.'_groupIcon'.$gCounter.'_text").className = "gIconText";'));
 								
 		$col = 0;
 		$appX = 10;
@@ -78,7 +71,7 @@ function eyeManageApps_on_ListApps() {
 		if(is_array($group['items'])) {
 			foreach($group['items'][0]['item'] as $app) {
 				if($col > 4) {
-					$myY += ICON_SIZE;
+					$myY += ICON_SIZE+30;
 					$col = 0;
 					$excedent = 1;
 					$appX = 10;
@@ -89,7 +82,7 @@ function eyeManageApps_on_ListApps() {
 					$aicon = DEFAULT_APP_ICON;
 				}
 				$appIcon = new Icon(array(
-					'name' => 'appIcon'.$aCounter,
+					'name' => 'appIcon'.$gCounter.'_'.$aCounter,
 					'father' => 'appsContainer',
 				 	'x' => $appX,
 				 	'y' => $myY+40,
@@ -100,24 +93,17 @@ function eyeManageApps_on_ListApps() {
 				 	'content' => array('Application', $aicon, $app['name'][0], $group['name'][0], $app['exec'][0], $app['desc'][0], $aCounter, $gCounter)
 				));
 				$appIcon->show();
-				$appIcon->setCssText(array('position'=>'absolute',
-										   'left'=>(ICON_SIZE+ICON_TEXT_DISTANCE).'px',
-										   'top'=>'15px',
-										   'color'=>'black',
-										   'font-weight'=>'normal',
-										   'text-align'=>'left'
-										   )
-									);
+				eyeX('rawjs', array('js' => 'document.getElementById("'.$myPid.'_appIcon'.$gCounter.'_'.$aCounter.'_text").className = "aIconText";'));
 				
-				$appX += 140; 
+				$appX += 145; 
 				$aCounter++;
 				$col++;
 			}
 		}
 		if($excedent) {
-			$myY += ICON_SIZE*2;
+			$myY += ICON_SIZE*2+15;
 		} else {
-			$myY += LINE_DISTANCE;
+			$myY += LINE_DISTANCE+15;
 		}
 		
 		$groupLine = new Line(array(
@@ -129,6 +115,9 @@ function eyeManageApps_on_ListApps() {
 			'height' => 1
 		));
 		$groupLine->show();
+		if(IE == 6) {
+			$groupLine->setCSS(array('backgroundColor' => 'white', 'border-top' => '1px solid #DDD'));
+		}
 								
 		$myY+=5;
 		$gCounter++;
@@ -545,8 +534,11 @@ function eyeManageApps_on_properties($params) {
 		));
 		$mySelect1->show();
 	
-		$userTheme = eyeSessions('getVar', array('usertheme'));
+		global $currentUser;
+		$oldUser = $currentUser;
+		$currentUser = ROOTUSER;
 		
+		$userTheme = eyeSessions('getVar', array('usertheme'));
 		$gIconList = vfs('real_getDirContent', array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons', '*.png'));
 	    foreach($gIconList as $file) {
 	    	$file = basename($file);
@@ -558,6 +550,7 @@ function eyeManageApps_on_properties($params) {
 	        	}
 	        }
 	    }
+	    $currentUser = $oldUser;
 	    
 		$currentPath = 'index.php?'.EXTERN_DIR.'=/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/images/'.APP_DIR.'/'.CONFIG_NAME.'/icons/'.$icon;
 		
@@ -745,6 +738,10 @@ function eyeManageApps_on_properties($params) {
 		));
 		$mySelect2->show();
 		
+		global $currentUser;
+		$oldUser = $currentUser;
+		$currentUser = ROOTUSER;
+		
 		$appIconList = vfs('real_getDirContent', array(EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/'.$userTheme.'/icons/'.ICON_SIZE.'x'.ICON_SIZE.'/', '*.png'));
 		foreach($appIconList as $file) {
 			$file = basename($file);
@@ -753,6 +750,8 @@ function eyeManageApps_on_properties($params) {
 			}
 		}
 		$mySelect2->addOption($icon,$icon,1);
+		
+		$currentUser = $oldUser;
 		
 		$myAppImage = new Imagebox(array(
 			'name' => 'imageIcon',

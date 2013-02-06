@@ -63,7 +63,7 @@ function eyeControl_on_eyedesk_new_cancel($params = '') {
 
 function eyeControl_on_eyedesk_edit($params = '') {
 	$autorun = $GLOBALS['eyeControl_eyedesk_sortabletable']->selected;
-	if ($autorun && $autorun!= 'eyeBar') {
+	if ($autorun) {
 		eyex('messageBox',array(
 			'content' => 'Type the command you want to run at login.',
 			'type' => 3,
@@ -82,8 +82,6 @@ function eyeControl_on_eyedesk_edit($params = '') {
 			'hidden_text' => $autorun,
 			'father' => 'eyeControl_container_big'
 		));
-	} elseif ($autorun == 'eyeBar') {
-		eyex('messageBox',array('content' => 'You cannot edit the eyeBar command!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose a command to be edited.'));
 	}
@@ -92,7 +90,7 @@ function eyeControl_on_eyedesk_edit($params = '') {
 function eyeControl_on_eyedesk_edit_save($params = '') {
 	$autorun_new = $GLOBALS['eyeControl_eyedesk_edit_textbox']->text;
 	$autorun_old = $GLOBALS['eyeControl_eyedesk_edit_hidden']->text;
-	if ($autorun_new && $autorun_old != 'eyeBar') {
+	if ($autorun_new) {
 		$autorunXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 		$arrayIds = eyeControl_lib_findIdByText(array($autorunXML['eyeDesk'][0]['autolaunch'],$autorun_old));
 		$arrayIds = $arrayIds[0];
@@ -149,7 +147,7 @@ function eyeControl_on_eyedesk_default_no($params = '') {
 
 function eyeControl_on_eyedesk_delete($params = '') {
 	$autorun = $GLOBALS['eyeControl_eyedesk_sortabletable']->selected;
-	if ($autorun && $autorun!= 'eyeBar') {
+	if ($autorun) {
 		eyex('messageBox',array(
 			'content' => 'Do you really want to remove this command?',
 			'type' => 3,
@@ -166,8 +164,6 @@ function eyeControl_on_eyedesk_delete($params = '') {
 			'father' => 'eyeControl_container_big',
 			'img' => '?'
 		));
-	} elseif ($autorun == 'eyeBar') {
-		eyex('messageBox',array('content' => 'You cannot delete the eyeBar command!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose a command to be deleted.'));
 	}
@@ -175,7 +171,7 @@ function eyeControl_on_eyedesk_delete($params = '') {
 
 function eyeControl_on_eyedesk_delete_yes($params = '') {
 	$autorun = $GLOBALS['eyedesk_delete_hidden']->text;
-	if ($autorun && $autorun != 'eyeBar') {
+	if ($autorun) {
 		$autorunXML = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 		$x = eyeControl_lib_findIdByText(array($autorunXML['eyeDesk'][0]['autolaunch'],$autorun));
 		$x = $x[0];

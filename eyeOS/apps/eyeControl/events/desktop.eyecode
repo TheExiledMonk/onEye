@@ -64,7 +64,6 @@ function eyeControl_on_desktop_select_now($params=null) {
 
 function eyeControl_on_desktop_save($params=null) {
 	global $checknum;
-	global $myPid;
 	$config = eyeControl_lib_getXMLconfig(array('eyeDesk','conf.xml'));
 	if ($GLOBALS['eyeControl_desktop_checkbox_use']->checked) {
 		$file = eyeControl_lib_getConfigUserPath() . '/' . FILES_USER_DIR . '/' . $GLOBALS['eyeControl_desktop_textbox_select']->text;

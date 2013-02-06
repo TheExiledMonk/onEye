@@ -27,21 +27,11 @@ function init_eyeFiles(pid,checknum) {
 	var widget = pid+'_WND_1';
 	var x,y;
 	var father = document.getElementById(widget).parentNode;
-
-
 	var leftBorder = xWidth(xGetElementById(widget+"_WindowBottom_left"));
 	var rightBorder = xWidth(xGetElementById(widget+"_WindowBottom_right"));
 	var barX = xGetElementById(widget+'_WindowTitle');
-	
 	var barX_height = xHeight(barX);
 	var wstart = 10;
-	//TODO: remove it, when widget line implemented
-	//var objHr = document.createElement('div');
-	//objHr.setAttribute('id','line1');
-	//objHr.className = 'eyeLine';
-	//objHr.style.position= 'absolute';
-	//objHr.style.top = '32px';
-	//document.getElementById(widget+'_Content').appendChild(objHr);
 	document.getElementById(pid+'_WND_2_Content').style.overflowY='auto';
 	document.getElementById(pid+'_WND_2_Content').style.overflowX='hidden';
 	document.getElementById(pid+'_WND_3_Content').style.overflow='hidden';
@@ -162,5 +152,3 @@ function eyeFiles_reloadFiles(pid,checknum,path) {
 		sendMsg(checknum,'Icon_Clicked',eyeParam('arg0',document.getElementById(pid+'_eyeFilesText').value)+eyeParam('arg1',myW));	
 	}
 }
-
-init_eyeFiles($myPid,$checknum);

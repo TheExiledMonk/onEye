@@ -25,7 +25,7 @@
 	Session handling lib for eyeOS
 */
 define('COOKIE_ID','PHPSESSID');
-define('COOKIE_EXPIRE','99999999999999999');
+define('COOKIE_EXPIRE','9999999999');
 define('IPC_TYPE','File');
 define('FLASH_UPLOAD_FIX','flash_fix');
 /**
@@ -286,7 +286,11 @@ function lib_eyeSessions_checkArrayValueByKey($params) {
 * @date 2008/03/11
 */
 function lib_eyeSessions_saveSession(){
-	global $sessionId;	
+	global $sessionId,$externRequest;
+	//If the petition is a extern request, the session is not saved (read only mode).
+	if(!empty($externRequest) && $externRequest == true){
+		return true;
+	}	
 	//If sessionId is not pressent, don't save any session.
 	if($sessionId == ''){
 		return true;		

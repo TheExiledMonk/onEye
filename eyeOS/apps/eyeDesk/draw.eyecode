@@ -39,12 +39,12 @@ function drawDesktop($reload=false) {
 	//SimpleMenuShow for drop called by behaviour
 	$mySimpleMenu = new SimpleMenu(array('name'=>'drop_simpleMenu','father'=>'eyeApps'));
 	$mySimpleMenu->show();
-	//If the drawDesktop isn't reload or the browser isn't internet explorer
-	if(!$reload != false || IE == 0){
+	//If the drawDesktop isn't a reload
+	if(!$reload){
 		$mySimpleMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/paste.png /> &nbsp;" . i18n('translate',array('Paste')),"MNU_main_eyeDesk_eyePaste","paste");
-	}	
+	}
 	//Call dropIcon
-	if(!$reload != false){		
+	if(!$reload){		
 		$myWidgetDrop = new widgetDrop(array('name'=>'eyeApps_Drop','father'=>'eyeApps'));	
 		$myWidgetDrop->show();
 		//Adding a drop behaviour
@@ -101,9 +101,7 @@ function drawDesktop($reload=false) {
 	           	
 	           	$iconMenu = new SimpleMenu(array('name'=>$myName.'_drop_simpleMenu','father'=>'eyeApps','searchFather'=>1));
 				$iconMenu->show();
-				if(!$reload != false || IE == 0){
-					$iconMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/paste.png /> &nbsp;" . i18n('translate',array('Paste')),"MNU_main_eyeDesk_eyePaste","paste","<arg1>/Desktop/".$fileName."</arg1>");
-				}
+				$iconMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/paste.png /> &nbsp;" . i18n('translate',array('Paste')),"MNU_main_eyeDesk_eyePaste","paste","<arg1>/Desktop/".$fileName."</arg1>");
 				
 				$WidgetIconDrop = new widgetDrop(array('name'=>$myName.'_Drop','father'=>$myName.'_Container'));	
 				$WidgetIconDrop->show();
@@ -123,12 +121,10 @@ function drawDesktop($reload=false) {
 	           	
 	            $myContextMenu = new ContextMenu(array('name'=>$myName.'_menu','father'=>$myName.'_globalContainer','searchFather'=>1,'mfather'=>'eyeApps'));
 	            $myContextMenu->show();
-	            if(!$reload != false || IE == 0){
-					foreach($options['menu'][0]['entry'] as $value) {
-						$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>/Desktop/".$fileName."</arg1>");
-						$counter++;
-					}
-	            }
+				foreach($options['menu'][0]['entry'] as $value) {
+					$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>/Desktop/".$fileName."</arg1>");
+					$counter++;
+				}
 	           	$found=true;
 			} elseif(utf8_ltrim(strrchr($file,'.'),'.') == EYEOS_INFO_EXT)  {
 	          	$myName = "eyeDesk_icon_$iconNumber";	          	
@@ -181,12 +177,10 @@ function drawDesktop($reload=false) {
 	           	$iconNumber++;
 				$myContextMenu = new ContextMenu(array('name'=>$myName.'_menu','father'=>$myName.'_globalContainer','searchFather'=>1,'mfather'=>'eyeApps'));
 	            $myContextMenu->show();
-	            if(!$reload != false || IE == 0){
-					foreach($options['menu'][0]['entry'] as $value) {
-						$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>/Desktop/".$realFileName."</arg1>");
-						$counter++;
-					}
-	            }
+				foreach($options['menu'][0]['entry'] as $value) {
+					$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>/Desktop/".$realFileName."</arg1>");
+					$counter++;
+				}
 	           	$found = true;	
 			} elseif(is_file($file)){				
 				if(utf8_ltrim(strrchr($file,'.'),'.') == EYEOS_LINK_EXT) {	
@@ -254,12 +248,10 @@ function drawDesktop($reload=false) {
 		           			$iconNumber++;
 				            $myContextMenu = new ContextMenu(array('name'=>$myName.'_menu','father'=>$myName.'_globalContainer','searchFather'=>1,'mfather'=>'eyeApps'));
 				            $myContextMenu->show();
-				            if(!$reload != false || IE == 0){
-								foreach($optionsLink['menu'][0]['entry'] as $value) {
-									$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>/Desktop/".$publicName."</arg1>");
-									$counter++;
-								}
-				            }
+							foreach($optionsLink['menu'][0]['entry'] as $value) {
+								$myContextMenu->addEntry("<img src=index.php?extern=apps/eyeX/themes/default/icons/16x16/".$value['icon'][0].".png /> &nbsp;".i18n('translate',array($value['text'][0])),'MNU_desk_'.$counter,$value['signal'][0],"<arg1>/Desktop/".$publicName."</arg1>");
+								$counter++;
+							}
 						}
 					}
 					$found = true;

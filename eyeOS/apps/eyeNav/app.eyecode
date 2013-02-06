@@ -59,17 +59,6 @@ function eyeNav_run($params = '') {
 		$myYimg = 67;
 	}
 	
-	$myButton = new Button(array(
-		'name' => 'eyeNav_saveUrl',
-		'father' => 'eyeNav_window_Content',
-		'signal' => 'saveUrl',
-		'caption' => '',
-		'x' => 20,
-		'y' => $myY,
-		'img' => eyex('getThemeImage',array('icons/16x16/save.png',1))
-	));
-	$myButton->show();
-	
 	$myTextbox = new Textbox(array(
 		'name' => 'eyeNav_url',
 		'father' => 'eyeNav_window_Content',
@@ -84,16 +73,28 @@ function eyeNav_run($params = '') {
 		'background-image' => 'url(index.php?extern=apps/eyeFiles/gfx/PathCenter.png)',
 		'background-repeat' => 'repeat-x',
 		'border' => 'none',
-		'height' => '18px',
+		'height' => '20px',
 		'padding-top' => '3px'
 	));
 	$myTextbox->addEnterEventMsg('OpenURL');
 	$GLOBALS['eyeNav_url'] = $myTextbox;
 	
+	$myButton = new Button(array(
+		'name' => 'eyeNav_saveUrl',
+		'father' => 'eyeNav_window_Content',
+		'signal' => 'saveUrl',
+		'caption' => '',
+		'x' => 20,
+		'y' => $myY,
+		'img' => eyex('getThemeImage',array('icons/16x16/save.png',1))
+	));
+	$myButton->addFriend($myTextbox);
+	$myButton->show();
+	
 	$myImage = new Imagebox(array(
 		'name' => 'eyeNav_image_url_left',
 		'father' => 'eyeNav_window_Content',
-		'url' => 'index.php?extern=apps/eyeFiles/gfx/PathLeft.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFiles/gfx/PathLeft.png',
 		'x' => $myTextbox->x - 11,
 		'y' => $myYimg
 	));
@@ -102,7 +103,7 @@ function eyeNav_run($params = '') {
 	$myImage = new Imagebox(array(
 		'name' => 'eyeNav_image_url_right',
 		'father' => 'eyeNav_window_Content',
-		'url' => 'index.php?extern=apps/eyeFiles/gfx/PathGo.png',
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFiles/gfx/PathGo.png',
 		'x' => $myImage->x + $myTextbox->width,
 		'y' => $myYimg,
 		'disableMsg' => 0,

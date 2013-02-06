@@ -41,7 +41,7 @@ function eyeControl_on_box_cat_label($params = '') {
 
 function eyeControl_on_selectUser($params = '') {
 	global $myPid;
-	if ($params['selected'][0] != $_SESSION['eyeControl'][$myPid]['user']) {
+	if ($params['selected'][0] != $_SESSION['eyeControl'][$myPid]['user'] && $params['selected'][0] != '[---]') {
 		if ($params['selected'][0] == ROOTUSER || $params['selected'][0] == '[skel]') {
 			proc('launch',array('eyeControl',array('user' => $params['selected'][0])));
 			proc('end');

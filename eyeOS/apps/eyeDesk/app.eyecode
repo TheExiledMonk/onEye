@@ -87,9 +87,11 @@ function eyeDesk_showDesk($autorun) {
 	if($mySettings['eyeDesk'][0]['restoreDock'][0] != $shareSettings['eyeDesk'][0]['restoreDock'][0]) {
 		//Restoring doc		
 		copy(EYE_ROOT.'/'.SYSTEM_DIR.'/'.CONF_USER_DIR.'/skel/'.CONF_USER_DIR.'/eyeDock/eyeDock.xml',$myUserDir.'/'.CONF_USER_DIR.'/eyeDock/eyeDock.xml');
-		$mySettings['eyeDesk'][0]['restoreDock'][0] = $shareSettings['eyeDesk'][0]['restoreDock'][0];		
+		$mySettings['eyeDesk'][0]['restoreDock'][0] = $shareSettings['eyeDesk'][0]['restoreDock'][0];
 		//Adding miniAction in startup		
-		$mySettings['eyeDesk'][0]['autolaunch'][] = 'miniActions';
+		if(array_search('miniActions',$mySettings['eyeDesk'][0]['autolaunch']) === false){
+			$mySettings['eyeDesk'][0]['autolaunch'][] = 'miniActions';
+		}
 		
 		eyeXML('setXMLfile',array($configFile,$mySettings));
 		

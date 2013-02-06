@@ -25,15 +25,13 @@ global $currentUser;
 include_once(EYE_ROOT . '/' . APP_DIR . '/eyeNav/libs.eyecode');
 
 $conf = eyeXML('getXMLconfig',array('eyeNav','conf.xml'));
-$config = getConfig('eyeNav','conf.xml');
-$url = EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/' . $conf['eyeNav'][0]['plugin'][0] . EYE_CODE_EXTENSION;
-$oldUser = $currentUser;
-$currentUser = ROOTUSER;
-if ($config['eyeNav'][0]['plugins'][0][$conf['eyeNav'][0]['plugin'][0]][0] != '1' || !vfs('real_fileExists',array($url))) {
-	$url = EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/iframe.eyecode';
+$url = EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/';
+$url2 = $url . $conf['eyeNav'][0]['plugin'][0] . EYE_CODE_EXTENSION;
+if (vfs('real_fileExists',array($url2))) {
+	include_once $url2;
+} else {
+	include_once $url . 'iframe.eyecode';
 }
-$currentUser = $oldUser;
-include_once($url);
 
 function eyeNav_on_Message($params = '') {
 	reqLib('eyeWidgets','updateContent',$params);
@@ -70,20 +68,8 @@ function eyeNav_on_Bookmarks($params = '') {
 
 function eyeNav_on_bookmarks_label($params = '') {
 	foreach($params as $key => $value) {
-		if(utf8_stristr($key,'eyeNav_box_hiddenURL_')) {
+		if (utf8_stristr($key,'eyeNav_box_hiddenURL_')) {
 			eyeNav_lib_doUrl(array('page' => array($value[0])));
-		}
-	}
-}
-
-function eyeNav_on_bookmarks_imagebox($params = '') {
-	foreach($params as $key => $value) {
-		if(utf8_stristr($key,'eyeNav_box_hiddenURL_')) {
-			$page = $value[0];
-			if (!utf8_stristr($page,':')) {
-				$page = 'http://' . $page;
-			}
-			eyex('rawjs',array('js' => 'window.open("' . $page . '","_blank");'));
 		}
 	}
 }
@@ -165,21 +151,9 @@ function eyeNav_on_Search($params = '') {
 
 function eyeNav_on_search_label($params = '') {
 	foreach($params as $key => $value) {
-		if(utf8_stristr($key,'eyeNav_box_hiddenSearch_')) {
+		if (utf8_stristr($key,'eyeNav_box_hiddenSearch_')) {
 			$page = str_replace('%s',$GLOBALS['eyeNav_search']->text,$value[0]);
 			eyeNav_lib_doUrl(array('page' => array($page)));
-		}
-	}
-}
-
-function eyeNav_on_search_imagebox($params = '') {
-	foreach($params as $key => $value) {
-		if(utf8_stristr($key,'eyeNav_box_hiddenSearch_')) {
-			$page = str_replace('%s',$GLOBALS['eyeNav_search']->text,$value[0]);
-			if (!utf8_stristr($page,':')) {
-				$page = 'http://' . $page;
-			}
-			eyex('rawjs',array('js' => 'window.open("' . $page . '","_blank");'));
 		}
 	}
 }

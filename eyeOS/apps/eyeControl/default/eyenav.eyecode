@@ -21,6 +21,8 @@
         Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
 */
 
+global $currentUser;
+
 $ContentY = 10;
 // Configure the startpage
 $myLabel = new Label(array(
@@ -38,7 +40,7 @@ $ContentY = $ContentY + 30;
 $NavUserConf = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
 // Startpage
 $myLabel = new Label(array(
-	'name' => 'eyeControl_eyenav_label',
+	'name' => 'eyeControl_eyenav_label_startpage',
 	'father' => $eyeContainer,
 	'x' => 20,
 	'y' => $ContentY + 3,
@@ -46,7 +48,7 @@ $myLabel = new Label(array(
 ));
 $myLabel->show();
 $myTextbox = new Textbox(array(
-	'name' => 'eyeControl_eyenav_textbox',
+	'name' => 'eyeControl_eyenav_textbox_startpage',
 	'father' => $eyeContainer,
 	'x' => 160,
 	'y' => $ContentY,
@@ -72,6 +74,38 @@ $myLabel->setCss(array(
 	'cursor' => 'Pointer'
 ));
 $ContentY = $ContentY + 30;
+// Browse Plugin
+$myLabel = new Label(array(
+	'name' => 'eyeControl_eyenav_label_plugin',
+	'father' => $eyeContainer,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'Browse Plugin'
+));
+$myLabel->show();
+$mySelect = new Select(array(
+	'name' => 'eyeControl_eyenav_select_plugin',
+	'father' => $eyeContainer,
+	'width' => 125,
+	'x' => 160,
+	'y' => $ContentY + 3
+));
+$mySelect->show();
+$mySelect->addOption('Iframe ' . i18n('translate',array('(Default)')),'iframe');
+$conf = eyeControl_lib_getXMLconfig(array('eyeNav','conf.xml'));
+$openDir = vfs('real_getDirContent',array(EYE_ROOT . '/' . APP_DIR . '/eyeNav/plugins/','*' . EYE_CODE_EXTENSION,2));
+foreach ($openDir as $plugin) {
+	$plugin = utf8_basename($plugin,EYE_CODE_EXTENSION);
+	if ($plugin != 'iframe') {
+		if ($plugin == $conf['eyeNav'][0]['plugin'][0]) {
+			$select = 1;
+		} else {
+			$select = 0;
+		}
+		$mySelect->addOption(ucfirst($plugin),$plugin,$select);
+	}
+}
+$ContentY = $ContentY + 30;
 // Save changes
 $myButton = new Button(array(
 	'name' => 'eyeControl_eyenav_button_save',
@@ -82,6 +116,7 @@ $myButton = new Button(array(
 	'signal' => 'eyenav_save'
 ));
 $myButton->addFriend($myTextbox);
+$myButton->addFriend($mySelect);
 $myButton->show();
 $ContentY = $ContentY + 60;
 // Export default bookmarks and search engines

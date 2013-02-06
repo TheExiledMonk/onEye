@@ -849,7 +849,7 @@ function weekPlanner_notes(weekPlanner){
 		
 		var partTarget = e.target;
 		var note = this.father.tmpNote;
-		if (note.parts != (partTarget.num+1)) {
+		if (note.parts != (partTarget.num+1) && partTarget.num >= note.startPart ) {
 			note.parts = note.parts + partTarget.num - note.fromParts;
 			note.fromParts = partTarget.num;
 			this.draw_resizeNote(note);

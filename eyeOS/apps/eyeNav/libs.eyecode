@@ -22,6 +22,8 @@
 */
 
 function eyeNav_lib_ShowBookmarks($params = array()) {
+	global $myPid;
+	
 	if ($params['arg'][0]) {
 		$url = service('um','getCurrentUserDir') . '/' . FILES_USER_DIR . '/' . $params['arg'][0];
 		$xml = eyeXML('getXMLfile',array(vfs('getRealName',array($url))));
@@ -121,15 +123,13 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 					'father' => 'eyeNav_box',
 					'x' => 30,
 					'y' => $boxY,
-					'disableMsg' => 0,
-					'signal' => 'bookmarks_imagebox',
 					'url' => 'index.php?extern=apps/eyeNav/gfx/link.png'
 				));
-				$myImagebox->addFriend($myHidden);
 				$myImagebox->show();
 				$myImagebox->setCss(array(
 					'cursor' => 'Pointer'
 				));
+				eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeNav_box_imagebox_' . $x . '_Container").onclick = function() { window.open("' . $link['url'][0] . '"); return false; }'));
 				$myLabel = new Label(array(
 					'name' => 'eyeNav_box_label_' . $x,
 					'father' => 'eyeNav_box',
@@ -209,6 +209,8 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 }
 
 function eyeNav_lib_ShowSearch($params = array()) {
+	global $myPid;
+	
 	if ($params['arg'][0]) {
 		$url = service('um','getCurrentUserDir') . '/' . FILES_USER_DIR . '/' . $params['arg'][0];
 		$xml = eyeXML('getXMLfile',array(vfs('getRealName',array($url))));
@@ -326,15 +328,13 @@ function eyeNav_lib_ShowSearch($params = array()) {
 				'father' => 'eyeNav_box',
 				'x' => 30,
 				'y' => $boxY,
-				'disableMsg' => 0,
-				'signal' => 'search_imagebox',
 				'url' => 'index.php?extern=apps/eyeNav/gfx/link.png'
 			));
-			$myImagebox->addFriend($myHiddenURL);
 			$myImagebox->show();
 			$myImagebox->setCss(array(
 				'cursor' => 'Pointer'
 			));
+			eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeNav_box_imagebox_' . $x . '_Container").onclick = function() { window.open("' . str_replace('%s','" + document.getElementById("' . $myPid . '_eyeNav_search").value + "',$link['url'][0]) . '"); return false; }'));
 			$myLabel = new Label(array(
 				'name' => 'eyeNav_box_label_' . $x,
 				'father' => 'eyeNav_box',

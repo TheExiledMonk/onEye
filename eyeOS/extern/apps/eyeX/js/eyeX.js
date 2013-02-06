@@ -178,7 +178,16 @@ function sendMsg(checknum,msg,parameters) {
   	}
   	http_request.onreadystatechange = function() {
         if (http_request.readyState == 4) {
-            localEngine(http_request.responseXML);
+            try {
+                xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+                xmlDoc.async="false";
+                xmlDoc.loadXML(http_request.responseText);
+            } catch(e) {
+                parser=new DOMParser();
+                parser.async="false";
+                xmlDoc=parser.parseFromString(http_request.responseText,"text/xml");
+            }
+            localEngine(xmlDoc);
         }
     }
     if (msg != 'ping') {
@@ -875,10 +884,11 @@ function cleanDesktop(pid) {
 	var prefix = pid+'_eyeDesk_icon_';
 	var eyeapps = document.getElementById('eyeApps');
 	var obj;
-	for (var i=0 ; i < eyeapps.childNodes.length ; i++) {
+	for(var i=0; i < eyeapps.childNodes.length; i++) {
 		obj = eyeapps.childNodes[i];
-		if (obj.id.indexOf(prefix) == 0 && obj.className == 'eyeIcon') {
+		if (obj.id.indexOf(prefix) == 0 && (obj.className == 'eyeIcon' || obj.className == 'eyeContextMenu')) {
 			eyeapps.removeChild(obj);
+			i = 0;
 		}
 	}
 }

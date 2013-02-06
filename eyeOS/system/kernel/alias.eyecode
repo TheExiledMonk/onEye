@@ -102,4 +102,8 @@ function eyeContacts($call,$args=null) {
 	return reqLib('eyeContacts',$call,$args);
 }
 
+function eyeCalendar($call,$args=null) {	
+	return reqLib('eyeCalendar',$call,$args);
+}
+
 ?>

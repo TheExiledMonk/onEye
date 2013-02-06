@@ -114,6 +114,13 @@ function service_mmap_routemsg($params) {
 	} 
 	unset($messageTable);
 	
+	if(um('UserIsAdmin',array($currentUser))) {
+		define('ROOTUSER',$currentUser);
+	} else {
+		define('ROOTUSER',REAL_ROOTUSER);
+	}
+	
+	
 	//If events.eyecode can be included, then include it, else exit.
 	if(is_readable(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/'.'events'.EYE_CODE_EXTENSION)) {
 		include_once(EYE_ROOT.'/'.APP_DIR.'/'.$procInfo['appName'].'/'.'events'.EYE_CODE_EXTENSION);
@@ -160,14 +167,7 @@ function service_mmap_array2js($params) {
 		return false;
 	}	
 	$arrayInPHP = $params[0];
-	$code = "{";
-	foreach ($arrayInPHP as $k => $v) {
-		$key = addslashes($k);
-		$value = addslashes($v);
-		$code .= "'$key' : '$value',";
-	}
-	$code = utf8_substr($code,0,-1);
-	$code .= "}";
+	$code = json_encode($arrayInPHP);
 	return $code;
 }
 
@@ -190,7 +190,7 @@ function service_mmap_array2jsArg($params) {
 	$arrayInPHP = $params[0];
 	$code = '';
 	foreach ($arrayInPHP as $value) {
-		if($value) {
+		if(! is_null($value)) {
 			$value = str_replace("\\","\\\\",$value);
 			$value = str_replace('"','\\"',$value);
 			$value = str_replace("'","\\'",$value);

@@ -314,16 +314,22 @@ function eyeControl_run($params = '') {
 			$mySelect->show();
 			if ($params['user'] == '[skel]') {
 				$mySelect->addOption('[Default user]','[skel]',1);
+				$mySelect->addOption(' - - - - -','[---]');
+				$mySelect->addOption('[Default user]','[skel]');
 				$mySelect->addOption(ROOTUSER,ROOTUSER);
 				$mySelect->addOption('Search user...','');
 			} elseif (!$params['user'] || $params['user'] == ROOTUSER) {
-				$mySelect->addOption('[Default user]','[skel]');
 				$mySelect->addOption(ROOTUSER,ROOTUSER,1);
-				$mySelect->addOption('Search user...','');
-			} else {
+				$mySelect->addOption(' - - - - -','[---]');
 				$mySelect->addOption('[Default user]','[skel]');
 				$mySelect->addOption(ROOTUSER,ROOTUSER);
-				$mySelect->addOption('Search user...','',1);
+				$mySelect->addOption('Search user...','');
+			} else {
+				$mySelect->addOption($params['user'],$params['user'],1);
+				$mySelect->addOption(' - - - - -','[---]');
+				$mySelect->addOption('[Default user]','[skel]');
+				$mySelect->addOption(ROOTUSER,ROOTUSER);
+				$mySelect->addOption('Search user...','');
 			}
 			$mySelect->addEvent('onchange','sendMsg(' . $checknum . ',"selectUser",eyeParam("selected",this.value));');
 			eyeControl_lib_addEnterEvent($mySelect,'selectUser');

@@ -65,13 +65,11 @@ function try_get_temp_dir(){
 	return $path;
 }
 
-function ini_get_size($sName)
-{
+function ini_get_size($sName) {
     $sSize = ini_get($sName);
     $sUnit = utf8_substr($sSize, -1);
     $iSize = (int) utf8_substr($sSize, 0, -1);
-    switch (utf8_strtoupper($sUnit))
-    {
+    switch (utf8_strtoupper($sUnit)){
         case 'Y' : $iSize *= 1024; // Yotta
         case 'Z' : $iSize *= 1024; // Zetta
         case 'E' : $iSize *= 1024; // Exa
@@ -82,5 +80,51 @@ function ini_get_size($sName)
         case 'K' : $iSize *= 1024; // kilo
     };
     return $iSize;
+}
+
+if (!function_exists('json_encode')) {
+	function json_encode($a=false) {
+		if (is_null($a)) {
+			return 'null';
+		}
+		if ($a === false)  {
+    		return 'false';
+		}
+		if ($a === true) {
+    		return 'true';
+		}
+
+		if (is_scalar($a)) {
+			if (is_float($a)) {
+        		// Always use "." for floats.
+        		return floatval(str_replace(",", ".", strval($a)));
+      		}
+      		if (is_string($a)) {
+        		static $jsonReplaces = array(array("\\", "/", "\n", "\t", "\r", "\b", "\f", '"'), array('\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"'));
+        		return '"' . str_replace($jsonReplaces[0], $jsonReplaces[1], $a) . '"';
+      		} else {
+        		return $a;
+      		}
+    	}
+    	
+		$isList = true;
+		for ($i = 0, reset($a); $i < count($a); $i++, next($a)) {
+			if (key($a) !== $i) {
+				$isList = false;
+				break;
+			}
+		}
+		
+    	$result = array();
+    	if ($isList) {
+    		foreach ($a as $v) $result[] = json_encode($v);
+    		return '[' . join(',', $result) . ']';
+    	} else {
+    		foreach ($a as $k => $v) {
+    			$result[] = json_encode($k).':'.json_encode($v);
+    		}
+    		return '{' . join(',', $result) . '}';
+    	}
+	}
 }
 ?>

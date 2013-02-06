@@ -22,7 +22,7 @@
 */
 
 function miniCalendar_on_Message($params) {
-	eyeWidgets('updateContent', array($params));
+	eyeWidgets('updateContent', $params);
 }
 
 function miniCalendar_on_Close($params=null) {

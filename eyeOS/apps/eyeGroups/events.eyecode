@@ -443,7 +443,7 @@ function eyeGroups_on_actionExecutePanel($params=null) {
 	service('eyex','rawjs',array('js'=>"eyeFiles_clean($myPid);"));
 	foreach($params as $key=>$value) {
 		if(strstr($key,'action_hid_')) {
-			service('proc','launch',array($value[0],array(EYE_ROOT.'/'.GROUPS_DIR.'/'.$GLOBALS['eyeFilesText']->text,$callback)));
+		service('proc','launch',array($value[0],array(EYE_ROOT.'/'.GROUPS_DIR.'/'.eyeGroups_parsePath($GLOBALS['eyeFilesText']->text,1),$callback)));
 			return;
 		}
 	}

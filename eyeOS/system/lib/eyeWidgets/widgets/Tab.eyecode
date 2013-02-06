@@ -69,8 +69,8 @@ class Tab {
 		isset($params['vert']) ? $this->vert = $params['vert'] : $this->vert = 0;
 		isset($params['x']) ? $this->x = $params['x'] : $this->x = 10;
 		isset($params['y']) ? $this->y = $params['y'] : $this->y = 10;
-		isset($params['width']) ? $this->width = $params['width'] : $this->width = -1;
-		isset($params['height']) ? $this->height = $params['height'] : $this->height = -1;
+		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
+		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 		isset($params['tabwidth']) ? $this->tabwidth = $params['tabwidth'] : $this->tabwidth = 80;
 		
