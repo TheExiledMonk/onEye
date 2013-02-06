@@ -23,7 +23,7 @@
 
 function xKill_run($params = '') {
 	global $checknum;
-	eyex('rawjs',array('js' => 'addClickHandler("xKill","sendMsg(' . $checknum . ',\'Click\',eyeParam(\'arg0\',target.id));"); document.getElementById("eyeApps").style.cursor="crosshair";'));
+	eyex('rawjs',array('js' => 'EventHandler.Add("click","xKill","sendMsg(' . $checknum . ',\'Click\',eyeParam(\'arg0\',EventHandler.LastEvent.target.id));"); document.getElementById("eyeApps").style.cursor = "crosshair";'));
 }
 
 function xKill_end($params = '') {

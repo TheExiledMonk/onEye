@@ -84,6 +84,14 @@ class Textarea {
 
 
 	function show($noserialize=0) {
+		$langCode = 'en';
+		if ($this->rich) {
+			$language = reqLib('i18n', 'getLang');
+			if (vfs('real_fileExists', array(EYE_ROOT.'/'.EXTERN_DIR.'/libs/eyeWidgets/tiny_mce/langs/'.$language.'.js'))) {
+				$langCode = $language;
+			}
+		}
+		
 		$widgetsparams = array(
 			'enabled' => $this->enabled,
 			'visible' => $this->visible,
@@ -94,7 +102,8 @@ class Textarea {
 			'lang' => $this->lang,
 			'rows' => $this->rows,
 			'cols' => $this->cols,
-			'cssClass' => $this->cssClass
+			'cssClass' => $this->cssClass,
+			'language' => $langCode
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 

@@ -257,10 +257,10 @@ function eyeMail_on_openMail($params=null) {
 	//$sqlGetView = 'SELECT * FROM mails';
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
-	$GLOBALS['eyeMail_lfrom']->setText('From: '.$result[0]['sender']);
-	$GLOBALS['eyeMail_lsubject']->setText('Subject: '.$result[0]['subject']);
-	$GLOBALS['eyeMail_ldate']->setText('Date: '.$result[0]['date']);
-	$GLOBALS['eyeMail_lto']->setText('To: '.$result[0]['to']);
+	$GLOBALS['eyeMail_lfrom']->setText('From: %s',array($result[0]['sender']));
+	$GLOBALS['eyeMail_lsubject']->setText('Subject: %s',array($result[0]['subject']));
+	$GLOBALS['eyeMail_ldate']->setText('Date: %s',array($result[0]['date']));
+	$GLOBALS['eyeMail_lto']->setText('To: %s',array($result[0]['to']));
 
 	if($type == 'pop') {
 		$body = $result[0]['body'];

@@ -703,6 +703,7 @@ function delClickHandler(div) {
 
 var EventHandler = {
 	List : new Array(),
+	LastEvent : 0,
 	
 	Add : function (handler,element,code,option) {
 		if (typeof EventHandler.List[handler] != 'object') {
@@ -727,6 +728,7 @@ var EventHandler = {
 	
 	HandleEvent : function (e) {
 		e = new xEvent(e);
+		EventHandler.LastEvent = e;
 		var isfriend = 0;
 		for (var element in EventHandler.List[e.type]) {
 			if (element != e.target.id && EventHandler.List[e.type][element]) {

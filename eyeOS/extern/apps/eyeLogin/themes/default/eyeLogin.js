@@ -83,6 +83,9 @@ function eyeLogin_Start(pid,checknum) {
 	xGetElementById(pid + '_eyeLogin_1_Container').style.left = '50%';
 	xGetElementById(pid + '_eyeLogin_1_Container').style.top = '50%';
 	
+	var obj = xGetElementById(pid + '_eyeLogin_Label_Powered');
+	obj.innerHTML = '<a href="http://sourceforge.net/projects/eyeos"><img alt="" src="http://sflogo.sourceforge.net/sflogo.php?group_id=145027&amp;type=9" style="height: 15px; width: 80px;" /></a><br />' + obj.innerHTML;
+	
 	var obj = xGetElementById(pid + '_eyeLogin_Label_1_Enter');
 	obj.onclick = function () { eyeLogin_SendLogin(checknum,pid); };
 	obj.style.zIndex = '10000';

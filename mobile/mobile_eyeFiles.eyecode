@@ -45,7 +45,7 @@ if(empty($currentUser)) {
 <html>
 	<head>
 		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>' . "\n";
-	if (IE && IE > 7) { // We need a better workaround for this IE6 and IE7 problem!
+	if (!IE || IE > 7) { // We need a better workaround for this IE6 and IE7 problem!
 		echo "\t\t" . '<base href="' . INDEX_BASE . 'mobile/" />' . "\n";
 	}
 	echo "\t\t" . '<title>Welcome to eyeOS Mobile</title>
@@ -95,7 +95,7 @@ if(empty($currentUser)) {
 <html>
 	<head>
 		<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>' . "\n";
-	if (IE && IE > 7) { // We need a better workaround for this IE6 and IE7 problem!
+	if (!IE || IE > 7) { // We need a better workaround for this IE6 and IE7 problem!
 		echo "\t\t" . '<base href="' . INDEX_BASE . 'mobile/" />' . "\n";
 	}
 	echo "\t\t" . '<title>eyeOS Mobile</title>

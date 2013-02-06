@@ -92,6 +92,9 @@ class Button {
 		
 		//especial options
 		isset($params['disablemsg']) ? $this->disableMsg = $params['disablemsg'] : $this->disableMsg = 0;
+		if (isset($params['disableMsg'])) {
+			$this->disableMsg = $params['disableMsg'];
+		}
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;
 		isset($params['forceMsg']) ? $this->forceMsg = $params['forceMsg'] : $this->forceMsg = 0;
 		isset($params['highlight']) ? $this->highlight = $params['highlight'] : $this->highlight = 0;

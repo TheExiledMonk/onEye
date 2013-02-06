@@ -266,9 +266,9 @@ function eyeMail_checkNew($params=null) {
 		$settings = eyeXML('getXMLconfig',array('eyeMail','settings.xml'));
 		if($settings['eyeMail'][0]['visualAlert'][0] == 1) {
 			if($dif == 1) {
-				eyeX('messageBox',array('content'=>'You have '.$dif.' new mail'));
+				eyeX('messageBox',array('content'=>'You have %s new mail','tokens' => array($dif)));
 			} else {
-				eyeX('messageBox',array('content'=>'You have '.$dif.' new mails'));
+				eyeX('messageBox',array('content'=>'You have %s new mails','tokens' => array($dif)));
 			}
 		}
 	}

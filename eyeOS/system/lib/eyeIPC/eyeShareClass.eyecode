@@ -63,7 +63,7 @@ class System_SharedMemory
         require_once EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeIPC/modules/'.$type.EYE_CODE_EXTENSION;
         $class = 'System_SharedMemory_' . $type;
 
-        $ref = &new $class($options);
+        $ref = new $class($options);
         return $ref;
     }
 

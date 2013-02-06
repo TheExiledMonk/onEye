@@ -24,7 +24,7 @@
 function xKill_on_Click($params = '') {
 	$pid = utf8_substr($params['arg0'][0],0,5);
 	proc('close',array($pid));
-	eyex('rawjs',array('js' => 'delClickHandler("xKill"); document.getElementById("eyeApps").style.cursor = "auto";'));
+	eyex('rawjs',array('js' => 'EventHandler.Remove("click","xKill"); document.getElementById("eyeApps").style.cursor = "auto";'));
 	proc('end');
 }
 ?>

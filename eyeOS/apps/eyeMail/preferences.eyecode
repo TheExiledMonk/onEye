@@ -308,7 +308,8 @@ function eyeMail_on_delButton($params=null) {
 		'btn1_name' => 'messageRemoveYes',
 		'btn2_capt' => 'No',
 		'btn2_name' => 'messageRemoveNo',
-		'content' => 'Are you sure you want to remove the account "' . $accountsFile['eyeMail'][0]['accounts'][0]['account'][$thekey]['description'][0] . '"?',
+		'content' => 'Are you sure you want to remove the account "%s"?',
+		'tokens' => array($accountsFile['eyeMail'][0]['accounts'][0]['account'][$thekey]['description'][0]),
 		'type' => 3
 	));
 }
@@ -998,8 +999,7 @@ function eyeMail_createAccount($params=null) {
 		'border-bottom' => '0.25px solid #A6A6A6'
 	));
 
-	$textName1 = 'Enter the name you would like to appear in the "From" field of your outgoing
-		messages (for example, "John Doe").';
+	$textName1 = 'Enter the name you would like to appear in the "From" field of your outgoing messages (for example, "John Doe").';
 	$labelAccName = new Label(array(
 		'name' => 'eyeMail_labelAccName',
 		'father' => 'eyeMail_createAccountBox',
@@ -1009,8 +1009,7 @@ function eyeMail_createAccount($params=null) {
 	));
 	$labelAccName->show();
 
-	$textName1 = 'Enter your email address and password. This is the address others will use to send email to you
-		(for example, "user@server.net").';
+	$textName1 = 'Enter your email address and password. This is the address others will use to send email to you (for example, "user@server.net").';
 	$labelAccMail = new Label(array(
 		'name' => 'eyeMail_labelAccMail',
 		'father' => 'eyeMail_createAccountBox',
@@ -1214,11 +1213,12 @@ function eyeMail_createAccountAuto($params=null) {
 		'border' => 0
 	));
 	$createAccOption1->show(0);
-	$textFind = 'eyeMail has found the '.$GLOBALS['eyeMail_infoHidden']->text['name'][0].' server settings. Please, verify that the information below is correct. To enter the settings manually click on \'Manual\'.';
+	$textFind = 'eyeMail has found the %s server settings. Please, verify that the information below is correct. To enter the settings manually click on "Manual".';
 	$labelFind = new Label(array(
 		'name' => 'eyeMail_labelFind',
 		'father' => 'eyeMail_createAccountOption1',
 		'text' => $textFind,
+		'tokens' => array($GLOBALS['eyeMail_infoHidden']->text['name'][0]),
 		'y' => 20,
 		'x' => 10
 	));

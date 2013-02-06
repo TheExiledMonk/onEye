@@ -2208,6 +2208,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var enabled = params["enabled"];
 	var CcssClass = params["cssClass"];
 	var visible = params["visible"];
+	var language = params["language"];
 
 	var myTextarea = document.createElement('textarea');
 	if(code == 1) {
@@ -2256,7 +2257,8 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			theme_advanced_statusbar_location : "bottom",
 			theme_advanced_path : false,
 			skin : "o2k7",
-			skin_variant : "silver"
+			skin_variant : "silver",
+			language : language
 		});
 		txtAreas[name+'_objTxt'].render();
 	} else if (rich == 2) {
@@ -2276,7 +2278,8 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 			skin_variant : "silver",
 			save_onsavecallback : function(ed) {
 				sendMsg(checknum,'Save',eyeParam(name.substring(6),Base64.encode(ed.getContent()))+eyeParam('md5',md5(ed.getContent())));
-			}
+			},
+			language : language
 		});
 		txtAreas[name+'_objTxt'].addButton('open', {
 			title : 'Open File',

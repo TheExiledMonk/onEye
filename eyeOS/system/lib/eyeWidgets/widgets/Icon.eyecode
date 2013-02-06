@@ -58,7 +58,6 @@ class Icon {
 	var $breaktext;
 	var $tooltip;
 	//event handling
-	var $disableMsg = 0;
 	var $events;
 	var $overBorder;
 	var $overBorderBg;
