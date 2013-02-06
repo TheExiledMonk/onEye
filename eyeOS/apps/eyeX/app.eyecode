@@ -77,9 +77,10 @@ function eyeX_run($params = '') {
 			function resizedBrowser() {
 				sendMsg(' . $checknum . ',"resizedBrowser",eyeParam("width",xClientWidth()) + eyeParam("height",xClientHeight()));
 			}
+			var tinyMCEPreInit = {suffix : "", base : "index.php?version=' . EXTERN_CACHE_VERSION . '&extern=libs/eyeWidgets/tiny_mce"};
 		</script>
 		<script src="index.php?version=' . EXTERN_CACHE_VERSION . '&amp;extern=libs/eyeWidgets/codepress/codepress.js" type="text/javascript"></script>
-		<script src="index.php/extern/externVersion/'.EXTERN_CACHE_VERSION.'/externPath/libs/eyeWidgets/tiny_mce/tiny_mce_src.js" type="text/javascript"></script>
+		<script src="index.php?version=' . EXTERN_CACHE_VERSION . '&amp;extern=libs/eyeWidgets/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 		<script src="index.php?version=' . EXTERN_CACHE_VERSION . '&amp;extern=apps/eyeX/js/eyeX.js&amp;type=text" type="text/javascript"></script>' . "\n";
 	foreach (scandir(EYE_ROOT . '/' . EXTERN_DIR . '/libs/eyeWidgets/') as $file) {
 		if (utf8_substr($file,-3) == '.js') {

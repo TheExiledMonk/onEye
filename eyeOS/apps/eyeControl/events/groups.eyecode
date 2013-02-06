@@ -163,7 +163,7 @@ function eyeControl_on_groups_rename($params = '') {
 		}
 		$currentUser = $oldUser;
 		eyeControl_lib_loadContent('only_root','groups');
-	} elseif (vfs('real_fileExists',array($dir))) {
+	} elseif (vfs('real_fileExists',array($dir_new))) {
 		eyex('messageBox',array('content' => 'The selected group already exists!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please type a correct group name!'));

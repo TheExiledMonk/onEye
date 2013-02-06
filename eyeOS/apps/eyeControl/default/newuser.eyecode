@@ -177,7 +177,7 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		'father' => $eyeContainer,
 		'x' => 160,
 		'y' => $ContentY,
-		'text' => 'Never'
+		'text' => i18n('translate',array('Never'))
 	));
 	$myTextbox_expire->show();
 	$ContentY += 30;

@@ -132,4 +132,15 @@ $myImagebox = new Imagebox(array(
 	'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=0&extern=' . THEMES_DIR . '/' . $UserThemeXML['eyeDesk'][0]['theme'][0] . '/screenshot.png'
 ));
 $myImagebox->show();
+$ContentY += 160;
+$myLabel = new Label(array(
+	'name' => 'eyeControl_theme_remark',
+	'father' => $eyeContainer,
+	'x' => 20,
+	'y' => $ContentY,
+	'width' => 520,
+	'text' => 'It is strongly advised to force the browser to do clean the browser\'s cache by pressing Shift + F5 (or Ctrl + Shift + R) at the login screen after applying a new theme.'
+));
+$myLabel->show();
+$myLabel->setCSS(array('color' => '#808080'));
 ?>

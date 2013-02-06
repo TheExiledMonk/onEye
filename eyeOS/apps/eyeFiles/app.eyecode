@@ -26,6 +26,11 @@ function eyeFiles_run($params = '') {
 	global $currentUser;
 	global $myPid;
 	
+	if (!$_SESSION['eyeFiles'][$myPid]['history']['list']) {
+		$_SESSION['eyeFiles'][$myPid]['history']['list'] = array();
+		$_SESSION['eyeFiles'][$myPid]['history']['position'] = -1;
+	}
+	
 	$xml = eyeXML('getXMLconfig',array('eyeFiles','conf.xml'));
 	if (!$xml['eyeFiles'][0]['Box'][0]) {
 		$xml['eyeFiles'][0]['Box'][0] = 'Tree';

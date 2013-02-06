@@ -131,7 +131,7 @@ function eyeControl_on_eyesoft_edit_save($params = '') {
 		} else {
 			eyex('messageBox',array('content' => 'Mirror does not exist!'));
 		}
-	} elseif ($mirror == EYECONTROL_DEFAULT_REPOSITORY) {
+	} elseif ($mirror_new == EYECONTROL_DEFAULT_REPOSITORY) {
 		eyex('messageBox',array('content' => 'You cannot save a mirror as the default mirror!'));
 	} else {
 		eyex('messageBox',array('content' => 'Please type an address!'));

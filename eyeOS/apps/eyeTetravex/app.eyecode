@@ -57,6 +57,8 @@ function eyeTetravex_run($params=null) {
 	$flashParamsValues[] = $checknum;
 	$flashParamsNames[] = 'allowFullScreen';
 	$flashParamsValues[] = 'true';
+	$flashParamsNames[] = 'wmode';
+	$flashParamsValues[] = 'transparent';
 	
 	$myFlash = new Flash(array(
 		'name'=>'eyeTetravex_SWF',

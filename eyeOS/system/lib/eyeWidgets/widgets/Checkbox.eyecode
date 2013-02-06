@@ -213,5 +213,11 @@ class Checkbox {
 		eyeWidgets('singleUnserialize',array($this->name));
 	}
 	
+	function setText($text){
+		global $myPid;
+		$this->text = $text;
+		eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '").nextSibling.nodeValue="' . $text . '";'));
+		eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '").value="' . $text . '";'));
+	}
 }
 ?>

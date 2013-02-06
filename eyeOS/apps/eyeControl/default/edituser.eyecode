@@ -193,7 +193,7 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	));
 	$myLabel->show();
 	if(intval($UserXML['expirationDate'][0]) == 0) {
-		$exp = "Never";
+		$exp = i18n('translate',array('Never'));
 	} else {
 		$exp = date('d/m/Y',$UserXML['expirationDate'][0]);
 	}

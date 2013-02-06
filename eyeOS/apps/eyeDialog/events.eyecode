@@ -211,8 +211,8 @@ function eyeDialog_on_cancel_BTN($params=null) {
 //REPLACE FILE DIALOG CONFIRMATION
 function eyeDialog_on_confirmFileReplace_DLG_yes_BTN($params=null) {
 	$params = unserialize($GLOBALS['confirmFileReplace_DLG_params_HID']->text);
-	eyeDialog_saveAs($params[0], $params[1]);
 	$GLOBALS['confirmFileReplace_DLG']->close();
+	eyeDialog_saveAs($params[0], $params[1], true);
 }
 function eyeDialog_on_confirmFileReplace_DLG_no_BTN($params=null) {
 	$GLOBALS['confirmFileReplace_DLG']->close();

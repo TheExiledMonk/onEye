@@ -129,10 +129,80 @@ function Simplebox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	divBox.style.height = myheight+'px';
 
 	if(params["border"] == 1){
-		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible,'Simplebox');
-	}else{
-		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible,'Simplebox');
+		divBox.className = "eyeSimplebox";
 	}
+
+	createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible,'Simplebox');
+}
+function Listbox_show(params,name,father,x,y,horiz,vert,checknum,cent) {
+	var myheight = params["height"];
+	var mywidth = params["width"];
+	var visible = params["visible"];
+    var orientation = params["orientation"];
+	var divBox = document.createElement('div');
+	divBox.setAttribute('id',name);
+    divBox.setAttribute('lastFocus','');
+    divBox.setAttribute('orientation',orientation);
+	divBox.style.width = mywidth+'px';
+	divBox.style.height = myheight+'px';
+    divBox.className = "eyeListbox_box";
+	if(params["border"] == 1){
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimplebox",cent,'px',visible,'Listbox');
+	}else{
+		createWidget(name+'_Container',father,divBox,horiz,vert,x,y,-1,-1,"eyeSimpleboxNoBorder",cent,'px',visible,'Listbox');
+	}
+}
+function Listbox_addItem(pid,name,checknum,sig,rowSize,text,id,image) {
+    var obj = document.getElementById(pid+'_'+name);
+    var orientation = obj.getAttribute('orientation');
+    if (orientation == 'vertical') {
+        var divBox = document.createElement('div');
+        divBox.setAttribute('id',pid+'_'+id);
+        divBox.style.height = rowSize + 'px';
+        if (image!=0) {
+            var divImage = document.createElement('img');
+            divImage.setAttribute('src',image);
+            divImage.className = "eyeListbox_img";
+            divBox.appendChild(divImage);
+        }
+        
+        var divText = document.createElement('div');
+        divText.appendChild(document.createTextNode(text));
+        divText.className = "eyeListbox_txt";
+        divText.setAttribute('id','txt_'+id);
+        divBox.appendChild(divText);
+        obj.appendChild(divBox);
+
+        divBox.onmouseover = function() {
+            var lastFocus = obj.getAttribute('lastFocus');
+            if (lastFocus.length == 0 || lastFocus != id) {
+                this.className = "eyeListbox_over";
+            }
+        }
+        divBox.onmouseout = function() {
+            var lastFocus = obj.getAttribute('lastFocus');
+            if (lastFocus.length == 0 || lastFocus != id) {
+                this.className = "eyeListbox_out";
+            }
+        }
+        divBox.onmousedown = function() {
+            var lastFocus = obj.getAttribute('lastFocus');
+            if (lastFocus.length == 0) {
+                obj.setAttribute('lastFocus',id);
+            } else {
+                var lastObj = document.getElementById(pid+'_'+lastFocus);
+				if(lastObj) {
+                	lastObj.className = "eyeListbox_out";
+				}
+                obj.setAttribute('lastFocus',id);
+            }
+            this.className = "eyeListbox_focus";
+        }
+        divBox.onmouseup = function() {
+            sendMsg(checknum,sig,eyeParam('id',id));
+        }
+    } else {
+    }
 }
 function Button_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	var highlight = params['highlight'];
@@ -3382,7 +3452,7 @@ function expandCollapseList(ul,cName,itemId) {
 						//That's is to evade some odd behaviour in the most sucking browser around the world,
 						//Our friend, IE!
 						//I've discover a secred style property to evade it, it's TETAS!
-						xGetElementById('bakcground').style.tetas = '';
+						xGetElementById('background').style.tetas = '';
 						return true;
 					}
 				}
@@ -3395,13 +3465,11 @@ function expandCollapseList(ul,cName,itemId) {
 			}
 			if (nbOfSubItems != 0 && itemHasSubList && itemId==null) {
 				item.className = cName;
-				xGetElementById('bakcground').style.tetas = '';
+				xGetElementById('background').style.tetas = '';
 			}
 		}
 	}
 }
-
-
 
 function processList(ul) {
 	if (!ul.childNodes || ul.childNodes.length==0) { return; }

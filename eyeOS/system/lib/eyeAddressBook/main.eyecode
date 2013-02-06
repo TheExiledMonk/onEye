@@ -92,6 +92,8 @@ function lib_eyeAddressBook_saveImage($params=null) {
 	imagecopyresampled( $tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
     imagesavealpha($tmp_img, true);
 	imagepng( $tmp_img, $newImagePath );
+	imagedestroy( $img );
+	imagedestroy( $tmp_img );
 	return true;
 }
 

@@ -75,8 +75,8 @@ function eyeMp3_run($params=null) {
 			
 			$myFlash = new Flash(array(
 				'father' => 'eyeMp3_Window_Content',
-				'flashParamsNames' => array('flashvars','menu','scale','bgcolor'),
-				'flashParamsValues' => array('src=index.php/.mp3&autostart=yes&loop=no&jscontrol=true','false','noscale','#c0c0c0'),
+				'flashParamsNames' => array('flashvars','menu','scale','bgcolor','wmode'),
+				'flashParamsValues' => array('src=index.php/.mp3&autostart=yes&loop=no&jscontrol=true','false','noscale','#c0c0c0','transparent'),
 				'height' => 64,
 				'name' => 'eyeMp3_Flash',
 				'src' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeMp3/swf/webplayer.swf&type=swf',

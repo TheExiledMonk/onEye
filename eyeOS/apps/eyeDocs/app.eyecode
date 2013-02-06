@@ -26,7 +26,7 @@ function eyeDocs_run($params=null) {
 	$content = "";
 	if($params[0]) {
 		$file = $params[0];
-		$title = utf8_basename($file).' - Word Processor';
+		$title = utf8_basename($file).' - ' . i18n('translate',array('Word Processor'));
 		$info = utf8_pathinfo($file);
 		$extension = utf8_strtolower($info['extension']);
 		$tCheckNum = proc('findChecknumByName',array('eyeX'));

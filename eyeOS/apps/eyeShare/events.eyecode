@@ -13,15 +13,15 @@ function eyeShare_on_shareSignal($params = ''){
 				$dest = EYE_ROOT .'/'. GROUPS_DIR .'/'. $group .'/'. FILES_GROUP_DIR .'/'. $filename;
 				if(!vfs('isdir',array($orig))){
 					if (vfs('copy', array($orig, $dest))) {
-						eyeX('messageBox',array('content'=>"File $filename shared correctly with group $group"));
+						eyeX('messageBox',array('content'=>"File %s shared correctly with group %s",'tokens'=>array($filename,$group)));
 					} elseif (vfs('fileExists', array($dest))) {
-						eyeX('messageBox',array('content'=>"File $filename already shared on group $group"));
+						eyeX('messageBox',array('content'=>"File %s already shared on group %s",'tokens'=>array($filename,$group)));
 					}
 				}else{
 					if (vfs('copyDir', array($orig, $dest))) {
-						eyeX('messageBox',array('content'=>"Directory $filename shared correctly with group $group"));
+						eyeX('messageBox',array('content'=>"Directory %s shared correctly with group %s",'tokens'=>array($filename,$group)));
 					} elseif (vfs('fileExists', array($dest))) {
-						eyeX('messageBox',array('content'=>"Directory $filename already shared on group $group"));
+						eyeX('messageBox',array('content'=>"Directory %s already shared on group %s",'tokens'=>array($filename,$group)));
 					}
 				}
 			}

@@ -239,7 +239,7 @@ function eyeCalendar_on_generalConfig(){
 	$myHiddenWindow = new Window(array('name'=>'hiddenWin','father'=>'configureCalendar_Content','type'=>INVISIBLE_WINDOW,'y'=>60,'x'=>0,'width'=>398,'height'=>266));
 	$myHiddenWindow->show();
 	global $myPid;
-	$title = new Label(array('name'=>'TittleConfig','father'=>'hiddenWin','text'=>'Ceneral Configuration:','x'=>15,'y'=>10));
+	$title = new Label(array('name'=>'TittleConfig','father'=>'hiddenWin','text'=>'General Configuration:','x'=>15,'y'=>10));
 	$title->show();
 	$title->setCSS(array('font-weight'=>'bold','font-size'=>15));
 	

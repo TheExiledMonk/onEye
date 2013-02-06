@@ -91,6 +91,18 @@ function eyeFeeds_createSettingsDialog($params=null) {
 	));
 	$line->show(0);
 	
+	//CANCEL BUTTON
+	$cancelButton = new Button(array(
+		'name' => 'settings_cancel_BTN',
+		'father' => 'settings_DLG_Content',
+		'caption' => 'Cancel',
+		'x' => 230,
+		'y' => 200,
+		'width' => 70,
+		'enabled' => 1
+	));
+	$cancelButton->show(0);
+	
 	//SAVE BUTTON
 	$saveButton = new Button(array(
 		'name' => 'settings_save_BTN',
@@ -102,16 +114,6 @@ function eyeFeeds_createSettingsDialog($params=null) {
 		'enabled' => 1
 	));
 	
-	$cancelButton = new Button(array(
-		'name' => 'settings_close_BTN',
-		'father' => 'settings_DLG_Content',
-		'caption' => 'Cancel',
-		'x' => 230,
-		'y' => 200,
-		'width' => 70,
-		'enabled' => 1
-	));
-	$cancelButton->show(0);
 	/**********************************************************/
 	//		INPUT ELEMENTS
 	/**********************************************************/
@@ -210,6 +212,12 @@ function eyeFeeds_createSettingsDialog($params=null) {
 	$saveButton->addFriend($cacheDurationTextbox);
 	$saveButton->addFriend($readingHistoryDurationTextbox);
 	$saveButton->show(0);
+}
+
+function eyeFeeds_on_settings_cancel_BTN($params=null) {
+	if (is_object($GLOBALS['settings_DLG'])) {
+		$GLOBALS['settings_DLG']->close();
+	}
 }
 
 function eyeFeeds_on_settings_save_BTN($params=null) {

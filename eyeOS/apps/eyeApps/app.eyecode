@@ -77,7 +77,7 @@ function eyeApps_run($params = '') {
 		$xml = getAppInfo($folder);
 		if ($xml['package'][0]['type'][0] == 'Application') {
 			$myIcon = new Icon(array(
-				'content' => array($xml['package'][0]['name'][0]),
+				'content' => array($folder),
 				'draggable' => 0,
 				'father' => 'eyeApps_Container',
 				'image' => $xml['package'][0]['icon'][0],
@@ -98,7 +98,7 @@ function eyeApps_run($params = '') {
 			}
 			$i++;
 			$myWidgetDrag = new widgetDrag(array(
-				'content' => array('app',$xml['package'][0]['name'][0]),
+				'content' => array('app',$folder),
 				'dragAlpha' => 75,
 				'dragCss' => array(array('border'),array('1px #000000 dotted')),
 				'father' => $myIcon->name . '_Container',

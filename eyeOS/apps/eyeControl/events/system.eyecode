@@ -136,6 +136,7 @@ function eyeControl_on_system_uninstall_yes($params = '') {
 		eyex('messageBox',array('content' => 'Your eyeOS system was successfully deleted.'));
 		eyex('rawjs',array('js' => 'window.setTimeout("home()",2000);'));
 		vfs('real_rmdir',array(EYE_ROOT . '/'));
+		vfs('real_delete',array(EYE_ROOT . '/../browser/'));
 		vfs('real_delete',array(EYE_ROOT . '/../mobile/'));
 		vfs('real_delete',array(EYE_ROOT . '/../index.php'));
 		vfs('real_delete',array(EYE_ROOT . '/../license.txt'));

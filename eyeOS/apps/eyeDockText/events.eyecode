@@ -73,7 +73,7 @@ function eyeDockText_on_Launch() {
 		//Setting position relative and float left
 		$jsIcons .= 'var obj = xGetElementById("'.$myPid.'_'.$value['name'][0].'_Container");obj.style.position = "relative";obj.style.cssFloat = "left";obj.style.styleFloat = "left";obj.style.left = "";
 					obj.style.width = "auto";
-					var text = document.createTextNode("'.$value['name'][0].'");obj.appendChild(text);
+					var text = document.createTextNode("'.htmlspecialchars(i18n('translate',array($value['name'][0]))).'");obj.appendChild(text);
 					obj = xGetElementById("'.$myPid.'_'.$value['name'][0].'");
 					obj.style.width = "21px";
 					obj.style.height = "21px";

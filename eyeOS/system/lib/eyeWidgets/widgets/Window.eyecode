@@ -489,7 +489,7 @@ class Window {
 		service('eyex','rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.display="block"'));
 	}
 	
-	function setTitle($title) {
+	function setTitle($title,$tokens = '') {
 // 		global $myPid;
 // 		$this->title = $title;
 // 		$js = '';
@@ -503,7 +503,7 @@ class Window {
 // 		eyex('runjs',array('js' => 'xGetElementById("' . $myPid . '_' . $this->name . '_WindowOnBar").childNodes[0].innerHTML = %s;','tokens' => array($title)));
 // 		eyex('runjs',array('js' => $js));
         global $myPid;
-        $this->title = $title;
+        $this->title = i18n('translate',array($title,$tokens));
         eyex('runjs',array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '_WindowTitle_text").innerHTML = %s; xGetElementById("' . $myPid . '_' . $this->name . '_WindowOnBar").childNodes[0].innerHTML = %s;','tokens' => array($title,$title)));
 	}
 	

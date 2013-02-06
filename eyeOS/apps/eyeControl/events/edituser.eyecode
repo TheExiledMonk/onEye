@@ -39,8 +39,7 @@ function eyeControl_on_edituser_save($params = '') {
 	
 	$array['fullname'] = $GLOBALS['eyeControl_edituser_textbox_fullname']->text;
 	$array['email'] = $GLOBALS['eyeControl_edituser_textbox_email']->text;
-	if($GLOBALS['eyeControl_edituser_textbox_expire']->text == "Never" 
-		|| $GLOBALS['eyeControl_edituser_textbox_expire']->text == "never") {
+	if (utf8_strtolower($GLOBALS['eyeControl_edituser_textbox_expire']->text) == 'never' || utf8_strtolower($GLOBALS['eyeControl_edituser_textbox_expire']->text) == utf8_strtolower(i18n('translate',array('Never')))) {
 		$exp = 0;
 	} else {
 		$date = explode("/",$GLOBALS['eyeControl_edituser_textbox_expire']->text);
@@ -96,6 +95,7 @@ function eyeControl_on_edituser_add($params = '') {
 		$array['mngUser'][] = $user;
 		um('updateUser',$array);
 		$xml2 = um('retrieveUser',array($edituser));
+		$mngUsers = '';
 		foreach ($xml2['eyeUser'][0]['mngUser'] as $mngUser) {
 			($mngUsers) ? $mngUsers .= ', ' . $mngUser : $mngUsers = $mngUser;
 		}
@@ -112,6 +112,7 @@ function eyeControl_on_edituser_remove($params = '') {
 	$user = $GLOBALS['eyeControl_edituser_textbox_maintained_users']->text;
 	$xml = um('retrieveUser',array($edituser));
 	$array['username'] = $edituser;
+	$mngUsers = '';
 	foreach ($xml['eyeUser'][0]['mngUser'] as $mngUser) {
 		if ($mngUser != $user) {
 			$array['mngUser'][] = $mngUser;

@@ -177,7 +177,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 				//Serializamos ubicacion del archivo
 				$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
 				reqLib('eyeWidgets','serialize',array($myHidden));
-				$GLOBALS['eyeDocsWND']->setTitle(utf8_basename($file).' - Word Processor');
+				$GLOBALS['eyeDocsWND']->setTitle(utf8_basename($file).' - ' . i18n('translate',array('Word Processor')));
 			}
 		} elseif(utf8_substr($file,-4) == ".odt" || $params['fileType'][0] == "*.odt") {
 			$udir = um('getCurrentUserDir').'/tmp/'.$myPid. '.html';
@@ -209,7 +209,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 			//Serializamos ubicacion del archivo
 			$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeNotesWND','text'=>$file));
 			reqLib('eyeWidgets','serialize',array($myHidden));
-			$GLOBALS['eyeDocsWND']->setTitle(utf8_basename($file).' - Word Processor');
+			$GLOBALS['eyeDocsWND']->setTitle(utf8_basename($file).' - ' . i18n('translate',array('Word Processor')));
 		} else {
 			if (utf8_substr($file,-7) != ".eyedoc" || $params['fileType'][0] == "*.eyedoc") {
 				$file = $file.'.eyedoc';
@@ -224,7 +224,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 			fclose($fp);
 			$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeDocsWND','text'=>$file));
 			reqLib('eyeWidgets','serialize',array($myHidden));
-			$GLOBALS['eyeDocsWND']->setTitle(utf8_basename($file).' - Word Processor');
+			$GLOBALS['eyeDocsWND']->setTitle(utf8_basename($file).' - ' . i18n('translate',array('Word Processor')));
 			eyeFiles('update',array(dirname($file)));
 			service('eyex','messageBox',array('content'=>'Document saved successfully.'));
 		}

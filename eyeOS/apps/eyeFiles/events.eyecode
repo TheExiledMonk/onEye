@@ -90,42 +90,31 @@ function eyeFiles_on_Fullscreen($params = '') {
 	}
 	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Toolbar");
 	for (var i = 0; i < e.childNodes.length; i++) {
-		if (e.childNodes[i].id == "'.$myPid.'_Fullscreen_Container") {
+		if (e.childNodes[i].id == "' . $myPid . '_Fullscreen_Container") {
 			e.childNodes[i].className = "blockbarItem' . $press . '_right";
 		}
 	}'));
 }
 
 function eyeFiles_on_Back($params = '') {
-	$stack = $GLOBALS['eyeFiles_Hidden_Stack']->text;
-	$stackPosition = intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text);
-
-	if($stackPosition == 1) {
-		return true;
+	global $myPid;
+	$_SESSION['eyeFiles'][$myPid]['history']['position']--;
+	if ($_SESSION['eyeFiles'][$myPid]['history']['position'] < 0) {
+		$_SESSION['eyeFiles'][$myPid]['history']['position'] = 0;
+		eyeFiles_on_OpenPath(array($GLOBALS['eyeFiles_Hidden_Path']->text . '/../','nohistory' => 1));
+	} else {
+		eyeFiles_on_OpenPath(array($_SESSION['eyeFiles'][$myPid]['history']['list'][$_SESSION['eyeFiles'][$myPid]['history']['position']],'nohistory' => 1));
 	}
-
-	$stackPosition--;
-	$url = $stack[$stackPosition-1];
-
-	$GLOBALS['eyeFiles_Hidden_StackPosition']->setText($stackPosition);
-
-	eyeFiles_on_OpenPath(array($url,'stack'=>0));
 }
 
 function eyeFiles_on_Next($params = '') {
-	$stack = $GLOBALS['eyeFiles_Hidden_Stack']->text;
-	$stackPosition = intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text);
-
-	if($stackPosition == count($stack)) {
-		return true;
+	global $myPid;
+	$_SESSION['eyeFiles'][$myPid]['history']['position']++;
+	if ($_SESSION['eyeFiles'][$myPid]['history']['list'][$_SESSION['eyeFiles'][$myPid]['history']['position']]) {
+		eyeFiles_on_OpenPath(array($_SESSION['eyeFiles'][$myPid]['history']['list'][$_SESSION['eyeFiles'][$myPid]['history']['position']],'nohistory' => 1));
+	} else {
+		$_SESSION['eyeFiles'][$myPid]['history']['position']--;
 	}
-
-	$stackPosition++;
-	$url = $stack[$stackPosition-1];
-
-	$GLOBALS['eyeFiles_Hidden_StackPosition']->setText($stackPosition);
-
-	eyeFiles_on_OpenPath(array($url,'stack'=>0));
 }
 
 function eyeFiles_on_Home($params = '') {
@@ -291,26 +280,10 @@ function eyeFiles_on_OpenPath($params = '') {
 	$type = $path[1];
 	$path = $path[0];
 
-	//when going back or forward, the stack of paths should not be updated
-	if(!isset($params['stack']) || $params['stack'] == 1) {
-		$stack = $GLOBALS['eyeFiles_Hidden_Stack']->text;
-		$stackPosition = $GLOBALS['eyeFiles_Hidden_StackPosition']->text;
-		if($stackPosition != count($stack)) {
-			$size = count($stack);
-			array_splice($stack,$stackPosition,$size);
-		}
-
-		if(count($stack) > 0) {
-			if($stack[count($stack)-1] != $path) {
-				$stack[] = $path;
-				$GLOBALS['eyeFiles_Hidden_Stack']->setText($stack);
-				$GLOBALS['eyeFiles_Hidden_StackPosition']->setText(intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text)+1);
-			}
-		} else {
-			$stack[] = $path;
-			$GLOBALS['eyeFiles_Hidden_Stack']->setText($stack);
-			$GLOBALS['eyeFiles_Hidden_StackPosition']->setText(intval($GLOBALS['eyeFiles_Hidden_StackPosition']->text)+1);
-		}
+	if (!$params['nohistory'] && $_SESSION['eyeFiles'][$myPid]['history']['list'][$_SESSION['eyeFiles'][$myPid]['history']['position']] != $type . '://' . $show) {
+		$_SESSION['eyeFiles'][$myPid]['history']['position']++;
+		$_SESSION['eyeFiles'][$myPid]['history']['list'] = array_slice($_SESSION['eyeFiles'][$myPid]['history']['list'],0,$_SESSION['eyeFiles'][$myPid]['history']['position']);
+		$_SESSION['eyeFiles'][$myPid]['history']['list'][] = $type . '://' . $show;
 	}
 
 	if ($GLOBALS['eyeFiles_Hidden_Action']->text != '') {
@@ -343,25 +316,25 @@ function eyeFiles_on_OpenPath($params = '') {
 	if ($type == 'trash') {
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->hide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->unhide();
-		$hide = 'e.childNodes[i].id == "'.$myPid.'_Upload_Container" || e.childNodes[i].id == "'.$myPid.'_NewFolder_Container" || e.childNodes[i].id == "'.$myPid.'_NewFile_Container"';
-		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "'.$myPid.'_EmptyTrash_Container"';
+		$hide = 'e.childNodes[i].id == "' . $myPid . '_Upload_Container" || e.childNodes[i].id == "' . $myPid . '_NewFolder_Container" || e.childNodes[i].id == "' . $myPid . '_NewFile_Container"';
+		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "' . $myPid . '_EmptyTrash_Container"';
 	} elseif ($type == 'groups' && $show == '/' || $type == 'users' && substr_count($show,'/') < 2) {
 		$eyeFiles_noactions = 0;
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->hide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->hide();
-		$hide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "'.$myPid.'_Upload_Container" || e.childNodes[i].id == "'.$myPid.'_NewFolder_Container" || e.childNodes[i].id == "'.$myPid.'_NewFile_Container" || e.childNodes[i].id == "'.$myPid.'_EmptyTrash_Container"';
+		$hide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "' . $myPid . '_Upload_Container" || e.childNodes[i].id == "' . $myPid . '_NewFolder_Container" || e.childNodes[i].id == "' . $myPid . '_NewFile_Container" || e.childNodes[i].id == "' . $myPid . '_EmptyTrash_Container"';
 		$unhide = '1 == 2';
 	} else {
-		$hide = 'e.childNodes[i].id == "'.$myPid.'_EmptyTrash_Container"';
-		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "'.$myPid.'_Upload_Container" || e.childNodes[i].id == "'.$myPid.'_NewFolder_Container" || e.childNodes[i].id == "'.$myPid.'_NewFile_Container"';
+		$hide = 'e.childNodes[i].id == "' . $myPid . '_EmptyTrash_Container"';
+		$unhide = 'e.childNodes[i].id == "ActionsLine" || e.childNodes[i].id == "' . $myPid . '_Upload_Container" || e.childNodes[i].id == "' . $myPid . '_NewFolder_Container" || e.childNodes[i].id == "' . $myPid . '_NewFile_Container"';
 		$GLOBALS['eyeFiles_Box_Actions_menu_files_Container']->unhide();
 		$GLOBALS['eyeFiles_Box_Actions_menu_trash_Container']->hide();
 	}
 	eyex('rawjs',array('js' => 'e = xGetElementById("' . $myPid . '_eyeFiles_Toolbar");
 	for (var i = 0; i < e.childNodes.length; i++) {
-		if (e.childNodes[i].id == "'.$myPid.'_' . ucfirst($type) . '_Container") {
+		if (e.childNodes[i].id == "' . $myPid . '_' . ucfirst($type) . '_Container") {
 			e.childNodes[i].className = "blockbarItemPress";
-		} else if (e.childNodes[i].id == "'.$myPid.'_Home_Container" || e.childNodes[i].id == "'.$myPid.'_Groups_Container" || e.childNodes[i].id == "'.$myPid.'_Trash_Container" || e.childNodes[i].id == "'.$myPid.'_Users_Container" || e.childNodes[i].id == "'.$myPid.'_Real_Container") {
+		} else if (e.childNodes[i].id == "' . $myPid . '_Home_Container" || e.childNodes[i].id == "' . $myPid . '_Groups_Container" || e.childNodes[i].id == "' . $myPid . '_Trash_Container" || e.childNodes[i].id == "' . $myPid . '_Users_Container" || e.childNodes[i].id == "' . $myPid . '_Real_Container") {
 			e.childNodes[i].className = "blockbarItem";
 		}
 		if (' . $unhide . ') {

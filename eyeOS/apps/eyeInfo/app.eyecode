@@ -83,7 +83,7 @@ function eyeInfo_run($params = '') {
 	));
 	$myImagebox->show();
 	
-	$team = array('Alejandro Fiestas','Anaël Ollier','Daniel Gil','Jose Carlos Norte','Lars Knickrehm','Marc Cercós','Pau Garcia-Milà','Pol Watine','Matthew Powell');
+	$team = array('Alejandro Fiestas','Anaël Ollier','Daniel Gil','José Carlos Norte','Lars Knickrehm','Marc Cercós','Pau Garcia-Milà','Pol Watine','Matthew Powell');
 	shuffle($team);
 	$y = 246 / (2 + count($team));
 	

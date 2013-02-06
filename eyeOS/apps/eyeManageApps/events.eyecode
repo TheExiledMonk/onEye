@@ -200,7 +200,7 @@ function eyeManageApps_on_doCreate($params=null) {
 						);
 		$config['eyeDock'][0]['Group'][] = $newGroup;
 		eyeXML('setXMLConfig', array(CONFIG_NAME, CONFIG_NAME.'.xml', $config));
-		eyeX('messageBox', array('content' => 'Group '.$group.' created'));
+		eyeX('messageBox', array('content' => 'Group %s created','tokens' => array($group)));
 		eyeX('sendMessage', array('msg' => 'ListApps', 'params' => '.'));
 		eyeX('sendMessage', array('msg' => 'refreshDock', 'params' => '.'));
 	}

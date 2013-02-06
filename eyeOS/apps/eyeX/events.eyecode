@@ -23,9 +23,13 @@
 
 function eyeX_on_baseapp($params = '') {
 	global $procInfo;
-	eyeX_on_resizedBrowser($params);
+	$_SESSION['SCREEN']['eyeApps']['height'] = 0;
+	$_SESSION['SCREEN']['eyeApps']['width'] = 0;
 	$_SESSION['SCREEN']['eyeApps']['x'] = 0;
 	$_SESSION['SCREEN']['eyeApps']['y'] = 0;
+	$_SESSION['SCREEN']['height'] = 0;
+	$_SESSION['SCREEN']['width'] = 0;
+	eyeX_on_resizedBrowser($params);
 	$_SESSION['SCREEN']['flash'] = $params['flash'][0];
 	$_SESSION['SCREEN']['flash_version'] = $params['flashmajor'][0];
 	if (!isset($_SESSION['SCREEN']['refresh'])) {
@@ -43,13 +47,13 @@ function eyeX_on_baseapp($params = '') {
 
 	eyex('createDiv',array('class' => 'systemConsole','father' => 'eyeApps','name' => $tty.'_tty','nopid' => 1,'removepid' => 1));
 	eyeX('updateCss',array('name'=> $tty.'_tty','property'=>'display','value'=>'none'));
+	eyex('rawjs',array('js' => 'xGetElementById("eyex-info").style.display = "none"; xGetElementById("eyex-powered").style.display = "none";'));
 	$pid = proc('findPidByName',array(BASE_APP));
 	if ($pid) {
 		proc('getTask',array($pid));
 	} else {
 		proc('launch',array(BASE_APP));
 	}
-	eyex('rawjs',array('js' => 'document.getElementById("eyex-info").style.display = "none"; document.getElementById("eyex-powered").style.display = "none";'));
 }
 
 function eyeX_on_resizedBrowser($params = '') {

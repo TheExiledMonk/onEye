@@ -104,9 +104,9 @@ foreach ($allUsers as $user) {
 	if (!$lastlogin) {
 		$lastlogin = ' ';
 	}
-	($userXML['expirationDate'][0]) ? $expirationDate = date('d/m/Y',$userXML['expirationDate'][0]) : $expirationDate = 'Never';
+	($userXML['expirationDate'][0]) ? $expirationDate = date('d/m/Y',$userXML['expirationDate'][0]) : $expirationDate = i18n('translate',array('Never'));
 	if (!$expirationDate || intval($userXML['expirationDate'][0]) == 0) {
-		$expirationDate = 'Never';
+		$expirationDate = i18n('translate',array('Never'));
 	}
 	$myTable->addRow(array(
 		$user,

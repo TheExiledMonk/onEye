@@ -27,7 +27,7 @@ function eyeMedia_run($params=null) {
 	
 	$wndMediaVault = new Window(array(
 		'name'=>'eyeMedia_WND',
-		'title'=>'eyeMedia',
+		'title'=>'Media Player',
 		'father'=>'eyeApps',
 		'type'=>NORMAL_WINDOW,
 		'sendResizeMsg'=>1,
@@ -141,13 +141,13 @@ function eyeMedia_run($params=null) {
 	$tlbToolbar->show();
 	$tlbToolbar->addItem('tlbToolbar_Open_Folder','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/newfolder.png','Add Folder');
 	$tlbToolbar->addItem('tlbToolbar_Add_File','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit_add.png','Add File');
-	$tlbToolbar->addItem('tlbToolbar_Remove_File','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit_remove.png','Remove File', $tlbPlaylist);
+	$tlbToolbar->addItem('tlbToolbar_Remove_File','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit_remove.png','Remove File', $tblPlaylist);
 	$tlbToolbar->addItem('tlbToolbar_Clear','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/editclear.png','Clear List');
 	$tlbToolbar->addLine();
 	$tlbToolbar->addItem('tlbToolbar_Play','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/1rightarrow.png','Play', $txtStatus);
 	$tlbToolbar->addItem('tlbToolbar_Stop','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/button_cancel.png','Stop', $txtStatus);
-	$tlbToolbar->addItem('tlbToolbar_Previous','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/previous.png','Previous', $tlbPlaylist);
-	$tlbToolbar->addItem('tlbToolbar_Next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/next.png','Next', $tlbPlaylist);
+	$tlbToolbar->addItem('tlbToolbar_Previous','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/previous.png','Previous', $tblPlaylist);
+	$tlbToolbar->addItem('tlbToolbar_Next','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/next.png','Next', $tblPlaylist);
 	$tlbToolbar->addLine();
 	$tlbToolbar->addItem('tlbToolbar_Repeat','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/refresh.png','Repeat');
 	$tlbToolbar->addItem('tlbToolbar_Shuffle','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/edit-undo.png','Shuffle');

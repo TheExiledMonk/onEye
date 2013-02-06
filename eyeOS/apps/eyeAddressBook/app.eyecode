@@ -53,7 +53,7 @@ function eyeAddressBook_run($params=null) {
 	$myToolbar->addLine();
 	$myToolbar->addItem('sendMessage','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/sendmessage.png','Send Message');
 	$myToolbar->addLine();
-	$myToolbar->addItem('settings','index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeAddressBook/images/settings.png','Settings');
+	$myToolbar->addItem('settings','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/settings.png','Settings');
 	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png','Full Screen','',1);
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 	
@@ -127,7 +127,7 @@ function eyeAddressBook_run($params=null) {
 		'x' => 10,
 		'horiz' => 1,
 		'y' => 64,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeAddressBook/images/search.png'
+		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeAddressBook/search.png'
 	));
 	$imgSearch->show();
 	

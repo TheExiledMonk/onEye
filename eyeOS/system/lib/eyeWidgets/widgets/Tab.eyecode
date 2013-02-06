@@ -186,6 +186,13 @@ class Tab {
 		return $ret;
 	}
 	
+	function remove() {
+		global $myPid;
+		$name = $this->name.'_Container';
+		service('eyex','removeWidget',array('name'=>$name));
+		eyeWidgets('singleUnserialize',array($this->name));
+	}
+	
 	function removeTab($tabid) {
 		global $myPid;
 		$name = 'tab_'.$myPid.'_'.$this->name;

@@ -110,6 +110,14 @@ function eyeDesk_run($params = '') {
 		eyex('setWallpaper',array('path' => 'index.php?checknum=' . $checknum . '&msg=getWallpaper','repeat' => $xml['eyeDesk'][0]['wallpaperRepeat'][0],'center' => $xml['eyeDesk'][0]['wallpaperCenter'][0]));
 	}
 	
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDesk/events' . EYE_CODE_EXTENSION);
+	eyeDesk_on_OpenPath();
+	
+	eyex('messageBox',array('content' => 'Welcome to %s, %s.','tokens' => array(EYEOS_HOSTNAME,'<strong>' . $currentUser . '</strong>')));
+	
+	addListenerLibraryCall('onEvent','eyeFiles','update');
+	addListenerServiceCall('onResized','eyex','resizedBrowser',1);
+	
 	if ($params[0] == 'autorun') {
 		foreach ($xml['eyeDesk'][0]['autolaunch'] as $value) {
 			$pid = proc('findPidByName',array($value));
@@ -140,13 +148,5 @@ function eyeDesk_run($params = '') {
 			}
 		}
 	}
-	
-	addListenerLibraryCall('onEvent','eyeFiles','update');
-	addListenerServiceCall('onResized','eyex','resizedBrowser',1);
-	
-	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDesk/events' . EYE_CODE_EXTENSION);
-	eyeDesk_on_OpenPath();
-	
-	eyex('messageBox',array('content' => 'Welcome to %s, %s.','tokens' => array(EYEOS_HOSTNAME,'<strong>' . $currentUser . '</strong>')));
 }
 ?>

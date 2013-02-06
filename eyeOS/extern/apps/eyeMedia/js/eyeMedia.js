@@ -26,13 +26,13 @@ function eyeMedia_Next(myPid, Keep_Playing, Check_Num){
 	while (Current_Row.className != "sort-table-select")
 		Current_Row = Current_Row.nextSibling;
 	Current_Row.className = "";
-	if (document.getElementById('tlbToolbar_Shuffle_Container').className == 'blockbarItemPress') {
+	if (document.getElementById(myPid+'_tlbToolbar_Shuffle_Container').className == 'blockbarItemPress') {
 		var Random_Number = Math.floor(Math.random()*(Current_Row.parentNode.childNodes.length));
 		Current_Row = Current_Row.parentNode.childNodes[Random_Number];
 		eyeMedia_NextPreviousDo(myPid, Keep_Playing, Check_Num, Current_Row);
 	} else {
 		if (!(Current_Row.nextSibling)) {
-			if (document.getElementById('tlbToolbar_Repeat_Container').className == 'blockbarItemPress') {
+			if (document.getElementById(myPid+'_tlbToolbar_Repeat_Container').className == 'blockbarItemPress') {
 				Current_Row = Current_Row.parentNode.firstChild;
 				eyeMedia_NextPreviousDo(myPid, Keep_Playing, Check_Num, Current_Row);
 			}
@@ -49,7 +49,7 @@ function eyeMedia_Previous(myPid, Keep_Playing, Check_Num){
 		Current_Row = Current_Row.nextSibling;
 	Current_Row.className = "";
 	if (!(Current_Row.nextSibling)) {
-		if (document.getElementById('tlbToolbar_Repeat_Container').className == 'blockbarItemPress') {
+		if (document.getElementById(myPid+'_tlbToolbar_Repeat_Container').className == 'blockbarItemPress') {
 			Current_Row = Current_Row.parentNode.lastChild;
 			eyeMedia_NextPreviousDo(myPid, Keep_Playing, Check_Num, Current_Row);
 		}

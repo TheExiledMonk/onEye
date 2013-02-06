@@ -25,8 +25,8 @@ global $checknum;
 global $sessionId;
 $myFlash = new Flash(array(
 	'father' => $advancedTab,
-	'flashParamsNames' => array('checknum','flashFix','flashvars','scriptUrl','sid','signal'),
-	'flashParamsValues' => array($checknum,FLASH_UPLOAD_FIX,'autostart=yes&checknum=' . $checknum . '&flashFix=' . FLASH_UPLOAD_FIX . '&jscontrol=true&loop=no&scriptUrl=index.php&sid=' . $sessionId . '&signal=advanced_Do','index.php',$sessionId,'advanced_Do'),
+	'flashParamsNames' => array('checknum','flashFix','flashvars','scriptUrl','sid','signal','wmode'),
+	'flashParamsValues' => array($checknum,FLASH_UPLOAD_FIX,'autostart=yes&checknum=' . $checknum . '&flashFix=' . FLASH_UPLOAD_FIX . '&jscontrol=true&loop=no&scriptUrl=index.php&sid=' . $sessionId . '&signal=advanced_Do','index.php',$sessionId,'advanced_Do','transparent'),
 	'height' => 175,
 	'name' => 'eyeUpload_advanced_Flash',
 	'src' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeUpload/swf/eyeuploadx.swf&type=swf',

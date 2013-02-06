@@ -40,7 +40,7 @@ function eyeControl_on_newuser_save($params = '') {
 	$email = $GLOBALS['eyeControl_newuser_textbox_email']->text;
 	$expirationDate = $GLOBALS['eyeControl_newuser_textbox_expire']->text;
 	
-	if($expirationDate == "Never" || $expirationDate == "never") {
+	if (utf8_strtolower($expirationDate) == 'never' || utf8_strtolower($expirationDate) == utf8_strtolower(i18n('translate',array('Never')))) {
 		$expirationDate = 0;
 	} else {
 		$date = explode("/",$expirationDate);

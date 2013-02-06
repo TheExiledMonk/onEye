@@ -244,7 +244,7 @@ function eyeFTP_ftpGetToeyeOS_file($filePath,$localDirPath) {
 						$filePath,
 						FTP_BINARY,
 						0) !== true) {
-		eyeFTP_logConsole('Error while downloading file "'.$filename.'"! Transfer aborted.', null, EYEFTP_LOGSTYLE_ERROR);
+		eyeFTP_logConsole('Error while downloading file "%s"! Transfer aborted.', array($filename), EYEFTP_LOGSTYLE_ERROR);
 		return false;
 	}
 	fclose($fp);

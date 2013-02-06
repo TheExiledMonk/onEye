@@ -263,7 +263,7 @@ function eyeMessages_run($params=null) {
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeMessagesWND_Content'));
 	$myToolbar->show();
 	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&extern=images/toolbar/message_new.png&theme=1','New');
-	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&extern=images/toolbar/message_open.png&theme=1','Read',array($myTable));
+	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&extern=images/toolbar/message_open.png&theme=1','(do) Read',array($myTable));
 	$myToolbar->addLine();
 	$myToolbar->addItem('gotosection', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=images/toolbar/message_refresh.png&theme=1', 'Refresh');
 	$myToolbar->addLine();

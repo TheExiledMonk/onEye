@@ -167,20 +167,18 @@ class File {
 	}
 	
 	function checkfile() {
-		if($this->multiple != 0){
-			foreach($_FILES[$this->filename]['tmp_name'] as $index=>$file){
-				if($_FILES[$this->filename]['error'][$index] != 0){
+		if ($this->multiple != 0 && is_array($_FILES[$this->filename]['tmp_name']) && count($_FILES[$this->filename]['tmp_name'])) {
+			foreach ($_FILES[$this->filename]['tmp_name'] as $index => $file) {
+				if ($_FILES[$this->filename]['error'][$index] != 0) {
 					continue;
 				}
-				if(!is_uploaded_file($file)){
+				if (!is_uploaded_file($file)) {
 					return false;
 				}
 			}
 			return true;
-		}else{
-			if (is_uploaded_file($_FILES[$this->filename]['tmp_name'])) {
+		} else if (is_uploaded_file($_FILES[$this->filename]['tmp_name'])) {
 				return true;
-			}
 		}
 		return false;
 	}

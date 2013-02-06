@@ -45,12 +45,12 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 	}
 	
 	$myContainer = new Container(array(
-		'name' => 'eyeNav_box',
 		'father' => 'eyeNav_window_box',
-		'x' => 0,
-		'y' => 0,
+		'height' => 0,
+		'name' => 'eyeNav_box',
 		'width' => 140,
-		'height' => 0
+		'x' => 0,
+		'y' => 0
 	));
 	$myContainer->show();
 	eyeWidgets('serialize',array($myContainer));
@@ -62,8 +62,8 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 	if (!is_object($GLOBALS['eyeNav_hidden_bookmarks_url'])) {
 		// $myHidden
 		$myHidden = new Hidden(array(
-			'name' => 'eyeNav_hidden_bookmarks_url',
 			'father' => 'eyeNav_box',
+			'name' => 'eyeNav_hidden_bookmarks_url',
 			'text' => $url
 		));
 		$myHidden->show();
@@ -73,25 +73,26 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 	}
 	
 	$myLabel = new Label(array(
-		'name' => 'eyeNav_box_label_0',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_box_label_0',
 		'text' => $xml['eyeNav'][0]['bookmarks'][0]['title'][0],
 		'x' => 10,
 		'y' => 0
 	));
 	$myLabel->show();
 	$myLabel->setCss(array(
-		'font-size'=>'12px',
 		'color' => '#044d85',
-		'font-weight' => 'bold'
+		'font-size' => '12px',
+		'font-weight' => 'bold',
+		'white-space' => 'nowrap'
 	));
 	
 	$myLine = new Line(array(
-		'name' => 'eyeNav_line_bookmarks_0',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_line_bookmarks_0',
+		'width' => 130,
 		'x' => 10,
-		'y' => 15,
-		'width' => 130
+		'y' => 15
 	));
 	$myLine->show();
 	
@@ -100,72 +101,74 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 	foreach($xml['eyeNav'][0]['bookmarks'][0]['category'] as $category) {
 		if ($category['link']) {
 			$myLabel = new Label(array(
-				'name' => 'eyeNav_box_label_' . $x,
 				'father' => 'eyeNav_box',
+				'name' => 'eyeNav_box_label_' . $x,
 				'text' => $category['name'][0],
 				'x' => 20,
 				'y' => $boxY
 			));
 			$myLabel->show();
 			$myLabel->setCss(array(
-				'font-size'=>'12px',
-				'color' => '#044d85'
+				'color' => '#044d85',
+				'font-size' => '12px',
+				'white-space' => 'nowrap'
 			));
 			$x++;
 			$boxY += 20;
 			foreach($category['link'] as $link) {
 				$myHidden = new Hidden(array(
-					'name' => 'eyeNav_box_hiddenURL_' . $x,
 					'father' => 'eyeNav_box',
+					'name' => 'eyeNav_box_hiddenURL_' . $x,
 					'text' => $link['url'][0]
 				));
 				$myHidden->show();
 				$myImagebox = new Imagebox(array(
-					'name' => 'eyeNav_box_imagebox_' . $x,
 					'father' => 'eyeNav_box',
+					'name' => 'eyeNav_box_imagebox_' . $x,
+					'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/link.png',
 					'x' => 30,
-					'y' => $boxY,
-					'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/link.png'
+					'y' => $boxY
 				));
 				$myImagebox->show();
 				$myImagebox->setCss(array(
-					'cursor' => 'Pointer'
+					'cursor' => 'pointer'
 				));
 				eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeNav_box_imagebox_' . $x . '_Container").onclick = function() { window.open("' . $link['url'][0] . '"); return false; }'));
 				$myLabel = new Label(array(
-					'name' => 'eyeNav_box_label_' . $x,
+					'disablemsg' => 0,
 					'father' => 'eyeNav_box',
+					'name' => 'eyeNav_box_label_' . $x,
+					'signal' => 'bookmarks_label',
 					'text' => $link['name'][0],
 					'x' => 46,
-					'y' => $boxY,
-					'disablemsg' => 0,
-					'signal' => 'bookmarks_label'
+					'y' => $boxY
 				));
 				$myLabel->addFriend($myHidden);
 				$myLabel->show();
 				$myLabel->setCss(array(
-					'cursor' => 'Pointer'
+					'cursor' => 'pointer',
+					'white-space' => 'nowrap'
 				));
 				if ($category['name'][0] == 'Uncategorized') {
 					$myHidden = new Hidden(array(
-						'name' => 'eyeNav_box_hidden_del_' . $x,
 						'father' => 'eyeNav_box',
+						'name' => 'eyeNav_box_hidden_del_' . $x,
 						'text' => $link['name'][0]
 					));
 					$myHidden->show();
 					$myImagebox = new Imagebox(array(
-						'name' => 'eyeNav_box_imagebox_del_' . $x,
-						'father' => 'eyeNav_box',
-						'x' => 135,
-						'y' => $boxY,
 						'disableMsg' => 0,
+						'father' => 'eyeNav_box',
+						'name' => 'eyeNav_box_imagebox_del_' . $x,
 						'signal' => 'delBookmark',
-						'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/delete.png'
+						'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/delete.png',
+						'x' => 135,
+						'y' => $boxY
 					));
 					$myImagebox->addFriend($myHidden);
 					$myImagebox->show();
 					$myImagebox->setCss(array(
-						'cursor' => 'Pointer'
+						'cursor' => 'pointer'
 					));
 				}
 				$boxY += 20;
@@ -176,8 +179,8 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 	}
 	
 	$myLine = new Line(array(
-		'name' => 'eyeNav_line_bookmarks_1',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_line_bookmarks_1',
 		'x' => 10,
 		'y' => $boxY,
 		'width' => 130
@@ -185,27 +188,27 @@ function eyeNav_lib_ShowBookmarks($params = array()) {
 	$myLine->show();
 	
 	$myButton = new Button(array(
-		'name' => 'eyeNav_button_bookmarks_open',
-		'father' => 'eyeNav_box',
-		'signal' => 'open_bookmarks',
 		'caption' => 'Open bookmarks',
+		'father' => 'eyeNav_box',
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png',
+		'name' => 'eyeNav_button_bookmarks_open',
+		'signal' => 'open_bookmarks',
 		'width' => 100,
 		'x' => 10,
-		'y' => $boxY + 10,
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'
+		'y' => $boxY + 10
 	));
 	$myButton->show();
 	/*$boxY += 25;
 	
 	$myButton = new Button(array(
-		'name' => 'eyeNav_button_bookmarks_manage',
-		'father' => 'eyeNav_box',
-		'signal' => 'manage_bookmarks',
 		'caption' => 'Manage bookmarks',
+		'father' => 'eyeNav_box',
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png',
+		'name' => 'eyeNav_button_bookmarks_manage',
+		'signal' => 'manage_bookmarks',
 		'width' => 100,
 		'x' => 10,
-		'y' => $boxY + 10,
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png'
+		'y' => $boxY + 10
 	));
 	$myButton->show();*/
 }
@@ -234,12 +237,12 @@ function eyeNav_lib_ShowSearch($params = array()) {
 	}
 	
 	$myContainer = new Container(array(
-		'name' => 'eyeNav_box',
 		'father' => 'eyeNav_window_box',
-		'x' => 0,
-		'y' => 0,
+		'name' => 'eyeNav_box',
+		'height' => 0,
 		'width' => 140,
-		'height' => 0
+		'x' => 0,
+		'y' => 0
 	));
 	$myContainer->show();
 	eyeWidgets('serialize',array($myContainer));
@@ -251,8 +254,8 @@ function eyeNav_lib_ShowSearch($params = array()) {
 	if (!is_object($GLOBALS['eyeNav_hidden_search_url'])) {
 		// $myHidden
 		$myHidden = new Hidden(array(
-			'name' => 'eyeNav_hidden_search_url',
 			'father' => 'eyeNav_box',
+			'name' => 'eyeNav_hidden_search_url',
 			'text' => $url
 		));
 		$myHidden->show();
@@ -262,39 +265,40 @@ function eyeNav_lib_ShowSearch($params = array()) {
 	}
 	
 	$myLabel = new Label(array(
-		'name' => 'eyeNav_box_label_0',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_box_label_0',
 		'text' => $xml['eyeNav'][0]['searches'][0]['title'][0],
 		'x' => 10,
 		'y' => 0
 	));
 	$myLabel->show();
 	$myLabel->setCss(array(
-		'font-size'=>'12px',
 		'color' => '#044d85',
-		'font-weight' => 'bold'
+		'font-size' => '12px',
+		'font-weight' => 'bold',
+		'white-space' => 'nowrap'
 	));
 	
 	$myLine = new Line(array(
-		'name' => 'eyeNav_line_search_0',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_line_search_0',
+		'width' => 130,
 		'x' => 10,
-		'y' => 15,
-		'width' => 130
+		'y' => 15
 	));
 	$myLine->show();
 	
 	$myHiddenURL = new Hidden(array(
-		'name' => 'eyeNav_box_search_default',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_box_search_default',
 		'text' => $xml['eyeNav'][0]['searches'][0]['default'][0]
 	));
 	$myHiddenURL->show();
 	reqLib('eyeWidgets','serialize',array($myHiddenURL));
 	
 	$myTextbox = new Textbox(array(
-		'name' => 'eyeNav_search',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_search',
 		'width' => 130,
 		'x' => 10,
 		'y' => 25
@@ -307,52 +311,54 @@ function eyeNav_lib_ShowSearch($params = array()) {
 	$boxY = 50;
 	foreach($xml['eyeNav'][0]['searches'][0]['category'] as $category) {
 		$myLabel = new Label(array(
-			'name' => 'eyeNav_box_label_' . $x,
 			'father' => 'eyeNav_box',
+			'name' => 'eyeNav_box_label_' . $x,
 			'text' => $category['name'][0],
 			'x' => 20,
 			'y' => $boxY
 		));
 		$myLabel->show();
 		$myLabel->setCss(array(
-			'font-size'=>'12px',
-			'color' => '#044d85'
+			'color' => '#044d85',
+			'font-size' => '12px',
+			'white-space' => 'nowrap'
 		));
 		$x++;
 		$boxY += 20;
 		foreach($category['link'] as $link) {
 			$myHiddenURL = new Hidden(array(
-				'name' => 'eyeNav_box_hiddenSearch_' . $x,
 				'father' => 'eyeNav_box',
+				'name' => 'eyeNav_box_hiddenSearch_' . $x,
 				'text' => $link['url'][0]
 			));
 			$myHiddenURL->show();
 			$myImagebox = new Imagebox(array(
-				'name' => 'eyeNav_box_imagebox_' . $x,
 				'father' => 'eyeNav_box',
+				'name' => 'eyeNav_box_imagebox_' . $x,
+				'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/link.png',
 				'x' => 30,
-				'y' => $boxY,
-				'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeNav/gfx/link.png'
+				'y' => $boxY
 			));
 			$myImagebox->show();
 			$myImagebox->setCss(array(
-				'cursor' => 'Pointer'
+				'cursor' => 'pointer'
 			));
 			eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeNav_box_imagebox_' . $x . '_Container").onclick = function() { window.open("' . str_replace('%s','" + document.getElementById("' . $myPid . '_eyeNav_search").value + "',$link['url'][0]) . '"); return false; }'));
 			$myLabel = new Label(array(
-				'name' => 'eyeNav_box_label_' . $x,
+				'disablemsg' => 0,
 				'father' => 'eyeNav_box',
+				'name' => 'eyeNav_box_label_' . $x,
+				'signal' => 'search_label',
 				'text' => $link['name'][0],
 				'x' => 46,
-				'y' => $boxY,
-				'disablemsg' => 0,
-				'signal' => 'search_label'
+				'y' => $boxY
 			));
 			$myLabel->addFriend($myHiddenURL);
 			$myLabel->addFriend($myTextbox);
 			$myLabel->show();
 			$myLabel->setCss(array(
-				'cursor' => 'Pointer'
+				'cursor' => 'pointer',
+				'white-space' => 'nowrap'
 			));
 			$boxY += 20;
 			$x++;
@@ -361,36 +367,36 @@ function eyeNav_lib_ShowSearch($params = array()) {
 	}
 	
 	$myLine = new Line(array(
-		'name' => 'eyeNav_line_search_1',
 		'father' => 'eyeNav_box',
+		'name' => 'eyeNav_line_search_1',
+		'width' => 130,
 		'x' => 10,
-		'y' => $boxY,
-		'width' => 130
+		'y' => $boxY
 	));
 	$myLine->show();
 	
 	$myButton = new Button(array(
-		'name' => 'eyeNav_button_search_open',
-		'father' => 'eyeNav_box',
-		'signal' => 'open_searches',
 		'caption' => 'Open searches',
+		'father' => 'eyeNav_box',
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png',
+		'name' => 'eyeNav_button_search_open',
+		'signal' => 'open_searches',
 		'width' => 100,
 		'x' => 10,
-		'y' => $boxY + 10,
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'
+		'y' => $boxY + 10
 	));
 	$myButton->show();
 	/*$boxY += 25;
 	
 	$myButton = new Button(array(
-		'name' => 'eyeNav_button_search_configure',
-		'father' => 'eyeNav_box',
-		'signal' => 'configure_search',
 		'caption' => 'Configure searches',
+		'father' => 'eyeNav_box',
+		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png',
+		'name' => 'eyeNav_button_search_configure',
+		'signal' => 'configure_search',
 		'width' => 100,
 		'x' => 10,
-		'y' => $boxY + 10,
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png'
+		'y' => $boxY + 10
 	));
 	$myButton->show();*/
 }
