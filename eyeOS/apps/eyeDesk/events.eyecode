@@ -259,7 +259,7 @@ function eyeDesk_on_OpenPath($params = '') {
 				}
 			}
 		} elseif ($file[1] == 'link') {
-			$file[2] = utf8_basename($file[2],'.' . EYEOS_LINK_EXT);
+			$file[2] = i18n('translate',array(utf8_basename($file[2],'.' . EYEOS_LINK_EXT)));
 			$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/Desktop/' . $file[0]));
 			if ($xml['eyeLink'][0]['content'][0] == 'eyeTrash.app' || utf8_strtolower(utf8_substr($xml['eyeLink'][0]['content'][0],0,8)) == 'trash://') {
 				$menu = getConfig('eyeDesk','menu_trash.xml');

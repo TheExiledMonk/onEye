@@ -28,14 +28,14 @@ function eyeDocs_run($params=null) {
 		$file = $params[0];
 		$info = utf8_pathinfo($file);
 		$extension = utf8_strtolower($info['extension']);
-		$tCheckNum = proc('findChecknumByName',array('eyeDesk'));
+		$tCheckNum = proc('findChecknumByName',array('eyeX'));
 		$real = vfs('getRealName',array($file));
 		if(!vfs('checkPermissions',array($real))) {
 			eyeX('messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
 			return false;
 		}
 		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
-		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.tmp';
+		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.html';
 		copy($real,$nfile);
 		$tfp = vfs('real_open',array($nfile,'r'));
 		$bytes = fread($tfp,5);

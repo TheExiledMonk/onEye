@@ -179,7 +179,13 @@ function _getReaders(&$params){
 	if(!is_array($params[0])){
 		$sym = vfs('getVirtualName',array($params[0]));
 		$ext = vfs('real_getExtension',array($sym));
+		$dir = dirname($sym);
+		$dirOut = dirname($params[1]);
 		$sym = utf8_basename($sym);
+		//evade vfs corruption with 2 files with the same name
+		if(realpath($dir) == realpath($params[1])){
+			$sym .= '_'.i18n('translate',array('extracted'));
+		}
 		//Adding to extracted arrray
 		$readFiles[] = $params[1].'/'.$sym;
 		if($params[0]{utf8_strlen($params[0])} != '/'){

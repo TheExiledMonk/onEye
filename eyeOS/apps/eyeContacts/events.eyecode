@@ -326,6 +326,7 @@ function eyeContacts_on_exportToFile($params){
 	eyeX('messageBox',array('content'=>'Contacts exported in to %s','tokens'=>array($path)));	
 	service('eyex','rawjs',array('js'=>"if(document.getElementById('".$myPid."_".$GLOBALS['exportContact']->name."'))slideClose(document.getElementById('".$myPid."_".$GLOBALS['exportContact']->name."').parentNode.id,'".$myPid."_".$GLOBALS['exportContact']->name."')"));
 	$GLOBALS['exportContact']->close();
+	eyeFiles('update',array(dirname($path)));
 	eyeX('messageBox',array('content'=>'Export completed successfully.'));
 }
 function eyeContacts_on_importFromFile($params=''){

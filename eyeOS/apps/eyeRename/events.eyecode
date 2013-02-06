@@ -47,7 +47,7 @@ function eyeRename_on_Do($params = '') {
 			if ($path[1] != 'real' && utf8_strtolower(strrchr($old,'.')) == '.' . utf8_strtolower(EYEOS_LINK_EXT)) {
 				$xmlLink = eyeXML('getXMLfile',array($path[0] . '/' . $old));
 			}
-			if (vfs('real_move',array($path[0] . '/' . $old,$path[0] . '/' . $file . '.' . EYEOS_LINK_EXT))) {
+			if (vfs('real_move',array($path[0] . '/' . $old,$path[0] . '/' . $file))) {
 				eyeFiles('update',array($path[1] . '://' . $path[2]));
 			} else {
 				$error = 1;

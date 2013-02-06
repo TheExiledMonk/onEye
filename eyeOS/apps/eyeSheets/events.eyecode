@@ -192,6 +192,7 @@ function eyeSheets_on_saveFile($params=null) {
 		$convertToExcel = 1;
 	}
 	saveOds($ods, $sheetPath, $convertToExcel);
+	eyeFiles('update',array(dirname($sheetPath)));
 	eyeX('messageBox',array('content'=>'Spreadsheet saved successfully.'));
 }
 

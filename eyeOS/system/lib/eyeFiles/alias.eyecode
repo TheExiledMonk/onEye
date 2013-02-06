@@ -20,7 +20,8 @@
 
         Copyright 2005-2009 eyeOS Team (team@eyeos.org)
 */
-function eyeFiles($call,$args=null,$noList=false) {
+
+function eyeFiles($call,$args = null,$noList = false) {
 	return reqLib('eyeFiles',$call,$args,$noList);
 }
 ?>

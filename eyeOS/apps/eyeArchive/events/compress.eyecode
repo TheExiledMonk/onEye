@@ -50,6 +50,7 @@ function eyeArchive_on_Compress($params){
 		eyex('messageBox',array('content'=>'Compression failed'));
 		return false;	
 	}
+	eyeFiles('update',array(dirname($dest)));
 	eyex('messageBox',array('content'=>'Compressed successfully'));
 }
 ?>

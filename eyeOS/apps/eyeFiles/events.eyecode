@@ -22,16 +22,6 @@
 */
 
 function eyeFiles_on_Close($params = '') {
-	$xml = eyeXML('getXMLconfig',array('eyeFiles','conf.xml'));
-	$xml['eyeFiles'][0]['Box'][0] = $GLOBALS['eyeFiles_Hidden_Box']->text;
-	if ($GLOBALS['eyeFiles_Box_View_Radio_Details']->checked) {
-		$xml['eyeFiles'][0]['View'][0] = 3;
-	} elseif ($GLOBALS['eyeFiles_Box_View_Radio_List']->checked) {
-		$xml['eyeFiles'][0]['View'][0] = 2;
-	} else {
-		$xml['eyeFiles'][0]['View'][0] = 1;
-	}
-	eyeXML('setXMLconfig',array('eyeFiles','conf.xml',$xml));
 	proc('end');
 }
 
@@ -246,6 +236,19 @@ function eyeFiles_on_Icon_Dropped($params = '') {
 	}
 }
 
+function eyeFiles_on_UpdateView($params = '') {
+	$xml = eyeXML('getXMLconfig',array('eyeFiles','conf.xml'));
+	if ($GLOBALS['eyeFiles_Box_View_Radio_Details']->checked) {
+		$xml['eyeFiles'][0]['View'][0] = 3;
+	} elseif ($GLOBALS['eyeFiles_Box_View_Radio_List']->checked) {
+		$xml['eyeFiles'][0]['View'][0] = 2;
+	} else {
+		$xml['eyeFiles'][0]['View'][0] = 1;
+	}
+	eyeXML('setXMLconfig',array('eyeFiles','conf.xml',$xml));
+	eyeFiles_on_OpenPath();
+}
+
 function eyeFiles_on_OpenPath($params = '') {
 	global $myPid;
 	if (isset($params[0])) {
@@ -358,6 +361,7 @@ function eyeFiles_on_OpenTree($params = '') {
 }
 
 function eyeFiles_on_ChangeBox($params = array()) {
+	global $currentUser;
 	global $myPid;
 	if ($params['Box'][0] && in_array($params['Box'][0],array('Tree','View','Actions'))) {
 		$path = eyeFiles('cleanPath',array($GLOBALS['eyeFiles_Hidden_Path']->text));
@@ -372,6 +376,9 @@ function eyeFiles_on_ChangeBox($params = array()) {
 			$GLOBALS['eyeFiles_Hidden_Action']->setText('');
 		}
 		$GLOBALS['eyeFiles_Hidden_Box']->setText($params['Box'][0]);
+		$xml = eyeXML('getXMLconfig',array('eyeFiles','conf.xml'));
+		$xml['eyeFiles'][0]['Box'][0] = $params['Box'][0];
+		eyeXML('setXMLconfig',array('eyeFiles','conf.xml',$xml));
 	}
 	if ($GLOBALS['eyeFiles_Hidden_Box']->text == 'Tree') {
 		$path = eyeFiles('cleanPath',array($GLOBALS['eyeFiles_Hidden_Path']->text));
@@ -394,8 +401,10 @@ function eyeFiles_on_ChangeBox($params = array()) {
 		$myTree->addSubList('item_' . $path[1],'list_' . $path[1]);
 		include_once(EYE_ROOT . '/' . APP_DIR . '/eyeFiles/lib' . EYE_CODE_EXTENSION);
 		if ($path[1] == 'groups') {
-			$content = vfs('getDirContent',array($path[3]));
-			foreach ($content as $folder) {
+			$content = array();
+			$xml = um('retrieveUser',array($currentUser));
+			foreach ($xml['eyeUser'][0]['group'] as $group) {
+				$folder = EYE_ROOT . '/' . GROUPS_DIR . '/' . utf8_basename($group) . '/';
 				if (vfs('isdir',array($folder))) {
 					$md5 = md5(realpath($folder . '/' . FILES_GROUP_DIR . '/'));
 					$myTree->addItem('list_' . $path[1],'item_' . FILES_GROUP_DIR . '_' . $md5,utf8_basename($folder));
@@ -405,6 +414,7 @@ function eyeFiles_on_ChangeBox($params = array()) {
 						eyeFiles_lib_CreateTree($path[1],$folder . '/' . FILES_GROUP_DIR . '/',$myTree,'list_' . FILES_GROUP_DIR . '_' . $md5,$expand);
 					}
 				}
+				$content[] = $folder;
 			}
 		} elseif ($path[1] == 'users') {
 			$content = vfs('getDirContent',array($path[3]));
@@ -435,7 +445,7 @@ function eyeFiles_on_ChangeBox($params = array()) {
 		$myTree->processList();
 		if ($path[1] == 'real') {
 			$content = vfs('real_getDirContent',array($path[0]));
-		} else {
+		} elseif ($path[1] != 'groups' || realpath($path[0] . '/') != realpath(EYE_ROOT . '/' . GROUPS_DIR . '/')) {
 			$content = vfs('getDirContent',array($path[0]));
 		}
 		$x = 0;

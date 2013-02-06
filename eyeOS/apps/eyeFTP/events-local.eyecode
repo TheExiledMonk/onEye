@@ -49,6 +49,7 @@ function eyeFTP_on_eyeFTP_localHome_IMG() {
 function eyeFTP_on_eyeFTP_refreshLocal() {
 	$conf = eyeFTP_getConf();
 	eyeFTP_browseLocal($conf['currentLocalDir']);
+	eyeFiles('update',array($conf['currentLocalDir']));
 }
 
 function eyeFTP_on_eyeFTP_browseLocal() {

@@ -22,6 +22,7 @@
 */
 
 function eyeLogin_run($params = '') {
+	global $currentUser;
 	$pid = proc('findPidByName',array('eyeDesk'));
 	if ($pid) {
 		proc('end');

@@ -47,7 +47,7 @@ define('__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS', 'Groups');
  * 						'Text files' => '*.txt',							//the first one is selected by default
  * 						'Images' => '*.bmp|*.jpg|*.gif|*.png',
  * 						'Configuration files' => 'conf.xml|conf.ini',
- * 						'All types' => '*.*'
+ * 						'All types' => '*'
  *					)
  */
 function eyeDialog_run($params=null) {
@@ -66,14 +66,14 @@ function eyeDialog_run($params=null) {
 				'Images' => '*.bmp|*.jpg|*.gif|*.png',
 				'Configuration files' => 'conf.xml|conf.ini',
 				'eyeOS links' => '*.eyeLink',
-				'All types' => '*.*'
+				'All types' => '*'
 			),
 		5 => './users/tt4/test/files/Documents',
 		6 => true
 	);
 	$params[4] = array(
 		'Text files' => '*.txt',	//default
-		'All types' => '*.*'
+		'All types' => '*'
 	);
 	$params[6] = true;*/
 	
@@ -141,7 +141,7 @@ function eyeDialog_run($params=null) {
 	}
 	if (count($filetypes) == 0) {
 		$filetypes = array(
-			'All types' => '*.*'
+			'All types' => '*'
 		);
 	}
 	

@@ -773,6 +773,7 @@ function eyeFeeds_exportFeeds($outputFilePath) {
 		eyeX('messageBox',array('content'=> 'Unable to export list to the specified location'));
 		return;
 	}
+	eyeFiles('update',array(dirname($outputFilePath)));
 	eyeX('messageBox',array('content'=> 'Feeds list successfully exported'));
 }
 

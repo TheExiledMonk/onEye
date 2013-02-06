@@ -60,7 +60,7 @@ function eyeDocs_on_fullScreen(){
 }
 
 function eyeDocs_on_Save($params=null) {
-	global $checknum;
+	global $checknum,$myPid;
 	$options = array(
 		EYEDIALOG_TYPE_SAVEFILE,
 		'SelectFileSave',
@@ -73,20 +73,45 @@ function eyeDocs_on_Save($params=null) {
 	);
 	if(is_object($GLOBALS['notePath']) && $GLOBALS['notePath']->text) {
 		$info = utf8_pathinfo($GLOBALS['notePath']->text);
-		if(utf8_strtolower($info['extension'] == 'doc')) {
-			include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDocs/html_to_doc'.EYE_CODE_EXTENSION);
-			$htmltodoc= new HTML_TO_DOC();
-			$myContent = $GLOBALS['noteContent']->text;
-			$htmltodoc->createDoc($myContent,$GLOBALS['notePath']->text);
-			service('eyex','messageBox',array('content'=>'Document saved successfully.'));
-		} else {
-			$fp = service('vfs','open',array($GLOBALS['notePath']->text,'w'));
-			if(!$fp) {
-				service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
-				return;
+		$udir = um('getCurrentUserDir').'/tmp/'.$myPid.'_new.html';
+		if(vfs('real_fileExists',array($udir))){
+			$realContent = vfs('real_getFileContent',array($udir));
+			$match = array();
+			//Getting the old header style from temporal file
+			//If the original file doesn't have style header, a new one is not needed, really?
+			if(preg_match("/<\!--.+?-->/su",$realContent,$match)){
+				$toBeReplaced = $match[0];
+				//Getting the new header style from tinyMCE content
+				if(preg_match("/(<\!--.+?-->)/su",$GLOBALS['noteContent']->text,$match)){
+					$toBeReplaced = $match[0];
+					//Replacing the header style from the old (tmp file) to the new tinyMCE
+					$realContent = str_replace($toBeReplaced,$toReplace,$realContent);
+				}
 			}
+			//Getting the original body
+			if(preg_match("/<BODY.*?>(.+)<\/BODY>/sui",$realContent,$match)){
+				$toBeReplaced = $match[1];
+				//Getting the tinyMCE "body"
+				
+				if(preg_match("/-->(.*)/sui",$GLOBALS['noteContent']->text,$match)){
+					$toReplace = $match[1];
+					//Replacing the old body with the new one
+					$realContent = str_replace($toBeReplaced,$toReplace,$realContent);
+				}
+			}
+			$realContent = vfs('real_putFileContent',array($udir,$realContent));
+			if(utf8_strtolower($info['extension'] == 'odt')) {
+				eyeConverter('convert',array($udir,vfs('getRealName',array($GLOBALS['notePath']->text)),'writerglobal8_writer',1));
+			}elseif(utf8_strtolower($info['extension'] == 'doc')) {
+				eyeConverter('convert',array($udir,vfs('getRealName',array($GLOBALS['notePath']->text)),'MS Word 97',1));
+			}else{
+				vfs('real_delete',array($GLOBALS['notePath']->text));
+				vfs('real_copy',array($udir,$GLOBALS['notePath']->text));
+			}
+		}else{
+			$fp = vfs('open',array($GLOBALS['notePath']->text,'w'));
 			fwrite($fp,$GLOBALS['noteContent']->text);
-			fclose($fp);	
+			fclose($fp);
 		}
 		service('eyex','messageBox',array('content'=>'Document saved successfully.'));
 	} else {
@@ -136,6 +161,7 @@ function eyeDocs_on_SelectFileSave($params=null) {
 			fclose($fp);
 			$myHidden = new Hidden(array('name'=>'notePath','father'=>'eyeDocsWND','text'=>$file));
 			reqLib('eyeWidgets','serialize',array($myHidden));
+			eyeFiles('update',array(dirname($file)));
 			service('eyex','messageBox',array('content'=>'Document saved successfully.'));
 		}
 
@@ -147,7 +173,7 @@ function eyeDocs_on_SelectFileOpen($params=null) {
 	if($file) {		
 		$file = service('um','getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		$info = utf8_pathinfo($file);
-		$tCheckNum = proc('findChecknumByName',array('eyeDesk'));
+		$tCheckNum = proc('findChecknumByName',array('eyeX'));
 		$real = vfs('getRealName',array($file));
 		if(!vfs('checkPermissions',array($real))) {
 			eyeX('messageBox',array('content'=>'Sorry, you do not have sufficient permissions!'));
@@ -155,7 +181,7 @@ function eyeDocs_on_SelectFileOpen($params=null) {
 		}
 		$extension = utf8_strtolower($info['extension']);
 		$nfile = um('getCurrentUserDir').'tmp/'.$myPid.'.'.$info['extension'];
-		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.tmp';
+		$myHTML = um('getCurrentUserDir').'tmp/'.$myPid.'_new.html';
 		
 		copy($real,$nfile);
 		$to = 'HTML (StarWriter)';
@@ -200,7 +226,7 @@ function eyeDocs_on_Close(){
 	if(!IE || IE > 7) {
 		$GLOBALS['noteContent']->richClean();
 	}
-	vfs('cleanTemp');
+	eyeConverter('cleanTmp');
 	proc('end');
 }
 

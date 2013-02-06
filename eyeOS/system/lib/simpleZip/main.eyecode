@@ -34,6 +34,10 @@ function lib_simpleZip_createZip($params) {
 		errorCodes('setErrorcode',array(INCORRECT_PARAMS));
 		return false;
 	}
+	if(!function_exists('gzcompress')){
+		errorCodes('setErrorcode',array(FEATURE_NOT_SUPPORTED));
+		return false;
+	}
 	if ($params[1]) {
 		$suffix = 'real_';
 	} else {

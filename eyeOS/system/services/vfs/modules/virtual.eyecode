@@ -860,7 +860,18 @@ function service_vfs_checkPermissions($params) {
 	}
 	if (0 === utf8_strpos($file_path,$userdir_path)) {
 		return true;
-	} elseif ($currentUser == ROOTUSER) {	
+	} elseif ($currentUser == ROOTUSER) {
+		//If the user is really an admin and the admins are jailed
+		if(($currentUser != REAL_ROOTUSERS && ADMINS_JAILED == 1) ||
+			($currentUser == REAL_ROOTUSER && ROOT_JAILED == 1)){
+			$real_eyeroot = realpath(EYE_ROOT);
+			if(0 === utf8_strpos ($file_path,$real_eyeroot)){
+				return true;
+			}
+			reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+			return false;
+		//If the user is the real root, and the real root is jailed
+		}
 		return true;
 	} else {
 		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
@@ -1498,7 +1509,18 @@ function service_vfs_real_checkPermissions($params) {
 	$file_path = realpath($file);
 	if (0 === utf8_strpos ($file_path,$userdir_path)) {
 		return true;
-	} elseif ($currentUser == ROOTUSER) {	
+	} elseif ($currentUser == ROOTUSER) {
+		//If the user is really an admin and the admins are jailed
+		if(($currentUser != REAL_ROOTUSERS && ADMINS_JAILED == 1) ||
+			($currentUser == REAL_ROOTUSER && ROOT_JAILED == 1)){
+			$real_eyeroot = realpath(EYE_ROOT);
+			if(0 === utf8_strpos ($file_path,$real_eyeroot)){
+				return true;
+			}
+			reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
+			return false;
+		//If the user is the real root, and the real root is jailed
+		}
 		return true;
 	} else {
 		reqLib('errorCodes','setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));

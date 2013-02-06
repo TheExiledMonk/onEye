@@ -39,6 +39,7 @@ function eyeVisor_run($params=null) {
 }
 
 function eyeVisor_end($params=null) {
+	eyeConverter('cleanTmp');
 	reqLib('eyeWidgets','unserialize');
 }
 

@@ -35,6 +35,7 @@ function lib_errorCodes_loadCodes($params=null){
 	define('SERVICE_FUNC_NOT_FOUND',-3);
 	define('ERROR_FUNC_NOT_FOUND',-4);
 	define('INCORRECT_PARAMS',-5);
+	define('FEATURE_NOT_SUPPORTED',-6);
 
 	//vfs service errorCodes -100/-199
 	define('VFS_INSUFFICIENT_PERMISSIONS',-100);

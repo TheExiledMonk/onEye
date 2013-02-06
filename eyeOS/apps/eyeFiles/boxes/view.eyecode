@@ -174,7 +174,7 @@ $myButton = new Button(array(
 	'caption' => 'Update view',
 	'father' => 'eyeFiles_Box_View_Container2',
 	'name' => 'eyeFiles_Box_View_Button',
-	'signal' => 'OpenPath',
+	'signal' => 'UpdateView',
 	'x' => 10,
 	'y' => $y
 ));

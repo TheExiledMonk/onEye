@@ -74,6 +74,7 @@ class Radio {
 	
 
 	function show($noserialize=0) {
+		global $myPid;
 		$this->text = i18n('translate',array($this->text,$this->tokens));
 		$this->text = $this->text;
 		$widgetsparams = array(			
@@ -81,7 +82,7 @@ class Radio {
 			'visible' => $this->visible,
 			'text' => $this->text,			
 			'checked' => $this->checked,
-			'group' => $this->group
+			'group' => $myPid . '_' . $this->group
 		);
 		$widgetsparams = service("mmap","array2js",array($widgetsparams));
 		

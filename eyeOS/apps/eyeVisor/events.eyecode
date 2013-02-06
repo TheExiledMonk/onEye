@@ -53,7 +53,7 @@ function eyeVisor_on_Resize($params=null) {
 function eyeVisor_on_getFile($params=null) {
 	$file = $GLOBALS['vPath']->text;
 	$info = utf8_pathinfo($file);
-	$tCheckNum = proc('findChecknumByName',array('eyeDesk'));
+	$tCheckNum = proc('findChecknumByName',array('eyeX'));
 	global $myPid;
 	$ext = utf8_strtolower($info['extension']);
 	if ($ext == 'xls' || $ext == 'ods') {
@@ -101,7 +101,7 @@ function eyeVisor_on_getFile($params=null) {
 }
 
 function eyeVisor_on_Close($params=null){
-	vfs('cleanTemp');
+	eyeConverter('cleanTmp');
 	proc('end');
 }
 

@@ -63,6 +63,16 @@ function eyeX_on_resizedBrowser($params = '') {
 	eyex('resizedBrowser',array('height' => $height,'width' => $width,'appWidth' => $appWidth,'appHeight' => $appHeight));
 }
 
+function eyeX_on_viewTempImg($params = '') {
+	$path = um('getCurrentUserDir') . '/tmp/' . utf8_basename($params);
+	$info = getimagesize($path);
+	header('Content-Type: ' . $info['mime']);
+	header('Accept-Ranges: bytes');
+	header('X-Pad: avoid browser bug');
+	vfs('printFile',array($path));
+	exit;
+}
+
 function eyeX_on_saveWinPosition($params = '') {
 	$app = proc('findNameByChecknum',array($params['appChecknum'][0]));
 	$path = um('getCurrentUserDir') . CONF_USER_DIR . '/eyex/' . $app . '.xml';

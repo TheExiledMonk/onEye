@@ -89,10 +89,21 @@ function lib_eyeConverter_convert($params) {
 		} else {
 			$cmd = OFFICE_COMMAND.' -headless -norestore '.OFFICE_SEPARATOR_ARG.'macro:///Tools.eyeOS.ConvertAny('.$forig.','.$dest.','.$format.')'.OFFICE_SEPARATOR_ARG;
 		}
-		shell_exec($cmd);
+		$env = array();
+		$pipe = array();
+		$desc = array();
+		proc_open($cmd,$desc,$pipe,null,$env);
 		return true;
 	}
 	return false;
 }
 
+function lib_eyeConverter_cleanTmp(){
+	global $myPid;
+	$udir = um('getCurrentUserDir').'/tmp/';
+	$filesToClean = vfs('real_getDircontent',array($udir,'*'.$myPid.'*'));
+	foreach($filesToClean as $file){
+		vfs('real_delete',array($file));
+	}
+}
 ?>
