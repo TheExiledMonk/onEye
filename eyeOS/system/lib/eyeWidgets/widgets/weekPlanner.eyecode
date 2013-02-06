@@ -409,16 +409,11 @@ class weekPlanner {
 	}
 	function killme() {
 		global $myPid;
-		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_hoursBase");
-											removeMe.parentNode.removeChild(removeMe);'));
-		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_daysBase");
-											removeMe.parentNode.removeChild(removeMe);'));
-		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_calendarsEntryContainer");
-											removeMe.parentNode.removeChild(removeMe);'));
-		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherDays");
-											removeMe.parentNode.removeChild(removeMe);'));
-		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherNames");
-											removeMe.parentNode.removeChild(removeMe);'));
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_hoursBase"); if (removeMe) { removeMe.parentNode.removeChild(removeMe); }'));
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_daysBase"); if (removeMe) { removeMe.parentNode.removeChild(removeMe); }'));
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_calendarsEntryContainer"); if (removeMe) { removeMe.parentNode.removeChild(removeMe); }'));
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherDays"); if (removeMe) { removeMe.parentNode.removeChild(removeMe); }'));
+		eyex('rawjs',array('js' => 'var removeMe = document.getElementById("'.$myPid.'_fatherNames"); if (removeMe) { removeMe.parentNode.removeChild(removeMe); }'));
 		unset($_SESSION[WTABLE][$myPid][$this->name]);
 	}
 }

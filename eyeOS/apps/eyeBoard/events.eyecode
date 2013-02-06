@@ -66,6 +66,10 @@ function eyeBoard_on_clear($params=null){
 	$GLOBALS['eyeBoardFrame']->setUrl("index.php?checknum=$checknum&msg=getMessages");
 }
 
+function eyeBoard_on_newMessage($params = null) {
+	proc('launch', array('newMessage', array('to' => $params['to'][0])));
+}
+
 function eyeBoard_on_Close(){
 	proc('end');
 }

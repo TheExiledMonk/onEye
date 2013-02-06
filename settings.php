@@ -70,7 +70,7 @@ define('REAL_ROOTUSER','root');
 //Extras
 define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('EYEOS_VERSION','1.9.0.1');
+define('EYEOS_VERSION','1.9.0.2');
 define('XML_COMPAT',1);
 define('XML_PARSER','expat');
 define('ACL_SUPPORT',1);

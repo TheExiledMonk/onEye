@@ -154,6 +154,11 @@ class Container {
 		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.display="block"'));
 	}
 
+	function addContent($content) {
+		global $myPid;
+		eyex('runjs', array('js' => 'document.getElementById("' . $myPid . '_' . $this->name . '").innerHTML += %s;', 'tokens' => array($content)));
+	}
+
 	function setContent($content) {
 		global $myPid;
 		$tokens[] = $content;

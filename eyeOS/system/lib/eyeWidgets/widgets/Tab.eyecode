@@ -55,7 +55,7 @@ class Tab {
 	//friends abstraction
 	var $friends="";
 
-	var $myTabs;
+	var $myTabs=array();
 	//constructor
 	function Tab($params) {
 		global $myPid;
@@ -147,17 +147,27 @@ class Tab {
 		$this->width = intval($width);
 		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.width="'.$this->width.'px";'));
 		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.width="'.$this->width.'px";'));
-		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_header").style.width="'.$this->width.'px";'));
 		foreach($this->myTabs as $key=>$value) {
 			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$key.'").style.width="'.$this->width.'px";'));
 		}
+		eyex('rawjs',array('js' => '
+		document.getElementById("' . $myPid . '_' . $this->name . '_buttonLeft").style.display = "block";
+		document.getElementById("' . $myPid . '_' . $this->name . '_buttonRight").style.display = "block";
+		document.getElementById("' . $myPid . '_' . $this->name . '_header").style.width = String(' . $this->width . ' - xWidth("' . $myPid . '_' . $this->name . '_buttonRight") - xWidth("' . $myPid . '_' . $this->name . '_buttonRight")) + "px";
+		if (' . strval(count($this->myTabs)) . ' * xWidth("' . $myPid . '_' . substr($key, 0, -8) . '") <= xWidth("' . $myPid . '_' . $this->name . '_header")) {
+			document.getElementById("' . $myPid . '_' . $this->name . '_buttonLeft").style.display = "none";
+			document.getElementById("' . $myPid . '_' . $this->name . '_buttonRight").style.display = "none";
+		}'));
 	}
 
 	function setHeight($height) {
 		global $myPid;
 		$this->height = intval($height);
-		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
 		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_Container").style.height="'.$this->height.'px";'));
+		eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").style.height="'.$this->height.'px";'));
+		foreach ($this->myTabs as $key => $value) {
+			eyex('rawjs', array('js' => 'document.getElementById("' . $myPid . '_' . $key . '").style.height = String(' . $this->height . ' - xHeight("' . $myPid . '_' . $this->name . '_header")) + "px";'));
+		}
 	}
 
 	function setX($x) {
@@ -200,8 +210,7 @@ class Tab {
 		$tabid = utf8_substr($tabid,0,utf8_strlen($tabid)-utf8_strlen('_Content'));
 		$tokens[] = $tabid;
 		eyex('runjs',array('js' => $name.'.removeTab( %s );','tokens'=>$tokens));
-		unset($this->myTabs[$name]);
-		$this->counter--;
+		unset($this->myTabs[$tabName]);
 	}
 
 	function removeByName($tabname) {

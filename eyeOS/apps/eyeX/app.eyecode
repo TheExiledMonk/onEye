@@ -71,6 +71,9 @@ function eyeX_run($params = '') {
 	} else if (stripos($_SERVER['HTTP_USER_AGENT'], 'gecko') !== false) {
 		echo "\t\t" . '<link href="index.php?version=' . EXTERN_CACHE_VERSION . '&amp;theme=' . $_SESSION['usertheme'] . '&amp;extern=css/eyeOS_firefox.css&amp;type=css" id="eyeOSfirefoxCss" rel="stylesheet" type="text/css" />' . "\n";
 		$_SESSION['eyeLogin']['removeCss'][] = 'eyeOSfirefoxCss';
+	} else if (stripos($_SERVER['HTTP_USER_AGENT'], 'khtml') !== false) {
+		echo "\t\t" . '<link href="index.php?version=' . EXTERN_CACHE_VERSION . '&amp;theme=' . $_SESSION['usertheme'] . '&amp;extern=css/eyeOS_firefox.css&amp;type=css" id="eyeOSkhtmlCss" rel="stylesheet" type="text/css" />' . "\n";
+		$_SESSION['eyeLogin']['removeCss'][] = 'eyeOSkhtmlCss';
 	}
 	echo "\t\t" . '<script type="text/javascript">
 			EXTERN_CACHE_VERSION = "' . EXTERN_CACHE_VERSION . '";

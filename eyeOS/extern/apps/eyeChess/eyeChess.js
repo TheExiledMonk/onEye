@@ -55,7 +55,7 @@ if(!E)event=0
 DM=d.getElementsByTagName||null
 if(DM||E){ windowd.innerHTML += '<img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" id="PI" name="PI" width="47" height="48" />';
 A=(E||d.getElementsByTagName('img'))
-Ic=A['PI'].style}cp=new Function('a','b','return b[0]-a[0]')
+Ic=A['PI'].style}cp=function(a,b){return b[0]-a[0]}
 function Z(c,U,C,s,e,A,B,K){var z=-1,C=-C,V=8-U,b=Al,r=R,S,E=r[e],g,d
 if(C<-400)return[C,s,e]
 r[e]=S=r[s]

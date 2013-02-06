@@ -127,9 +127,11 @@ class simpleDb{
 */
 //TODO: put this function in driver?
 function lib_eyeSimpleDb_parseQuery($params){
-
-	if(!$params['query'] || !$params['values']){
-		return FALSE;
+	if (is_string($params['query']) === false) {
+		return false;
+	}
+	if (is_array($params['values']) === false) {
+		$params['values'] = array();
 	}
 	$queryString = $params['query'];
 	$arrayValues = $params['values'];

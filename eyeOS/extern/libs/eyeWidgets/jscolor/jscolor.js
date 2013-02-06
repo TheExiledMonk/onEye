@@ -1,11 +1,11 @@
 /**
  * jscolor, JavaScript Color Picker
  *
- * @version 1.3.0
+ * @version 1.3.1
  * @license GNU Lesser General Public License, http://www.gnu.org/copyleft/lesser.html
- * @author  Honza Odvarko http://odvarko.cz
+ * @author  Jan Odvarko, http://odvarko.cz
  * @created 2008-06-15
- * @updated 2009-10-16
+ * @updated 2010-01-23
  * @link    http://jscolor.com
  */
 
@@ -158,7 +158,7 @@ var jscolor = {
 				y += e1.offsetTop;
 			} while(e1 = e1.offsetParent);
 		}
-		while((e2 = e2.parentNode) && e2.nodeName !== 'BODY') {
+		while((e2 = e2.parentNode) && e2.nodeName.toUpperCase() !== 'BODY') {
 			x -= e2.scrollLeft;
 			y -= e2.scrollTop;
 		}

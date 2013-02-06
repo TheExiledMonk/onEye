@@ -16,7 +16,7 @@
 // | Authors: Ian Eure <ieure@php.net>                                    |
 // +----------------------------------------------------------------------+
 //
-// $Id: Type.php,v 1.6 2009/01/16 11:49:45 cweiske Exp $
+// $Id: Type.php 273631 2009-01-16 11:49:45Z cweiske $
 
 // require_once 'PEAR.php'; // eyeOS
 
@@ -29,7 +29,7 @@ $_fileCmd = 'file';
  * @category MIME
  * @package  MIME_Type
  * @license  PHP License 3.0
- * @version  1.2.0
+ * @version  @version@
  * @link     http://pear.php.net/package/MIME_Type
  * @author   Ian Eure <ieure@php.net>
  */

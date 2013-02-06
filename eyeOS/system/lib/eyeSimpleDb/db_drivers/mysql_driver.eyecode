@@ -123,9 +123,6 @@ class dbDriver{
 		//affect rows if any rows be affected, set the correct state and return.
 		$this->resultRows = array();
 		$this->affectedRows = mysql_num_rows($this->result);
-		if($this->affectedRows == 0){
-			return FALSE;
-		}
 
 		//At the moment only assoc fetch is implemented because is not significantly slower than row and provice add values
 		while($row = mysql_fetch_assoc($this->result)){

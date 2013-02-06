@@ -95,6 +95,10 @@ class Hidden {
 		eyex('runjs', array('js' => 'var e = document.getElementById("' . $myPid . '_' . $this->name . '"); if (e) { e.value = %s; }', 'tokens' => array($this->text)));
 	}
 
+	function setValue($content) {
+		$this->text = $content;
+	}
+
 //friend functions
 	function getSyncString() {
 		global $myPid;

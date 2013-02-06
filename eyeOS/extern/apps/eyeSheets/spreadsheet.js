@@ -1106,8 +1106,8 @@ function getMultiRange(multiRange) {
 }
 function mousedown(row,col) {
   if (getObj("styling").disabled) {
-	document.onmousedown=new Function("return false;");
-	document.onselectstart=new Function("return false;");
+	document.onmousedown = function() { return false; };
+	document.onselectstart = function() { return false; };
 	isMouseDown=1;
 	highlightRange(multiRange,"cell");
     multiRange = new Array(row,col,row,col);

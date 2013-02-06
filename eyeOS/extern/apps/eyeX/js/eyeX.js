@@ -2101,11 +2101,8 @@ function html_entity_decode (string, quote_style) {
     return tmp_str;
 }
 
-function htmlspecialchars (string, quote_style) {
-    // Convert special characters to HTML entities  
-    // 
-    // version: 909.322
-    // discuss at: http://phpjs.org/functions/htmlspecialchars
+function htmlspecialchars (string, quote_style, charset, double_encode) {
+    // http://kevin.vanzonneveld.net
     // +   original by: Mirek Slugen
     // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
     // +   bugfixed by: Nathan
@@ -2113,30 +2110,64 @@ function htmlspecialchars (string, quote_style) {
     // +    revised by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
     // +    bugfixed by: Brett Zamir (http://brett-zamir.me)
     // +      input by: Ratheous
-    // -    depends on: get_html_translation_table
+    // +      input by: Mailfaker (http://www.weedem.fr/)
+    // +      reimplemented by: Brett Zamir (http://brett-zamir.me)
+    // +      input by: felix
+    // +    bugfixed by: Brett Zamir (http://brett-zamir.me)
+    // %        note 1: charset argument not supported
     // *     example 1: htmlspecialchars("<a href='test'>Test</a>", 'ENT_QUOTES');
     // *     returns 1: '&lt;a href=&#039;test&#039;&gt;Test&lt;/a&gt;'
-    var hash_map = {}, symbol = '', tmp_str = '', entity = '';
-    tmp_str = string.toString();
-    
-    if (false === (hash_map = this.get_html_translation_table('HTML_SPECIALCHARS', quote_style))) {
-        return false;
+    // *     example 2: htmlspecialchars("ab\"c'd", ['ENT_NOQUOTES', 'ENT_QUOTES']);
+    // *     returns 2: 'ab"c&#039;d'
+    // *     example 3: htmlspecialchars("my "&entity;" is still here", null, null, false);
+    // *     returns 3: 'my &quot;&entity;&quot; is still here'
+
+    var optTemp = 0, i = 0, noquotes= false;
+    if (typeof quote_style === 'undefined' || quote_style === null) {
+        quote_style = 2;
     }
-    
-    hash_map["'"] = '&#039;';
-    for (symbol in hash_map) {
-        entity = hash_map[symbol];
-        tmp_str = tmp_str.split(symbol).join(entity);
+    string = string.toString();
+    if (double_encode !== false) { // Put this first to avoid double-encoding
+        string = string.replace(/&/g, '&amp;');
     }
-    
-    return tmp_str;
+    string = string.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    var OPTS = {
+        'ENT_NOQUOTES': 0,
+        'ENT_HTML_QUOTE_SINGLE' : 1,
+        'ENT_HTML_QUOTE_DOUBLE' : 2,
+        'ENT_COMPAT': 2,
+        'ENT_QUOTES': 3,
+        'ENT_IGNORE' : 4
+    };
+    if (quote_style === 0) {
+        noquotes = true;
+    }
+    if (typeof quote_style !== 'number') { // Allow for a single string or an array of string flags
+        quote_style = [].concat(quote_style);
+        for (i=0; i < quote_style.length; i++) {
+            // Resolve string input to bitwise e.g. 'PATHINFO_EXTENSION' becomes 4
+            if (OPTS[quote_style[i]] === 0) {
+                noquotes = true;
+            }
+            else if (OPTS[quote_style[i]]) {
+                optTemp = optTemp | OPTS[quote_style[i]];
+            }
+        }
+        quote_style = optTemp;
+    }
+    if (quote_style & OPTS.ENT_HTML_QUOTE_SINGLE) {
+        string = string.replace(/'/g, '&#039;');
+    }
+    if (!noquotes) {
+        string = string.replace(/"/g, '&quot;');
+    }
+
+    return string;
 }
 
 function get_html_translation_table (table, quote_style) {
-    // Returns the internal translation table used by htmlspecialchars and htmlentities  
-    // 
-    // version: 909.322
-    // discuss at: http://phpjs.org/functions/get_html_translation_table
+    // http://kevin.vanzonneveld.net
     // +   original by: Philip Peterson
     // +    revised by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
     // +   bugfixed by: noname
@@ -2295,10 +2326,7 @@ function get_html_translation_table (table, quote_style) {
 }
 
 function md5 (str) {
-    // Calculate the md5 hash of a string  
-    // 
-    // version: 909.322
-    // discuss at: http://phpjs.org/functions/md5
+    // http://kevin.vanzonneveld.net
     // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
     // + namespaced by: Michael White (http://getsprink.com)
     // +    tweaked by: Jack
@@ -2308,6 +2336,7 @@ function md5 (str) {
     // -    depends on: utf8_encode
     // *     example 1: md5('Kevin van Zonneveld');
     // *     returns 1: '6e658d4bfcb59cc13f96c14450ac40b9'
+
     var xl;
 
     var rotateLeft = function (lValue, iShiftBits) {
@@ -2483,10 +2512,7 @@ function md5 (str) {
 }
 
 function utf8_encode ( argString ) {
-    // Encodes an ISO-8859-1 string to UTF-8  
-    // 
-    // version: 909.322
-    // discuss at: http://phpjs.org/functions/utf8_encode
+    // http://kevin.vanzonneveld.net
     // +   original by: Webtoolkit.info (http://www.webtoolkit.info/)
     // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
     // +   improved by: sowberry
@@ -2497,6 +2523,7 @@ function utf8_encode ( argString ) {
     // +   bugfixed by: Ulrich
     // *     example 1: utf8_encode('Kevin van Zonneveld');
     // *     returns 1: 'Kevin van Zonneveld'
+
     var string = (argString+''); // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
     var utftext = "";

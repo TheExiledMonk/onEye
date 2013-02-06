@@ -72,7 +72,7 @@ class Label {
 		isset($params['cent']) ? $this->cent = $params['cent'] : $this->cent = 0;
 
 		//especific label options
-		isset($params['text']) ? $this->text = $params['text'] : $this->text = $this->name;
+		isset($params['text']) ? $this->text = $params['text'] : $this->text = '';
 		isset($params['tokens']) ? $this->tokens = $params['tokens'] : $this->tokens = 0;
 		isset($params['visible']) ? $this->visible = $params['visible'] : $this->visible = 1;
 		isset($params['signal']) ? $this->signal = $params['signal'] : $this->signal = $this->name;

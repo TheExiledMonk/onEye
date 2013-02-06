@@ -157,13 +157,16 @@ class Select {
 		$this->addEnterEvent('sendMsg(' . $checknum . ',"' . $message . '",' . $this->getSyncString() . ' + ' . $this->friends . ');');
 	}
 
-	function addGroup($name,$value,$tokens=0) {
+	function addGroup($name,$value = null,$tokens=0) {
 		global $myPid;
 		$text = i18n('translate',array($name,$tokens));
+		if ($value === null) {
+			$value = $name;
+		}
 		eyeX('runjs', array('js' => 'var myOptGroup = document.createElement("optgroup");myOptGroup.setAttribute("label", %s);myOptGroup.setAttribute("id", %s);document.getElementById("'.$myPid.'_'.$this->name.'").appendChild(myOptGroup);', 'tokens' => array($text, $myPid.'_'.$value)));
 	}
 
-	function addOption($text,$value,$selected=0,$tokens=0,$group='') {
+	function addOption($text,$value = null,$selected=0,$tokens=0,$group='') {
 		global $myPid;
 		$text = i18n('translate',array($text,$tokens));
 
@@ -172,7 +175,9 @@ class Select {
 		} else {
 			$father = $myPid.'_'.$this->name;
 		}
-
+		if ($value === null) {
+			$value = $text;
+		}
 		$tokens = array($value,$text,$father);
 		if($selected == 0) {
 			eyeX('runjs',array('js'=>'var myOption = document.createElement("option");myOption.setAttribute("value", %s );myOption.appendChild(document.createTextNode( %s ));document.getElementById(%s).appendChild(myOption);','tokens'=>$tokens));

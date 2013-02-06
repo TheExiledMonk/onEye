@@ -1217,7 +1217,7 @@ function moveAndClick(name){
 
 //Handle drag and drop callbacks
 
-function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){ // TODOTODO
+function _execDragCallback(clickCallback,ele,mouseX,mouseY,xEventObj){
 	if(typeof(callback) == 'string'){
 		try{
 			eval(callback);
@@ -2169,6 +2169,7 @@ function Tab_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 function eyeTab(oTab,signal,mychecknum,tabwidth) {
 	this.csignal = signal; //signal to use when a tab is requested to be closed
 	this.checknum = mychecknum; //checknum to send messages to eyeos
+	this.counter = 0;
 	this.lastClick = null; //store the last tab selected
 	this.tabWidth = tabwidth;
 	this.initialOffset = 0;
@@ -2176,13 +2177,13 @@ function eyeTab(oTab,signal,mychecknum,tabwidth) {
 	this.myName = oTab.id;
 	this.moTab = oTab;
 	this.myTabs= [];
+	this.ontabselect = false;
 
 	var oThis = this; //get the instance of our tab group
 
 	var myHeader = document.createElement('div');
 	myHeader.setAttribute('id',oTab.id+'_header');
 	myHeader.className = 'eyeTabHeader';
-	myHeader.style.width = xWidth(oTab)-9+'px';
 
 	var buttonLeft = document.createElement('div');
 	var buttonRight = document.createElement('div');
@@ -2217,6 +2218,7 @@ function eyeTab(oTab,signal,mychecknum,tabwidth) {
 	buttonRight.onmouseout=function(){
 		clearTimeout(this.interval);
 	};
+	myHeader.style.width = String(xWidth(oTab) - xWidth(buttonLeft) - xWidth(buttonRight)) + 'px';
 	buttonLeft.style.display='none';
 	buttonRight.style.display='none';
 
@@ -2255,6 +2257,7 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	var oThis = this;
 	var myNewTab = document.createElement('div');
 	var myTabName = document.createElement('div');
+	myTabName.id = this.myName + '_' + counter + '_Title';
 	myTabName.innerHTML = tabName;
 	myTabName.className = 'eyeTabText';
 	myNewTab.className = 'eyeTabNotSelected';
@@ -2267,7 +2270,8 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	if (IEversion && IEversion < 7) {
 		offset2 = 0;
 	}
-	var offset = counter * (Number(this.tabWidth) + offset2) + this.initialOffset;
+	this.counter++;
+	var offset = (this.counter - 1) * (Number(this.tabWidth) + offset2) + this.initialOffset;
 	myNewTab.style.left = offset+'px';
 	myNewTab.appendChild(myTabName);
 	this.oHeader.appendChild(myNewTab);
@@ -2291,12 +2295,13 @@ eyeTab.prototype.addTab = function (tabName,counter,noclose) {
 	this.myTabs[myNewTab.id] = offset;
 
 	var numTabs = this.oHeader.childNodes.length;
-	var sizeTab = numTabs * this.tabWidth;
+	var sizeTab = numTabs * xWidth(myNewTab);
 	if(sizeTab>xWidth(this.oHeader)) {
-		var oLeft = document.getElementById(this.moTab.id+'_buttonLeft');
-		oLeft.style.display = 'block';
-		var oRight = document.getElementById(this.moTab.id+'_buttonRight');
-		oRight.style.display = 'block';
+		document.getElementById(this.moTab.id + '_buttonLeft').style.display = 'block';
+		document.getElementById(this.moTab.id + '_buttonRight').style.display = 'block';
+	} else {
+		document.getElementById(this.moTab.id + '_buttonLeft').style.display = 'none';
+		document.getElementById(this.moTab.id + '_buttonRight').style.display = 'none';
 	}
 };
 
@@ -2305,18 +2310,43 @@ eyeTab.prototype.removeTab = function (tabname) {
 	if(!myObj) {
 		return;
 	}
+	if (this.oHeader.childNodes.length - 1 * xWidth(myObj) > xWidth(this.oHeader)) {
+		document.getElementById(this.moTab.id + '_buttonLeft').style.display = 'block';
+		document.getElementById(this.moTab.id + '_buttonRight').style.display = 'block';
+	} else {
+		document.getElementById(this.moTab.id + '_buttonLeft').style.display = 'none';
+		document.getElementById(this.moTab.id + '_buttonRight').style.display = 'none';
+	}
+	var stopprevious = false;
+	var previous = true;
+	if (tabname !== this.lastClick) {
+		previous = false;
+	}
 	for (var i in this.myTabs) {
-		if(this.myTabs[i] > this.myTabs[tabname]){
-			var num = this.tabWidth;
-			this.myTabs[i] = this.myTabs[i] - num;
-			document.getElementById(i).style.left = this.myTabs[i]+'px';
+		if (this.myTabs[i] !== null) {
+			if (i === tabname) {
+				stopprevious = true;
+			} else if (previous !== false && stopprevious === false) {
+				previous = i;
+			} else if (previous === true) {
+				previous = i;
+			}
+			if(this.myTabs[i] > this.myTabs[tabname]){
+				var num = this.tabWidth;
+				this.myTabs[i] = this.myTabs[i] - num;
+				document.getElementById(i).style.left = this.myTabs[i]+'px';
+			}
 		}
 	}
 	var myContent = document.getElementById(myObj.id+'_Content');
 	this.oHeader.removeChild(myObj);
 	this.moTab.removeChild(myContent);
-	//TODO: delete the position, no set to null
+	this.counter--;
 	this.myTabs[tabname] = null;
+	if (previous !== false && previous !== true) {
+		this.selectTab(previous);
+	}
+	this.oHeader.scrollLeft = this.oHeader.scrollLeft;
 };
 
 eyeTab.prototype.selectTab = function (tabname) {
@@ -2345,6 +2375,9 @@ eyeTab.prototype.selectTab = function (tabname) {
 			}
 		}
 		this.lastClick = tabname;
+		if (typeof this.ontabselect === 'function') {
+			this.ontabselect(this.lastClick);
+		}
 	}
 };
 
@@ -2384,7 +2417,7 @@ function Textarea_show(params,name,father,x,y,horiz,vert,checknum,cent) {
 	}
 
 	if (!enabled) {
-		myTextarea.readOnly = 1;
+		myTextarea.disabled = 1;
 	}
 
 	if (CcssClass) {
@@ -2735,6 +2768,9 @@ var Windows = {
 					}
 				}
 			}
+			if (typeof Windows.List[id].JS === 'object' && typeof Windows.List[id].JS.Hide === 'function') {
+				Windows.List[id].JS.Hide(id);
+			}
 		}
 	},
 
@@ -3005,20 +3041,23 @@ var Windows = {
 
 	SetHeight : function (id,height,force) {
 		var e = document.getElementById(id);
-		var heightEparent = xHeight(e.parentNode);
-		if ((typeof(force) == 'undefined' || !force) && height > heightEparent) {
-			height = heightEparent;
-		}
-		if ((typeof(force) == 'undefined' || !force) && height < 50) {
-			height = 50;
-		}
-		if (force < 2 && Windows.List[id].minHeight && height < Windows.List[id].minHeight) {
-			height = Windows.List[id].minHeight;
-		}
-		if (force < 2 && Windows.List[id].maxHeight && height > Windows.List[id].maxHeight) {
-			height = Windows.List[id].maxHeight;
-		}
 		if (e) {
+			var heightEparent = xHeight(e.parentNode);
+			if (typeof force !== 'number') {
+				force = 0;
+			}
+			if (force === 0 && height > heightEparent) {
+				height = heightEparent;
+			}
+			if (force === 0 && height < 50) {
+				height = 50;
+			}
+			if (force < 2 && Windows.List[id].minHeight && height < Windows.List[id].minHeight) {
+				height = Windows.List[id].minHeight;
+			}
+			if (force < 2 && Windows.List[id].maxHeight && height > Windows.List[id].maxHeight) {
+				height = Windows.List[id].maxHeight;
+			}
 			e.style.height = height + 'px';
 		}
 	},
@@ -3043,20 +3082,23 @@ var Windows = {
 
 	SetWidth : function (id,width,force) {
 		var e = document.getElementById(id);
-		var widthEparent = xWidth(e.parentNode);
-		if ((typeof(force) == 'undefined' || !force) && width > widthEparent) {
-			width = widthEparent;
-		}
-		if ((typeof(force) == 'undefined' || !force) && width < 100) {
-			width = 100;
-		}
-		if (force < 2 && Windows.List[id].minWidth && width < Windows.List[id].minWidth) {
-			width = Windows.List[id].minWidth;
-		}
-		if (force < 2 && Windows.List[id].maxWidth && width > Windows.List[id].maxWidth) {
-			width = Windows.List[id].maxWidth;
-		}
 		if (e) {
+			var widthEparent = xWidth(e.parentNode);
+			if (typeof force !== 'number') {
+				force = 0;
+			}
+			if (force === 0 && width > widthEparent) {
+				width = widthEparent;
+			}
+			if (force === 0 && width < 100) {
+				width = 100;
+			}
+			if (force < 2 && Windows.List[id].minWidth && width < Windows.List[id].minWidth) {
+				width = Windows.List[id].minWidth;
+			}
+			if (force < 2 && Windows.List[id].maxWidth && width > Windows.List[id].maxWidth) {
+				width = Windows.List[id].maxWidth;
+			}
 			e.style.width = width + 'px';
 		}
 	},
@@ -3166,6 +3208,9 @@ var Windows = {
 						selects[i].style.visibility = 'visible';
 					}
 				}
+			}
+			if (typeof Windows.List[id].JS === 'object' && typeof Windows.List[id].JS.Unhide === 'function') {
+				Windows.List[id].JS.Unhide(id);
 			}
 		}
 	}

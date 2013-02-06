@@ -728,6 +728,36 @@ function service_eyex_messageBox($params = '') {
 			'width' => '275px'
 		));
 
+		// Support for deprecated parameters
+		if (!is_array($params['hiddens'])) {
+			if (isset($params['hidden_name']) && isset($params['hidden_text'])) {
+				$params['hiddens'][0] = array($params['hidden_name'],$params['hidden_text']);
+			}
+			if (isset($params['hidden1_name']) && isset($params['hidden1_text'])) {
+				$params['hiddens'][1] = array($params['hidden1_name'],$params['hidden1_text']);
+			}
+			if (isset($params['hidden2_name']) && isset($params['hidden2_text'])) {
+				$params['hiddens'][2] = array($params['hidden2_name'],$params['hidden2_text']);
+			}
+			if (isset($params['hidden3_name']) && isset($params['hidden3_text'])) {
+				$params['hiddens'][3] = array($params['hidden3_name'],$params['hidden3_text']);
+			}
+		}
+		$myHiddens = array();
+		if (is_array($params['hiddens'])) {
+			foreach ($params['hiddens'] as $hidden) {
+				if (isset($hidden[0]) && isset($hidden[1])) {
+					$myHidden = new Hidden(array(
+						'father' => $params['win_name'] . '_Content',
+						'name' => $hidden[0],
+						'text' => $hidden[1],
+					));
+					$myHidden->show();
+					$myHiddens[] = $myHidden;
+				}
+			}
+		}
+
 		if ($params['textbox_name']) {
 			$myWidget = new Textbox(array(
 				'father' => $params['win_name'] . '_Content',
@@ -739,6 +769,9 @@ function service_eyex_messageBox($params = '') {
 				'x' => 20,
 				'y' => 55
 			));
+			foreach ($myHiddens as $myHidden) {
+				$myWidget->addFriend($myHidden);
+			}
 			$myWidget->show();
 			$myWidget->focus();
 			if (isset($params['textbox_event'])) {
@@ -753,6 +786,9 @@ function service_eyex_messageBox($params = '') {
 				'x' => 20,
 				'y' => 55
 			));
+			foreach ($myHiddens as $myHidden) {
+				$myWidget->addFriend($myHidden);
+			}
 			$myWidget->show();
 			$myWidget->focus();
 			if (isset($params['select_event'])) {
@@ -788,6 +824,9 @@ function service_eyex_messageBox($params = '') {
 						'y' => 90
 					));
 					$myButton->addFriend($myWidget);
+					foreach ($myHiddens as $myHidden) {
+						$myButton->addFriend($myHidden);
+					}
 					$myButton->show();
 					$buttons .= '"' . $button[0] . '",';
 				}
@@ -799,34 +838,6 @@ function service_eyex_messageBox($params = '') {
 				e.style.right = right + "px";
 				right += 20 + xWidth(e);
 			}'));
-		}
-
-		// Support for deprecated parameters
-		if (!is_array($params['hiddens'])) {
-			if (isset($params['hidden_name']) && isset($params['hidden_text'])) {
-				$params['hiddens'][0] = array($params['hidden_name'],$params['hidden_text']);
-			}
-			if (isset($params['hidden1_name']) && isset($params['hidden1_text'])) {
-				$params['hiddens'][1] = array($params['hidden1_name'],$params['hidden1_text']);
-			}
-			if (isset($params['hidden2_name']) && isset($params['hidden2_text'])) {
-				$params['hiddens'][2] = array($params['hidden2_name'],$params['hidden2_text']);
-			}
-			if (isset($params['hidden3_name']) && isset($params['hidden3_text'])) {
-				$params['hiddens'][3] = array($params['hidden3_name'],$params['hidden3_text']);
-			}
-		}
-		if (is_array($params['hiddens'])) {
-			foreach ($params['hiddens'] as $hidden) {
-				if (isset($hidden[0]) && isset($hidden[1])) {
-					$myHidden = new Hidden(array(
-						'father' => $params['win_name'] . '_Content',
-						'name' => $hidden[0],
-						'text' => $hidden[1],
-					));
-					$myHidden->show();
-				}
-			}
 		}
 		return $myWidget;
 	} else {
@@ -1131,6 +1142,8 @@ function service_eyex_runjs($params) { //util for widgets
 				$tokens[$i] = str_replace('\\','\\\\',$tokens[$i]);
 				$tokens[$i] = str_replace("'","\'",$tokens[$i]);
 				$tokens[$i] = str_replace('"','\"',$tokens[$i]);
+				$tokens[$i] = str_replace("\n", '\\n', $tokens[$i]);
+				$tokens[$i] = str_replace("\r", '\\r', $tokens[$i]);
 				$js .= '"'.$tokens[$i].'"';
 			}
 			$i++;

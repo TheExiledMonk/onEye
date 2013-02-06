@@ -18,6 +18,7 @@ java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eye
 java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_IE8.css" -o "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_IE8.min.css"
 java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_chrome.css" -o "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_chrome.min.css"
 java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_firefox.css" -o "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_firefox.min.css"
+java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_khtml.css" -o "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_khtml.min.css"
 java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_opera.css" -o "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_opera.min.css"
 java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_safari.css" -o "..\..\eyeOS\extern\apps\eyeX\themes\default\css\eyeOS_safari.min.css"
 java -jar yuicompressor.jar "..\..\eyeOS\extern\apps\eyeX\themes\default\css\tiny_mce\inlinepopup.css" -o "..\..\eyeOS\extern\apps\eyeX\themes\default\css\tiny_mce\inlinepopup.min.css"

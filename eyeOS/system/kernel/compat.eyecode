@@ -25,6 +25,8 @@
 	this file is used to emulate php functions when it are not availables on the current php installation/version
 */
 
+date_default_timezone_set('UTC');
+
 function get_tmp_dir() {
 	// Try to use the function set_get_temp_dir()
 	if (function_exists('sys_get_temp_dir')) {

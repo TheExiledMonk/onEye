@@ -1046,7 +1046,6 @@
 
 .eyeLine {
 	background: #eeeeee url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/border_r.png') repeat-y;
-	padding: 0px 1px 0px 1px;
 	position: relative;
 	z-index: 1;
 }
@@ -1148,6 +1147,7 @@
 	position: absolute;
 	top: 0px;
 	width: 9px;
+	z-index: 2;
 }
 
 .eyeTabArrowRight {
@@ -1169,14 +1169,21 @@
 
 .eyeTabCross {
 	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/cross.png');
+	background-position: center;
+	background-repeat: no-repeat;
 	color: #7f7f7f;
 	cursor: pointer;
 	font-size: 11px;
 	height: 6px;
+	padding: 4px 2px;
 	position: absolute;
 	right: 5px;
-	top: 9px;
+	top: 2px;
 	width: 8px;
+}
+
+.eyeTabSelected .eyeTabCross {
+	top: 4px;
 }
 
 .eyeTabHeader {
@@ -1187,6 +1194,7 @@
 	padding: 0px 4px 0px 5px;
 	position: absolute;
 	top: 0;
+	overflow: hidden;
 }
 
 .eyeTabNotSelected {
@@ -1199,7 +1207,7 @@
 .eyeTabNotSelected, .eyeTabSelected {
 	border-left: 1px solid #dddddd;
 	border-right: 1px solid #dddddd;
-	cursor: pointer;
+	cursor: default;
 	margin-left: 11px;
 	vertical-align: middle;
 }
@@ -1211,6 +1219,7 @@
 .eyeTabSelected {
 	background: #fff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x 0 8px;
 	border-top: 1px solid #cccccc;
+	height: 21px;
 	z-index: 1;
 }
 
@@ -1220,6 +1229,10 @@
 	margin-top: 2px;
 	text-align: center;
 	vertical-align: middle;
+}
+
+.eyeTabSelected .eyeTabText {
+	margin-top: 4px;
 }
 
 .eyeTextarea {

@@ -124,6 +124,9 @@ class Toolbar {
 
 	function pressItem($params) {
 		global $myPid;
+		if (is_array($params) === false) {
+			$params = array($params);
+		}
 		foreach ($params as $value) {
 			$js = 'Toolbar_pressed("'.$myPid.'_'.$value.'_Container",true);';
 			eyeX('rawjs',array('js' => $js));
@@ -132,6 +135,9 @@ class Toolbar {
 
 	function unpressItem($params) {
 		global $myPid;
+		if (is_array($params) === false) {
+			$params = array($params);
+		}
 		foreach ($params as $value) {
 			$js = 'Toolbar_pressed("'.$myPid.'_'.$value.'_Container",false);';
 			eyeX('rawjs',array('js' => $js));

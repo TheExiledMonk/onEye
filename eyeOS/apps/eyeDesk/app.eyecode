@@ -135,6 +135,11 @@ function eyeDesk_run($params = '') {
 					'id' => 'eyeOS2firefoxCss',
 					'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=' . $theme . '&extern=../' . $themexml['theme'][0]['cssBase'][0] . 'css/eyeOS_firefox.css&type=css'
 				));
+			} else if (stripos($_SERVER['HTTP_USER_AGENT'], 'khtml') !== false) {
+				eyex('loadCSS',array(
+					'id' => 'eyeOS2khtmlCss',
+					'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=' . $theme . '&extern=../' . $themexml['theme'][0]['cssBase'][0] . 'css/eyeOS_khtml.css&type=css'
+				));
 			}
 		}
 		eyex('loadCSS',array(
@@ -165,6 +170,11 @@ function eyeDesk_run($params = '') {
 			eyex('loadCSS',array(
 				'id' => 'eyeOSfirefoxCss',
 				'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=' . $theme . '&extern=css/eyeOS_firefox.css&type=css'
+			));
+		} else if (stripos($_SERVER['HTTP_USER_AGENT'], 'khtml') !== false) {
+			eyex('loadCSS',array(
+				'id' => 'eyeOSkhtmlCss',
+				'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=' . $theme . '&extern=css/eyeOS_khtml.css&type=css'
 			));
 		}
 		eyex('rawjs',array('js' => 'xGetElementById("background").style.backgroundImage = "url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=' . $theme . '&extern=images/wallpapers/default.jpg)";'));

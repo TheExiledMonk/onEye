@@ -16,12 +16,12 @@
 // | Authors: Ian Eure <ieure@php.net>                                    |
 // +----------------------------------------------------------------------+
 //
-// $Id: Parameter.php,v 1.1 2007/03/25 10:10:21 cweiske Exp $
+// $Id: Parameter.php 232560 2007-03-25 10:10:21Z cweiske $
 
 /**
  * Class for working with MIME type parameters
  *
- * @version 1.2.0
+ * @version @version@
  * @package MIME_Type
  * @author Ian Eure <ieure@php.net>
  */
