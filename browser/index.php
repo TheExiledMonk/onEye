@@ -1,25 +1,19 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
+
 /*
 *This defines are different between indexes
 */
@@ -36,56 +30,11 @@ if(!defined('EYE_INDEX')){
 //if there are a shorturl in the url, like index.php/file
 if(isset($_SERVER['PATH_INFO'])) {
 	$myInfo = $_SERVER['PATH_INFO'];
-	if($myInfo{0} == '/') {
-		$myInfo = utf8_substr($myInfo,1,utf8_strlen($myInfo));
+	if ( /* utf8 */ substr($myInfo, 0, 1) === '/') {
+		$myInfo = substr($myInfo, 1, strlen($myInfo)); // utf8
 	}
 } else {
 	$myInfo="";
-}
-
-//TODO: this method is a workaround waiting for the possible beautiful url support in eyeOS
-if($myInfo != "" && strstr($myInfo,"extern/")){
-	//Getting the cache version
-	$search = "externVersion/";
-	if(utf8_strpos($myInfo,$search) !== false){
-		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
-		$end = utf8_strpos($myInfo,"/",$in);
- 		$end = $end-$in;
-		$_GET['version'] = utf8_substr($myInfo,$in,$end);
-		$_REQUEST['version'] = $_GET['version'];
-	}
-	$search = "externType/";
-	if(utf8_strpos($myInfo,$search) !== false){
-		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
-		$end = utf8_strpos($myInfo,"/",$in);
- 		$end = $end-$in;
-		$_GET['type'] = utf8_substr($myInfo,$in,$end);
-		$_REQUEST['type'] = $_GET['type'];
-	}
-	$search = "externTheme/";
-	if(utf8_strpos($myInfo,$search) !== false){
-		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
-		$end = utf8_strpos($myInfo,"/",$in);
- 		$end = $end-$in;
-		$_GET['theme'] = utf8_substr($myInfo,$in,$end);
-		$_REQUEST['theme'] = $_GET['theme'];
-	}
-	$search = "externNocache/";
-	if(utf8_strpos($myInfo,$search) !== false){
-		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
-		$end = utf8_strpos($myInfo,"/",$in);
- 		$end = $end-$in;
-		$_GET['nocache'] = utf8_substr($myInfo,$in,$end);
-		$_REQUEST['nocache'] = $_GET['nocache'];
-	}
-	$search = "externPath/";
-	if(utf8_strpos($myInfo,$search) !== false){
-		$in = utf8_strpos($myInfo,$search)+utf8_strlen($search);
-		$end = utf8_strpos($myInfo,"/",$in);
- 		$end = utf8_strlen($myInfo)-$in;
-		$_GET['extern'] = utf8_substr($myInfo,$in,$end);
-		$_REQUEST['extern'] = $_GET['extern'];
-	}
 }
 
 //Check if index.php is being used to load images/files from extern directory
@@ -99,20 +48,20 @@ if (isset($_GET['extern'])) {
 		}
 		//call to extern to throw the file
 		//Only start session if we already have a session (keep in mind that extern doesn't have session)
-		reqLib('eyeSessions','checkAndSstartSession');
-		service('extern','getFile',array($myExtern,$type),1);
+		eyeSessions('checkAndSstartSession');
+		extern('getFile', array($myExtern, $type), 1);
 } elseif(isset($_GET['api'])) {
 	require_once(EYE_ROOT.'/xml-rpc/server.eyecode');
 	xmlrpc_parseRequest();
 } else {
 	//Loading eyeWidgets definitions
-	reqLib('eyeWidgets','loadWidgets');
+	eyeWidgets('loadWidgets');
 
 	//Starting a simple session
-	reqLib('eyeSessions','startSession');
+	eyeSessions('startSession');
 
 	//If widget table does not exist, create it
-	reqLib('eyeWidgets','checkTable');
+	eyeWidgets('checkTable');
 
 	//if a shorturl is present
 	if(!empty($myInfo)) {
@@ -126,6 +75,34 @@ if (isset($_GET['extern'])) {
 			$_REQUEST['checknum'] = $checknum;
 		}
 	}
+	
+	/*
+	 * [START] URL LOGIN
+	 * Copyright © 2012 Lars Knickrehm
+	 *
+	 * index.php?username=&password=&language=[auto]
+	 */
+	if (isset($_REQUEST['username']) === true && isset($_REQUEST['password']) === true) {
+		if (!proc('findPidByName', array('eyeDesk'))) {
+			$_SESSION['username'] = $_REQUEST['username'];
+			$_SESSION['password'] = $_REQUEST['password'];
+			if (isset($_REQUEST['language']) === true) {
+				$_SESSION['language'] = $_REQUEST['language'];
+			} else {
+				$_SESSION['language'] = '[auto]';
+			}
+		}
+		
+		$protocol = substr($_SERVER['SERVER_PROTOCOL'], 0, strpos($_SERVER['SERVER_PROTOCOL'], '/')); // utf8
+		$location = /* utf8 */ strtolower($protocol) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+		
+		header('Location: ' . $location);
+		exit;
+	}
+	/*
+	 * URL LOGIN [END]
+	 */
+	
 	//Checking if checknum and message are set
 	if(isset($_GET['checknum']) && !empty($_GET['checknum'])) {
 		if(isset($_REQUEST['params']) && !empty($_REQUEST['params'])) {
@@ -139,7 +116,8 @@ if (isset($_GET['extern'])) {
 			$msg = null;
 		}
 		$array_msg = array($_GET['checknum'],$msg,$params);
-		echo service('mmap','routemsg',$array_msg);
+		echo mmap('routemsg', $array_msg);
+		$_SESSION['ping'] = time();
 	} else {
 		//if a ping response is received
 		if(isset($_GET['msg']) && $_GET['msg'] == 'ping') {

@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(IPHONE_PATH.'lib/message.eyecode');
@@ -90,7 +83,7 @@ function eyeFeeds_thesave() {
 
 	if (eyeFeeds_saveFeedsToFile($newFeedsToSave)) {
 		msgIphone(array('content' => 'Feed successfully added', 'title' => 'Complete', 'caption' => 'Continue', 'link' => 'index.php?action=eyeFeeds&noPropagate=2'));
-	} else { 
+	} else {
 		msgIphone(array('content' => 'Error adding feed', 'title' => 'Error'));
 	}
 }
@@ -173,7 +166,7 @@ function eyeFeeds_fetchFeedItemsFromUrl($url) {
 			'id' => $simplePieItem->get_id(),
 			'permalink' => $simplePieItem->get_permalink(),
 			'title' => $simplePieItem->get_title(),
-			'date' => $simplePieItem->get_date(),
+			'date' => $simplePieItem->get_date('Y-m-d G:i'),
 			'content' => $simplePieItem->get_content(),
 		);
 		$return[md5($item['id'])] = $item;

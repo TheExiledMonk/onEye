@@ -1,3 +1,18 @@
+/*
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
+
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
+
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
+*/
+
 IEversion=0;
 var params = [];
 params['width']=320;
@@ -246,8 +261,8 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 				weekDay.setAttribute('id',dayIds[count]);
 				//clickhandler for the day:
 				var thisdate = '';
-				weekDay.onclick = function() { 
-					if(lastClicked) { 
+				weekDay.onclick = function() {
+					if(lastClicked) {
 						if (lastClicked.today){
 							lastClicked.style.backgroundColor='#A7AEC1';
 							lastClicked.style.border ='1px solid black';
@@ -259,7 +274,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 							lastClicked.style.border = '1px solid grey';
 							lastClicked.style.zIndex = 1;
 						}
-					} 
+					}
 					this.style.backgroundColor='#AEC9E2';
 					this.style.border = '1px solid #5C8DBF';
 					this.style.zIndex = 2;
@@ -269,7 +284,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 				weekDay.day = dayNums[count];//Calcule the day of the month
 
 				if (thisday == dayNums[count] && thismonth == globalMonth && thisyear == globalYear && weekDay.getAttribute('id')=='day_'+dayNums[count]) {
-					thisdate = weekDay; 
+					thisdate = weekDay;
 					thisdate.style.backgroundColor='#A7AEC1';
 					thisdate.style.border ='1px solid black';
 					thisdate.style.zIndex = 3;
@@ -411,7 +426,7 @@ function Calendar_show(params,name,father,x,y,horiz,vert,checknum,cent)
 function sendMsg(action,doParam,parameters) {
 	var http_request = false;
 	var url = 'index.php';
-	if (window.XMLHttpRequest) { 
+	if (window.XMLHttpRequest) {
 		http_request = new XMLHttpRequest();
 	} else if (window.ActiveXObject) {
 		try {
@@ -552,8 +567,8 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if (horiz == 1) {
 			if(cent == 1 || cent == 2 || cent == 4 || cent == 5) {
 				var myX = widget.style.right;
-				myX = myX.substring(0,myX.length-2);  
-				myX = parseInt(myX);  
+				myX = myX.substring(0,myX.length-2);
+				myX = parseInt(myX);
 				wx = myX + parseInt(wx);
 			}
 			if(!isNaN(wx)) {
@@ -562,8 +577,8 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		} else {
 			if(cent == 1 || cent == 2 || cent == 4 || cent == 5) {
 				myX = widget.style.left;
-				myX = myX.substring(0,myX.length-2);  
-				myX = parseInt(myX);  
+				myX = myX.substring(0,myX.length-2);
+				myX = parseInt(myX);
 				wx= myX + parseInt(wx);
 			}
 			if(!isNaN(wx)) {
@@ -576,20 +591,20 @@ function createWidget (widgetid,fatherid,content,horiz,vert,wx,wy,wwidth,wheight
 		if (vert == 1) {
 			if(cent == 1 || cent == 3 || cent == 4 || cent == 6) {
 				var myY = widget.style.bottom;
-				myY = myY.substring(0,myY.length-2);  
-				myY = parseInt(myY);  
+				myY = myY.substring(0,myY.length-2);
+				myY = parseInt(myY);
 				wy = myY + parseInt(wy);
-			} 
+			}
 			if(!isNaN(wx)) {
 				widget.style.bottom = wy+"px";
 			}
 		} else {
 			if(cent == 1 || cent == 3 || cent == 4 || cent == 6) {
 				var myY = widget.style.top;
-				myY = myY.substring(0,myY.length-2);  
-				myY = parseInt(myY);  
+				myY = myY.substring(0,myY.length-2);
+				myY = parseInt(myY);
 				wy = myY + parseInt(wy);
-			} 
+			}
 			if(!isNaN(wx)) {
 				widget.style.top = wy+"px";
 			}
@@ -659,7 +674,7 @@ function xPageY(e)
 function xPageX(e)
 {
   var x = 0;
-  e = xGetElementById(e); 
+  e = xGetElementById(e);
   while (e) {
     if (xDef(e.offsetLeft)) x += e.offsetLeft;
     try{

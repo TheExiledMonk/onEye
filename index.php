@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
@@ -36,7 +29,7 @@ if (ini_get('register_globals')) {
 }
 
 // Support get_magic_quotes_gpc and magic_quotes_sybase
-if ((function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) || ini_get('magic_quotes_sybase')) {
+if ((function_exists('get_magic_quotes_gpc')) || ini_get('magic_quotes_sybase')) {
 	$_COOKIE = array_map_recursive('stripslashes', $_COOKIE, true);
 	$_GET = array_map_recursive('stripslashes', $_GET, true);
 	$_POST = array_map_recursive('stripslashes', $_POST, true);
@@ -86,7 +79,7 @@ function array_map_recursive($callback, $array, $mapkeys = false) {
 
 /*
 *This define is so useful to check if the client has accesed
-*eyeOS from the right way (this file).
+*oneye from the right way (this file).
 */
 define('EYE_INDEX',1);
 
@@ -111,14 +104,14 @@ loadStringLibrary();
 include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.KERNEL_DIR.'/kernel'.EYE_CODE_EXTENSION);
 
 /*
-*Setting the php debug (error_reporting) depending the eyeOS config
+*Setting the php debug (error_reporting) depending the oneye config
 *stored in system/conf/system.xml
 */
 setPhpInitDebug();
 
 /*
 *Changing some php init parameters, the chagnes are not always
-*the same, may change depending of eyeOS configuration.
+*the same, may change depending of oneye configuration.
 */
 setPhpInitValues();
 
@@ -135,13 +128,16 @@ serviceLoading();
 $index = indexRequested();
 if($index !== false){
 	loadIndex($index);
-}elseif(clientMobile()){
+}
+/*
+elseif(clientMobile()){
 	if (mobileWithWebkit()) {
 		loadIndex('iphone');
 	} else {
 		loadIndex('mobile');
 	}
-}else{
+}*/
+else{
 	loadIndex('browser');
 }
 
@@ -164,7 +160,7 @@ function loadIndex($index){
 }
 function indexRequested(){
 	if(isset($_REQUEST['index']) && !empty($_REQUEST['index'])){
-		return utf8_basename($_REQUEST['index']);
+		return basename($_REQUEST['index']);
 	}
 	return false;
 }
@@ -175,6 +171,7 @@ function indexRequested(){
 function clientMobile(){
 	if(CHECK_MOBILE == 1) {
 		$mobileClients = array(
+			"android",
 			"midp",
 			"240x320",
 			"blackberry",
@@ -201,9 +198,9 @@ function clientMobile(){
 			"xda",
 			"iphone"
 		);
-		$userAgent = utf8_strtolower($_SERVER['HTTP_USER_AGENT']);
+		$userAgent = /* utf8 */ strtolower($_SERVER['HTTP_USER_AGENT']);
 		foreach($mobileClients as $mobileClient) {
-			if (strstr($userAgent, $mobileClient)) {
+			if ( /* utf8 */ strpos($userAgent, $mobileClient) !== false) {
 				return $mobileClient;
 			}
 		}
@@ -212,8 +209,8 @@ function clientMobile(){
 }
 
 function mobileWithWebkit() {
-	$userAgent = utf8_strtolower($_SERVER['HTTP_USER_AGENT']);
-	if (strstr($userAgent, 'webkit') || strstr($userAgent, 'android')) {
+	$userAgent = /* utf8 */ strtolower($_SERVER['HTTP_USER_AGENT']);
+	if (strpos($userAgent, 'webkit') !== false || strpos($userAgent, 'android') !== false) { // utf8
 		return true;
 	} else {
 		return false;
@@ -226,33 +223,54 @@ function mobileWithWebkit() {
 */
 function loadStringLibrary(){
 	include_once(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeString/main'.EYE_CODE_EXTENSION);
-	call_user_func('lib_eyeString_start');
 	//setting library loaded
 	define('LIB_EYESTRING_LOADED',1);
 }
 
 /*
-*Set the eyeOS debuggin, at the moment only changes
+*Set the oneye debuggin, at the moment only changes
 *the error_reporting, but may change more things in the future.
 */
 function setPhpInitDebug(){
+	ini_set('display_errors', false);
 	ini_set('html_errors', false);
-	if(EYEOS_DEBUG_MODE == 0) {
-		error_reporting(0);
-		ini_set('display_errors', false);
-	} elseif(EYEOS_DEBUG_MODE == 2) {
-		error_reporting(E_ALL);
-		ini_set('display_errors', true);
-	} elseif(EYEOS_DEBUG_MODE == 3) {
-		if (!defined('E_DEPRECATED')) {
+	
+	$error_reporting = 0;
+	if (EYEOS_DEBUG_MODE === '2') {
+		$error_reporting = E_ALL;
+	} else if (EYEOS_DEBUG_MODE === '3') {
+		if (defined('E_DEPRECATED') === false) {
 			define('E_DEPRECATED', 0);
 		}
-		error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
-		ini_set('display_errors', true);
-	} else {
-		error_reporting(E_ERROR);
-		ini_set('display_errors', true);
+		$error_reporting = E_ALL ^ E_DEPRECATED ^ E_NOTICE;
+	} else if (EYEOS_DEBUG_MODE) {
+		$error_reporting = E_ERROR;
 	}
+	error_reporting($error_reporting);
+	set_error_handler('oneye_error_handler', $error_reporting);
+}
+
+function oneye_error_handler($errno, $errstr, $errfile = '', $errline = 0, $errcontext = array()) {
+	if (error_reporting() === 0) {
+		return;
+	}
+	if ($errno === E_ERROR) {
+		$errno = 'Error';
+	} else if ($errno === E_WARNING) {
+		$errno = 'Warning';
+	} else if ($errno === E_NOTICE) {
+		if (strpos($errstr, 'Undefined index: ') === 0 || strpos($errstr, 'Undefined offset: ') === 0) { // utf8
+			return;
+		}
+		$errno = 'Notice';
+	} else if ($errno === E_STRICT) {
+		$errno = 'Strict';
+	} else if ($errno === E_DEPRECATED) {
+		$errno = 'Deprecated';
+	} else if ($errno === E_USER_ERROR || $errno === E_USER_WARNING || $errno === E_USER_NOTICE || $errno === E_USER_DEPRECATED) {
+		$errno = 'User';
+	}
+	echo strval($errno) . ': ' . $errstr . ' in ' . $errfile . ' on line ' . strval($errline) . "\n\n";
 }
 
 /*
@@ -260,18 +278,18 @@ function setPhpInitDebug(){
 */
 function libraryLoading(){
 	//Loading the Error Codes
-	reqLib('errorCodes','loadCodes');
+	errorCodes('loadCodes');
 	//load pear library class
-	reqLib('eyePear','loadPear');
+	eyePear('Load', array('PEAR'));
 }
 
 /*
 *Load the basic services needed by the kernel/core
 */
 function serviceLoading(){
-	//Loading the Security Service (sec) if eyeOS Security is turned on (by default is On)
+	//Loading the Security Service (sec) if oneye Security is turned on (by default is On)
 	if(EYEOS_SECURITY == 1) {
-		service('sec','start');
+		sec('start');
 	}
 	//Setting the Running Log check var to 0
 	global $LOG_RUNNING;
@@ -279,7 +297,7 @@ function serviceLoading(){
 }
 
 /*
-*Set some php init values depending of eyeOS configs
+*Set some php init values depending of oneye configs
 */
 function setPhpInitValues(){
 	//if allow_big_streams php will not have max_execution_time

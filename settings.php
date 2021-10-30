@@ -1,35 +1,28 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
 	Main configuration file.
-	Please read the eyeOS configuration documentation
+	Please read the oneye configuration documentation
 	for more information before modifying anything here.
 */
 
 //Paths
 define('EYE_ROOT','.');
-define('REAL_EYE_ROOT','eyeOS');
+define('REAL_EYE_ROOT','system');
 define('SYSTEM_DIR','system');
 define('KERNEL_DIR','kernel');
 define('SERVICE_DIR','services');
@@ -51,7 +44,8 @@ define('ACCOUNT_DIR','accounts');
 define('GROUPS_DIR','groups');
 define('FILES_GROUP_DIR','files');
 define('CONF_GROUP_DIR','conf');
-//eyeOS file extensions
+define('LOG_DIR','logs');
+//oneye file extensions
 define('EYEOS_INFO_EXT','eyeInfo');
 define('EYEOS_FILE_EXT','eyeFile');
 define('EYEOS_LINK_EXT','eyeLink');
@@ -62,18 +56,19 @@ define('EYEOS_TRASH_EXT','eyeTrash');
 define('VFS_MODULE','virtual');
 
 //um module to use
-define('UM_MODULE','eyeos');
+define('UM_MODULE','oneye');
 
-//The real god of eyeOS users, master of masters
+//The real god of oneye users, master of masters
 define('REAL_ROOTUSER','root');
 
 //Extras
-define('FORCE_NOUTF8',0);
 define('EYEOS_TMP_DIR','tmp');
-define('EYEOS_VERSION','1.9.0.3');
+define('EYEOS_VERSION','1.11.6.0preview');
+define('ONEYE_VERSION','0.9.6preview');
 define('XML_COMPAT',1);
 define('XML_PARSER','pure');
 define('ACL_SUPPORT',1);
+define('TIMEZONE','UTC'); // It must be a valid timezone identifier: http://www.php.net/manual/en/timezones.php
 //eyeDialog that defines should be moved to another place desinged for it.
 define('EYEDIALOG_TYPE_OPENFILE', 0);
 define('EYEDIALOG_TYPE_SAVEFILE', 1);
@@ -81,4 +76,7 @@ define('EYEDIALOG_TYPE_SELECTFOLDER', 2);
 
 define('CHECK_MOBILE',1);
 
+// User Management: LDAP
+define('LDAP_DN', 'uid=%0,ou=People,o=localhost');
+define('LDAP_SERVER', 'localhost');
 ?>

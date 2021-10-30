@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(IPHONE_PATH.'lib/message.eyecode');
@@ -31,7 +24,7 @@ function eyeContacts_showContact(){
 	$info = eyeContacts('retrive',$contact);
 	$proi = false; // Professional Information Started
 	$inti = false; // Internet Information Started
-	echo '<div id="contact" title="Information" class="panel" 
+	echo '<div id="contact" title="Information" class="panel"
 
 	';
 	foreach ($info as $key => $value) {
@@ -125,7 +118,7 @@ function eyeContacts_showContact(){
 						$inti=true;
 					}
 					echo '<div class="info">
-						<label>eyeOS User</label><h3>'.$value[0].'</h3>
+						<label>oneye User</label><h3>'.$value[0].'</h3>
 						</div>';
 					break;
 				case 'company':
@@ -257,7 +250,7 @@ function eyeContacts_edit() {
 					<label>Voice Over IP</label><input type="text" style="padding:12px 10px 0 135px;font-size:14px;" name="voip" value="'.$info['voip'][0].'"/>
 				</div>
 				<div class="row">
-					<label>eyeOS User</label><input type="text" style="padding:12px 10px 0 135px;font-size:14px;" name="eyeos-user" value="'.$info['eyeos-user'][0].'"/>
+					<label>oneye User</label><input type="text" style="padding:12px 10px 0 135px;font-size:14px;" name="eyeos-user" value="'.$info['eyeos-user'][0].'"/>
 				</div>
 			</fieldset>
 		<h2>Professional Information</h2>
@@ -330,7 +323,7 @@ function eyeContacts_new() {
 					<label>Voice Over IP</label><input type="text" style="padding:12px 10px 0 163px;" name="voip"/>
 				</div>
 				<div class="row">
-					<label>eyeOS User</label><input type="text" style="padding:12px 10px 0 163px;" name="eyeos-user"/>
+					<label>oneye User</label><input type="text" style="padding:12px 10px 0 163px;" name="eyeos-user"/>
 				</div>
 			</fieldset>
 		<h2>Professional Information</h2>
@@ -367,7 +360,7 @@ function eyeContacts_save() {
 		msgIphone(array('content' => 'Please, fill in the name and surname.', 'title' => 'Error'));
 		return false;
 	}
-	$contact = array( 
+	$contact = array(
 		'normal' => array(
 			'name' => $_POST['name'],
 			'surname' => $_POST['surname'],
