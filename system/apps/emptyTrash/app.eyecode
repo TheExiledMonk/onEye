@@ -1,32 +1,25 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function emptyTrash_run($params = '') {
-	$file = utf8_basename($params[0]);
+	$file = basename($params[0]);
 	$xml = eyeXML('getXMLfile',array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/' . $file));
- 	$realFile = utf8_basename($file,'.'.EYEOS_TRASH_EXT);
+ 	$realFile = basename($file,'.'.EYEOS_TRASH_EXT);
 	$infoFile = um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/' . $realFile . '.' . EYEOS_FILE_EXT;
-	if (utf8_basename($xml['eyeTrash'][0]['lastname'][0]) && (vfs('real_fileExists',array($infoFile)) || vfs('isdir',array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/' . utf8_substr($file,0,- utf8_strlen('.' . EYEOS_TRASH_EXT)))))) {
+	if (basename($xml['eyeTrash'][0]['lastname'][0]) && (vfs('real_fileExists', array($infoFile)) || vfs('isdir', array(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/' . substr($file, 0, -strlen('.' . EYEOS_TRASH_EXT)))))) { // utf8
 		$content = 'Do you really want to remove "%s"?';
 		$title = i18n('translate',array('Delete %s',array($xml['eyeTrash'][0]['lastname'][0])));
 		$tokens = array($xml['eyeTrash'][0]['lastname'][0]);
@@ -39,7 +32,7 @@ function emptyTrash_run($params = '') {
 		'buttons' => array(array('Do','Accept'),array('Close','Cancel')),
 		'content' => $content,
 		'hiddens' => array(array('emptyTrash_Hidden_File',$file),array('emptyTrash_Hidden_Callback',$params[1])),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/editClean.png',
 		'savePosition' => 1,
 		'sound' => 'question',
 		'title' => $title,

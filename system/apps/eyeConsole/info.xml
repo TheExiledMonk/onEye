@@ -3,8 +3,8 @@
 	<category>Utilities</category>
 	<version>1.9</version>
 	<description>Console utility</description>
-	<author>eyeOS Team</author>
+	<author>oneye Team</author>
 	<license>AGPL</license>
-	<type>Utility</type>
-	<icon>index.php?theme=1&amp;extern=icons/48x48/eyeConsole.png</icon>
+	<type>Application</type>
+	<icon>index.php?theme=USERTHEME&amp;extern=icons/48x48/eyeConsole.png</icon>
 </package>

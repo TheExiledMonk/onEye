@@ -1,11 +1,11 @@
 /*
  * CodePress - Real Time Syntax Highlighting Editor written in JavaScript - http://codepress.org/
- * 
+ *
  * Copyright (C) 2006 Fernando M.A.d.S. <fermads@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the
  * GNU Lesser General Public License as published by the Free Software Foundation.
- * 
+ *
  * Read the full licence: http://www.opensource.org/licenses/lgpl-license.php
  */
 
@@ -48,8 +48,8 @@ CodePress = function(myId) {
 	}
 
 	self.getLanguage = function() {
-		for (language in CodePress.languages) 
-			if(self.options.match('\\b'+language+'\\b')) 
+		for (language in CodePress.languages)
+			if(self.options.match('\\b'+language+'\\b'))
 				return CodePress.languages[language] ? language : 'generic';
 	}
 
@@ -103,16 +103,16 @@ CodePress = function(myId) {
 }
 
 CodePress.languages = {
-	csharp : 'C#', 
-	css : 'CSS', 
+	csharp : 'C#',
+	css : 'CSS',
 	generic : 'Generic',
 	html : 'HTML',
-	java : 'Java', 
-	javascript : 'JavaScript', 
-	perl : 'Perl', 
+	java : 'Java',
+	javascript : 'JavaScript',
+	perl : 'Perl',
 	ruby : 'Ruby',
-	php : 'PHP', 
-	text : 'Text', 
+	php : 'PHP',
+	text : 'Text',
 	sql : 'SQL',
 	vbscript : 'VBScript',
 	c : 'c',
@@ -134,7 +134,7 @@ CodePress.run = function() {
 			t[i].id = id+'_cp';
 			eval(id+' = new CodePress(t[i])');
 			t[i].parentNode.insertBefore(eval(id), t[i]);
-		} 
+		}
 	}
 }
 

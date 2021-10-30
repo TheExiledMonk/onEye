@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDialog/events'.EYE_CODE_EXTENSION);
@@ -42,7 +35,7 @@ define('__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS', 'Groups');
  * 							5 => default_path
  * 							6 => force_extension
  * 							7 => callbackFunction_on_Cancel_event)
- * 
+ *
  * 				Example of filestypes:
  * 					array(
  * 						'Text files' => '*.txt',							//the first one is selected by default
@@ -55,7 +48,7 @@ function eyeDialog_run($params=null) {
 	global $checknum, $myPid;
 
 	//DEBUG
-	/*$params = array( 
+	/*$params = array(
 		//0 => EYEDIALOG_TYPE_OPENFILE,
 		//0 => EYEDIALOG_TYPE_SELECTFOLDER,
 		0 => EYEDIALOG_TYPE_SAVEFILE,
@@ -63,15 +56,15 @@ function eyeDialog_run($params=null) {
 		2 => $checknum,
 		3 => 'defaultFilename.ext',
 		4 => array(
-				'Text files' => '*.txt',							//the first one is selected by default 
+				'Text files' => '*.txt',							//the first one is selected by default
 				'Images' => '*.bmp|*.jpg|*.gif|*.png',
 				'Configuration files' => 'conf.xml|conf.ini',
-				'eyeOS links' => '*.eyeLink',
+				'oneye links' => '*.eyeLink',
 				'All types' => '*'
 			),
 		5 => './users/tt4/test/files/Documents',
 		6 => true,
-		7 => 
+		7 =>
 	);
 	$params[4] = array(
 		'Text files' => '*.txt',	//default
@@ -106,7 +99,7 @@ function eyeDialog_run($params=null) {
 		//2- callback checknum
 		$callback_checknum = $params[2];
 		//3- default filename
-		$defaultFilename = utf8_basename($params[3]);
+		$defaultFilename = basename($params[3]);
 		//4- filestypes
 		if (is_array($params[4])) {
 			$filetypes = $params[4];
@@ -206,7 +199,7 @@ function eyeDialog_run($params=null) {
 		'father' => 'folders_BOX',
 		'x' => $foldersBox->width -24,
 		'y' => 4,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/refresh.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/refresh.png',
 		'disableMsg' => 0
 	));
 	$foldersRefreshImage->show(0);
@@ -254,15 +247,15 @@ function eyeDialog_run($params=null) {
 
 	//fill in filetypes select with formatted values
 	foreach($filetypes as $label => $filetype) {
-		$ft = explode('|', $filetype);
+		$ft = /* utf8 */ explode('|', $filetype);
 		$formattedLabel = i18n("translate",array($label)).' (';
 		$formattedFiletype = '';
 		foreach ($ft as $value) {
 			$formattedLabel .= $value.', ';
 			$formattedFiletype .= $value.'|';
 		}
-		$formattedLabel = utf8_substr($formattedLabel, 0, utf8_strlen($formattedLabel) -2).')';
-		$formattedFiletype = utf8_substr($formattedFiletype, 0, utf8_strlen($formattedFiletype) -1);
+		$formattedLabel = /* utf8 */ substr($formattedLabel, 0, -2) . ')';
+		$formattedFiletype = /* utf8 */ substr($formattedFiletype, 0, -1);
 
 		$filetypeSelect->addOption($formattedLabel, $formattedFiletype);
 	}
@@ -324,7 +317,7 @@ function eyeDialog_run($params=null) {
 	$currentPath = new Hidden(array(
 		'name' =>'currentPath_HID',
 		'father' => 'eyeDialog_WND_Content',
-		'text' => $currentPath
+		'text' => ''
 	));
 	eyeWidgets('serialize',array($currentPath));
 

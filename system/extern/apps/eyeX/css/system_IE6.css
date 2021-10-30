@@ -1,3 +1,18 @@
+/*
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
+
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
+
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
+*/
+
 html, body {
 	height: 100%;
 	width: 100%;
@@ -5,7 +20,7 @@ html, body {
 
 .eyeDockText_center {
 	background: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/center_ie6.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/apps/eyeDock/center_ie6.png', sizingMethod='scale');
 	height: 31px;
 	left: 0px;
 	position: absolute;

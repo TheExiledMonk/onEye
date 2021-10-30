@@ -7,7 +7,7 @@ Allows use to remove, edit, and create users. When we first select managing user
 
 [b]Permissions:[/b]
 [list]
-[*]Administrator: Has the same power as root over your eyeOS, Users, and groups without the option of uninstalling eyeOS
+[*]Administrator: Has the same power as root over your oneye, Users, and groups without the option of uninstalling oneye
 [*]Maintainer : Can Manage groups and users that a admin and or root user assigned to them
 [*]User: can only maintain the files and folders that they make
 [/list]

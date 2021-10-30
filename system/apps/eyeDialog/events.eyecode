@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDialog/app'.EYE_CODE_EXTENSION);
@@ -56,22 +49,22 @@ function eyeDialog_on_folders_TREE($params=null) {
 	switch($GLOBALS['currentPlace_HID']->text) {
 		case __EYEDIALOG_PLACE_GROUPS:
 			//TODO
-			/*$selectedPath = utf8_substr($params['folders_TREE'][0], utf8_strlen(i18n('translate',array(__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS))));
+			/*$selectedPath = substr($params['folders_TREE'][0], strlen(i18n('translate', array(__EYEDIALOG_FOLDERSTREE_ROOTNODE_GROUPS)))); // utf8
 			$selectedPath = eyeDialog_getFormatedDirPath($selectedPath);
 			$groupname = '';
 
 			//if a group has been selected (not the root node)
 			if ($selectedPath != '/') {
-				$groupname = utf8_substr($selectedPath, 1, utf8_strpos($selectedPath, '/', 2) -1);
+				$groupname = substr($selectedPath, 1, strpos($selectedPath, '/', 2) - 1); // utf8
 				$GLOBALS['currentGroup_HID']->setText($groupname);
-				$selectedPath = utf8_substr($selectedPath, utf8_strlen($groupname) +1);
+				$selectedPath = substr($selectedPath, strlen($groupname) + 1); // utf8
 				$selectedPath = eyeDialog_resolvePathInGroupsDir($selectedPath, false, $groupname);
 			}
 			eyeDialog_browseGroups($selectedPath, $groupname);*/
 			break;
 
 		default:
-			$selectedPath = utf8_substr($params['folders_TREE'][0], utf8_strlen(i18n('translate',array(__EYEDIALOG_FOLDERSTREE_ROOTNODE_HOME))));
+			$selectedPath = substr($params['folders_TREE'][0], strlen(i18n('translate', array(__EYEDIALOG_FOLDERSTREE_ROOTNODE_HOME)))); // utf8
 			eyeDialog_browseHome($selectedPath);
 			break;
 	}
@@ -85,11 +78,11 @@ function eyeDialog_on_files_TAB_click($params=null) {
 
 	if ($dialogParams[0] != EYEDIALOG_TYPE_SELECTFOLDER) {
 		if ($selectedFileId[0] != 'd') {
-			$GLOBALS['filename_TXTBOX']->setText(eyeDialog_autoSetExtensionToFilename(utf8_basename($selectedFileId[1])));
+			$GLOBALS['filename_TXTBOX']->setText(eyeDialog_autoSetExtensionToFilename(basename($selectedFileId[1])));
 		}
 	}
 	else {
-		if (utf8_basename($selectedFileId[1]) != '..') {
+		if (basename($selectedFileId[1]) != '..') {
 			$GLOBALS['filename_TXTBOX']->setText('');
 		}
 	}
@@ -105,7 +98,7 @@ function eyeDialog_on_files_TAB_dblClick($params=null) {
 		case __EYEDIALOG_PLACE_GROUPS:
 			//TODO
 			/*$groupname = $selectedFileId[2];
-			$path = eyeDialog_resolvePathInGroupsDir($currentPath.'/'.utf8_basename($selectedFileId[1]), true, $groupname);
+			$path = eyeDialog_resolvePathInGroupsDir($currentPath.'/'.basename($selectedFileId[1]), true, $groupname);
 			if ($path === false) {
 				$path = '/';
 			}
@@ -113,7 +106,7 @@ function eyeDialog_on_files_TAB_dblClick($params=null) {
 			break;
 		default:
 			if ($selectedFileId[0] == 'd') {
-				eyeDialog_browseHome(eyeDialog_getFormatedDirPath($currentPath.'/'.utf8_basename($selectedFileId[1])));
+				eyeDialog_browseHome(eyeDialog_getFormatedDirPath($currentPath.'/'.basename($selectedFileId[1])));
 				eyeDialog_selectTreeFolder($selectedFileId[1]);
 
 				if ($dialogParams[0] == EYEDIALOG_TYPE_SELECTFOLDER) {
@@ -150,7 +143,7 @@ function eyeDialog_on_filetype_SEL_change($params=null) {
 //Notify eyeDialog is going to be closed to the application which launched it
 function eyeDialog_on_closingNotification(){
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
-	$trimd=utf8_trim($dialogParams[7]);
+	$trimd = /* utf8 */ trim($dialogParams[7]);
 	if(!empty($trimd)){
 		$cancelCallback = $dialogParams[7];
 		$callback_checknum = $dialogParams[2];
@@ -169,7 +162,7 @@ function eyeDialog_on_ok_BTN($params=null) {
 	$dirContent = eyeDialog_listDir($GLOBALS['currentPath_HID']->text);
 	$selectedFileInfo = null;
 	foreach($dirContent as $fileInfo) {
-		if (utf8_strcasecmp($fileInfo['name'], $filename) === 0) {
+		if (utf8_strtolower($fileInfo['name']) === utf8_strtolower($filename)) {
 			$selectedFileInfo = $fileInfo;
 		}
 	}
@@ -205,7 +198,7 @@ function eyeDialog_on_ok_BTN($params=null) {
 				}
 			}
 			else {
-				if (utf8_strlen($filename) === 0) {
+				if ( /* utf8 */ strlen($filename) === 0) {
 					eyeX('messageBox',array('content'=> i18n("translate",array('You must enter a name'))));
 				}
 				else {

@@ -43,7 +43,7 @@
 	width: 100%;
 }
 
-.clearlooks2 .mcePlaceHolder { 
+.clearlooks2 .mcePlaceHolder {
 	background-color: #a1bfe6;
 	border: 1px solid #dddddd;
 	filter: alpha(opacity=70);
@@ -62,7 +62,7 @@
 	-moz-border-radius-topright: 6px;
 	-webkit-border-top-left-radius: 6px;
 	-webkit-border-top-right-radius: 6px;
-	background: #8cb4de url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png') repeat-x;
+	background: #8cb4de url('index.php?theme=USERTHEME&extern=images/windows/bg_top.png') repeat-x;
 	border: 1px solid #80b5ff;
 	border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
@@ -122,32 +122,32 @@
 }
 
 .clearlooks2 .mceClose, .clearlooks2 .mceFocus .mceClose {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/close.png) no-repeat;
+	background: url(index.php?theme=USERTHEME&extern=images/windows/close.png) no-repeat;
 	right: 6px;
 }
 
 .clearlooks2 .mceMin, .clearlooks2 .mceFocus .mceMin {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min.png) no-repeat;
+	background: url(index.php?theme=USERTHEME&extern=images/windows/min.png) no-repeat;
 	right: 50px;
 }
 
 .clearlooks2 .mceMed, .clearlooks2 .mceFocus .mceMed, .clearlooks2 .mceMax, .clearlooks2 .mceFocus .mceMax {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/max.png) no-repeat;
+	background: url(index.php?theme=USERTHEME&extern=images/windows/max.png) no-repeat;
 	right: 28px;
 }
 
 .clearlooks2 .mceFocus .mceClose:hover {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/close_x.png) no-repeat;
+	background: url(index.php?theme=USERTHEME&extern=images/windows/close_x.png) no-repeat;
 	right: 6px;
 }
 
 .clearlooks2 .mceFocus .mceMin:hover {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min_x.png) no-repeat;
+	background: url(index.php?theme=USERTHEME&extern=images/windows/min_x.png) no-repeat;
 	right: 50px;
 }
 
 .clearlooks2 .mceFocus .mceMed:hover, .clearlooks2 .mceFocus .mceMax:hover {
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/max_x.png) no-repeat;
+	background: url(index.php?theme=USERTHEME&extern=images/windows/max_x.png) no-repeat;
 	right: 28px;
 }
 
@@ -168,7 +168,7 @@
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	background-color: #ffffff;
-	background: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/buttonbg.png)repeat-x top;
+	background: url(index.php?theme=USERTHEME&extern=images/widgets/buttonbg.png)repeat-x top;
 	border-bottom: 1px solid #7f7f7f;
 	border-left: 1px solid #aeaeae;
 	border-radius: 3px;
@@ -215,7 +215,7 @@
 }
 
 .clearlooks2 .mceAlert .mceIcon {
-	background: transparent url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=icons/48x48/e.png) repeat scroll 0 0;
+	background: transparent url(index.php?theme=USERTHEME&extern=icons/48x48/e.png) repeat scroll 0 0;
 	height: 48px;
 	width: 48px;
 }
@@ -223,7 +223,7 @@
 .clearlooks2 .mceConfirm .mceOk { left: 50%; margin-left: -90px; top: auto; } .clearlooks2 .mceConfirm .mceCancel { left: 50%; top: auto; }
 
 .clearlooks2 .mceConfirm .mceIcon {
-	background: transparent url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=icons/48x48/q.png) repeat scroll 0 0;
+	background: transparent url(index.php?theme=USERTHEME&extern=icons/48x48/q.png) repeat scroll 0 0;
 	height: 48px;
 	width: 48px;
 }

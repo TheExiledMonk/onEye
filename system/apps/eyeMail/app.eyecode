@@ -1,25 +1,19 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
+
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/mail'.EYE_CODE_EXTENSION);
 
 function eyeMail_run($params=null) {
@@ -69,16 +63,16 @@ function eyeMail_run($params=null) {
 		'father'=>'eyeMail_WND_1_Content'
 	));
 	$myToolbar->show();
-	$myToolbar->addItem('fetch','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/mail-receive.png','Fetch');
+	$myToolbar->addItem('fetch','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/mail-receive.png','Fetch');
 	$myToolbar->addLine();
-	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/message_new.png','New');
-	$myToolbar->addItem('delete','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/message_delete.png','Delete',array($myTable));
+	$myToolbar->addItem('new','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/message_new.png','New');
+	$myToolbar->addItem('delete','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/message_delete.png','Delete',array($myTable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('reply','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/mail-reply-sender.png','Reply');
-	$myToolbar->addItem('forward','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/mail-forward.png','Forward');
+	$myToolbar->addItem('reply','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/mail-reply-sender.png','Reply');
+	$myToolbar->addItem('forward','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/mail-forward.png','Forward');
 	$myToolbar->addLine();
-	$myToolbar->addItem('preferences','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/settings.png','Preferences');
-	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+	$myToolbar->addItem('preferences','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/settings.png','Preferences');
+	$myToolbar->addItem('fullscreen','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fullScreen.png','Full Screen','',1);
 
 	//left and right line
 	$myLine = new Line(array(
@@ -132,7 +126,7 @@ function eyeMail_run($params=null) {
 		'cent' => 2,
 		'father' => 'eyeMail_activityImgContainer',
 		'name' => 'eyeMail_act_img',
-		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/loading.gif',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/desktop/loading.gif',
 		'x' => 0,
 		'y' => 10
 	));
@@ -163,7 +157,7 @@ function eyeMail_run($params=null) {
 	));
 	$mySplit->show(0);
 
-	//mail list upper box 
+	//mail list upper box
 	$sortypes = array("String","String","Date","Hidden");
 	$myHeader = array('From','Subject','Date',"Hidden");
 	$myTable = new Sortabletable(array(
@@ -194,7 +188,7 @@ function eyeMail_run($params=null) {
 	));
 	$mailHeader->show(0);
 	$mailHeader->setCSS(array(
-		'background' => '#f6f6f6 url(index.php?version=' . EXTERN_CACHE_VERSION . '&theme=default&extern=images/windows/toolbar.png)repeat-x bottom',
+		'background' => '#f6f6f6 url(index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/windows/toolbar.png)repeat-x bottom',
 		'border-top' => '1px solid #dddddd'
 	));
 	$ly = 2;

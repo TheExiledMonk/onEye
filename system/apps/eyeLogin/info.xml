@@ -3,8 +3,8 @@
 	<category>System</category>
 	<version>1.9</version>
 	<description>Login screen</description>
-	<author>eyeOS Team</author>
+	<author>oneye Team</author>
 	<license>AGPL</license>
 	<type>System</type>
-	<icon></icon>
+	<icon />
 </package>

@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 global $currentUser;
@@ -44,7 +37,7 @@ $myLabel = new Label(array(
 	'text' => 'Please fill out all required fields marked with *.'
 ));
 $myLabel->show();
-eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_newuser_label_star_Container").style.width = "200px";'));
+eyex('rawjs',array('js' => 'document.getElementById("' . $myPid . '_eyeControl_newuser_label_star_Container").style.width = "190px";'));
 // Username
 $myLabel = new Label(array(
 	'name' => 'eyeControl_newuser_label_username',
@@ -58,7 +51,8 @@ $myTextbox_username = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_username',
 	'father' => $eyeContainer,
 	'x' => 190,
-	'y' => $ContentY
+	'y' => $ContentY,
+	'width' => 140
 ));
 $myTextbox_username->show();
 $myTextbox_username->focus();
@@ -77,7 +71,8 @@ $myTextbox_password = new Textbox(array(
 	'father' => $eyeContainer,
 	'x' => 190,
 	'y' => $ContentY,
-	'password' => 2
+	'password' => 2,
+	'width' => 140
 ));
 $myTextbox_password->show();
 $ContentY += 25;
@@ -95,11 +90,12 @@ $myTextbox_pwd_again = new Textbox(array(
 	'father' => $eyeContainer,
 	'x' => 190,
 	'y' => $ContentY,
-	'password' => 2
+	'password' => 2,
+	'width' => 140
 ));
 $myTextbox_pwd_again->show();
 $ContentY += 25;
-// Full name
+// Full Name
 $myLabel = new Label(array(
 	'name' => 'eyeControl_newuser_label_fullname',
 	'father' => $eyeContainer,
@@ -112,7 +108,8 @@ $myTextbox_fullname = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_fullname',
 	'father' => $eyeContainer,
 	'x' => 190,
-	'y' => $ContentY
+	'y' => $ContentY,
+	'width' => 140
 ));
 $myTextbox_fullname->show();
 $ContentY += 25;
@@ -129,9 +126,79 @@ $myTextbox_email = new Textbox(array(
 	'name' => 'eyeControl_newuser_textbox_email',
 	'father' => $eyeContainer,
 	'x' => 190,
-	'y' => $ContentY
+	'y' => $ContentY,
+	'width' => 140
 ));
 $myTextbox_email->show();
+$ContentY += 25;
+// User Quota
+$myLabel = new Label(array(
+	'name' => 'eyeControl_newuser_label_quota',
+	'father' => $eyeContainer,
+	'x' => 20,
+	'y' => $ContentY + 3,
+	'text' => 'User Quota *'
+));
+$myLabel->show();
+$quota = DEFAULT_QUOTA;
+if (!is_numeric($quota) || $quota == 0){
+	$quota = '';
+	$temp_sel['GB'] = 1;
+} elseif ($quota / 1024 / 1024 / 1024 >= 1 && round($quota / 1024 / 1024 / 1024) * 1024 * 1024 * 1024 == $quota) {
+	$quota = $quota / 1024 / 1024 / 1024;
+	$temp_sel['GB'] = 1;
+} elseif ($quota / 1024 / 1024 >= 1 && round($quota / 1024 / 1024) * 1024 * 1024 == $quota) {
+	$quota = $quota / 1024 / 1024;
+	$temp_sel['MB'] = 1;
+} elseif ($quota / 1024 >= 1 && round($quota / 1024) * 1024 == $quota) {
+	$quota = $quota / 1024;
+	$temp_sel['KB'] = 1;
+} else {
+	$temp_sel['B'] = 1;
+}
+$myTextbox_quota = new Textbox(array(
+	'name' => 'eyeControl_newuser_textbox_quota_value',
+	'father' => $eyeContainer,
+	'x' => 349,
+	'y' => $ContentY,
+	'text' => $quota,
+	'width' => 50,
+));
+$myTextbox_quota->show();
+$myTextbox_quota->setCss(array('display' => 'none'));
+$mySelect_quota = new Select(array(
+	'name' => 'eyeControl_newuser_select_quota_unit',
+	'father' => $eyeContainer,
+	'x' => 414,
+	'y' => $ContentY,
+	'width' => 80,
+));
+$mySelect_quota->show();
+$mySelect_quota->setCss(array('display' => 'none'));
+$mySelect_quota->addOption('Bytes','B',$temp_sel['B']);
+$mySelect_quota->addOption('KBytes','KB',$temp_sel['KB']);
+$mySelect_quota->addOption('MBytes','MB',$temp_sel['MB']);
+$mySelect_quota->addOption('GBytes','GB',$temp_sel['GB']);
+$mySelect_quota_type = new Select(array(
+	'name' => 'eyeControl_newuser_select_quota_type',
+	'father' => $eyeContainer,
+	'width' => 125,
+	'x' => 190,
+	'y' => $ContentY,
+	'width' => 145
+));
+$mySelect_quota_type->show();
+$mySelect_quota_type->addOption('Use system default','default',1);
+$mySelect_quota_type->addOption('Set custom value:','custom');
+$mySelect_quota_type->addOption('Unlimited','unlimited');
+$mySelect_quota_type->addEvent('onchange','
+if (this.value == "custom") {
+	document.getElementById("' . $myPid . '_eyeControl_newuser_textbox_quota_value").style.display = "block";
+	document.getElementById("' . $myPid . '_eyeControl_newuser_select_quota_unit").style.display = "block";
+} else {
+	document.getElementById("' . $myPid . '_eyeControl_newuser_textbox_quota_value").style.display = "none";
+	document.getElementById("' . $myPid . '_eyeControl_newuser_select_quota_unit").style.display = "none";
+}');
 $ContentY += 25;
 if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	// Permissions
@@ -148,7 +215,8 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		'father' => $eyeContainer,
 		'width' => 125,
 		'x' => 190,
-		'y' => $ContentY + 3
+		'y' => $ContentY,
+		'width' => 145
 	));
 	$mySelect->show();
 	$mySelect->addOption('User','user',1);
@@ -177,7 +245,8 @@ if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 		'father' => $eyeContainer,
 		'x' => 190,
 		'y' => $ContentY,
-		'text' => i18n('translate',array('Never'))
+		'text' => i18n('translate',array('Never')),
+		'width' => 140
 	));
 	$myTextbox_expire->show();
 	$ContentY += 25;
@@ -343,7 +412,7 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 	$openDir = vfs('real_getDirContent',array(EYE_ROOT . '/' . GROUPS_DIR . '/'));
 	foreach ($openDir as $group) {
 		if (is_dir($group)) {
-			$group = utf8_basename($group);
+			$group = basename($group);
 	// Groups checkbox
 			$myCheckBox = new Checkbox(array(
 				'name' => 'eyeControl_newuser_checkbox_group_' . $group,
@@ -374,6 +443,9 @@ $myButton->addFriend($myTextbox_password);
 $myButton->addFriend($myTextbox_pwd_again);
 $myButton->addFriend($myTextbox_fullname);
 $myButton->addFriend($myTextbox_email);
+$myButton->addFriend($myTextbox_quota);
+$myButton->addFriend($mySelect_quota_type);
+$myButton->addFriend($mySelect_quota);
 $myButton->addFriend($myCheckbox_setnewpassword);
 if (eyeControl_lib_getConfigUser() == ROOTUSER) {
 	$myButton->addFriend($mySelect);

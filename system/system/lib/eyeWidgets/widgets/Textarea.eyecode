@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
@@ -54,7 +47,7 @@ class Textarea {
 	var $cols;
 	var $cssClass;
 
-	function Textarea($params) {
+	function __construct($params) {
 		global $myPid;
 		$this->creatorPid = $myPid;
 		//generic widget options without default
@@ -89,8 +82,8 @@ class Textarea {
 			$language = i18n('getLang');
 			if (vfs('real_fileExists', array(EYE_ROOT . '/' . EXTERN_DIR . '/libs/eyeWidgets/tiny_mce/langs/' . $language . '.js'))) {
 				$langCode = $language;
-			} else if (vfs('real_fileExists', array(EYE_ROOT . '/' . EXTERN_DIR . '/libs/eyeWidgets/tiny_mce/langs/' . utf8_substr($language, 0, 2) . '.js'))) {
-				$langCode = utf8_substr($language, 0, 2);
+			} else if (vfs('real_fileExists', array(EYE_ROOT . '/' . EXTERN_DIR . '/libs/eyeWidgets/tiny_mce/langs/' . /* utf8 */ substr($language, 0, 2) . '.js'))) {
+				$langCode = /* utf8 */ substr($language, 0, 2);
 			}
 		}
 
@@ -105,6 +98,8 @@ class Textarea {
 			'rows' => $this->rows,
 			'cols' => $this->cols,
 			'cssClass' => $this->cssClass,
+			'i18nOpenFile' => i18n('translate', array('Open File')),
+			'i18nSaveAs' => i18n('translate', array('Save as')),
 			'language' => $langCode
 		);
 		$widgetsparams = mmap('array2js',array($widgetsparams));
@@ -201,9 +196,9 @@ class Textarea {
 		$totalContent = $content;
 		if($this->code == 0) {
 			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'").value=""'));
-			while(utf8_strlen($totalContent) > 2000) {
-				$subContent = utf8_substr($totalContent,0,2000);
-				$totalContent = utf8_substr($totalContent,2000);
+			while ( /* utf8 */ strlen($totalContent) > 2000) {
+				$subContent = /* utf8 */ substr($totalContent, 0, 2000);
+				$totalContent = /* utf8 */ substr($totalContent, 2000);
 				eyex('concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name));
 			}
 			if($totalContent) {
@@ -215,11 +210,11 @@ class Textarea {
 			}
 		} else {
 			$name = $myPid.'_'.$this->name;
-			eyex('rawjs',array('js' => 'cp_'.$name.'.setCode("")'));
+		//	eyex('rawjs',array('js' => 'cp_'.$name.'.setCode("")'));
 			eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_'.$this->name.'_cp").value=""'));
-			while(utf8_strlen($totalContent) > 2000) {
-				$subContent = utf8_substr($totalContent,0,2000);
-				$totalContent = utf8_substr($totalContent,2000);
+			while ( /* utf8 */ strlen($totalContent) > 2000) {
+				$subContent = /* utf8 */ substr($totalContent, 0, 2000);
+				$totalContent = /* utf8 */ substr($totalContent, 2000);
 				eyex('concatValueB64',array('value' => $subContent,'name'=>$myPid.'_'.$this->name.'_cp'));
 			}
 			if($totalContent) {

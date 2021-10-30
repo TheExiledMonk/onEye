@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 class ods {
@@ -44,12 +37,12 @@ class ods {
 	}
 
 	function parse($data) {
-		$xml_parser = xml_parser_create(); 
+		$xml_parser = xml_parser_create();
 		xml_set_object ( $xml_parser, $this );
 		xml_set_element_handler($xml_parser, "startElement", "endElement");
 		xml_set_character_data_handler($xml_parser, "characterData");
 
-		xml_parse($xml_parser, $data, utf8_strlen($data));
+		xml_parse($xml_parser, $data, /* utf8 */ strlen($data));
 
 		xml_parser_free($xml_parser);
 	}
@@ -70,7 +63,7 @@ class ods {
 		foreach ($fontArray as $fontName => $fontAttribs) {
 			$string .= '<style:font-face ';
 			foreach ($fontAttribs as $attrName => $attrValue) {
-				$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
+				$string .= /* utf8 */ strtolower($attrName) . '="' . $attrValue . '" ';
 			}
 			$string .= '/>';
 		}
@@ -81,7 +74,7 @@ class ods {
 		foreach ($styleArray as $styleName => $styleAttribs) {
 			$string .= '<style:style ';
 			foreach ($styleAttribs['attrs'] as $attrName => $attrValue) {
-				$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
+				$string .= /* utf8 */ strtolower($attrName) . '="' . $attrValue . '" ';
 			}
 			$string .= '>';
 
@@ -90,7 +83,7 @@ class ods {
 				foreach ($styleAttribs['styles'] as $nodeName => $nodeTree) {
 					$string .= '<' . $nodeName . ' ';
 					foreach ($nodeTree as $attrName => $attrValue) {
-						$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
+						$string .= /* utf8 */ strtolower($attrName) . '="' . $attrValue . '" ';
 					}
 					$string .= '/>';
 				}
@@ -113,7 +106,7 @@ class ods {
 				foreach($rowContent as $cellIndex => $cellContent) {
 					$string .= '<table:table-cell ';
 					foreach ($cellContent['attrs'] as $attrName => $attrValue) {
-						$string .= utf8_strtolower($attrName) . '="' . $attrValue . '" ';
+						$string .= /* utf8 */ strtolower($attrName) . '="' . $attrValue . '" ';
 					}
 					$string .= '>';
 
@@ -140,13 +133,13 @@ class ods {
 	}
 
 	function startElement($parser, $tagName, $attrs) {
-		$cTagName = utf8_strtolower($tagName);
+		$cTagName = /* utf8 */ strtolower($tagName);
 		if($cTagName == 'style:font-face') {
 			$this->fonts[$attrs['STYLE:NAME']] = $attrs;
 		} elseif($cTagName == 'style:style') {
 			$this->lastElement = $attrs['STYLE:NAME'];
 			$this->styles[$this->lastElement]['attrs'] = $attrs;
-		} elseif($cTagName == 'style:table-column-properties' || $cTagName == 'style:table-row-properties' 
+		} elseif($cTagName == 'style:table-column-properties' || $cTagName == 'style:table-row-properties'
 			|| $cTagName == 'style:table-properties' || $cTagName == 'style:text-properties') {
 			$this->styles[$this->lastElement]['styles'][$cTagName] = $attrs;
 		} elseif($cTagName == 'table:table-cell') {
@@ -177,7 +170,7 @@ class ods {
 	}
 
 	function endElement($parser, $tagName) {
-		$cTagName = utf8_strtolower($tagName);
+		$cTagName = /* utf8 */ strtolower($tagName);
 		if($cTagName == 'table:table') {
 			$this->currentSheet++;
 			$this->currentRow = 0;
@@ -268,7 +261,7 @@ class ods {
 	}
 
 	function addFormula($sheet,$row,$cell,$value) {
-		$formula = "oooc:=[.".utf8_substr($value, 1); //Skip the initial '='
+		$formula = 'oooc:=[.' . /* utf8 */ substr($value, 1); //Skip the initial '='
 		$formula = str_replace('*', ']*[.', $formula);
 		$formula = str_replace('+', ']+[.', $formula);
 		$formula = str_replace('/', ']/[.', $formula);
@@ -279,7 +272,7 @@ class ods {
 	}
 
 	function editFormula($sheet,$row,$cell,$value) {
-		$formula = "oooc:=[.".utf8_substr($value, 1); //Skip the initial '='
+		$formula = 'oooc:=[.' . /* utf8 */ substr($value, 1); //Skip the initial '='
 		$formula = str_replace('*', ']*[.', $formula);
 		$formula = str_replace('+', ']+[.', $formula);
 		$formula = str_replace('/', ']/[.', $formula);
@@ -293,13 +286,13 @@ class ods {
 
 function parseOds($file) {
 	$tmp = get_tmp_dir();
-	copy($file,$tmp.'/'.utf8_basename($file));
-	$path = $tmp.'/'.utf8_basename($file);
+	copy($file,$tmp.'/'.basename($file));
+	$path = $tmp.'/'.basename($file);
 	$uid = uniqid();
 	mkdir($tmp.'/'.$uid);
-	if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) { // Check for windows systems
+	if ( /* utf8 */ strpos(realpath(EYE_ROOT . '/'), '\\') !== false) { // Check for windows systems
 		$path = str_replace('/','\\',$path);
-		file_put_contents($tmp . '/' . $uid . '.bat','cd "' . escapeshellarg(realpath(EYE_ROOT . '/') . '\\extras\\7-Zip') . '"' . "\n" . '7za.exe x ' . escapeshellarg(realpath(dirname($path)) . '\\' . utf8_basename($path)) . ' -o' . escapeshellarg($tmp . '\\' . $uid . '\\') . ' -r -y');
+		file_put_contents($tmp . '/' . $uid . '.bat','cd "' . escapeshellarg(realpath(EYE_ROOT . '/') . '\\extras\\7-Zip') . '"' . "\n" . '7za.exe x ' . escapeshellarg(realpath(dirname($path)) . '\\' . basename($path)) . ' -o' . escapeshellarg($tmp . '\\' . $uid . '\\') . ' -r -y');
 		shell_exec(escapeshellarg($tmp . '\\' . $uid . '.bat'));
 	} else {
 		shell_exec('unzip '.escapeshellarg($path).' -d '.escapeshellarg($tmp.'/'.$uid));

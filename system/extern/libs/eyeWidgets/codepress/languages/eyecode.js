@@ -75,7 +75,7 @@ Language.snippets = [
 	{ input : 'msgbox', output: "\tservice('eyex','messageBox',array('content' => '$0'));"},
 	{ input : 'sudo', output: "\tglobal $currentUser;\n\t$oldUser = $currentUser;\n\t$currentUser = ROOTUSER;\n\t$0\n\t$currentUser = $oldUser;"}
 ]
-		 
+		
 
 Language.complete = [
 	{ input : '\'', output : '\'$0\'' },

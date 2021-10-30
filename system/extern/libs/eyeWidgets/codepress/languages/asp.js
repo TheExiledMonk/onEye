@@ -5,56 +5,56 @@
 // ASP VBScript
 Language.syntax = [
 // all tags
-	{ input : /(&lt;[^!%|!%@]*?&gt;)/g, output : '<b>$1</b>' }, 
+	{ input : /(&lt;[^!%|!%@]*?&gt;)/g, output : '<b>$1</b>' },
 // style tags
-	{ input : /(&lt;style.*?&gt;)(.*?)(&lt;\/style&gt;)/g, output : '<em>$1</em><em>$2</em><em>$3</em>' }, 
+	{ input : /(&lt;style.*?&gt;)(.*?)(&lt;\/style&gt;)/g, output : '<em>$1</em><em>$2</em><em>$3</em>' },
 // script tags
-	{ input : /(&lt;script.*?&gt;)(.*?)(&lt;\/script&gt;)/g, output : '<ins>$1</ins><ins>$2</ins><ins>$3</ins>' }, 
+	{ input : /(&lt;script.*?&gt;)(.*?)(&lt;\/script&gt;)/g, output : '<ins>$1</ins><ins>$2</ins><ins>$3</ins>' },
 // strings "" and attributes
-	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' }, 
+	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' },
 // ASP Comment
-	{ input : /\'(.*?)(\'|<br>|<\/P>)/g, output : '<dfn>\'$1$2</dfn>'}, 
+	{ input : /\'(.*?)(\'|<br>|<\/P>)/g, output : '<dfn>\'$1$2</dfn>'},
 // <%.*
-	{ input : /(&lt;%)/g, output : '<strong>$1' }, 
+	{ input : /(&lt;%)/g, output : '<strong>$1' },
 // .*%>
-	{ input : /(%&gt;)/g, output : '$1</strong>' }, 
+	{ input : /(%&gt;)/g, output : '$1</strong>' },
 // <%@...%>
-	{ input : /(&lt;%@)(.+?)(%&gt;)/gi, output : '$1<span>$2</span>$3' }, 
+	{ input : /(&lt;%@)(.+?)(%&gt;)/gi, output : '$1<span>$2</span>$3' },
 //Numbers
-	{ input : /\b([\d]+)\b/g, output : '<var>$1</var>' }, 
+	{ input : /\b([\d]+)\b/g, output : '<var>$1</var>' },
 // Reserved Words 1 (Blue)
-	{ input : /\b(And|As|ByRef|ByVal|Call|Case|Class|Const|Dim|Do|Each|Else|ElseIf|Empty|End|Eqv|Exit|False|For|Function)\b/gi, output : '<a>$1</a>' }, 
-	{ input : /\b(Get|GoTo|If|Imp|In|Is|Let|Loop|Me|Mod|Enum|New|Next|Not|Nothing|Null|On|Option|Or|Private|Public|ReDim|Rem)\b/gi, output : '<a>$1</a>' }, 
-	{ input : /\b(Resume|Select|Set|Stop|Sub|Then|To|True|Until|Wend|While|With|Xor|Execute|Randomize|Erase|ExecuteGlobal|Explicit|step)\b/gi, output : '<a>$1</a>' }, 
+	{ input : /\b(And|As|ByRef|ByVal|Call|Case|Class|Const|Dim|Do|Each|Else|ElseIf|Empty|End|Eqv|Exit|False|For|Function)\b/gi, output : '<a>$1</a>' },
+	{ input : /\b(Get|GoTo|If|Imp|In|Is|Let|Loop|Me|Mod|Enum|New|Next|Not|Nothing|Null|On|Option|Or|Private|Public|ReDim|Rem)\b/gi, output : '<a>$1</a>' },
+	{ input : /\b(Resume|Select|Set|Stop|Sub|Then|To|True|Until|Wend|While|With|Xor|Execute|Randomize|Erase|ExecuteGlobal|Explicit|step)\b/gi, output : '<a>$1</a>' },
 // Reserved Words 2 (Purple)
-	{ input : /\b(Abandon|Abs|AbsolutePage|AbsolutePosition|ActiveCommand|ActiveConnection|ActualSize|AddHeader|AddNew|AppendChunk)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(AppendToLog|Application|Array|Asc|Atn|Attributes|BeginTrans|BinaryRead|BinaryWrite|BOF|Bookmark|Boolean|Buffer|Byte)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(CacheControl|CacheSize|Cancel|CancelBatch|CancelUpdate|CBool|CByte|CCur|CDate|CDbl|Charset|Chr|CInt|Clear)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(ClientCertificate|CLng|Clone|Close|CodePage|CommandText|CommandType|CommandTimeout|CommitTrans|CompareBookmarks|ConnectionString|ConnectionTimeout)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(Contents|ContentType|Cookies|Cos|CreateObject|CreateParameter|CSng|CStr|CursorLocation|CursorType|DataMember|DataSource|Date|DateAdd|DateDiff)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(DatePart|DateSerial|DateValue|Day|DefaultDatabase|DefinedSize|Delete|Description|Double|EditMode|Eof|EOF|err|Error)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(Exp|Expires|ExpiresAbsolute|Filter|Find|Fix|Flush|Form|FormatCurrency|FormatDateTime|FormatNumber|FormatPercent)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(GetChunk|GetLastError|GetRows|GetString|Global|HelpContext|HelpFile|Hex|Hour|HTMLEncode|IgnoreCase|Index|InStr|InStrRev)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(Int|Integer|IsArray|IsClientConnected|IsDate|IsolationLevel|Join|LBound|LCase|LCID|Left|Len|Lock|LockType|Log|Long|LTrim)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(MapPath|MarshalOptions|MaxRecords|Mid|Minute|Mode|Month|MonthName|Move|MoveFirst|MoveLast|MoveNext|MovePrevious|Name|NextRecordset)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(Now|Number|NumericScale|ObjectContext|Oct|Open|OpenSchema|OriginalValue|PageCount|PageSize|Pattern|PICS|Precision|Prepared|Property)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(Provider|QueryString|RecordCount|Redirect|RegExp|Remove|RemoveAll|Replace|Requery|Request|Response|Resync|Right|Rnd)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(RollbackTrans|RTrim|Save|ScriptTimeout|Second|Seek|Server|ServerVariables|Session|SessionID|SetAbort|SetComplete|Sgn)\b/gi, output : '<u>$1</u>' }, 
+	{ input : /\b(Abandon|Abs|AbsolutePage|AbsolutePosition|ActiveCommand|ActiveConnection|ActualSize|AddHeader|AddNew|AppendChunk)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(AppendToLog|Application|Array|Asc|Atn|Attributes|BeginTrans|BinaryRead|BinaryWrite|BOF|Bookmark|Boolean|Buffer|Byte)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(CacheControl|CacheSize|Cancel|CancelBatch|CancelUpdate|CBool|CByte|CCur|CDate|CDbl|Charset|Chr|CInt|Clear)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(ClientCertificate|CLng|Clone|Close|CodePage|CommandText|CommandType|CommandTimeout|CommitTrans|CompareBookmarks|ConnectionString|ConnectionTimeout)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(Contents|ContentType|Cookies|Cos|CreateObject|CreateParameter|CSng|CStr|CursorLocation|CursorType|DataMember|DataSource|Date|DateAdd|DateDiff)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(DatePart|DateSerial|DateValue|Day|DefaultDatabase|DefinedSize|Delete|Description|Double|EditMode|Eof|EOF|err|Error)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(Exp|Expires|ExpiresAbsolute|Filter|Find|Fix|Flush|Form|FormatCurrency|FormatDateTime|FormatNumber|FormatPercent)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(GetChunk|GetLastError|GetRows|GetString|Global|HelpContext|HelpFile|Hex|Hour|HTMLEncode|IgnoreCase|Index|InStr|InStrRev)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(Int|Integer|IsArray|IsClientConnected|IsDate|IsolationLevel|Join|LBound|LCase|LCID|Left|Len|Lock|LockType|Log|Long|LTrim)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(MapPath|MarshalOptions|MaxRecords|Mid|Minute|Mode|Month|MonthName|Move|MoveFirst|MoveLast|MoveNext|MovePrevious|Name|NextRecordset)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(Now|Number|NumericScale|ObjectContext|Oct|Open|OpenSchema|OriginalValue|PageCount|PageSize|Pattern|PICS|Precision|Prepared|Property)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(Provider|QueryString|RecordCount|Redirect|RegExp|Remove|RemoveAll|Replace|Requery|Request|Response|Resync|Right|Rnd)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(RollbackTrans|RTrim|Save|ScriptTimeout|Second|Seek|Server|ServerVariables|Session|SessionID|SetAbort|SetComplete|Sgn)\b/gi, output : '<u>$1</u>' },
 	{ input : /\b(Sin|Size|Sort|Source|Space|Split|Sqr|State|StaticObjects|Status|StayInSync|StrComp|String|StrReverse|Supports|Tan|Time)\b/gi, output : '<u>$1</u>' },
-	{ input : /\b(Timeout|Timer|TimeSerial|TimeValue|TotalBytes|Transfer|Trim|Type|Type|UBound|UCase|UnderlyingValue|UnLock|Update|UpdateBatch)\b/gi, output : '<u>$1</u>' }, 
-	{ input : /\b(URLEncode|Value|Value|Version|Weekday|WeekdayName|Write|Year)\b/gi, output : '<u>$1</u>' }, 
+	{ input : /\b(Timeout|Timer|TimeSerial|TimeValue|TotalBytes|Transfer|Trim|Type|Type|UBound|UCase|UnderlyingValue|UnLock|Update|UpdateBatch)\b/gi, output : '<u>$1</u>' },
+	{ input : /\b(URLEncode|Value|Value|Version|Weekday|WeekdayName|Write|Year)\b/gi, output : '<u>$1</u>' },
 // Reserved Words 3 (Turquis)
-	{ input : /\b(vbBlack|vbRed|vbGreen|vbYellow|vbBlue|vbMagenta|vbCyan|vbWhite|vbBinaryCompare|vbTextCompare)\b/gi, output : '<i>$1</i>' }, 
-  	{ input : /\b(vbSunday|vbMonday|vbTuesday|vbWednesday|vbThursday|vbFriday|vbSaturday|vbUseSystemDayOfWeek)\b/gi, output : '<i>$1</i>' }, 
-	{ input : /\b(vbFirstJan1|vbFirstFourDays|vbFirstFullWeek|vbGeneralDate|vbLongDate|vbShortDate|vbLongTime|vbShortTime)\b/gi, output : '<i>$1</i>' }, 
-	{ input : /\b(vbObjectError|vbCr|VbCrLf|vbFormFeed|vbLf|vbNewLine|vbNullChar|vbNullString|vbTab|vbVerticalTab|vbUseDefault|vbTrue)\b/gi, output : '<i>$1</i>' }, 
-	{ input : /\b(vbFalse|vbEmpty|vbNull|vbInteger|vbLong|vbSingle|vbDouble|vbCurrency|vbDate|vbString|vbObject|vbError|vbBoolean|vbVariant)\b/gi, output : '<i>$1</i>' }, 
+	{ input : /\b(vbBlack|vbRed|vbGreen|vbYellow|vbBlue|vbMagenta|vbCyan|vbWhite|vbBinaryCompare|vbTextCompare)\b/gi, output : '<i>$1</i>' },
+  	{ input : /\b(vbSunday|vbMonday|vbTuesday|vbWednesday|vbThursday|vbFriday|vbSaturday|vbUseSystemDayOfWeek)\b/gi, output : '<i>$1</i>' },
+	{ input : /\b(vbFirstJan1|vbFirstFourDays|vbFirstFullWeek|vbGeneralDate|vbLongDate|vbShortDate|vbLongTime|vbShortTime)\b/gi, output : '<i>$1</i>' },
+	{ input : /\b(vbObjectError|vbCr|VbCrLf|vbFormFeed|vbLf|vbNewLine|vbNullChar|vbNullString|vbTab|vbVerticalTab|vbUseDefault|vbTrue)\b/gi, output : '<i>$1</i>' },
+	{ input : /\b(vbFalse|vbEmpty|vbNull|vbInteger|vbLong|vbSingle|vbDouble|vbCurrency|vbDate|vbString|vbObject|vbError|vbBoolean|vbVariant)\b/gi, output : '<i>$1</i>' },
 	{ input : /\b(vbDataObject|vbDecimal|vbByte|vbArray)\b/gi, output : '<i>$1</i>' },
 // html comments
-	{ input : /(&lt;!--.*?--&gt.)/g, output : '<big>$1</big>' } 
+	{ input : /(&lt;!--.*?--&gt.)/g, output : '<big>$1</big>' }
 ]
 
-Language.Functions = [ 
+Language.Functions = [
   	// Output at index 0, must be the desired tagname surrounding a $1
 	// Name is the index from the regex that marks the functionname
 	{input : /(function|sub)([ ]*?)(\w+)([ ]*?\()/gi , output : '<ins>$1</ins>', name : '$3'}

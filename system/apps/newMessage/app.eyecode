@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function newMessage_run($params=null) {
@@ -68,7 +61,7 @@ function newMessage_run($params=null) {
 	));
 	$lblToUsers->show();
 	$tboxToUsers = new Textbox(array(
-		'name' => 'tboxToUsers', 
+		'name' => 'tboxToUsers',
 		'father' => 'newMessageWND_Content',
 		'x' => 80,
 		'y' => 19,
@@ -89,7 +82,7 @@ function newMessage_run($params=null) {
 		));
 		$lblToGroups->show();
 		$tboxToGroups = new Textbox(array(
-			'name' => 'tboxToGroups', 
+			'name' => 'tboxToGroups',
 			'father' => 'newMessageWND_Content',
 			'x' => 80,
 			'y' => 39,
@@ -115,7 +108,7 @@ function newMessage_run($params=null) {
 	));
 	$lblSubject->show();
 	$tboxSubject = new Textbox(array(
-		'name' => 'tboxSubject', 
+		'name' => 'tboxSubject',
 		'father' => 'newMessageWND_Content',
 		'x' => 80,
 		'y' => $myY-2,
@@ -136,7 +129,7 @@ function newMessage_run($params=null) {
 	));
 	$lblAttach->show();
 	$tboxAttach = new Textbox(array(
-		'name' => 'tboxAttach', 
+		'name' => 'tboxAttach',
 		'father' => 'newMessageWND_Content',
 		'x' => 80,
 		'y' => $myY-1,

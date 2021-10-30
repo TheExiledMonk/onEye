@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function miniActions_run($params=null) {
@@ -39,7 +32,7 @@ function miniActions_run($params=null) {
 		'removeFatherPid' => 1,
 		'type'=>WIN_IMAGE_DRAGGABLE_NOTLISTED,
 		'title'=>'Actions widget',
-		'background'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniActions/bg.png',
+		'background'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/miniApps/miniActions/bg.png',
 		'width'=>197,
 		'height'=>174,
 		'forceSavePosition'=>1,
@@ -64,7 +57,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => $y,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniActions/button.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/miniApps/miniActions/button.png',
 		'signal' => 'Launch1',
 		'disableMsg'=>0
 	));
@@ -75,7 +68,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => $y + 7,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/upload.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/upload.png',
 		'signal' => 'Launch1',
 		'disableMsg'=>0
 	));
@@ -100,7 +93,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => $y,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniActions/button.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/miniApps/miniActions/button.png',
 		'disableMsg'=>0
 	));
 	$myImage3->show();
@@ -110,7 +103,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => $y + 7,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/message.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/message.png',
 		'signal' => 'Launch2',
 		'disableMsg'=>0
 	));
@@ -135,7 +128,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => $y,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniActions/button.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/miniApps/miniActions/button.png',
 		'disableMsg'=>0
 	));
 	$myImage5->show();
@@ -145,7 +138,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => $y + 7,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/document.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/document.png',
 		'signal' => 'Launch3',
 		'disableMsg'=>0
 	));
@@ -170,7 +163,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 5,
 		'y' => $y,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniActions/button.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/miniApps/miniActions/button.png',
 		'disableMsg'=>0
 	));
 	$myImage7->show();
@@ -180,7 +173,7 @@ function miniActions_run($params=null) {
 		'father' => 'miniActionsWND',
 		'x' => 15,
 		'y' => $y + 7,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/spreadsheet.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/spreadsheet.png',
 		'signal' => 'Launch4',
 		'disableMsg'=>0
 	));
@@ -205,7 +198,7 @@ function miniActions_run($params=null) {
 		'x' => 90,
 		'y' => 10,
 		'vert'=>1,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/12x12/close.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/12x12/close.png',
 		'signal' => 'closeApp',
 		'disableMsg'=>0
 	));
@@ -223,7 +216,7 @@ function miniActions_run($params=null) {
 
 	//CSS
 	eyex('loadCss',array(
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniApps/miniApps.css&type=css',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=css/apps/miniApps/miniApps.css&type=css',
 		'id' => 'miniApps'
 	));
 }

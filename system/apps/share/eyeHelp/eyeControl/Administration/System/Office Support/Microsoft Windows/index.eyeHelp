@@ -1,4 +1,4 @@
-[b]To get Office support for eyeOS applications on Microsoft Windows 2000 and higher we need to install OpenOffice.org 2.x.x. After that we just need to do a small tweak. This article shows you how to proceed.[/b]
+[b]To get Office support for oneye applications on Microsoft Windows 2000 and higher we need to install OpenOffice.org 2.x.x. After that we just need to do a small tweak. This article shows you how to proceed.[/b]
 
 
 [b]Apache Server[/b]
@@ -24,7 +24,7 @@
 
 [*] [b]Edit "<ooo-path>\share\basic\Tools\script.xlb[/b]" and [b]add "<library:element library:name="eyeOS"/>"  AT THE END OF [/b] .
 
-[*] Go back to eyeOS >> "[b]System preferences[/b]" >> "[b]System[/b]" >> "[b]Office Support[/b]".
+[*] Go back to oneye >> "[b]System preferences[/b]" >> "[b]System[/b]" >> "[b]Office Support[/b]".
 
 [*] Update the "[b]program[/b]" folder path to "[b]<ooo-path>\program\[/b]" and click "[b]Save changes[/b]". 
 [/list]
@@ -32,6 +32,6 @@
 [b]Spreadsheets[/b]
 [list][*] Download "7-Zip Command Line Version" from [url]http://7-zip.org/download.html[/url] .
 
-[*] Extract it and copy "[b]7za.exe[/b]" into "[b]eyeOSxxxxxxxx/extras/7-Zip/[/b]". 
+[*] Extract it and copy "[b]7za.exe[/b]" into "[b]oneye_xxxxxxxx/extras/7-Zip/[/b]". 
 [/list]
 

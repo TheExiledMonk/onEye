@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeDialog/app'.EYE_CODE_EXTENSION);
@@ -119,7 +112,7 @@ function eyeDialog_autoSetExtensionToFilename($filename, $forceExtension=false, 
 	//eyeX('rawjs', array('js' => 'console.log("original name = '.$filename.'")'));
 	$return = '';
 	$dialogParams = unserialize($GLOBALS['serialized_dialogParams_HID']->text);
-	$displayedFiletypes = explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
+	$displayedFiletypes = /* utf8 */ explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
 
 	$defaultFilenameExt = eyeDialog_getFilenameAndExtension($displayedFiletypes[0]);	//first one is default
 	$filenameExt = eyeDialog_getFilenameAndExtension($filename);
@@ -129,7 +122,7 @@ function eyeDialog_autoSetExtensionToFilename($filename, $forceExtension=false, 
 		//the filename has an extension
 		foreach($displayedFiletypes as $filetype) {
 			$filetypeExt = eyeDialog_getFilenameAndExtension($filetype);
-			if (utf8_strcasecmp($filetypeExt[1], $filenameExt[1]) == 0) {
+			if (utf8_strcasecmp($filetypeExt[1], $filenameExt[1]) === 0) {
 				$extensionOk = true;
 			}
 		}
@@ -168,7 +161,7 @@ function eyeDialog_autoSetExtensionToFilename($filename, $forceExtension=false, 
 }
 
 /**
- * 
+ *
  * @return SortableTable
  */
 function eyeDialog_clearFiles() {
@@ -186,9 +179,9 @@ function eyeDialog_clearFiles() {
 		'y' => 4,
 		'width' => 414,
 		'height' => 260,
-		'sortypes' => array('Hidden', 'Html', 'String', 'String', 'String', 'String'),
+		'sortypes' => array('Hidden', 'Html', 'String', 'Number', 'Date', 'String'),
 		'master' => 0,
-		'theader' => array('id', ' ', 'Name', 'Size', 'Date', 'Author'),
+		'theader' => array('id', ' ', 'Name', 'Size (B)', 'Date', 'Author'),
 		'signal' => 'files_TAB_click',
 		'dblsignal' => 'files_TAB_dblClick'
 	));
@@ -258,7 +251,7 @@ function eyeDialog_drawFoldersTree($selectedFolder='') {
 
 /**
  *
- * @param string $relativePath eyeOS root relative path
+ * @param string $relativePath oneye root relative path
  */
 function eyeDialog_drawFolderNode($treeObject, $parentListNode, $relativePath) {
 	$firstItemId = false;
@@ -274,7 +267,7 @@ function eyeDialog_drawFolderNode($treeObject, $parentListNode, $relativePath) {
 					if (!$firstItemId) {
 						$firstItemId = 'item_'.$itemId;
 					}
-					$treeObject->addItem($parentListNode, 'item_'.$itemId, utf8_basename($filepath));
+					$treeObject->addItem($parentListNode, 'item_'.$itemId, basename($filepath));
 					$treeObject->addSubList('item_'.$itemId, 'list_'.$itemId);
 					eyeDialog_drawFolderNode($treeObject, 'list_'.$itemId, $filepath);
 				}
@@ -298,7 +291,7 @@ function eyeDialog_selectTreeFolder($path) {
 function eyeDialog_browseHome($path = '/') {
 	$filesTable = eyeDialog_clearFiles();
 
-	$displayedFiletypes = explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
+	$displayedFiletypes = /* utf8 */ explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
 
 	$path = eyeDialog_resolvePathInUserDir($path);
 	if ($path === false) {
@@ -311,26 +304,26 @@ function eyeDialog_browseHome($path = '/') {
 	foreach($filesData as $id => $fileInfo) {
 		switch($fileInfo['type']) {
 			case 'd':
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/folder.png';
+				$urlIcon = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/folder.png';
 				$size = ' ';
 				break;
 
 			case 'l':
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/link.png';
+				$urlIcon = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/link.png';
 				$size  = ' ';
 				break;
 
 			default:
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/file.png';
-				$size  = $fileInfo['size'].' B';
+				$urlIcon = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/file.png';
+				$size  = $fileInfo['size'];
 		}
 		$displayOk = false;
 		if ($fileInfo['type'] != 'd') {
 			foreach ($displayedFiletypes as $ft) {
-				$pattern = preg_replace('/\./', '\\.', $ft);
-				$pattern = preg_replace('/\*/', '.*', $pattern);
-				$pattern = '/^'.$pattern.'$/is';
-				if (preg_match($pattern, $fileInfo['name'])) {
+				$pattern = /* utf8 */ preg_replace('/\./', '\\.', $ft);
+				$pattern = /* utf8 */ preg_replace('/\*/', '.*', $pattern);
+				$pattern = '/^'.$pattern.'$/isu';
+				if ( /* utf8 */ preg_match($pattern, $fileInfo['name']) === 1) {
 					$displayOk = true;
 				}
 			}
@@ -384,7 +377,7 @@ function eyeDialog_browseHome($path = '/') {
 //	}
 //	//not groups root (other internal folder)
 //	else {
-//		$displayedFiletypes = explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
+//		$displayedFiletypes = /* utf8 */ explode('|', $GLOBALS['currentFiletypeFilter_HID']->text);
 //
 //		$fullPath = eyeDialog_resolvePathInGroupsDir($path, false, $groupname);
 //		if ($path === false) {
@@ -409,15 +402,15 @@ function eyeDialog_browseHome($path = '/') {
 //
 //			default:
 //				$urlIcon = 'index.php?extern=apps/eyeDialog/gfx/typedefault.png';
-//				$size  = $fileInfo['size'].' B';
+//				$size  = $fileInfo['size'];
 //		}
 //		$displayOk = false;
 //		if ($fileInfo['type'] != 'd') {
 //			foreach ($displayedFiletypes as $ft) {
-//				$pattern = preg_replace('/\./', '\\.', $ft);
-//				$pattern = preg_replace('/\*/', '.*', $pattern);
-//				$pattern = '/^'.$pattern.'$/is';
-//				if (preg_match($pattern, $fileInfo['name'])) {
+//				$pattern = /* utf8 */ preg_replace('/\./', '\\.', $ft);
+//				$pattern = /* utf8 */ preg_replace('/\*/', '.*', $pattern);
+//				$pattern = '/^'.$pattern.'$/isu';
+//				if ( /* utf8 */ preg_match($pattern, $fileInfo['name']) === 1) {
 //					$displayOk = true;
 //				}
 //			}
@@ -474,14 +467,14 @@ function eyeDialog_listDir($dir) {
 				$author = ' ';
 				$size = ' ';
 				$date = ' ';
-				$name = utf8_basename($file);
+				$name = basename($file);
 			}
-			elseif (utf8_ltrim(strrchr($file,'.'),'.') == EYEOS_LINK_EXT) {
+			elseif (ltrim(strrchr($file, '.'), '.') === EYEOS_LINK_EXT) { // utf8
 				$type = 'l';
 				$author = ' ';
 				$size = ' ';
 				$date = ' ';
-				$name = utf8_basename($file);
+				$name = basename($file);
 			}
 			else {
 				$type = '-';
@@ -506,7 +499,7 @@ function eyeDialog_listDir($dir) {
 		}
 	}
 
-	usort($filesData, eyeDialog_compareFilesData);
+	usort($filesData, 'eyeDialog_compareFilesData');
 	return $filesData;
 }
 
@@ -514,7 +507,7 @@ function eyeDialog_listDir($dir) {
  * Sort files list processed by eyeDialog_listDir() in order to put the folders on top
  * of the list.
  * AUTOMATICALLY CALLED BY eyeDialog_listDir()
- * 
+ *
  * @param array $a
  * @param array $b
  * @return int A negative value if $a must be placed before $b, a positive value otherwise
@@ -537,7 +530,7 @@ function eyeDialog_compareFilesData($a, $b) {
 
 /**
  * Removes double slashes when present and returns result string.
- * 
+ *
  * @param string $dir The path to format
  * @return string The path formated
  */
@@ -556,7 +549,7 @@ function eyeDialog_getFormatedDirPath($dir) {
  * @return array (0 => filename_without_extension, 1 => extension)
  */
 function eyeDialog_getFilenameAndExtension($filename) {
-	$nbMatches = preg_match('/^(.*)\.([_\*a-z]+)$/i', $filename, $matches);
+	$nbMatches = /* utf8 */ preg_match('/^(.*)\.([_\*A-Za-z]+)$/', $filename, $matches);
 	if ($nbMatches == 0) {
 		$return = array(
 			$filename,

@@ -1,25 +1,20 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
+
+include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDock/libs' . EYE_CODE_EXTENSION);
 
 function eyeDock_on_AddElement($params = '') {
 	global $currentUser;
@@ -81,9 +76,9 @@ function eyeDock_on_AddElement($params = '') {
 
 	if (is_array($files)) {
 		foreach ($files as $file) {
-			if (strrchr($file, EYE_CODE_EXTENSION) == EYE_CODE_EXTENSION) {
-				$file = utf8_basename($file, EYE_CODE_EXTENSION);
-				$mySelect->addOption(ucfirst($file), $file);
+			if ( /* utf8 */ strrchr($file, EYE_CODE_EXTENSION) === EYE_CODE_EXTENSION) {
+				$file = basename($file, EYE_CODE_EXTENSION);
+				$mySelect->addOption( /* utf8 */ ucfirst($file), $file);
 			}
 		}
 	}
@@ -155,6 +150,11 @@ function eyeDock_on_AddElement_Do($params = '') {
 		$currentUser = $oldUser;
 		$xml['eyeDock'][0][$type][0][$place][0][$id][0]['entries'][0]['entry-' . $xml['eyeDock'][0][$type][0][$place][0][$id][0]['entries-id'][0]++][0] = $module['module'][0];
 	} else {
+		if ($element === 'taskbar' && ($type !== 'bottom' || $place !== 'left')) {
+			eyex('messageBox', array('content' => 'Taskbars can be positioned at the bottom left only.'));
+			return;
+		}
+		
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		$module = eyeXML('getXMLfile',array(EYE_ROOT. '/' . APP_DIR .'/' . APP_CONF_SHARE . '/eyeDock/modules/' . $element . '.xml'));
@@ -165,7 +165,6 @@ function eyeDock_on_AddElement_Do($params = '') {
 
 	$GLOBALS['eyeDock_AddElement_Window']->close();
 
-	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDock/libs' . EYE_CODE_EXTENSION);
 	eyeDock_lib_Remove(array($type));
 	eyeDock_lib_Load(array($type));
 }
@@ -182,7 +181,7 @@ function eyeDock_on_ChangeCommand($params = '') {
 		'content' => 'Please specifiy the new command for this element.',
 		'father' => 'eyeApps',
 		'hiddens' => array(array('ChangeCommand_type',$params['type'][0]),array('ChangeCommand_place',$params['place'][0]),array('ChangeCommand_id',$params['id'][0]),array('ChangeCommand_entry',$params['entry'][0])),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/rename.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/rename.png',
 		'textbox_event' => 'ChangeCommand_do',
 		'textbox_name' => 'ChangeCommand_text',
 		'textbox_text' => $text,
@@ -221,7 +220,7 @@ function eyeDock_on_ChangeFormat($params = '') {
 		'content' => 'Please specifiy the new format for this element.',
 		'father' => 'eyeApps',
 		'hiddens' => array(array('ChangeFormat_type',$params['type'][0]),array('ChangeFormat_place',$params['place'][0]),array('ChangeFormat_id',$params['id'][0])),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/rename.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/rename.png',
 		'textbox_event' => 'ChangeFormat_do',
 		'textbox_name' => 'ChangeFormat_text',
 		'textbox_text' => str_replace('&nbsp;', ' ', $xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['format'][0]),
@@ -261,7 +260,7 @@ function eyeDock_on_ChangeHeight($params = '') {
 		'content' => 'Please specifiy the new height for this element.',
 		'father' => 'eyeApps',
 		'hiddens' => array(array('ChangeHeight_type',$params['type'][0]),array('ChangeHeight_place',$params['place'][0]),array('ChangeHeight_id',$params['id'][0]),array('ChangeHeight_entry',$params['entry'][0])),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/filetypes/rename.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/filetypes/rename.png',
 		'textbox_event' => 'ChangeHeight_do',
 		'textbox_name' => 'ChangeHeight_text',
 		'textbox_text' => $xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0][$params['entry'][0]][0]['height'][0],
@@ -307,7 +306,7 @@ function eyeDock_on_ChangeImage($params = '') {
 		'content' => 'Please specifiy the new image for this element.',
 		'father' => 'eyeApps',
 		'hiddens' => array(array('ChangeImage_type',$params['type'][0]),array('ChangeImage_place',$params['place'][0]),array('ChangeImage_id',$params['id'][0]),array('ChangeImage_entry',$params['entry'][0])),
-		'img' => str_replace('EXTERN_CACHE_VERSION', EXTERN_CACHE_VERSION, $text),
+		'img' => str_replace('theme=USERTHEME', 'theme=' . $_SESSION['usertheme'], $text),
 		'select_event' => 'ChangeImage_do',
 		'select_name' => 'ChangeImage_text',
 		'title' => 'Change image',
@@ -318,14 +317,14 @@ function eyeDock_on_ChangeImage($params = '') {
 	));
 
 	eyex('rawjs', array('js' => 'var e = document.getElementById("' . $myPid . '_ChangeImage_window_Imagebox"); e.style.height = "22px"; e.style.marginLeft = "14px"; e.style.marginTop = "14px"; e.style.width = "22px";'));
-	$mySelect->addEvent('onchange','document.getElementById("' . $myPid . '_ChangeImage_window_Imagebox").src = this.value.replace(/\EXTERN_CACHE_VERSION/, EXTERN_CACHE_VERSION);');
-	foreach (vfs('real_getDirContent', array(eyex('getThemeImage',array('icons/22x22/', 2)))) as $file) {
-		if (utf8_strtolower(utf8_substr($file, - 4)) == '.png') {
-			$url = 'index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=icons/22x22/' . utf8_basename($file);
+	$mySelect->addEvent('onchange','document.getElementById("' . $myPid . '_ChangeImage_window_Imagebox").src = this.value;');
+	foreach (vfs('real_getDirContent', array(EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/icons/22x22')) as $file) {
+		if (strtolower(substr($file, -4)) === '.png') { // utf8
+			$url = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/' . basename($file);
 			if ($url == $text) {
-				$mySelect->addOption(utf8_basename($file, '.png'), $url, 1);
+				$mySelect->addOption(basename($file, '.png'), $url, 1);
 			} else {
-				$mySelect->addOption(utf8_basename($file, '.png'), $url);
+				$mySelect->addOption(basename($file, '.png'), $url);
 			}
 		}
 	}
@@ -372,7 +371,7 @@ function eyeDock_on_ChangeText($params = '') {
 		'content' => 'Please specifiy the new text for this element.',
 		'father' => 'eyeApps',
 		'hiddens' => array(array('ChangeText_type',$params['type'][0]),array('ChangeText_place',$params['place'][0]),array('ChangeText_id',$params['id'][0]),array('ChangeText_entry',$params['entry'][0])),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/rename.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/rename.png',
 		'textbox_event' => 'ChangeText_do',
 		'textbox_name' => 'ChangeText_text',
 		'textbox_text' => $text,
@@ -426,7 +425,7 @@ function eyeDock_on_ChangeWidth($params = '') {
 		'content' => 'Please specifiy the new width for this element.',
 		'father' => 'eyeApps',
 		'hiddens' => array(array('ChangeWidth_type',$params['type'][0]),array('ChangeWidth_place',$params['place'][0]),array('ChangeWidth_id',$params['id'][0])),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/filetypes/rename.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/filetypes/rename.png',
 		'textbox_event' => 'ChangeWidth_do',
 		'textbox_name' => 'ChangeWidth_text',
 		'textbox_text' => $xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['width'][0],
@@ -482,10 +481,9 @@ function eyeDock_on_CreateFavorite($params = '') {
 		$element['hideText'][0] = '1';
 		$xml['eyeDock'][0]['top'][0]['left'][0]['element-' . $xml['eyeDock'][0]['top'][0]['left-id'][0]++][0] = $element;
 		eyeXML('setXMLconfig',array('eyeDock','conf.xml',$xml));
-		eyex('rawjs', array('js' => 'var e = document.getElementById("' . $myPid . '_eyeDock_' . $params['type'][0] . '_' . $params['place'][0] . '_' . $params['id'][0] . '_entry' . '_' . $params['id2'][0] . '_arrow"); if (e.className.substr(e.className.length - 7) != "_exists") { e.className += "_exists"; }'));
-		include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDock/libs' . EYE_CODE_EXTENSION);
-		eyeDock_lib_Remove(array('top'));
-		eyeDock_lib_Load(array('top'));
+		eyex('rawjs', array('js' => 'var e = document.getElementById("' . $myPid . '_eyeDock_' . $params['type'][0] . '_' . $params['place'][0] . '_' . $params['id'][0] . '_entry' . '_' . $params['id2'][0] . '_arrow"); if (e.className.substr(e.className.length - 7) != "_exists") { e.className += "_exists"; }')); // utf8
+		eyeDock_lib_Remove();
+		eyeDock_lib_Load();
 	}
 }
 
@@ -499,18 +497,19 @@ function eyeDock_on_Message($params = '') {
 
 function eyeDock_on_MoveDown($params = '') {
 	$xml = eyeXML('getXMLconfig',array('eyeDock','conf.xml'));
-	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDock/libs' . EYE_CODE_EXTENSION);
 	if ($params['entry'][0]) {
-		$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0] = eyeDock_lib_array_movedown($params['id'][0],$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0]);
+		$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0] = eyeDock_lib_array_movedown($params['entry'][0],$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0]);
 	} else {
-		$array = eyeDock_lib_array_movedown($params['id'][0],$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0]);
-		if ($params['place'][0] == 'left') {
-			$id = array_search($params['id'][0],array_keys($array));
-			if (!$keys[$id - 1]) {
-				$xml['eyeDock'][0][$params['type'][0]][0]['right'][0]['element-' . $xml['eyeDock'][0][$params['type'][0]][0]['right-id'][0]] = $array[$params['id'][0]];
-				$xml['eyeDock'][0][$params['type'][0]][0]['right-id'][0]++;
-				unset($array[$params['id'][0]]);
-			}
+		$array = $xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0];
+		$keys = array_keys($array);
+		if ($params['place'][0] === 'left' && $keys[count($keys) - 1] === $params['id'][0]) {
+			$xml['eyeDock'][0][$params['type'][0]][0]['right'][0]['element-' . $xml['eyeDock'][0][$params['type'][0]][0]['right-id'][0]] = $array[$params['id'][0]];
+			$xml['eyeDock'][0][$params['type'][0]][0]['right-id'][0] += 1;
+			unset($array[$params['id'][0]]);
+		} else if ($params['place'][0] === 'right') {
+			$array = eyeDock_lib_array_moveup($params['id'][0], $array);
+		} else {
+			$array = eyeDock_lib_array_movedown($params['id'][0], $array);
 		}
 		$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0] = $array;
 	}
@@ -521,18 +520,19 @@ function eyeDock_on_MoveDown($params = '') {
 
 function eyeDock_on_MoveUp($params = '') {
 	$xml = eyeXML('getXMLconfig',array('eyeDock','conf.xml'));
-	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDock/libs' . EYE_CODE_EXTENSION);
 	if ($params['entry'][0]) {
-		$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0] = eyeDock_lib_array_moveup($params['id'][0],$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0]);
+		$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0] = eyeDock_lib_array_moveup($params['entry'][0], $xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0][$params['id'][0]][0]['entries'][0]);
 	} else {
-		$array = eyeDock_lib_array_moveup($params['id'][0],$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0]);
-		if ($params['place'][0] == 'right') {
-			$id = array_search($params['id'][0],array_keys($array));
-			if (!$keys[$id + 1]) {
-				$xml['eyeDock'][0][$params['type'][0]][0]['left'][0]['element-' . $xml['eyeDock'][0][$params['type'][0]][0]['left-id'][0]] = $array[$params['id'][0]];
-				$xml['eyeDock'][0][$params['type'][0]][0]['left-id'][0]++;
-				unset($array[$params['id'][0]]);
-			}
+		$array = $xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0];
+		$keys = array_keys($array);
+		if ($params['place'][0] === 'right' && $keys[count($keys) - 1] === $params['id'][0]) {
+			$xml['eyeDock'][0][$params['type'][0]][0]['left'][0]['element-' . $xml['eyeDock'][0][$params['type'][0]][0]['left-id'][0]] = $array[$params['id'][0]];
+			$xml['eyeDock'][0][$params['type'][0]][0]['left-id'][0] += 1;
+			unset($array[$params['id'][0]]);
+		} else if ($params['place'][0] === 'right') {
+			$array = eyeDock_lib_array_movedown($params['id'][0], $array);
+		} else {
+			$array = eyeDock_lib_array_moveup($params['id'][0], $array);
 		}
 		$xml['eyeDock'][0][$params['type'][0]][0][$params['place'][0]][0] = $array;
 	}
@@ -542,7 +542,6 @@ function eyeDock_on_MoveUp($params = '') {
 }
 
 function eyeDock_on_Refresh($params = '') {
-	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeDock/libs' . EYE_CODE_EXTENSION);
 	eyeDock_lib_Remove($params['type']);
 	eyeDock_lib_Load($params['type']);
 }
@@ -553,7 +552,7 @@ function eyeDock_on_Remove($params = '') {
 		'content' => 'Do you really want to remove this element?',
 		'father' => 'eyeApps',
 		'hiddens' => array(array('Remove_type',$params['type'][0]),array('Remove_place',$params['place'][0]),array('Remove_id',$params['id'][0]),array('Remove_entry',$params['entry'][0])),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/editClean.png',
 		'title' => 'Remove element',
 		'type' => 3,
 		'win_name' => 'Remove_window',
@@ -581,6 +580,8 @@ function eyeDock_on_Remove_do($params = '') {
 	eyeXML('setXMLconfig',array('eyeDock','conf.xml',$xml));
 	eyex('rawjs', array('js' => 'var e = document.getElementById("' . $myPid . '_eyeDock_' . $type . '_' . $place . '_' . $id . '"); if (e) { e.parentNode.removeChild(e); } Taskbars.SetWidth("' . $type . '");'));
 	$GLOBALS['Remove_window']->close();
+	eyeDock_lib_Remove();
+	eyeDock_lib_Load();
 }
 
 function eyeDock_on_ShowHideImage($params = '') {

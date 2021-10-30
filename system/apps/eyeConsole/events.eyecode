@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____ 
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2008 eyeOS Team (team@eyeos.org)         
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeConsole_on_Close($params=null) {
@@ -39,7 +32,7 @@ function eyeConsole_on_sendCmd($params=null) {
 	$arguments = parseArguments($cmd);
 	$myApp = $arguments[0];
 	array_shift($arguments);
-	eyeX('print',array('eyeOS> '.$cmd));
+	eyeX('print',array('oneye> '.$cmd));
 	if(!proc('launch',array($myApp,$arguments))) {
 		eyeX('print',array("Command not found"));
 	}
@@ -48,40 +41,40 @@ function eyeConsole_on_sendCmd($params=null) {
 //steal from eyeLaunch
 function parseArguments($myApp){
 /*Remplacing escaped quotes and spaces
- * 
+ *
  * We can do it with a conditional in a regexp, but i decide dot it because more programers
  * don't know more abou regexp.
- * 
+ *
  * First remplace \" and \ for unique number.
  * Then, apply the regexp for extract every quoted text "text here"
- * and then, split the text. 
+ * and then, split the text.
  */
  
  //Remplace scaped chars with a rand string
-	if(utf8_strpos($myApp,'\"')){
+	if ( /* utf8 */ strpos($myApp, '\"') !== false) {
 		//remplace
-		$quoteRemplace = utf8_substr(uniqid(rand()),0,8);
+		$quoteRemplace = /* utf8 */ substr(uniqid(rand()), 0, 8);
 		$myApp = str_replace('\"',$quoteRemplace,$myApp);
 	}
-	//Remplacing scaped spaces
-	if(utf8_strpos($myApp,'\ ')){
+	// Replacing escaped spaces
+	if ( /* utf8 */ strpos($myApp, '\ ') !== false) {
 		//remplace
-		$quoteRemplace = utf8_substr(uniqid(rand()),0,8);
+		$quoteRemplace = /* utf8 */ substr(uniqid(rand()), 0, 8);
 		$myApp = str_replace('\ ',$quoteRemplace,$myApp);
 	}
 
 	$items = array();
 //Getting the name if it is a quoted string.
-	if($myApp{0} == '"'){
-		preg_match("/\".+\"/U",$myApp,$appName);
+	if ($myApp[0] === '"') {
+		/* utf8 */ preg_match('/".+"/U', $myApp, $appName);
 		//Removing from myApp string
 		$myApp = str_replace($appName[0],'',$myApp);
 		//Removing the quotes
 		$appName = str_replace('"','',$appName[0]);
 		$items[0] = $appName;
 	}else{
-		if(utf8_strpos($myApp,' ')){
-			$appName = utf8_substr($myApp,0,utf8_strpos($myApp,' '));
+		if ( /* utf8 */ strpos($myApp, ' ') !== false) {
+			$appName = substr($myApp, 0, strpos($myApp, ' ')); // utf8
 			$myApp = str_replace($appName,'',$myApp);
 			$items[0] = $appName;
 		}else{
@@ -94,24 +87,24 @@ function parseArguments($myApp){
 
 //Getting quoted arguments
 	$con = array();
-	preg_match_all("/\".+\"/U",$myApp,$con);
+	/* utf8 */ preg_match_all('/".+"/U', $myApp, $con);
 	foreach ($con[0] as $quotedString){
 		//First delete it from myApp string
 		$myApp = str_replace($quotedString,'',$myApp);
 		//Add word without quotes to items
 		$quotedString = str_replace('"','',$quotedString);
 		//Add it to items array
-		$items[] = $quotedString; 
+		$items[] = $quotedString;
 	}
 //Getting rest of arguments
-	preg_match_all("/ .+ /U",$myApp,$rest);
+	/* utf8 */ preg_match_all('/ .+ /U', $myApp, $rest);
 	foreach($rest[0] as $argument){
 		$myApp = str_replace($argument,'',$myApp);
-		$items[] = utf8_trim($argument);
+		$items[] = /* utf8 */ trim($argument);
 	}
 
 //The last argument if it exists
-	$items[] = utf8_trim($myApp);
+	$items[] = /* utf8 */ trim($myApp);
 	return $items;
 }
 

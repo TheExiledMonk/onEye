@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeImages_lib_Load($path) {
@@ -45,7 +38,7 @@ function eyeImages_lib_Load($path) {
 	}
 	$GLOBALS['eyeImages_Hidden_Path']->setText($path);
 	$GLOBALS['eyeImages_Iframe']->setUrl('index.php?checknum=' . $checknum . '&msg=getImage&time=' . time());
-	$GLOBALS['eyeImages_Window']->setTitle(utf8_basename($path) . ' - ' . i18n('translate',array('View Images')));
+	$GLOBALS['eyeImages_Window']->setTitle(basename($path) . ' - ' . i18n('translate',array('View Images')));
 }
 
 function eyeImages_on_Close($params = '') {
@@ -79,7 +72,6 @@ function eyeImages_on_getImage($params = '') {
 		header('Content-Type: ' . $info['mime']);
 		header('Content-Length: ' . vfs('filesize',array($path)));
 		header('Accept-Ranges: bytes');
-		header('X-Pad: avoid browser bug');
 		vfs('readFile',array($path));
 	}
 	exit;
@@ -107,7 +99,7 @@ function eyeImages_on_Init($params = '') {
 		'minHeight' => 200,
 		'minWidth' => 200,
 		'name' => 'eyeImages_Window',
-		'title' => utf8_basename($params[0]) . ' - ' . i18n('translate',array('View Images')),
+		'title' => basename($params[0]) . ' - ' . i18n('translate',array('View Images')),
 		'savePosition' => 1,
 		'sendResizeMsg' => 1,
 		'sigResize' => 'Resize',
@@ -121,9 +113,9 @@ function eyeImages_on_Init($params = '') {
 		'name' => 'eyeImages_Toolbar'
 	));
 	$myToolbar->show();
-	$myToolbar->addItem('Previous','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/previous.png','Previous');
-	$myToolbar->addItem('Next','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/next.png','Next');
-	$myToolbar->addItem('Fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+	$myToolbar->addItem('Previous','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/previous.png','Previous');
+	$myToolbar->addItem('Next','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/next.png','Next');
+	$myToolbar->addItem('Fullscreen','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fullScreen.png','Full Screen','',1);
 
 	$myIframe = new Iframe(array(
 		'father' => 'eyeImages_Window_Content',
@@ -135,6 +127,7 @@ function eyeImages_on_Init($params = '') {
 		'y' => 59
 	));
 	$myIframe->show();
+	$myIframe->focus();
 	$GLOBALS['eyeImages_Iframe'] = $myIframe;
 
 	$myHidden = new Hidden(array(
@@ -159,8 +152,8 @@ function eyeImages_on_Next($params = '') {
 	$image = '';
 	$next = 0;
 	foreach ($files as $file) {
-		$info = utf8_pathinfo($file);
-		if (in_array(utf8_strtolower($info['extension']),array('bmp','gif','jpeg','jpg','png','tiff'))) {
+		$info = pathinfo($file);
+		if (in_array( /* utf8 */ strtolower($info['extension']) ,array('bmp', 'gif', 'jpeg', 'jpg', 'png', 'tiff')) === true) {
 			if (!$image) {
 				$image = $file;
 			}
@@ -183,8 +176,8 @@ function eyeImages_on_Previous($params = '') {
 	$files = vfs('getDirContent',array(dirname($GLOBALS['eyeImages_Hidden_Path']->text)));
 	$image = '';
 	foreach ($files as $file) {
-		$info = utf8_pathinfo($file);
-		if (in_array(utf8_strtolower($info['extension']),array('bmp','gif','jpeg','jpg','png','tiff'))) {
+		$info = pathinfo($file);
+		if (in_array( /* utf8 */ strtolower($info['extension']) ,array('bmp', 'gif', 'jpeg', 'jpg', 'png', 'tiff')) === true) {
 			if (utf8_strtolower($file) == utf8_strtolower($GLOBALS['eyeImages_Hidden_Path']->text) && $image) {
 				break;
 			} else {

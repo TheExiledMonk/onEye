@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 define('VCARD',1);
@@ -71,7 +64,7 @@ function lib_eyeContacts_retrive($params=null){
 	return eyeAddressBook('retrive',array($name,$surname,$md5));
 }
 
-function lib_eyeContacts_userList($params=null){ 
+function lib_eyeContacts_userList($params=null){
 	 return eyeAddressBook('userList');
 }
 
@@ -81,29 +74,17 @@ function lib_eyeContacts_pathToInfo($params=null){
 	}
 	$contact = $params[0];
 	//Getting only the file name (with extension).
-	$contact = utf8_basename($contact);
+	$contact = basename($contact);
 	//From character 0 to first _ position
- 	$name = utf8_substr($contact,0,utf8_strpos($contact,'_'));
+ 	$name = substr($contact, 0, strpos($contact, '_')); // utf8
  	//From first _ to last _
- 	$sName = utf8_substr($contact,utf8_strpos($contact,'_')+1,utf8_strrpos($contact,'_')-utf8_strpos($contact,'_')-1);
+	$sName = substr(strstr($contact, '_'), 1, strrpos($contact, '_') - 1); // utf8
  	//From the last _ to the end of the string
- 	$md5 = utf8_substr($contact,utf8_strrpos($contact,'_')+1,utf8_strlen($contact));
+ 	$md5 = substr($contact, strrpos($contact, '_') + 1); // utf8
  	//Remove extension
- 	$md5 = utf8_basename($md5,'.'.EYECARD_EXT);
+ 	$md5 = basename($md5,'.'.EYECARD_EXT);
  	return  array($name,$sName,$md5);
 }
-/*function lib_eyecontacts_getId($params=null){
-	if(empty($params) || empty($params[0]) || empty($params[1])){
-		return false;
-	}
-	$name = $params[0];
-	$sName = $params[1];
-	$path = eyeContacts('getContactPath',array($name));
-
-	$result = vfs('real_getDirContent',array($path,$name.'_'.$sName.'*'));
-
-	utf8_substr($re)
-}*/
 
 function lib_eyeContacts_import($params){
 
@@ -114,7 +95,7 @@ function lib_eyeContacts_import($params){
 
 	$path = $params[0];
 		 	 
-	if(!vfs('readInfo',array($path))){	 
+	if(!vfs('readInfo',array($path))){
 		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
 	}
@@ -135,7 +116,7 @@ function lib_eyeContacts_import($params){
 	return true;
 }
 
-function lib_eyeContacts_export($params){	 
+function lib_eyeContacts_export($params){
 
 	if($params == null || count($params) < 1){
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
@@ -156,7 +137,7 @@ function lib_eyeContacts_export($params){
 		$path = $fullPath;
 	}else{
 		if(vfs('fileExists',array($path))){
-			$info = utf8_pathinfo($path);
+			$info = pathinfo($path);
 			if(!isset($info['extension'])){
 				$info['extension'] = VCARD_EXT;
 			}
@@ -168,7 +149,7 @@ function lib_eyeContacts_export($params){
 			}
 			$path = $fullPath;
 		}else{
-			$info = utf8_pathinfo($path);
+			$info = pathinfo($path);
 			$path = $info['dirname'].'/'.$info['filename'].'.'.VCARD_EXT;
 		}
 	}
@@ -182,7 +163,7 @@ function lib_eyeContacts_exportToVcard($params){
 	global $checknum;
 	$outPath = $params[0];
 
-	include(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeContacts/lib/vcard_builder.eyecode');
+	eyePear('Load', array('Contact_Vcard_Build'));
 
 	$vCards = eyeContacts('userList');
 	//Getting eyeCard content itering on $vCard array files.
@@ -228,16 +209,16 @@ function lib_eyeContacts_exportToVcard($params){
 	fclose($fp);
 	return true;
 }
-function lib_eyeContacts_importFromVcard($params){ 
+function lib_eyeContacts_importFromVcard($params){
 	$path = $params[0];
-	include(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeContacts/lib/vcard_parser.eyecode');	      
+	eyePear('Load', array('Contact_Vcard_Parse'));
  	$parse = new Contact_Vcard_Parse();
     $realPath = vfs('getRealName',array($path));
     
-    $cardInfo = $parse->fromFile($realPath);        
+    $cardInfo = $parse->fromFile($realPath);
     if(count($cardInfo) < 1){
     	errorCodes('setErrorCode',array(NO_CONTACT_FOUND));
-    	return false;    
+    	return false;
     }
 	foreach($cardInfo as $card){
 		$eyeCard = array();
@@ -279,8 +260,8 @@ function lib_eyeContacts_importFromVcard($params){
 
 						$preType = array();
 						//Getting types
-						foreach($component['param']['TYPE'] as $type){     
-							$preType[] = utf8_strtoupper(strval($type));
+						foreach($component['param']['TYPE'] as $type){
+							$preType[] = /* utf8 */ strtoupper(strval($type));
 						}
 
 						if($preType[0] == 'HOME' || $preType[1] == 'HOME' || $preType[0] == 'MAIN' || $preType[1] == 'MAIN')
@@ -307,8 +288,8 @@ function lib_eyeContacts_importFromVcard($params){
 						$address = str_replace(";;", "", $address);
 						$address = str_replace(";", "\n", $address);
 						//Getting type
-						if(isset($component['param']['TYPE'][0])){     
-							$preType = utf8_strtoupper(strval($component['param']['TYPE'][0]));
+						if(isset($component['param']['TYPE'][0])){
+							$preType = /* utf8 */ strtoupper(strval($component['param']['TYPE'][0]));
 						}else{
 							$preType = 'HOME';
 						}
@@ -338,7 +319,7 @@ function lib_eyeContacts_importFromVcard($params){
 				default:
 					//Not supported?
 				break;
-			}			     
+			}
      	}
      	     
      	//Writing the new contact to files
@@ -409,19 +390,16 @@ function lib_eyeContacts_getContactPath($params=null){
 		return false;
 	}
 	if(empty($params[0]) || $params[0] == ' '){
-		$leter = ' ';
+		$letter = ' ';
 	}else{
-		$leter = utf8_strtolower(utf8_substr($params[0],0,1));
+		$letter = strtolower(substr($params[0], 0, 1)); // utf8
 	}
-	return um('getCurrentUserDir').'/'.CONF_USER_DIR.'/ey'.'eContacts/'.$leter;
+	return um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeContacts/'.$letter;
 }
 
 function checkVcard(&$path){
-	$path = vfs('getRealName',array($path));
-	$extension = vfs('real_getExtension',array($path));
-	if(utf8_strtolower($extension) != 'vcf' && utf8_strtolower($extension) != 'vcard' ){
-		return false;
-	}
-	return true;
+	$path = vfs('getRealName', array($path));
+	$extension = /* utf8 */ strtolower(vfs('real_getExtension', array($path)));
+	return ($extension === 'vcard' || $extension === 'vcf');
 }
 ?>

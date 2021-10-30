@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeControl_on_groups_new($params = '') {
@@ -26,7 +19,7 @@ function eyeControl_on_groups_new($params = '') {
 		'buttons' => array(array('groups_create','Accept'),array('groups_create_cancel','Cancel')),
 		'content' => 'Type the name of the group you want to create:',
 		'father' => 'eyeControl_container_big',
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/groups.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/groups.png',
 		'textbox_event' => 'groups_create',
 		'textbox_name' => 'eyeControl_groups_create_textbox',
 		'title' => 'Create Group',
@@ -50,7 +43,7 @@ function eyeControl_on_groups_create($params = '') {
 
 	$group = $GLOBALS['eyeControl_groups_create_textbox']->text;
 	$dir = EYE_ROOT . '/' . GROUPS_DIR . '/' . $group . '/';
-	if (preg_match("/^[-_a-zA-Z0-9]+$/",$group) && !vfs('real_fileExists',array($dir))) {
+	if (vGroups('isValidGroupname', array($group)) === true && vfs('real_fileExists', array($dir)) === false) {
 		$oldUser = $currentUser;
 		if ($currentUser == ROOTUSER) {
 			$myUserXml = um('retrieveUser',array(eyeControl_lib_getConfigUser()));
@@ -99,7 +92,7 @@ function eyeControl_on_groups_edit($params = '') {
 			'content' => 'Type the new group\'s name:',
 			'father' => 'eyeControl_container_big',
 			'hiddens' => array(array('eyeControl_groups_rename_hidden',$group)),
-			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/groups.png',
+			'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/groups.png',
 			'textbox_event' => 'groups_rename',
 			'textbox_name' => 'eyeControl_groups_rename_textbox',
 			'textbox_text' => $group,
@@ -132,7 +125,7 @@ function eyeControl_on_groups_rename($params = '') {
 	$group_new = $GLOBALS['eyeControl_groups_rename_textbox']->text;
 	$dir_old = EYE_ROOT . '/' . GROUPS_DIR . '/' . $group_old . '/';
 	$dir_new = EYE_ROOT . '/' . GROUPS_DIR . '/' . $group_new . '/';
-	if (preg_match("/^[-_a-zA-Z0-9]+$/",$group_new) && !vfs('real_fileExists',array($dir_new))) {
+	if (vGroups('isValidGroupname', array($group_new)) === true && vfs('real_fileExists', array($dir_new)) === false) {
 		$oldUser = $currentUser;
 		if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 			$currentUser = ROOTUSER;
@@ -202,7 +195,7 @@ function eyeControl_on_groups_delete($params = '') {
 			'content' => 'Do you really want to remove this group from the system?',
 			'father' => 'eyeControl_container_big',
 			'hiddens' => array(array('groups_delete_hidden',$group)),
-			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
+			'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/editClean.png',
 			'title' => 'Delete group',
 			'type' => 3,
 			'win_name' => 'eyeControl_groups_delete_window',

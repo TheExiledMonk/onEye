@@ -1,25 +1,19 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
+
 require_once(EYE_ROOT.'/'.APP_DIR.'/eyeAddressBook/events'.EYE_CODE_EXTENSION);
 
 function eyeAddressBook_run($params=null) {
@@ -45,17 +39,17 @@ function eyeAddressBook_run($params=null) {
 		'father'=>'eyeAddressBook_WND_Content'
 	));
 	$myToolbar->show();
-	$myToolbar->addItem('newContact','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/addcontact.png','New Contact');
-	$myToolbar->addItem('listEditContact','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/editcontact.png','Edit');
-	$myToolbar->addItem('delete','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/deletecontact.png','Delete');
+	$myToolbar->addItem('newContact','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/addcontact.png','New Contact');
+	$myToolbar->addItem('listEditContact','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/editcontact.png','Edit');
+	$myToolbar->addItem('delete','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/deletecontact.png','Delete');
 	$myToolbar->addLine();
-	$myToolbar->addItem('import','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/importcontact.png','Import');
-	$myToolbar->addItem('export','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/exportcontact.png','Export');
+	$myToolbar->addItem('import','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/importcontact.png','Import');
+	$myToolbar->addItem('export','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/exportcontact.png','Export');
 	$myToolbar->addLine();
-	$myToolbar->addItem('sendMessage','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/sendmessage.png','Send Message');
+	$myToolbar->addItem('sendMessage','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/sendmessage.png','Send Message');
 	$myToolbar->addLine();
-	$myToolbar->addItem('settings','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/settings.png','Settings');
-	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+	$myToolbar->addItem('settings','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/settings.png','Settings');
+	$myToolbar->addItem('fullscreen','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fullScreen.png','Full Screen','',1);
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 	
 	// General Splitter
@@ -96,7 +90,7 @@ function eyeAddressBook_run($params=null) {
 		'x' => 10,
 		'horiz' => 1,
 		'y' => 64,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/search.png'
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/search.png'
 	));
 	$imgSearch->show();
 	
@@ -163,8 +157,9 @@ function eyeAddressBook_drawListBox($contacts=null) {
 	if (!is_array($contacts)) {
 		$contacts = array();
 	}
+	uksort($contacts, 'eyeAddressBook_sortContacts');
     foreach ($contacts as $key=>$contact) {
-        $key = utf8_substr($key,3);
+		$key = /* utf8 */ substr($key, 3);
         $chkContact = new Checkbox(array(
             'name' => 'eyeAddressBook_chkContact_'.$key,
             'father' => 'eyeAddressBook_listBox',
@@ -188,6 +183,10 @@ function eyeAddressBook_drawListBox($contacts=null) {
         $y+=25;
         ++$count;
     }
+}
+
+function eyeAddressBook_sortContacts($a, $b) {
+	return utf8_strcasecmp($a[0]['home'][0]['surname'][0] . ', ' . $a[0]['home'][0]['name'][0], $b[0]['home'][0]['surname'][0] . ', ' . $b[0]['home'][0]['name'][0]);
 }
 
 function eyeAddressBook_showSelectGroup() {

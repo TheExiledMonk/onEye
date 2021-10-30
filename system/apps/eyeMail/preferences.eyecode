@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeMail_preferencesWindow($params=null) {
@@ -42,9 +35,9 @@ function eyeMail_preferencesWindow($params=null) {
 	$prefWindow->show();
 	$prefToolbar = new Toolbar(array('name'=>'preferencesToolbar','father'=>'eyeMail_preferencesWND_Content'));
 	$prefToolbar->show();
-	$prefToolbar->addItem('prefGeneral','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/eyeNav.png','General');
-	$prefToolbar->addItem('prefAccounts','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/groups.png','Accounts');
-	//$prefToolbar->addItem('prefSecurity','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeMail/security.png','Security');
+	$prefToolbar->addItem('prefGeneral','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/eyeNav.png','General');
+	$prefToolbar->addItem('prefAccounts','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/groups.png','Accounts');
+	//$prefToolbar->addItem('prefSecurity','index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeMail/security.png','Security');
 
 
 	// General Window in Preferences
@@ -301,7 +294,7 @@ function eyeMail_on_delButton($params=null) {
 		'btn2_name' => 'messageRemoveNo',
 		'content' => 'Are you sure you want to remove the account "%s"?',
 		'tokens' => array($accountsFile['eyeMail'][0]['accounts'][0]['account'][$thekey]['description'][0]),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/editClean.png',
 		'type' => 3
 	));
 }
@@ -400,15 +393,15 @@ function eyeMail_refreshListAcc($params=null) {
 			'x'=>10,
 			'y'=>4,
 			'alt' => $accConfig[$key]['name'][0],
-			'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/sendmessage.png'
+			'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/sendmessage.png'
 		));
 		$imageAccUser->show(0);
 		$imageAccUser->setCSS(array(
 			'cursor' => 'pointer'
 		));
 		$labelpost = $accConfig[$key]['description'][0];
-		if (utf8_strlen($labelpost)>23) {
-			$labelpost = utf8_substr($labelpost,0,20).'...';
+		if (utf8_strlen($labelpost) > 23) {
+			$labelpost = utf8_substr($labelpost, 0, 22) . '…';
 		}
 
 		$accUserLabel = new Label(array(
@@ -1137,7 +1130,7 @@ function eyeMail_createAccount2($params=null) {
 	$serversConfig = $serversConfig['eyeMail'][0]['servers'][0]['server'];
 	$finded = false;
 	foreach ($serversConfig as $key => $value) {
-		if (utf8_strtolower(utf8_substr(strstr($GLOBALS['eyeMail_textAcc2']->text, '@'),1)) == $serversConfig[$key]['domain'][0]) {
+		if (strtolower(substr(strstr($GLOBALS['eyeMail_textAcc2']->text, '@'), 1)) === $serversConfig[$key]['domain'][0]) { // utf8
 			$finded = true;
 			$infoHidden = new Hidden(array(
 				'name' => 'eyeMail_infoHidden',
@@ -1168,11 +1161,11 @@ function eyeMail_finalize1($params=null) {
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['type'][0] = $GLOBALS['eyeMail_infoHidden']->text['type'][0];
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['typehost'][0] = $GLOBALS['eyeMail_infoHidden']->text['typehost'][0];
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['typeport'][0] = $GLOBALS['eyeMail_infoHidden']->text['typeport'][0];
-	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['typeuser'][0] = utf8_substr($GLOBALS['eyeMail_textAcc2']->text, 0, utf8_strpos($GLOBALS['eyeMail_textAcc2']->text, '@'));
+	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['typeuser'][0] = substr($GLOBALS['eyeMail_textAcc2']->text, 0, strpos($GLOBALS['eyeMail_textAcc2']->text, '@')); // utf8
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['typessl'][0] = $GLOBALS['eyeMail_infoHidden']->text['typessl'][0];
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['smtphost'][0] = $GLOBALS['eyeMail_infoHidden']->text['smtphost'][0];
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['smtpport'][0] = $GLOBALS['eyeMail_infoHidden']->text['smtpport'][0];
-	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['smtpuser'][0] = utf8_substr($GLOBALS['eyeMail_textAcc2']->text, 0, utf8_strpos($GLOBALS['eyeMail_textAcc2']->text, '@'));
+	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['smtpuser'][0] = substr($GLOBALS['eyeMail_textAcc2']->text, 0, strpos($GLOBALS['eyeMail_textAcc2']->text, '@')); // utf8
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['typepassword'][0] = $GLOBALS['eyeMail_textAcc3']->text;
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['smtppassword'][0] = $GLOBALS['eyeMail_textAcc3']->text;
 	$accountsFile['eyeMail'][0]['accounts'][0]['account'][$i]['smtpssl'][0] = $GLOBALS['eyeMail_infoHidden']->text['smtpssl'][0];
@@ -1412,7 +1405,7 @@ function eyeMail_createAccountAuto($params=null) {
 	));
 	$labeliServer->show();
 
-	$iUser = utf8_strtolower(utf8_substr($GLOBALS['eyeMail_textAcc2']->text, 0, utf8_strpos($GLOBALS['eyeMail_textAcc2']->text, '@')));
+	$iUser = utf8_strtolower(substr($GLOBALS['eyeMail_textAcc2']->text, 0, strpos($GLOBALS['eyeMail_textAcc2']->text, '@'))); // utf8
 
 	$labeliUser = new Label(array(
 		'name' => 'eyeMail_labeliUser',

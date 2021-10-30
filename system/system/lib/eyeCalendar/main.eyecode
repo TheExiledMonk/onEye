@@ -1,32 +1,27 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
-define(EYENOTE_EXT,'eyeNote');
-define(CALENDARSINFO,'calendarsInfo.xml');
+define('EYENOTE_EXT', 'eyeNote');
+define('CALENDARSINFO', 'calendarsInfo.xml');
+
 //General propose functions
 function lib_eyeCalendar_getWeekNotes($params){
 	//Creating time for every day
 	$daysInfo = $params[0];
+	$notes = array();
 	for($x=0;$x < 7;$x++){
 		$note = eyeCalendar('getDayNotes',array('mday'=>$daysInfo['nums'][$x],'month'=>$daysInfo['month'][$x],'year'=>$daysInfo['year'][$x]));
 		if(is_array($note)){
@@ -43,7 +38,8 @@ function lib_eyeCalendar_getDayNotes($params){
 	$myDay = $params['mday'];
 	$calDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeCalendar/calendars/';
 	$noteDir = '/'.$myYear.'/'.$myMonth.'/'.$myDay;
-		 
+	$returnNotes = false;
+
 	$myCalendars = eyeCalendar('getCalendarsInfo');
 	foreach($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo){
 		$calendarName = $calendarInfo['name'][0];
@@ -127,7 +123,7 @@ function lib_eyeCalendar_saveNote($params)
 	$noteDir .= '/'.$time.'.'.EYENOTE_EXT;
 	//Making xml.
 	$data = array(
-		'note' => array( 
+		'note' => array(
 			array(
 				"hourFrom" => array($hourFrom),
 				"hourEven" => array($hourEven),
@@ -181,13 +177,13 @@ function lib_eyeCalendar_retriveNote($params){
 	$xml = eyeXML('getXMLfile',array($noteDir));
 	$xml['note'][0]['title'][0] = base64_decode($xml['note'][0]['title'][0]);
 	$xml['note'][0]['calendar'][0] = $calendar;
-	return $xml; 
+	return $xml;
 
 }
 function lib_eyeCalendar_updateNote($params){
 	$info = $params['info'];
 	$oldId = $params['oldId'];
-	$id = $info['note'][0]['dateInt'][0]; 
+	$id = $info['note'][0]['dateInt'][0];
 	$calendar = $params['calendar'];
 	$calendar = eyeCalendar('getCalendarName',array($calendar));
 	$remoteType = eyeCalendar('getCalendarRemoteType',array($params['calendar']));
@@ -302,6 +298,7 @@ function lib_eyeCalendar_getCalendarName($params){
 			return $calendarInfo['name'][0];
 		}
 	}
+	return false;
 }
 function lib_eyeCalendar_getCalendarRemote($params){
 	$num = $params[0];
@@ -379,7 +376,7 @@ function lib_eyeCalendar_createCalendar($params){
 }
 function lib_eyeCalendar_deleteCalendar($params){
 	$name = $params[0];
-	$name = utf8_basename($name);
+	$name = basename($name);
 
 	$myCalendars = eyeCalendar('getCalendarsInfo');
 	foreach($myCalendars['calendars'][0]['calendarInfo'] as $key => $calendarInfo){
@@ -428,7 +425,7 @@ function lib_eyeCalendar_indexCalendarInfo($params){
 	$subfolder = vfs('real_getDirContent',array($calendarsPath,'*'));
 	$selected = 0;
 	foreach($subfolder as $key=>$calendar){
-		$calendarName = utf8_basename($calendar);
+		$calendarName = basename($calendar);
 		if($first){
 			if($calendarName == '1'){
 				global $currentUser;
@@ -438,7 +435,7 @@ function lib_eyeCalendar_indexCalendarInfo($params){
 					vfs('real_mkDir',array($newPath));
 				}
 				$selected = 1;
-			}	 
+			}
 		}
 
 		$myCalendars['calendars'][0]['calendarInfo'][$key]['name'][0] = $calendarName;
@@ -457,6 +454,11 @@ function lib_eyeCalendar_getCurrentCalendar(){
 	$myCalendars = eyeCalendar('getCalendarsInfo');
 	foreach($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo){
 		if(is_array($calendarInfo) && isset($calendarInfo['selected']) && $calendarInfo['selected'][0] == 1){
+			return $calendarInfo['num'][0];
+		}
+	}
+	foreach ($myCalendars['calendars'][0]['calendarInfo'] as $calendarInfo) {
+		if (is_array($calendarInfo)) {
 			return $calendarInfo['num'][0];
 		}
 	}

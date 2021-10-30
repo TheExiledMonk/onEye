@@ -1,20 +1,20 @@
 /*
- *  Slimey - SLIdeshow Microformat Editor - http: //slimey.sourceforge.net
+ *  Slimey - SLIdeshow Microformat Editor - http://slimey.sourceforge.net
  *  Copyright (C) 2007 - 2008 Ignacio de Soto
  *
  *  Editor styles
  */
- 
- 
- /* editor */
+
+
+/* editor */
 a:hover, a:link, a:visited {
 	border: 0;
 	font-family: Verdana,Arial,sans-serif,FreeSans;
 	color: #333333;
 	text-decoration: none;
 }
- 
- .divcolor {
+
+.divcolor {
 	z-index: 99999999;
 	background-color: #ffffff;
 	position: absolute;
@@ -22,12 +22,12 @@ a:hover, a:link, a:visited {
 	height: 170px;
 	border: 1px solid grey;
  }
- 
+
 .coloritem {
 	margin: 2px;
 	float: left;
 }
- 
+
 .blockbar {
 	background-color: #eeeeee;
 	border-bottom: 2px ridge #ffffff;
@@ -65,7 +65,7 @@ a:hover, a:link, a:visited {
 }
 
 .blockbarline {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/top_menu_line.png') no-repeat center;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/top_menu_line.png') no-repeat center;
 	float: left;
 	height: 40px;
 	margin-left: 4px;
@@ -79,8 +79,14 @@ a:hover, a:link, a:visited {
 	font-size: 10px;
 	margin-top: 5px;
 }
-	
- .resizeHandle {
+
+.blockbarItem:hover, .blockbarItem_right:hover, .blockbarItemPress, .blockbarItemPress_right {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.resizeHandle {
 	width: 8px;
 	height: 8px;
 	font-size: 1px;
@@ -154,18 +160,18 @@ a:hover, a:link, a:visited {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
-	background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/border_r.png') repeat-y right;
+	background: #ffffff url('index.php?theme=USERTHEME&extern=images/windows/border_r.png') repeat-y right;
 	padding-left: 15px;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
 }
 .previewSpacer, .previewSpacerH {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=icons/16x16/list-add.png') no-repeat center;
+	background: transparent url('index.php?theme=USERTHEME&extern=icons/16x16/list-add.png') no-repeat center;
 	width: 162px;
 	height: 20px;
 	padding: 1px;
-	margin-left: 1px; 
+	margin-left: 1px;
 	cursor: pointer;
 	opacity: 0.1;
 	
@@ -204,7 +210,7 @@ a:hover, a:link, a:visited {
 }
 
 .slimeyToolbar {
-	 background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x bottom;
+	 background: #ffffff url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x bottom;
 	padding: 5px;
 }
 

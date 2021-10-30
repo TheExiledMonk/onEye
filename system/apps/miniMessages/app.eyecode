@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function miniMessages_run($params=null) {
@@ -39,7 +32,7 @@ function miniMessages_run($params=null) {
 		'height' => 180,
 		'type' => WIN_IMAGE_DRAGGABLE_NOTLISTED,
 		'savePosition' => 1,
-		'background' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/miniApps/miniMessages/minimessages.png'
+		'background' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/miniApps/miniMessages/minimessages.png'
 	));
 	$myWindow->show();
 	eyeX('updateCSS', array('name' => $myPid.'_miniMessagesWND_Content', 'property' => 'overflow', 'value' => 'hidden'));
@@ -58,7 +51,7 @@ function miniMessages_run($params=null) {
 		'father' => 'miniMessagesWND_Content',
 		'x' => 4,
 		'y' => 5,
-		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/open.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/desktop/open.png',
 		'disableMsg' => '0',
 		'signal' => 'Launch'
 	));
@@ -82,7 +75,7 @@ function miniMessages_run($params=null) {
 		'horiz' => 1,
 		'x' => 5,
 		'y' => 5,
-		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/close.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/desktop/close.png',
 		'disableMsg' => 0,
 		'signal' => 'Close'
 	));
@@ -95,7 +88,7 @@ function miniMessages_run($params=null) {
 		'horiz' => 1,
 		'x' => 20,
 		'y' => 4,
-		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/refresh.png',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/desktop/refresh.png',
 		'disableMsg' => 0,
 		'signal' => 'Refresh'
 	));
@@ -134,8 +127,8 @@ function miniMessages_run($params=null) {
 			$msgLabel->show(1);
 
 			$strSubject = $msg['subject'];
-			if(utf8_strlen($strSubject) > 27) {
-				$strSubject = utf8_substr($strSubject, 0, 25).'...';
+			if (utf8_strlen($strSubject) > 27) {
+				$strSubject = utf8_substr($strSubject, 0, 26) . '…';
 			}
 			$msgLabel = new Label(array(
 				'name' => 'msgSubject'.$count,
@@ -149,7 +142,7 @@ function miniMessages_run($params=null) {
 			if(date('d') == date('d', $date)) {
 				$date = date('G:i', $date);
 			} else {
-				$date = date('m/d/Y',$date);
+				$date = date('Y-m-d',$date);
 			}
 			$msgLabel = new Label(array(
 				'name' => 'msgDate'.$count,
@@ -172,7 +165,7 @@ function miniMessages_run($params=null) {
 
 	//CSS
 	eyex('loadCss',array(
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/miniApps/miniApps.css&type=css',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=css/apps/miniApps/miniApps.css&type=css',
 		'id' => 'miniApps'
 	));
 }

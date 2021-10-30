@@ -1,9 +1,9 @@
 /*
  * CodePress regular expressions for C/C++ syntax highlighting
  */
- 
+
 // C/C++
-Language.syntax = [ 
+Language.syntax = [
 	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' }, // strings double quote
 	{ input : /\'(.*?)(\'|<br>|<\/P>)/g, output : '<s>\'$1$2</s>' }, // strings single quote
 	{ input : /\b(break|continue|do|for|new|this|void|case|default|else|return|while|if|switch|var|with|catch|bool|char|long|byte|short|int|try|false|catch|NULL|true|goto|cout|cin)\b/g, output : '<b>$1</b>' }, // reserved words

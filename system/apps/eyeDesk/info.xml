@@ -2,9 +2,9 @@
 	<name>eyeDesk</name>
 	<category>System</category>
 	<version>1.9</version>
-	<description>eyeOS desktop</description>
-	<author>eyeOS Team</author>
+	<description>oneye desktop</description>
+	<author>oneye Team</author>
 	<license>AGPL</license>
 	<type>System</type>
-	<icon></icon>
+	<icon />
 </package>

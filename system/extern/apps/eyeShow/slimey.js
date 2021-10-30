@@ -78,7 +78,7 @@ var Slimey = function(config) {
 	this.edtoolbar = new SlimeyToolbar(this, [
 			new SlimeySaveTool(this),
 			'-',
-			new SlimeyInsertTextTool(this), new SlimeyInsertImageTool(this),
+			new SlimeyInsertTextTool(this),
 			new SlimeyInsertOrderedListTool(this), new SlimeyInsertUnorderedListTool(this),
 			new SlimeyDeleteTool(this),
 			'-',
@@ -244,7 +244,7 @@ Slimey.prototype.submitFile = function() {
 	window.parent.sendMsg($checknum,'saveFile',sc.value);
 }
 
-Slimey.imagesDir = 'index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=icons/22x22/eyeShow/';
+Slimey.imagesDir = 'index.php?theme=' + USERTHEME + '&extern=icons/22x22/eyeShow/';
 
 Slimey.preloadedImages = new Array();
 

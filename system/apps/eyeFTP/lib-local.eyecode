@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*********************************************************************************************/
@@ -45,7 +38,7 @@ function eyeFTP_emptyLocalFilesTable() {
 		'y' => 24,
 		'width' => $GLOBALS['eyeFTP_leftRight_SPLT']->position - 15,
 		'height' => $GLOBALS['eyeFTP_leftRight_SPLT']->height - 30,
-		'sortypes' => array('Html','String','Number','String','String','Hidden'),
+		'sortypes' => array('Html','String','Number','Date','String','Hidden'),
 		'master' => 5,
 		'theader' => array(' ','Filename','Filesize (B)','Date','Author','id'),
 		'signal' => 'eyeFTP_localFilesClick',
@@ -87,17 +80,17 @@ function eyeFTP_browseLocal($path = '/') {
 	foreach($filesData as $id => $fileInfo) {
 		switch($fileInfo['type']) {
 			case 'd':
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/folder.png';
+				$urlIcon = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/folder.png';
 				$size = ' ';
 				break;
 
 			case 'l':
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/link.png';
+				$urlIcon = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/link.png';
 				$size  = ' ';
 				break;
 
 			default:
-				$urlIcon = 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/file.png';
+				$urlIcon = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/file.png';
 				$size  = $fileInfo['size'];
 		}
 		$GLOBALS['eyeFTP_localFiles_TAB']->addRow(array(
@@ -153,14 +146,14 @@ function eyeFTP_listDir($dir,$addParent=true) {
 				$author = ' ';
 				$size = ' ';
 				$date = ' ';
-				$name = utf8_basename($file);
+				$name = basename($file);
 			}
-			elseif (utf8_ltrim(strrchr($file,'.'),'.') == EYEOS_LINK_EXT) {
+			else if (ltrim(strrchr($file, '.'), '.') === EYEOS_LINK_EXT) { // utf8
 				$type = 'l';
 				$author = ' ';
 				$size = ' ';
 				$date = ' ';
-				$name = utf8_basename($file);
+				$name = basename($file);
 			}
 			else {
 				$type = '-';
@@ -184,7 +177,7 @@ function eyeFTP_listDir($dir,$addParent=true) {
 		}
 	}
 
-	usort($filesData, eyeFTP_compareFilesData);
+	usort($filesData, 'eyeFTP_compareFilesData');
 	$return = array();
 	$i = 1;
 	foreach($filesData as $fileData) {
@@ -198,10 +191,10 @@ function eyeFTP_listDir($dir,$addParent=true) {
  * @param string $path The path of a FOLDER to resolve (do NOT pass a file)
  *                                         (e.g. '/Documents/Images/..',
  *                                           or  './users/jn4/john/files/Documents/Images/..',
- *                                           or  '/home/john/eyeos/users/jn4/john/files/Documents/Images/..',
- *                                           or  'C:\My Documents\john\eyeos\users\jn4\john\files\Documents\Images\..')
+ *                                           or  '/home/john/oneye/users/jn4/john/files/Documents/Images/..',
+ *                                           or  'C:\My Documents\john\oneye\users\jn4\john\files\Documents\Images\..')
  * @param string $returnUserFilesRelative TRUE to get a resolved path in the user files folder (e.g. '/Documents')
- *                                        FALSE to get a resolved path from eyeOS root directory
+ *                                        FALSE to get a resolved path from oneye root directory
  *                                              (e.g. ./users/jn4/john/files/Documents)
  * @return mixed The resolved path or FALSE if the given path is not in the user files directory
  */

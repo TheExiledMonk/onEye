@@ -2,10 +2,10 @@
 	<name>Media Player</name>
 	<category>Multimedia</category>
 	<version>1.9</version>
-	<description>eyeOS Media Player</description>
-	<author>eyeOS Team</author>
+	<description>oneye Media Player</description>
+	<author>oneye Team</author>
 	<license>AGPL</license>
 	<type>Application</type>
-	<icon>index.php?theme=1&amp;extern=icons/48x48/eyeMedia.png</icon>
+	<icon>index.php?theme=USERTHEME&amp;extern=icons/48x48/eyeMedia.png</icon>
 	<openWith>1</openWith>
 </package>

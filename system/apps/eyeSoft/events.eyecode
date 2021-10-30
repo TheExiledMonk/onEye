@@ -1,25 +1,19 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
+
 function eyeSoft_on_Help($params = '') {
 	proc('launch',array('eyeHelp','eyeSoft'));
 }
@@ -38,17 +32,12 @@ function eyeSoft_on_Update($params=""){
 	// start with downloading script
 	$config = eyeXML('getXMLfile',array(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports.xml'));
 	foreach($config['eyePorts'][0]['mirrors'][0]['mirror'] as $value) {
-		$httpClient = eyeURL('getHTTPClient');
-		$httpClient->setURL($value);
-		$httpClient->sendRequest();
-		$content = $httpClient->getResponseBody();
+		$content = eyeURL('getRawFile', array('url' => $value));
 		$myServer = eyeXML('xml2array',array($content));
 		if (is_array($myServer) === true) {
 			foreach($myServer['eyePorts'][0]['portServer'] as $pValue) {
-				$myPname = utf8_basename($pValue['name'][0]);
-				$httpClient->setURL('http://'.$pValue['address'][0].$pValue['path'][0]);
-				$httpClient->sendRequest();
-				$pContent = $httpClient->getResponseBody();
+				$myPname = basename($pValue['name'][0]);
+				$pContent = eyeURL('getRawFile', array('url' => 'https://' . $pValue['address'][0] . $pValue['path'][0]));
 				if(!file_exists(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/cache/'.$myPname.'.xml')) {
 					vfs('real_create',array(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/cache/'.$myPname.'.xml'));
 				}
@@ -82,7 +71,7 @@ function eyeSoft_loadList($category=null,$search=null) {
 	eyeX('rawjs',array('js'=>"document.getElementById('".$myPid."_eyeSoftHidden_Content').innerHTML='';"));
 	$content = vfs('real_getDirContent',array(EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/cache/'));
 	$myHeader = array('App Name','Version','Installed');
-	$sortypes = array("String","Number","String");
+	$sortypes = array("String","String","String");
  
 	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeSoftHidden_Content',
 		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>5,'y'=>0,'width'=>415,'height'=>330,'signal'=>'ClickTable'));
@@ -99,7 +88,7 @@ function eyeSoft_loadList($category=null,$search=null) {
 						if(!$search) {
 							$myTable->addRow(array($value['name'][0],$value['version'][0],getInstalled($value)));
 						} else {
-							if(utf8_stristr($value['name'][0],$search) || utf8_stristr($value['description'][0],$search)) {
+							if (utf8_stripos($value['name'][0], $search) !== false || utf8_stripos($value['description'][0], $search) !== false) {
 								$myTable->addRow(array($value['name'][0],$value['version'][0],getInstalled($value)));
 							}
 						}
@@ -107,7 +96,7 @@ function eyeSoft_loadList($category=null,$search=null) {
 						if($category == $value['category'][0]) {
 							if(!$search) {
 								$myTable->addRow(array($value['name'][0],$value['version'][0],getInstalled($value)));
-							} elseif(utf8_stristr($value['name'][0],$search) || utf8_stristr($value['description'][0],$search)) {
+							} elseif(utf8_stripos($value['name'][0], $search) !== false || utf8_stripos($value['description'][0], $search) !== false) {
 								$myTable->addRow(array($value['name'][0],$value['version'][0],getInstalled($value)));
 							}
 						}
@@ -148,7 +137,7 @@ function eyeSoft_on_ClickTable($params=null) {
  
 function eyeSoft_on_catExecute($params=null) {
 	foreach($params as $key=>$value) {
-		if(strstr($key,'cat_lbl_')) {
+		if ( /* utf8 */ strpos($key, 'cat_lbl_') !== false) {
 			$category = $value[0];
 			if($category == i18n('translate',array('All'))) {
 				eyeSoft_loadList();
@@ -178,7 +167,7 @@ function eyeSoft_on_Install($params=null){
 			'title'=>'Installing','removepid'=>0));
 		$myWindow->show();
 		$myLabel1 = new Label(array('name'=>'Label1','father'=>'Installing_Content',
-			'text'=>"You are installing a new App in your eyeOS system",'y'=>15,'x'=>20));
+			'text'=>"You are installing a new App in your oneye system",'y'=>15,'x'=>20));
 		$myLabel1->show();
  
 		$myLabel2 = new Label(array('name'=>'Label2','father'=>'Installing_Content',
@@ -197,7 +186,7 @@ function eyeSoft_on_Install($params=null){
 			foreach($info['dependencies'][0]['dependence'] as $value) {
 				$dependencies .= $value.', ';
 			}
-			$dependencies = utf8_substr($dependencies,0,utf8_strlen($dependencies)-2);
+			$dependencies = /* utf8 */ substr($dependencies, 0, -2);
 		} else {
 			$dependencies .= i18n('translate',array("none"));
 		}
@@ -209,7 +198,7 @@ function eyeSoft_on_Install($params=null){
 			foreach($info['suggestions'][0]['suggestion'] as $value) {
 				$suggestions .= $value.', ';
 			}
-			$suggestions = utf8_substr($suggestions,0,utf8_strlen($suggestions)-2);
+			$suggestions = /* utf8 */ substr($suggestions, 0, -2);
 		} else {
 			$suggestions .= i18n('translate',array("none"));
 		}
@@ -248,8 +237,8 @@ function eyeSoft_on_stepInstall($params=null) {
 	$info = getAppInformation($myApp);
 	$host = $info['address'][0];
 	$path = $info['path'][0].'/'.$info['filename'][0];
-	$url = "http://".$host.$path;
-	$fpath = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/swap/'.utf8_basename($info['filename'][0]);
+	$url = "https://".$host.$path;
+	$fpath = EYE_ROOT.'/'.SYSTEM_DIR.'/'.SYSTEM_CONF_DIR.'/ports/swap/'.basename($info['filename'][0]);
 	vfs('real_putFileContent', array($fpath, eyeURL('getRawFile', array('url' => $url))));
 	if(md5_file($fpath) != $info['key'][0]) {
 		$GLOBALS['Installing']->clear();
@@ -330,7 +319,7 @@ function eyeSoft_on_Uninstall($params = '') {
 			'hidden_text' => $app,
 			'hidden_name' => 'uninstall_hidden',
 			'father' => 'eyeSoft_Content',
-			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png'
+			'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/editClean.png'
 		));
 	} else {
 		eyex('messageBox',array('content' => 'Please choose an applictaion to be uninstalled.'));

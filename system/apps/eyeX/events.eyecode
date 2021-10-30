@@ -1,28 +1,22 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeX_on_baseapp($params = '') {
 	global $procInfo;
+	$_SESSION['SCREEN']['eyeApps']['touch'] = $params['touch'][0] ? 1 : 0;
 	$_SESSION['SCREEN']['eyeApps']['height'] = 0;
 	$_SESSION['SCREEN']['eyeApps']['width'] = 0;
 	$_SESSION['SCREEN']['eyeApps']['x'] = 0;
@@ -32,6 +26,7 @@ function eyeX_on_baseapp($params = '') {
 	eyeX_on_resizedBrowser($params);
 	$_SESSION['SCREEN']['flash'] = $params['flash'][0];
 	$_SESSION['SCREEN']['flash_version'] = $params['flashmajor'][0];
+	$_SESSION['SCREEN']['oggVorbisSupported'] = $params['oggVorbisSupported'][0];
 	if (!isset($_SESSION['SCREEN']['refresh'])) {
 		$_SESSION['SCREEN']['refresh'] = 0;
 	} else {
@@ -61,6 +56,7 @@ function eyeX_on_resizedBrowser($params = '') {
  		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
  		return false;
  	}
+	eyex('rawjs', array('js' => 'resizedBrowser.done("<width>' . strval(intval($params['width'][0])) . '</width><height>' . strval(intval($params['height'][0])) . '</height>");'));
 	// Set width
 	$width = intval($params['width'][0]);
 	if ($width < 500) {
@@ -80,12 +76,11 @@ function eyeX_on_resizedBrowser($params = '') {
 }
 
 function eyeX_on_viewTempImg($params = '') {
-	$path = um('getCurrentUserDir') . '/tmp/' . utf8_basename($params);
+	$path = um('getCurrentUserDir') . '/tmp/' . basename($params);
 	$info = @getimagesize($path);
 	if ($info !== false) {
 		header('Content-Type: ' . $info['mime']);
 		header('Accept-Ranges: bytes');
-		header('X-Pad: avoid browser bug');
 		vfs('printFile',array($path));
 	}
 	exit;
@@ -98,13 +93,20 @@ function eyeX_on_saveWinPosition($params = '') {
 
 	// $app, $pid and $name
 	$app = proc('findNameByChecknum', array($params['appChecknum'][0]));
-	$pid = utf8_substr($params['winName'][0], 0, utf8_strpos($params['winName'][0], '_'));
-	$name = utf8_substr($params['winName'][0], 1 + utf8_strlen($pid));
+	$pid = substr($params['winName'][0], 0, strpos($params['winName'][0], '_')); // utf8
+	$name = substr($params['winName'][0], 1 + strlen($pid)); // utf8
 	
 	if (is_object($_SESSION[WTABLE][$pid][$name])) {
 		// Update PHP object
 		$_SESSION[WTABLE][$pid][$name]->x = $x;
 		$_SESSION[WTABLE][$pid][$name]->y = $y;
+		// Convert to Relative if Appropriate
+		if ($_SESSION[WTABLE][$pid][$name]->savePosition === RELATIVE) {
+			$x = ($x / $_SESSION['SCREEN']['eyeApps']['width']) * 100;
+			$x = round($x, 2);	// gives a percentage
+			$y = ($y / $_SESSION['SCREEN']['eyeApps']['height']) * 100;
+			$y = round($y, 2);	// gives a percentage
+		}
 		// Update XML file
 		$xml = eyeXML('getXMLconfig',array('eyex',$app . '.xml'));
 		$xml[$name][0]['left'][0] = $x;
@@ -112,6 +114,58 @@ function eyeX_on_saveWinPosition($params = '') {
 		eyeXML('setXMLconfig',array('eyex',$app . '.xml',$xml));
 	} else {
 		eyex('messageBox',array('content' => 'Unable to save position!'));
+	}
+}
+
+function eyeX_on_saveWinSize($params = '') {
+	// Height and Width
+	$w = intval($params['width'][0]);
+	$h = intval($params['height'][0]);
+
+	// $app, $pid and $name
+	$app = proc('findNameByChecknum', array($params['appChecknum'][0]));
+	$pid = substr($params['winName'][0], 0, strpos($params['winName'][0], '_')); // utf8
+	$name = substr($params['winName'][0], 1 + strlen($pid)); // utf8
+	
+	if (is_object($_SESSION[WTABLE][$pid][$name])) {
+		// Update PHP object
+		$_SESSION[WTABLE][$pid][$name]->width = $w;
+		$_SESSION[WTABLE][$pid][$name]->height = $h;
+		// Convert to Relative if Appropriate
+		if ($_SESSION[WTABLE][$pid][$name]->saveSize === RELATIVE) {
+			$w = ($w / $_SESSION['SCREEN']['eyeApps']['width']) * 100;
+			$w = round($w, 2);	// gives a percentage
+			$h = ($h / $_SESSION['SCREEN']['eyeApps']['height']) * 100;
+			$h = round($h, 2);	// gives a percentage
+		}
+		// Update XML file
+		$xml = eyeXML('getXMLconfig',array('eyex',$app . '.xml'));
+		$xml[$name][0]['height'][0] = $h;
+		$xml[$name][0]['width'][0] = $w;
+		eyeXML('setXMLconfig',array('eyex',$app . '.xml',$xml));
+	} else {
+		eyex('messageBox',array('content' => 'Unable to save size!'));
+	}
+}
+
+function eyeX_on_saveWinMax($params = '') {
+	// Read value
+	intval($params['maximized'][0]) > 0 ? $m = 1 : $m = 0;
+
+	// $app, $pid and $name
+	$app = proc('findNameByChecknum', array($params['appChecknum'][0]));
+	$pid = substr($params['winName'][0], 0, strpos($params['winName'][0], '_')); // utf8
+	$name = substr($params['winName'][0], 1 + strlen($pid)); // utf8
+	
+	if (is_object($_SESSION[WTABLE][$pid][$name])) {
+		// Update PHP object
+		$_SESSION[WTABLE][$pid][$name]->maximized = $m;
+		// Update XML file
+		$xml = eyeXML('getXMLconfig',array('eyex',$app . '.xml'));
+		$xml[$name][0]['maximized'][0] = $m;
+		eyeXML('setXMLconfig',array('eyex',$app . '.xml',$xml));
+	} else {
+		eyex('messageBox',array('content' => 'Unable to save maximize state!'));
 	}
 }
 ?>

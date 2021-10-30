@@ -1,17 +1,17 @@
 /*
  * CodePress - Real Time Syntax Highlighting Editor written in JavaScript - http://codepress.org/
- * 
+ *
  * Copyright (C) 2007 Fernando M.A.d.S. <fermads@gmail.com>
  *
  * Developers:
  *		Fernando M.A.d.S. <fermads@gmail.com>
  *		Michael Hurni <michael.hurni@gmail.com>
- * Contributors: 
+ * Contributors:
  *		Martin D. Kirk
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the
  * GNU Lesser General Public License as published by the Free Software Foundation.
- * 
+ *
  * Read the full licence: http://www.opensource.org/licenses/lgpl-license.php
  */
 
@@ -52,21 +52,21 @@ CodePress = {
 	metaHandler : function(evt) {
 		keyCode = evt.keyCode;
 
-		if(keyCode==9 || evt.tabKey) { 
+		if(keyCode==9 || evt.tabKey) {
 			CodePress.snippets();
 		}
 		else if((keyCode==122||keyCode==121||keyCode==90) && evt.ctrlKey) { // undo and redo
-			(keyCode==121||evt.shiftKey) ? CodePress.actions.redo() :  CodePress.actions.undo(); 
+			(keyCode==121||evt.shiftKey) ? CodePress.actions.redo() :  CodePress.actions.undo();
 			evt.returnValue = false;
 		}
 		else if(keyCode==34||keyCode==33) { // handle page up/down for IE
-			self.scrollBy(0, (keyCode==34) ? 200 : -200); 
+			self.scrollBy(0, (keyCode==34) ? 200 : -200);
 			evt.returnValue = false;
 		}
 		else if(keyCode==46||keyCode==8) { // save to history when delete or backspace pressed
 		 	CodePress.actions.history[CodePress.actions.next()] = editor.innerHTML;
 		}
-		else if((evt.ctrlKey || evt.metaKey) && evt.shiftKey && keyCode!=90)  { // shortcuts = ctrl||appleKey+shift+key!=z(undo) 
+		else if((evt.ctrlKey || evt.metaKey) && evt.shiftKey && keyCode!=90)  { // shortcuts = ctrl||appleKey+shift+key!=z(undo)
 			CodePress.shortcuts(keyCode);
 			evt.returnValue = false;
 		}
@@ -113,7 +113,7 @@ CodePress = {
 		if(flag!='init') document.selection.createRange().text = cc;
 		o = editor.innerHTML;
 		if(flag=='paste') { // fix pasted text
-			o = o.replace(/<BR>/g,'\r\n'); 
+			o = o.replace(/<BR>/g,'\r\n');
 			o = o.replace(/\u2008/g,'\t');
 		}
 		o = o.replace(/<P>/g,'\n');
@@ -131,7 +131,7 @@ CodePress = {
 
 		if(arguments[1]&&arguments[2]) x = x.replace(arguments[1],arguments[2]);
 
-		for(i=0;i<Language.syntax.length;i++) 
+		for(i=0;i<Language.syntax.length;i++)
 			x = x.replace(Language.syntax[i].input,Language.syntax[i].output);
 
 		editor.innerHTML = this.actions.history[this.actions.next()] = (flag=='scroll') ? x : o.replace(z,x);
@@ -216,7 +216,7 @@ CodePress = {
 		words = rangeAndCaret[0].substring(rangeAndCaret[1]-40,rangeAndCaret[1]);
 		words = words.replace(/[\s\n\r\);\W]/g,'\n').split('\n');
 		return words[words.length-1].replace(/[\W]/gi,'').toLowerCase();
-	}, 
+	},
 
 	getRangeAndCaret : function() {
 		var range = document.selection.createRange();

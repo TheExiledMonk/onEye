@@ -1,34 +1,27 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeImport_run($params=null) {
 	global $myPid;
-	$myWindow = new Window(array('name'=>'eyeImportWND','type'=>NOLIST_CLOSE_WINDOW,'father'=>'eyeApps', 
+	$myWindow = new Window(array('name'=>'eyeImportWND','type'=>NOLIST_CLOSE_WINDOW,'father'=>'eyeApps',
 		'cent'=>1,'width'=>400,'height'=>150,'title'=>'eyeImport','savePosition' => 1));
 	$myWindow->show();
 
 	$myButton = new Button(array('name'=>'Import','father'=>'eyeImportWND_Content','signal'=>'Import',
-		'caption'=>'Browse','x'=>230,'y'=>15,'img'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'));
+		'caption'=>'Browse','x'=>230,'y'=>15,'img'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/folder.png'));
 	$myButton->show();
 
 	$myTextBox = new Textbox(array('name'=>'mtextbox','father'=>'eyeImportWND_Content',
@@ -36,7 +29,7 @@ function eyeImport_run($params=null) {
 	$myTextBox->show();
 
 	$myButton2 = new Button(array('name'=>'doImport','father'=>'eyeImportWND_Content','signal'=>'doImport',
-	'caption'=>'Import','x'=>320,'y'=>15,'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/installapps.png'));
+	'caption'=>'Import','x'=>320,'y'=>15,'img'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/installapps.png'));
 	$myButton2->addFriend($myTextBox);
 	$myButton2->show();
 

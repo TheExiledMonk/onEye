@@ -1,28 +1,21 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
-	eyeOS X system, for visual tasks
+	oneye X system, for visual tasks
 */
 /*
 	eyeX is a wrapper service, its function is to add messages in the output buffer
@@ -35,7 +28,7 @@
 define('GLOBAL_FATHER','eyeApps');//TODO: remove this?
 
 function service_eyex_init() {
-	if ($_REQUEST['type'] != 'dynamic') {
+	if (isset($_REQUEST['type']) === false || $_REQUEST['type'] !== 'dynamic') {
 		header("Content-type:text/xml");//override header type
 	}
 }
@@ -254,7 +247,10 @@ function service_eyex_setWallpaper($params) {
 function service_eyex_getThemeImage($params) {
 // Check params
 	$path = $params[0];
-	$extend = $params[1];
+	$extend = null;
+	if (isset($params[1]) === true) {
+		$extend = $params[1];
+	}
 	if (!$path) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
@@ -268,27 +264,27 @@ function service_eyex_getThemeImage($params) {
 	$path = str_replace('//','/',$path);
 	$path = str_replace('//','/',$path);
 // Switch from an extern to a real url
-	if (utf8_strpos($path,'extern=')) {
+	if ( /* utf8 */ stripos($path, 'extern=') !== false) {
 		$path = eyex('getRealFromExtern',array($path));
 	}
 	$url = $path; // $url won't be changed and saves the original path.
 // Check if the path is a theme path
-	if (utf8_strpos($path,$themes_path . '/default/') !== false) {
-		$path = $themes_path . '/' . eyeSessions('getVar',array('usertheme')) . '/' . utf8_substr($url,utf8_strlen($themes_path . '/default/'));
+	if ( /* utf8 */ strpos($path, $themes_path . '/default/') !== false) {
+		$path = $themes_path . '/' . $_SESSION['usertheme'] . '/' . substr($url, strlen($themes_path . '/default/')); // utf8
 		$path = eyex_getExistingPath($path);
 		if (!$path) {
 			$alias = array();
 			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/image_alias' . EYE_CODE_EXTENSION;
-			$temp = utf8_substr($url,utf8_strlen($themes_path . '/default/'));
-			if ($alias[0][$temp]) {
-				$path = $themes_path . '/' . eyeSessions('getVar',array('usertheme')) . '/' . $alias[0][$temp];
+			$temp = substr($url, strlen($themes_path . '/default/')); // utf8
+			if (isset($alias[0][$temp]) === true) {
+				$path = $themes_path . '/' . $_SESSION['usertheme'] . '/' . $alias[0][$temp];
 				$path = eyex_getExistingPath($path);
 			} else {
 				$path = false;
 			}
 // If it does not exist in the current theme
 			if (!$path) {
-				$path = $themes_path . '/default/' . utf8_substr($url,utf8_strlen($themes_path . '/default/'));
+				$path = $themes_path . '/default/' . substr($url, strlen($themes_path . '/default/')); // utf8
 				$path = eyex_getExistingPath($path);
 				if (!$path) {
 					if ($alias[0][$temp]) {
@@ -309,7 +305,7 @@ function service_eyex_getThemeImage($params) {
 		if (!$path) {
 			$alias = array();
 			include EYE_ROOT . '/' . SYSTEM_DIR . '/' . SERVICE_DIR . '/eyex/image_alias' . EYE_CODE_EXTENSION;
-			$path = utf8_substr($url,utf8_strlen(EYE_ROOT . '/' . EXTERN_DIR . '/'));
+			$path = substr($url, strlen(EYE_ROOT . '/' . EXTERN_DIR . '/')); // utf8
 			if ($alias[1][$path]) {
 				$path = eyex('getThemeImage',array($themes_path . '/default/' . $alias[1][$path],3));
 			} else {
@@ -321,13 +317,13 @@ function service_eyex_getThemeImage($params) {
 	if ($extend == 2 || $extend == 3) {
 		return $path;
 	} else {
-		return 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . utf8_substr($path,utf8_strlen(EYE_ROOT . '/' . EXTERN_DIR . '/'));
+		return 'index.php?extern=' . substr($path, strlen(EYE_ROOT . '/' . EXTERN_DIR . '/')); // utf8
 	}
 }
 
 function eyex_getExistingPath($path) {
-	if (IE && IE < 7 && utf8_substr($path,-4) == '.png' && vfs('real_fileExists',array(utf8_substr($path,0,-3) . 'gif'))) {
-		return utf8_substr($path,0,-3) . 'gif';
+	if (IE > 0 && IE < 7 && substr($path, -4) === '.png' && vfs('real_fileExists', array(substr($path, 0, -3) . 'gif')) === true) { // utf8
+		return /* utf8 */ substr($path, 0, -3) . 'gif';
 	} elseif (vfs('real_fileExists',array($path))) {
 		return $path;
 	} else {
@@ -342,7 +338,7 @@ function eyex_returnWrongPath($path,$extend) {
 	} elseif ($extend == 2) {
 		return EYE_ROOT . '/' . EXTERN_DIR . '/' . THEMES_DIR . '/default/' . $path;
 	} elseif ($extend === 1) {
-		return 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=' . $path;
+		return 'index.php?extern=' . $path;
 	} else {
 		return $path;
 	}
@@ -367,14 +363,13 @@ function service_eyex_getRealFromExtern($params) {
 
 	$return = EYE_ROOT . '/' . EXTERN_DIR . '/';
 
-	if (utf8_strpos($path,'theme=1')) {
+	if ( /* utf8 */ stripos($path,'theme=') !== false) {
 		$return .= THEMES_DIR . '/default/'; // We use the default theme to get no problem with getThemeImage!
 	}
 
-	$path = utf8_stristr($path,'extern=');
-	$path = utf8_substr($path,utf8_strlen('extern='));
-	if (utf8_strpos($path,'&')) {
-		$path = utf8_substr($path,0,- utf8_strlen(utf8_stristr($path,'&')));
+	$path = substr($path, stripos($path, 'extern=') + 7); // utf8
+	if ( /* utf8 */ strpos($path, '&') !== false) {
+		$path = substr($path, 0, strpos($path, '&')); // utf8
 	}
 
 	return $return . $path;
@@ -508,7 +503,7 @@ function service_eyex_createWidget($params) {
 	$horiz = $params['horiz'];
 	$vert = $params['vert'];
 	$isLayer = eyex('isLayer',array('name'=>$father));
-	if(!$isLayer && !isset($params['removepid'])) {
+	if(!$isLayer && (isset($params['removepid']) === false || $params['removepid'] != 1)) {
 		$father = $procInfo['pid'].'_'.$father;
 	}
 	if(!isset($params['center'])) {
@@ -587,7 +582,7 @@ function service_eyex_removeWidget($params) {
 *	on 'message'.  Each token in the 'content' parameter is
 *	represented by the '%s' string.
 * @param $type The presentation type of the message. A value of 1 uses a
-*	custom eyeOS style to display the message, a value of 2 uses
+*	custom oneye style to display the message, a value of 2 uses
 *	a JavaScript alert window, while a value of 3 uses a Window
 *	to display a dialog box. The dialog options can be
 *	configured with the following parameters. Its default value
@@ -643,7 +638,7 @@ function service_eyex_messageBox($params = '') {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	if ($params['type'] == 3) {
+	if (isset($params['type']) === true && $params['type'] == 3) {
 		if (!isset($params['title']) || !isset($params['win_name'])) {
 			errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 			return false;
@@ -695,13 +690,13 @@ function service_eyex_messageBox($params = '') {
 
 		if (isset($params['img'])) {
 			if ($params['img'] == 'i') {
-				$params['img'] = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/i.png';
+				$params['img'] = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/i.png';
 			} elseif($params['img'] == 'x') {
-				$params['img'] = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/x.png';
+				$params['img'] = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/x.png';
 			} elseif($params['img'] == '!') {
-				$params['img'] = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/e.png';
+				$params['img'] = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/e.png';
 			} elseif($params['img'] == '?') {
-				$params['img'] = 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/q.png';
+				$params['img'] = 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/q.png';
 			}
 			$myImagebox = new ImageBox(array(
 				'father' => $params['win_name'] . '_Content',
@@ -810,6 +805,7 @@ function service_eyex_messageBox($params = '') {
 		}
 		if (is_array($params['buttons'])) {
 			$buttons = '';
+			$params['buttons'] = array_reverse($params['buttons']);
 			foreach ($params['buttons'] as $button) {
 				if (isset($button[0]) && isset($button[1])) {
 					if (!isset($button[2])) {
@@ -828,10 +824,10 @@ function service_eyex_messageBox($params = '') {
 						$myButton->addFriend($myHidden);
 					}
 					$myButton->show();
-					$buttons .= '"' . $button[0] . '",';
+					$buttons .= ',"' . $button[0] . '"';
 				}
 			}
-			eyex('rawjs',array('js' => 'var buttons = new Array(' . utf8_substr($buttons,0,-1) . ');
+			eyex('rawjs',array('js' => 'var buttons = new Array(' . /* utf8 */ substr($buttons, 1) . ');
 			var right = 20;
 			for (var b = 0; b < buttons.length; b++) {
 				var e = xGetElementById("' . $myPid . '_" + buttons[b] + "_Container");
@@ -841,7 +837,7 @@ function service_eyex_messageBox($params = '') {
 		}
 		return $myWidget;
 	} else {
-		if ($params['type'] != 2) {
+		if (isset($params['type']) === false || $params['type'] != 2) {
 			if (!isset($params['sound'])) {
 				$params['sound'] = 'message';
 			}
@@ -851,7 +847,7 @@ function service_eyex_messageBox($params = '') {
 			$params['type'] = 1;
 		}
 		$action['action'][0]['task'][0] = 'messageBox';
-		$action['action'][0]['content'][0] = htmlspecialchars(i18n('translate',array($params['content'],$params['tokens'])),ENT_QUOTES,'UTF-8');
+		$action['action'][0]['content'][0] = utf8_htmlspecialchars(i18n('translate', array($params['content'], $params['tokens'])), ENT_QUOTES);
 		$action['action'][0]['type'][0] = $params['type'];
 		mmap('addToBuffer',array(eyeXML('array2xml',array($action))));
 	}
@@ -1087,13 +1083,9 @@ function service_eyex_rawjs($params) { //useful for widgets
 		return false;
 	}
 
-	$js = $params['js'];
-	$js = str_replace("\n","",$js);
-	$js = str_replace("\r","",$js);
-
 	$atribs = array(
 		'task' => array('rawjs'),
-		'js' => array($js)
+		'js' => array($params['js'])
 	);
 
 	$task = array(
@@ -1129,11 +1121,9 @@ function service_eyex_runjs($params) { //util for widgets
 		$tokens = null;
 	}
 	$js = $params['js'];
-	$js = str_replace("\n","",$js);
-	$js = str_replace("\r","",$js);
 
 	if(isset($tokens) && is_array($tokens)) {
-		$pieces = explode("%s",$js);
+		$pieces = /* utf8 */ explode("%s",$js);
 		$js = '';
 		$i = 0;
 		foreach($pieces as $value) {
@@ -1309,10 +1299,7 @@ function service_eyex_updateCss($params)
 	$name = $params['name'];
 	$value = $params['value'];
 
-	$prop = $params['property'];
-	while(strstr($prop,'-')) {
-		$prop = camelCase($prop);
-	}
+	$prop = camelCase($params['property']);
 
 	$atribs = array(
 		'task' => array('updateCss'),
@@ -1727,14 +1714,19 @@ function service_eyex_print($params='') {
 }
 
 function service_eyex_systemSound($params = '') {
+	if ($_SESSION['SCREEN']['oggVorbisSupported']) {
+		$extension = 'ogg';
+	} else {
+		$extension = 'mp3';
+	}
 	$list = array(
-		'error' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/error.mp3',
-		'info' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/info.mp3',
-		'login' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/login.mp3',
-		'logout' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/logout.mp3',
-		'message' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/message.mp3',
-		'question' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/question.mp3',
-		'warning' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=sounds/warning.mp3',
+		'error' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=sounds/error.' . $extension,
+		'info' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=sounds/info.' . $extension,
+		'login' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=sounds/login.' . $extension,
+		'logout' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=sounds/logout.' . $extension,
+		'message' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=sounds/message.' . $extension,
+		'question' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=sounds/question.' . $extension,
+		'warning' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=sounds/warning.' . $extension
 	);
 	if (!is_array($params) || !isset($params[0]) || !isset($list[$params[0]])) {
 		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
@@ -1754,6 +1746,7 @@ function service_eyex_jscolor($params = '') {
 		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
 		return false;
 	}
+	$url = eyex('getThemeImage', array(THEME_CONF_DIR . '/jscolor.xml', 2));
 	
 	global $currentUser;
 	$oldUser = $currentUser;
@@ -1763,7 +1756,7 @@ function service_eyex_jscolor($params = '') {
 	
 	$prop = 'adjust: false, caps: false, hash: true, required: false';
 	foreach ($xml['jscolor'][0] as $key => $value) {
-		$prop .= ', ' . $key . ': ' . $value[0];
+		$prop .= ', ' . $key . ': ' . str_replace('theme=USERTHEME', 'theme=' . $_SESSION['usertheme'], $value[0]);
 	}
 	
 	if (isset($params[1]) && is_array($params[0])) {
@@ -1783,11 +1776,11 @@ function service_eyex_jscolor($params = '') {
 * @date 2007-02-19
 */
 function camelCase($prop) {
-	$find = strstr($prop,'-');
-	$ant = utf8_substr($prop,0,utf8_strlen($prop)-utf8_strlen($find));
-	$find = utf8_substr($find,1,utf8_strlen($find));
-	$find{0} = utf8_strtoupper($find{0});
-	return $ant.$find;
+	$return = implode('', array_map('ucfirst', explode('-', $prop))); // utf8
+	if ( /* utf8 */ substr($prop, 0, 1) === '-') {
+		return $return;
+	}
+	return utf8_lcfirst($return);
 }
 
 ?>

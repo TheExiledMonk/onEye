@@ -2,7 +2,7 @@
  * CodePress regular expressions for SQL syntax highlighting
  * By Merlin Moncure
  */
- 
+
 // SQL
 Language.syntax = [
 	{ input : /\'(.*?)(\')/g, output : '<s>\'$1$2</s>' }, // strings single quote
@@ -25,6 +25,3 @@ Language.complete = [
 ]
 
 Language.shortcuts = []
-
-
-

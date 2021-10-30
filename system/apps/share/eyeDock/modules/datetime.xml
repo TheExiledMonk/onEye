@@ -2,6 +2,6 @@
 	<format>%d/%m &amp;nbsp; %H:%i</format>
 	<hideImage>1</hideImage>
 	<hideText>0</hideText>
-	<image>index.php?version=1&amp;theme=1&amp;extern=icons/22x22/exec.png</image>
+	<image>index.php?theme=USERTHEME&amp;extern=icons/22x22/exec.png</image>
 	<type>datetime</type>
 </module>

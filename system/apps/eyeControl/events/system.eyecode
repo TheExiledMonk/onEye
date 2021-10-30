@@ -1,45 +1,42 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeControl_on_system_system($params = '') {
 // Get the correct quota in bytes
-	$quota = $GLOBALS['eyeControl_system_system_textbox_quota']->text;
-	if (!$GLOBALS['eyeControl_system_system_checkbox_quota']->checked || !is_numeric($quota)) {
-		$quota = 0;
-	} else {
-		round($quota);
-		$q_type = $GLOBALS['eyeControl_system_system_select_quota']->selected;
-		switch ($q_type) {
-		case 'GB':
-			$quota = $quota * 1024 * 1024 * 1024;
-			break;
-		case 'MB':
-			$quota = $quota * 1024 * 1024;
-			break;
-		case 'KB':
-			$quota = $quota * 1024;
-			break;
+	$quota_type = $GLOBALS['eyeControl_system_select_quota_type']->selected;
+	if ($quota_type == 'custom') {
+		$quota = $GLOBALS['eyeControl_system_textbox_quota_value']->text;
+		if ($quota <= 0 || !is_numeric($quota)) {
+			$quota = 0;
+		} else {
+			$quota_unit = $GLOBALS['eyeControl_system_select_quota_unit']->selected;
+			switch ($quota_unit) {
+			case 'GB':
+				$quota = $quota * 1024 * 1024 * 1024;
+				break;
+			case 'MB':
+				$quota = $quota * 1024 * 1024;
+				break;
+			case 'KB':
+				$quota = $quota * 1024;
+				break;
+			}
 		}
+	} else {
+		$quota = 0;
 	}
 
 	$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
@@ -66,35 +63,15 @@ function eyeControl_on_system_permissions($params = '') {
 	eyex('messageBox',array('content' => 'Changes successfully saved.'));
 }
 
-function eyeControl_on_system_cache_label($params = ''){
-	proc('launch',array('eyeHelp','eyeControl'));
-}
-
-function eyeControl_on_system_cache_save($params = ''){
-	$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
-	$xml = eyeXML('getXMLfile',array($file));
-	$xml['CONFIG'][0]['EXTERN_CACHE'][0] = $GLOBALS['eyeControl_system_cache_checkbox_cache']->checked;
-	$xml['CONFIG'][0]['CACHE_VERSION'][0] = $GLOBALS['eyeControl_system_cache_textbox_version']->text;
-	if ($GLOBALS['eyeControl_system_cache_radio_manual']->checked) {
-		$xml['CONFIG'][0]['EXTERN_CACHE_AUTO'][0] = 0;
-	} elseif ($GLOBALS['eyeControl_system_cache_radio_automatic']->checked) {
-		$xml['CONFIG'][0]['EXTERN_CACHE_AUTO'][0] = 1;
-	} else {
-		$xml['CONFIG'][0]['EXTERN_CACHE_AUTO'][0] = 2;
-	}
-	eyeXML('setXMLFile',array($file,$xml));
-	eyex('messageBox',array('content' => 'Changes successfully saved.'));
-}
-
 function eyeControl_on_system_office($params = '') {
-	if (utf8_strpos(realpath(EYE_ROOT . '/'),'\\')) {
-		$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
-		$xml = eyeXML('getXMLfile',array($file));
-		$xml['CONFIG'][0]['OFFICE_COMMAND'][0] = $GLOBALS['eyeControl_system_office_textbox_folder']->text;
-		$xml['CONFIG'][0]['OFFICE_SEPARATOR_ARG'][0] = '"';
-		eyeXML('setXMLFile',array($file,$xml));
-		eyex('messageBox',array('content' => 'Changes successfully saved.'));
-	}
+	$file = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
+	$xml = eyeXML('getXMLfile', array($file));
+	$xml['CONFIG'][0]['OFFICE_PYTHON_PATH'][0] = $GLOBALS['eyeControl_system_office_textbox_folder']->text;
+	eyeXML('setXMLFile', array($file, $xml));
+	eyex('messageBox',array('content' => 'Changes successfully saved.'));
+	
+	// Refresh
+	eyeControl_lib_loadContent('only_root', 'system', array('Office Support'));
 }
 
 function eyeControl_on_system_office_howtowindows($params = '') {
@@ -109,37 +86,39 @@ function eyeControl_on_system_uninstall($params = '') {
 	global $currentUser;
 	$password = base64_decode($GLOBALS['eyeControl_system_uninstall_textbox_password']->text);
 	$userInfo = um('retrieveUser',array($currentUser));
-	if ($currentUser == REAL_ROOTUSER && md5($password . md5($password)) == $userInfo['eyeUser'][0]['password'][0]) {
+	if ($currentUser == REAL_ROOTUSER && hash_equals($userInfo['eyeUser'][0]['password'][0], md5($password . md5($password)))) {
 		eyex('messageBox',array(
 			'buttons' => array(array('system_uninstall_yes','Yes'),array('system_uninstall_no','No')),
-			'content' => 'Do you really want to delete the eyeOS system? This removes all data from eyeOS\' directory!',
+			'content' => 'Do you really want to delete the oneye system? This removes all data from the oneye directory!',
 			'father' => 'eyeControl_container_big',
-			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
-			'title' => 'Uninstall eyeOS',
+			'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/editClean.png',
+			'title' => 'Uninstall oneye',
 			'type' => 3,
 			'win_name' => 'eyeControl_system_uninstall_window',
 			'win_removepid' => 0,
 			'win_style' => TITLE + CLOSE
 		));
 	} else {
-		eyex('messageBox',array('content' => 'Please type the correct root password to uninstall eyeOS!'));
+		eyex('messageBox',array('content' => 'Please type the correct root password to uninstall oneye!'));
 	}
 }
 
 function eyeControl_on_system_uninstall_yes($params = '') {
 	global $currentUser;
-	if ($currentUser == REAL_ROOTUSER) {
+	if ($currentUser === REAL_ROOTUSER) {
 		eyeWidgets('unserialize');
-		eyex('messageBox',array('content' => 'Your eyeOS system was successfully deleted.'));
-		eyex('rawjs',array('js' => 'window.setTimeout("home()",2000);'));
-		vfs('real_rmdir',array(EYE_ROOT . '/'));
-		vfs('real_delete',array(EYE_ROOT . '/../browser/'));
-		vfs('real_delete',array(EYE_ROOT . '/../iphone/'));
-		vfs('real_delete',array(EYE_ROOT . '/../mobile/'));
-		vfs('real_delete',array(EYE_ROOT . '/../index.php'));
-		vfs('real_delete',array(EYE_ROOT . '/../license.txt'));
-		vfs('real_delete',array(EYE_ROOT . '/../README.txt'));
-		vfs('real_delete',array(EYE_ROOT . '/../settings.php'));
+		eyex('messageBox', array('content' => 'Your oneye system was successfully deleted.'));
+		eyex('rawjs', array('js' => 'window.onbeforeunload = ""; setTimeout(window.home, 2000);'));
+		vfs('real_delete', array(EYE_ROOT . '/../.htaccess'));
+		vfs('real_delete', array(EYE_ROOT . '/../browser'));
+		vfs('real_delete', array(EYE_ROOT . '/../index.php'));
+		vfs('real_delete', array(EYE_ROOT . '/../iphone'));
+		vfs('real_delete', array(EYE_ROOT . '/../license.txt'));
+		vfs('real_delete', array(EYE_ROOT . '/../mobile'));
+		vfs('real_delete', array(EYE_ROOT . '/../php-ini'));
+		vfs('real_delete', array(EYE_ROOT . '/../README.txt'));
+		vfs('real_delete', array(EYE_ROOT . '/../settings.php'));
+		vfs('real_rmdir', array(EYE_ROOT . '/'));
 	}
 }
 

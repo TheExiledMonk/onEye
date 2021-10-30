@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeControl_on_acl_add($params=''){
@@ -75,8 +68,7 @@ function eyeControl_on_acl_delete($params=''){
 function eyeControl_on_yDelete0($params=''){
 	$id0 = $GLOBALS['eyeControl_acl_sortabletable']->selected;
 
-	//$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
-	$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
+	$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/ACL/'. 'acl.xml';
 	$config = eyeXML('getXMLfile', array($file));
 	$i=0;
 	if($config){
@@ -88,7 +80,6 @@ function eyeControl_on_yDelete0($params=''){
 			$i++;
 		}
 	}
-	//eyeXML('setXMLconfig',array('eyeACL','acl.xml',$config));
 	eyeXML('setXMLfile', array($file,$config));
 	$GLOBALS['eyeControl_acl_sortabletable']->delRow($id0);
 	$GLOBALS['delete_warning0']->close();

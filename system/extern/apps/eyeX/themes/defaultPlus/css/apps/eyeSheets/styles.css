@@ -8,7 +8,7 @@ body {
 }
 
 body,table,div {
-	font-family: Verdana,Arial,sans-serif,FreeSans; /* eyeOS */
+	font-family: Verdana,Arial,sans-serif,FreeSans; /* oneye */
 	font-size:13px;
 	font-weight:normal;
 }
@@ -31,10 +31,10 @@ input {
 
 #content {
 	position:absolute;
-	top: 88px; /* eyeOS */
+	top: 88px; /* oneye */
 	left:0px;
 	right:0px;
-	bottom: 22px; /* eyeOS */
+	bottom: 22px; /* oneye */
 	width:100%;
 	overflow:auto;
 }
@@ -59,16 +59,16 @@ input {
 	border-top:1px solid #666666;
 }
 
-table {min-width: 100%;} /*eyeOS*/
+table {min-width: 100%;} /* oneye */
 
 th {
 	color:#666666;
 	/*background-color:#EFEFEF;*/
 	/***************************
-	*	eyeOS edit
+	*	oneye edit
 	****************************/
 	background-color: #eeeeee;
-	background-image:url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png');
+	background-image:url('index.php?theme=USERTHEME&extern=images/windows/bg_top.png');
 	background-repeat:repeat-x;
 	background-position: bottom;
 	border-color: #cccccc; border-style: solid; border-width: 0 1px 1px 0;
@@ -103,13 +103,13 @@ td {
 }
 
 .header {
-	background-color: #eeeeee; /* eyeOS */
+	background-color: #eeeeee; /* oneye */
 	width:/*100%*/99%;
 	z-index:2;
-	margin-top: 1px; /* eyeOS */
-	height: 19px; /* eyeOS */
+	margin-top: 1px; /* oneye */
+	height: 19px; /* oneye */
 	color:#333333;
-	padding: 5px; /*eyeos*/
+	padding: 5px; /* oneye */
 }
 
 .header a,.header,.footer a,.footer {
@@ -117,7 +117,7 @@ td {
 }
 
 
-#header #field, #header #value { /* eyeOS */
+#header #field, #header #value { /* oneye */
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -132,16 +132,16 @@ td {
 }
 
 
-#header td #save, #header td #cancel {/* eyeOS */
+#header td #save, #header td #cancel {/* oneye */
 	margin-top:-1px;
 }
 
-#header #save { /* eyeOS */
+#header #save { /* oneye */
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	background-color: #ffffff;
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/buttonbg.png);
+	background-image: url(index.php?theme=USERTHEME&extern=images/widgets/buttonbg.png);
 	background-repeat: repeat-x;
 	background-position: center;
 	border-color:#AEAEAE #7F7F7F #7F7F7F #AEAEAE;
@@ -152,27 +152,28 @@ td {
 	text-shadow:1px 1px 1px #ffffff;
 }
 
-#header #save:focus { /* eyeOS */
-	background-image: url(index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/buttonbg_press.png);
+#header #save:focus { /* oneye */
+	background-image: url(index.php?theme=USERTHEME&extern=images/widgets/buttonbg_press.png);
 }
 
-#header #save:hover { /* eyeOS */
+#header #save:hover { /* oneye */
 	border-color:#A1C6F3 #6A9BD8 #6A9BD8 #A1C6F3;
 }
 
-#header #cancel{ /* eyeOS */
+#header #cancel{ /* oneye */
 	background-color:#eeeeee;
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/toolbar/button_cancel.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/toolbar/button_cancel.png');
 	border-width: 0px;
 	color: transparent;
+	width: 20px;
 }
 
 .footer {
-	padding-top: 4px; /* eyeOS */
+	padding: 4px 0; /* oneye */
 	position:absolute;
 	border-top:1px solid #666666;
-	background-color: #ffffff; /* eyeOS */
-	background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x bottom ; /* eyeOS */
+	background-color: #ffffff; /* oneye */
+	background: #ffffff url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x bottom ; /* oneye */
 	width:100%;
 	z-index:2;
 	height:/*18*/17px;
@@ -183,15 +184,15 @@ td {
 	position:absolute;
 /*	border-top:1px solid #666666;
 	border-left:1px solid #666666;*/
-/*eyeOS*/
-	background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x bottom ; /* eyeOS */
+/*oneye*/
+	background: #ffffff url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x bottom ; /* oneye */
 	border-width: 0;
 	padding-left: 2px;
 /* end */
 	z-index:2;
 	height:18px;
-	bottom:0px;
-	right:3px;
+	bottom: 4px; /* oneye */
+	right: 18px; /* oneye */
 	padding-left:5px;
 }
 
@@ -227,19 +228,20 @@ td {
 	top:-30px;
 }
 
-/* eyeOS */
+/* oneye */
 
 .blockbar {
-	background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x bottom ;
-	border-bottom:2px ridge #ffffff;
+	background-color: #eeeeee;
+	border-bottom: 2px ridge #ffffff;
 	border-left: 1px solid #cccccc;
 	border-right: 1px solid #cccccc;
-	height:55px;
-	margin-right: -1px;
-	overflow:hidden;
+	height: 55px;
+	overflow: hidden;
 }
 
-.blockbarItem, .blockbarItem_right{
+.blockbarImg {}
+
+.blockbarItem,.blockbarItem_right, .blockbarItemPress, .blockbarItemPress_right {
 	border: 2px solid transparent;
 	cursor: pointer;
 	margin-top: 3px;
@@ -248,24 +250,33 @@ td {
 	width: auto;
 }
 
-.blockbarItem:hover, .blockbarItem_right:hover{
-	border: 2px solid #333333;
-}
-
-.blockbarItem {
+.blockbarItem, .blockbarItem:hover, .blockbarItemPress {
 	float: left;
 	margin-left: 5px;
 	width: auto;
 }
 
-.blockbarItem_right {
+.blockbarItem_right, .blockbarItem_right:hover, .blockbarItemPress_right {
 	float: right;
 	margin-right: 5px;
 	width: auto;
 }
 
-.blockbarline {
-	background:transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/top_menu_line.png') no-repeat center;
+.blockbarItem:hover, .blockbarItem_right:hover, .blockbarItemPress, .blockbarItemPress_right {
+	border-style: ridge groove groove ridge;
+	border-width: 2px;
+}
+
+.blockbarItem:hover, .blockbarItem_right:hover {
+	border-color: #80b5ff;
+}
+
+.blockbarItemPress, .blockbarItemPress_right {
+	border-color: #cccccc;
+}
+
+.blockbarline, .blockbarline_right {
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/top_menu_line.png') no-repeat center;
 	float: left;
 	height: 40px;
 	margin-left: 4px;
@@ -273,38 +284,29 @@ td {
 	width: 3px;
 }
 
-/**
-* @TODO make hover work! 
-*/
-
-/*.blockbarImg:hover{
-	padding:26px;
-	margin:-26px;
-}*/
-
-/*.blockbarImg:hover {
-	border-style: ridge groove groove ridge;
-	border-width: 2px;
-}
-
-.blockbarImg:hover{
-	border-color:#80b5ff;
-}*/
-
 .blockbarText {
 	color: #333333;
-	text-shadow:2px 2px 2px #ffffff;
+	text-shadow: 2px 2px 2px #ffffff;
 	font-size: 9px;
 	margin-top: 5px;
 }
 
+.blockbarItem:hover, .blockbarItem_right:hover, .blockbarItemPress, .blockbarItemPress_right {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.blockbar {
+	background: #ffffff url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x bottom ;
+}
+
 .statusText {
 	background-color: #ffffff;
-	bottom: 0;
 	height: 18px;
 	padding-left: 5px;
 	position: absolute;
-	right: 40px;
+	right: 60px;
 	text-align: right;
 	z-index: 2;
 }

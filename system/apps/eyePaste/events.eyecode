@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyePaste_on_Close($params = '') {
@@ -35,16 +28,16 @@ function eyePaste_libs_Dialog($from,$file,$to,$callback) {
 	}
 	$count = 0;
 	$rename = $file;
-	$extension = strrchr($rename,'.');
+	$extension = /* utf8 */ strrchr($rename, '.');
 	if ($to[1] == 'real') {
 		$fileexists = 'real_fileExists';
 	} else {
 		$fileexists = 'fileExists';
 	}
 	while (vfs($fileexists,array($to2[0] . '/' . $rename))) {
-		$temp = utf8_substr($rename,0,utf8_strlen($rename) - utf8_strlen($extension));
+		$temp = substr($rename, 0, -strlen($extension)); // utf8
 		if ($count) {
-			$temp = utf8_substr($rename,0,utf8_strlen($temp) - utf8_strlen(strrchr($temp,'_')));
+			$temp = substr($temp, 0, -strlen(strrchr($temp, '_'))); // utf8
 		}
 		$count++;
 		$rename = $temp . '_' . $count . $extension;
@@ -56,7 +49,7 @@ function eyePaste_libs_Dialog($from,$file,$to,$callback) {
 		'buttons' => $buttons,
 		'content' => '"%s" already exists. Please enter a new name or replace the existing one.',
 		'hiddens' => array(array('eyePaste_Hidden_FromPath',$from),array('eyePaste_Hidden_FromFilename',$file),array('eyePaste_Hidden_ToPath',$to),array('eyePaste_Hidden_Callback',$callback)),
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/rename.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/rename.png',
 		'savePosition' => 1,
 		'textbox_event' => 'Rename',
 		'textbox_name' => 'eyePaste_Textbox',
@@ -70,22 +63,22 @@ function eyePaste_libs_Dialog($from,$file,$to,$callback) {
 }
 
 function eyePaste_libs_Do($from,$file,$to,$file2,$callback,$replace = 0) {
-	$file = utf8_basename($file);
-	$file2 = utf8_basename($file2);
+	$file = basename($file);
+	$file2 = basename($file2);
 	$from = eyeFiles('cleanPath',array($from));
 	$to = eyeFiles('cleanPath',array($to));
 	if ($from[1] == 'trash') {
 		eyex('messageBox',array('content' => '"%s" cannot be copied from trash.','tokens' => array($file)));
 	} elseif ($to[1] == 'trash') {
 		eyex('messageBox',array('content' => '"%s" cannot be copied to trash.','tokens' => array($file)));
-	} elseif ($from[1] != 'real' && utf8_strtolower(strrchr($file,'.')) == '.' . utf8_strtolower(EYEOS_LINK_EXT) && vfs('real_fileExists',array($from[0] . '/' . $file))) {
+	} elseif ($from[1] !== 'real' && strtolower(strrchr($file, '.')) === '.' . strtolower(EYEOS_LINK_EXT) && vfs('real_fileExists', array($from[0] . '/' . $file)) === true) { // utf8
 		eyex('messageBox',array('content' => 'Links cannot be pasted!'));
 	} else {
 		if ($from[1] . '://' . $from[2] . '/' . $file == $to[1] . '://' . $to[2] . '/' . $file2) {
 			return eyePaste_libs_Dialog($from[1] . '://' . $from[2],$file,$to[1] . '://' . $to[2],$callback);
 		} elseif ($replace) {
 			proc('launch',array('eyeDelete',array($to[1] . '://' . $to[2] . '/' . $file2)));
-			if ($from[1] == 'home' && utf8_strtolower(utf8_basename($from[2])) == 'desktop') {
+			if ($from[1] === 'home' && /* utf8 */ strtolower(basename($from[2])) === 'desktop') {
 				$xml = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
 				if (is_array($xml['icon'])) {
 					foreach ($xml['icon'] as $key => $value) {
@@ -96,7 +89,7 @@ function eyePaste_libs_Do($from,$file,$to,$file2,$callback,$replace = 0) {
 					eyeXML('setXMLconfig',array('eyeDesk','icons.xml',$xml));
 				}
 			}
-		} 
+		}
 		if ($from[1] == 'real') {
 			if (vfs('isdir',array($from[0] . '/' . $file))) {
 				if (!vfs('real_copyDir',array($from[0] . '/' . $file,$to[0] . '/' . $file2))) {

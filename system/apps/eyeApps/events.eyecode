@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeApps_on_Action($params = '') {
@@ -90,7 +83,7 @@ function eyeApps_lib_GetAllApps() {
 	foreach (scandir(EYE_ROOT . '/' . APP_DIR . '/') as $app) {
 		$xml = getAppInfo($app);
 		if ($xml['package'][0]['type'][0] == 'Application' || $xml['package'][0]['type'][0] == 'Widget') {
-			$array[] = array($app, $xml['package'][0]['icon'][0], $xml['package'][0]['name'][0]);
+			$array[] = array($app, str_replace('theme=USERTHEME', 'theme=' . $_SESSION['usertheme'], $xml['package'][0]['icon'][0]), $xml['package'][0]['name'][0]);
 		}
 	}
 	return $array;
@@ -101,7 +94,7 @@ function eyeApps_lib_GetApps() {
 	foreach (scandir(EYE_ROOT . '/' . APP_DIR . '/') as $app) {
 		$xml = getAppInfo($app);
 		if ($xml['package'][0]['type'][0] == 'Application' || $xml['package'][0]['type'][0] == 'Widget') {
-			$array[$xml['package'][0]['category'][0]][] = array($app, $xml['package'][0]['icon'][0], $xml['package'][0]['name'][0]);
+			$array[$xml['package'][0]['category'][0]][] = array($app, str_replace('theme=USERTHEME', 'theme=' . $_SESSION['usertheme'], $xml['package'][0]['icon'][0]), $xml['package'][0]['name'][0]);
 		}
 	}
 	return $array;
@@ -121,11 +114,13 @@ function eyeApps_lib_GetCategories() {
 
 function eyeApps_lib_GetCategoryIcon($category) {
 	$icons = array(
-		'File Management' => 'fileopen',
+		'All Applications' => 'rating_g',
+		'File Management' => 'homeFolder',
 		'Games' => 'eyeChess',
 		'Multimedia' => 'eyeMedia',
 		'Networking' => 'eyeNav',
-		'Office' => 'mail-attach',
+		'Office' => 'eyeDocs',
+		'Utilities' => 'mail-attach',
 		'Widgets' => 'desktop_widgets'
 	);
 	if (isset($icons[$category])) {
@@ -176,6 +171,7 @@ function eyeApps_lib_ShowApps($category) {
 	$y = 20;
 	foreach ($apps as $app) {
 		if ($app[0] != 'eyeApps') {
+			$title = i18n('translate', array($app[2]));
 			$myIcon = new Icon(array(
 				'content' => array($app[0]),
 				'draggable' => 0,
@@ -184,7 +180,7 @@ function eyeApps_lib_ShowApps($category) {
 				'name' => 'eyeApps_Icon_' . $i,
 				'onclick' => $conf['eyeFiles'][0]['clickMethod'][0],
 				'overClass' => 'eyeFiles_icons',
-				'text' => $app[2],
+				'text' => $title,
 				'useClass' => 1,
 				'x' => $x,
 				'y' => $y
@@ -198,7 +194,7 @@ function eyeApps_lib_ShowApps($category) {
 			}
 			$i++;
 			$myWidgetDrag = new widgetDrag(array(
-				'content' => array('app',$app[0]),
+				'content' => array('app', $app[0], $title),
 				'dragAlpha' => 75,
 				'dragCss' => array(array('border'),array('1px #000000 dotted')),
 				'father' => $myIcon->name . '_Container',

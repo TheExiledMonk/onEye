@@ -1,24 +1,17 @@
-<?php
+<?php // utf8
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function lib_eyeCompress_extractFile($params=null){
@@ -1386,7 +1379,7 @@ function lib_eyeCompress_extractFile($params=null){
       }
 
       // ----- Check the path length
-      if (utf8_strlen($p_filename) > 99)
+      if (strlen($p_filename) > 99)
       {
         // ----- Error log
         PclTarErrorLog(-5, "File name is too long (max. 99) : '$p_filename'");
@@ -1508,26 +1501,26 @@ function lib_eyeCompress_extractFile($params=null){
     $v_stored_filename = $p_filename;
     if ($p_remove_dir != "")
     {
-      if (utf8_substr($p_remove_dir, -1) != '/')
+      if (substr($p_remove_dir, -1) != '/')
         $p_remove_dir .= "/";
 
-      if ((utf8_substr($p_filename, 0, 2) == "./") || (utf8_substr($p_remove_dir, 0, 2) == "./"))
+      if ((substr($p_filename, 0, 2) == "./") || (substr($p_remove_dir, 0, 2) == "./"))
       {
-        if ((utf8_substr($p_filename, 0, 2) == "./") && (utf8_substr($p_remove_dir, 0, 2) != "./"))
+        if ((substr($p_filename, 0, 2) == "./") && (substr($p_remove_dir, 0, 2) != "./"))
           $p_remove_dir = "./".$p_remove_dir;
-        if ((utf8_substr($p_filename, 0, 2) != "./") && (utf8_substr($p_remove_dir, 0, 2) == "./"))
-          $p_remove_dir = utf8_substr($p_remove_dir, 2);
+        if ((substr($p_filename, 0, 2) != "./") && (substr($p_remove_dir, 0, 2) == "./"))
+          $p_remove_dir = substr($p_remove_dir, 2);
       }
 
-      if (utf8_substr($p_filename, 0, utf8_strlen($p_remove_dir)) == $p_remove_dir)
+      if (substr($p_filename, 0, strlen($p_remove_dir)) == $p_remove_dir)
       {
-        $v_stored_filename = utf8_substr($p_filename, utf8_strlen($p_remove_dir));
+        $v_stored_filename = substr($p_filename, strlen($p_remove_dir));
         // TrFctMessage(__FILE__, __LINE__, 3, "Remove path '$p_remove_dir' in file '$p_filename' = '$v_stored_filename'");
       }
     }
     if ($p_add_dir != "")
     {
-      if (utf8_substr($p_add_dir, -1) == "/")
+      if (substr($p_add_dir, -1) == "/")
         $v_stored_filename = $p_add_dir.$v_stored_filename;
       else
         $v_stored_filename = $p_add_dir."/".$v_stored_filename;
@@ -1535,7 +1528,7 @@ function lib_eyeCompress_extractFile($params=null){
     }
 
     // ----- Check the path length
-    if (utf8_strlen($v_stored_filename) > 99)
+    if (strlen($v_stored_filename) > 99)
     {
       // ----- Error log
       PclTarErrorLog(-5, "Stored file name is too long (max. 99) : '$v_stored_filename'");
@@ -1647,7 +1640,7 @@ function lib_eyeCompress_extractFile($params=null){
     if ($p_stored_filename == "")
       $p_stored_filename = $p_filename;
     $v_reduce_filename = PclTarHandlePathReduction($p_stored_filename);
-    // TrFctMessage(__FILE__, __LINE__, 2, "Filename (reduced) '$v_reduce_filename', strlen ".utf8_strlen($v_reduce_filename));
+    // TrFctMessage(__FILE__, __LINE__, 2, "Filename (reduced) '$v_reduce_filename', strlen ".strlen($v_reduce_filename));
 
     // ----- Get file info
     $v_info = stat($p_filename);
@@ -1717,17 +1710,17 @@ function lib_eyeCompress_extractFile($params=null){
     // ..... First part of the header
     for ($i=0; $i<148; $i++)
     {
-      $v_checksum += utf8_ord(utf8_substr($v_binary_data_first,$i,1));
+      $v_checksum += ord(substr($v_binary_data_first,$i,1));
     }
     // ..... Ignore the checksum value and replace it by ' ' (space)
     for ($i=148; $i<156; $i++)
     {
-      $v_checksum += utf8_ord(' ');
+      $v_checksum += ord(' ');
     }
     // ..... Last part of the header
     for ($i=156, $j=0; $i<512; $i++, $j++)
     {
-      $v_checksum += utf8_ord(utf8_substr($v_binary_data_last,$j,1));
+      $v_checksum += ord(substr($v_binary_data_last,$j,1));
     }
     // TrFctMessage(__FILE__, __LINE__, 3, "Calculated checksum : $v_checksum");
 
@@ -1820,15 +1813,15 @@ function lib_eyeCompress_extractFile($params=null){
     $v_listing = FALSE;
 
     // ----- Check the path
-    if (($p_path == "") || ((utf8_substr($p_path, 0, 1) != "/") && (utf8_substr($p_path, 0, 3) != "../")))
+    if (($p_path == "") || ((substr($p_path, 0, 1) != "/") && (substr($p_path, 0, 3) != "../")))
       $p_path = "./".$p_path;
 
     // ----- Look for path to remove format (should end by /)
-    if (($p_remove_path != "") && (utf8_substr($p_remove_path, -1) != '/'))
+    if (($p_remove_path != "") && (substr($p_remove_path, -1) != '/'))
     {
       $p_remove_path .= '/';
     }
-    $p_remove_path_size = utf8_strlen($p_remove_path);
+    $p_remove_path_size = strlen($p_remove_path);
 
     // ----- Study the mode
     switch ($p_mode) {
@@ -1934,12 +1927,12 @@ function lib_eyeCompress_extractFile($params=null){
           // TrFctMessage(__FILE__, __LINE__, 2, "Compare archived file '".$v_header['filename']."' from asked list file '".$p_file_list[$i]."'");
 
           // ----- Look if it is a directory
-          if (utf8_substr($p_file_list[$i], -1) == "/")
+          if (substr($p_file_list[$i], -1) == "/")
           {
             // TrFctMessage(__FILE__, __LINE__, 3, "Compare file '".$v_header['filename']."' with directory '".$p_file_list[$i]."'");
 
             // ----- Look if the directory is in the filename path
-            if ((utf8_strlen($v_header['filename']) > utf8_strlen($p_file_list[$i])) && (utf8_substr($v_header['filename'], 0, utf8_strlen($p_file_list[$i])) == $p_file_list[$i]))
+            if ((strlen($v_header['filename']) > strlen($p_file_list[$i])) && (substr($v_header['filename'], 0, strlen($p_file_list[$i])) == $p_file_list[$i]))
             {
               // ----- The file is in the directory, so extract it
               // TrFctMessage(__FILE__, __LINE__, 2, "File '".$v_header['filename']."' is in directory '".$p_file_list[$i]."' : extract it");
@@ -1979,11 +1972,11 @@ function lib_eyeCompress_extractFile($params=null){
       {
         // ----- Look for path to remove
         if (($p_remove_path != "")
-            && (utf8_substr($v_header['filename'], 0, $p_remove_path_size) == $p_remove_path))
+            && (substr($v_header['filename'], 0, $p_remove_path_size) == $p_remove_path))
         {
           // TrFctMessage(__FILE__, __LINE__, 3, "Found path '".$p_remove_path."' to remove in file '".$v_header['filename']."'");
           // ----- Remove the path
-          $v_header['filename'] = utf8_substr($v_header['filename'], $p_remove_path_size);
+          $v_header['filename'] = substr($v_header['filename'], $p_remove_path_size);
           // TrFctMessage(__FILE__, __LINE__, 3, "Reslting file is '".$v_header['filename']."'");
         }
 
@@ -1991,15 +1984,15 @@ function lib_eyeCompress_extractFile($params=null){
         if (($p_path != "./") && ($p_path != "/"))
         {
           // ----- Look for the path end '/'
-          while (utf8_substr($p_path, -1) == "/")
+          while (substr($p_path, -1) == "/")
           {
             // TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = utf8_substr($p_path, 0, utf8_strlen($p_path)-1);
+            $p_path = substr($p_path, 0, strlen($p_path)-1);
             // TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
           // ----- Add the path
-          if (utf8_substr($v_header['filename'], 0, 1) == "/")
+          if (substr($v_header['filename'], 0, 1) == "/")
               $v_header['filename'] = $p_path.$v_header['filename'];
           else
             $v_header['filename'] = $p_path."/".$v_header['filename'];
@@ -2056,7 +2049,7 @@ function lib_eyeCompress_extractFile($params=null){
         {
           if ($v_header['typeflag']=="5")
             $v_dir_to_check = $v_header['filename'];
-          else if (!strstr($v_header['filename'], "/"))
+          else if (strpos($v_header['filename'], "/") === false)
             $v_dir_to_check = "";
           else
             $v_dir_to_check = dirname($v_header['filename']);
@@ -2189,7 +2182,7 @@ function lib_eyeCompress_extractFile($params=null){
         // ----- Log extracted files
         if (($v_file_dir = dirname($v_header['filename'])) == $v_header['filename'])
           $v_file_dir = "";
-        if ((utf8_substr($v_header['filename'], 0, 1) == "/") && ($v_file_dir == ""))
+        if ((substr($v_header['filename'], 0, 1) == "/") && ($v_file_dir == ""))
           $v_file_dir = "/";
 
         // ----- Add the array describing the file into the list
@@ -2234,15 +2227,15 @@ function lib_eyeCompress_extractFile($params=null){
     // ----- TBC : I should check the string by a regexp
 
     // ----- Check the path
-    if (($p_path == "") || ((utf8_substr($p_path, 0, 1) != "/") && (utf8_substr($p_path, 0, 3) != "../") && (utf8_substr($p_path, 0, 2) != "./")))
+    if (($p_path == "") || ((substr($p_path, 0, 1) != "/") && (substr($p_path, 0, 3) != "../") && (substr($p_path, 0, 2) != "./")))
       $p_path = "./".$p_path;
 
     // ----- Look for path to remove format (should end by /)
-    if (($p_remove_path != "") && (utf8_substr($p_remove_path, -1) != '/'))
+    if (($p_remove_path != "") && (substr($p_remove_path, -1) != '/'))
     {
       $p_remove_path .= '/';
     }
-    $p_remove_path_size = utf8_strlen($p_remove_path);
+    $p_remove_path_size = strlen($p_remove_path);
 
     // ----- Open the tar file
     if ($p_tar_mode == "tar")
@@ -2420,7 +2413,7 @@ function lib_eyeCompress_extractFile($params=null){
         // ----- Log extracted files
         if (($v_file_dir = dirname($v_header['filename'])) == $v_header['filename'])
           $v_file_dir = "";
-        if ((utf8_substr($v_header['filename'], 0, 1) == "/") && ($v_file_dir == ""))
+        if ((substr($v_header['filename'], 0, 1) == "/") && ($v_file_dir == ""))
           $v_file_dir = "/";
 
         // ----- Add the array describing the file into the list
@@ -2455,15 +2448,15 @@ function lib_eyeCompress_extractFile($params=null){
     $v_tar = $p_tar;
     $v_extract_file = 1;
 
-    $p_remove_path_size = utf8_strlen($p_remove_path);
+    $p_remove_path_size = strlen($p_remove_path);
 
         // ----- Look for path to remove
         if (($p_remove_path != "")
-            && (utf8_substr($v_header['filename'], 0, $p_remove_path_size) == $p_remove_path))
+            && (substr($v_header['filename'], 0, $p_remove_path_size) == $p_remove_path))
         {
           // TrFctMessage(__FILE__, __LINE__, 3, "Found path '$p_remove_path' to remove in file '".$v_header['filename']."'");
           // ----- Remove the path
-          $v_header['filename'] = utf8_substr($v_header['filename'], $p_remove_path_size);
+          $v_header['filename'] = substr($v_header['filename'], $p_remove_path_size);
           // TrFctMessage(__FILE__, __LINE__, 3, "Resulting file is '".$v_header['filename']."'");
         }
 
@@ -2471,15 +2464,15 @@ function lib_eyeCompress_extractFile($params=null){
         if (($p_path != "./") && ($p_path != "/"))
         {
           // ----- Look for the path end '/'
-          while (utf8_substr($p_path, -1) == "/")
+          while (substr($p_path, -1) == "/")
           {
             // TrFctMessage(__FILE__, __LINE__, 3, "Destination path [$p_path] ends by '/'");
-            $p_path = utf8_substr($p_path, 0, utf8_strlen($p_path)-1);
+            $p_path = substr($p_path, 0, strlen($p_path)-1);
             // TrFctMessage(__FILE__, __LINE__, 3, "Modified to [$p_path]");
           }
 
           // ----- Add the path
-          if (utf8_substr($v_header['filename'], 0, 1) == "/")
+          if (substr($v_header['filename'], 0, 1) == "/")
               $v_header['filename'] = $p_path.$v_header['filename'];
           else
             $v_header['filename'] = $p_path."/".$v_header['filename'];
@@ -2536,7 +2529,7 @@ function lib_eyeCompress_extractFile($params=null){
         {
           if ($v_header['typeflag']=="5")
             $v_dir_to_check = $v_header['filename'];
-          else if (!strstr($v_header['filename'], "/"))
+          else if (strpos($v_header['filename'], "/") === false)
             $v_dir_to_check = "";
           else
             $v_dir_to_check = dirname($v_header['filename']);
@@ -2776,7 +2769,7 @@ function lib_eyeCompress_extractFile($params=null){
           else
           {
             // TrFctMessage(__FILE__, __LINE__, 3, "Look if '".$v_header['filename']."' is a file in $p_file_list[$i]");
-            if (utf8_substr($v_header['filename'], utf8_strlen($p_file_list[$i]), 1) == "/")
+            if (substr($v_header['filename'], strlen($p_file_list[$i]), 1) == "/")
             {
               // TrFctMessage(__FILE__, __LINE__, 3, "'".$v_header['filename']."' is a file in $p_file_list[$i]");
               $v_delete_file = TRUE;
@@ -2978,18 +2971,18 @@ function lib_eyeCompress_extractFile($params=null){
     $v_stored_list[$i] = $p_file_list[$i];
     if ($p_remove_dir != "")
     {
-      if (utf8_substr($p_file_list[$i], -1) != '/')
+      if (substr($p_file_list[$i], -1) != '/')
         $p_remove_dir .= "/";
 
-      if (utf8_substr($p_file_list[$i], 0, utf8_strlen($p_remove_dir)) == $p_remove_dir)
+      if (substr($p_file_list[$i], 0, strlen($p_remove_dir)) == $p_remove_dir)
       {
-        $v_stored_list[$i] = utf8_substr($p_file_list[$i], utf8_strlen($p_remove_dir));
+        $v_stored_list[$i] = substr($p_file_list[$i], strlen($p_remove_dir));
         // TrFctMessage(__FILE__, __LINE__, 3, "Remove path '$p_remove_dir' in file '$p_file_list[$i]' = '$v_stored_list[$i]'");
       }
     }
     if ($p_add_dir != "")
     {
-      if (utf8_substr($p_add_dir, -1) == "/")
+      if (substr($p_add_dir, -1) == "/")
         $v_stored_list[$i] = $p_add_dir.$v_stored_list[$i];
       else
         $v_stored_list[$i] = $p_add_dir."/".$v_stored_list[$i];
@@ -3289,7 +3282,7 @@ function lib_eyeCompress_extractFile($params=null){
     */
 
     // ----- Look for no more block
-    if (utf8_strlen($v_binary_data)==0)
+    if (strlen($v_binary_data)==0)
     {
       $v_header['filename'] = "";
       $v_header['status'] = "empty";
@@ -3300,14 +3293,14 @@ function lib_eyeCompress_extractFile($params=null){
     }
 
     // ----- Look for invalid block size
-    if (utf8_strlen($v_binary_data) != 512)
+    if (strlen($v_binary_data) != 512)
     {
       $v_header['filename'] = "";
       $v_header['status'] = "invalid_header";
-      // TrFctMessage(__FILE__, __LINE__, 2, "Invalid block size : ".utf8_strlen($v_binary_data));
+      // TrFctMessage(__FILE__, __LINE__, 2, "Invalid block size : ".strlen($v_binary_data));
 
       // ----- Error log
-      PclTarErrorLog(-10, "Invalid block size : ".utf8_strlen($v_binary_data));
+      PclTarErrorLog(-10, "Invalid block size : ".strlen($v_binary_data));
 
       // ----- Return
       // TrFctEnd(__FILE__, __LINE__, PclTarErrorCode(), PclTarErrorString());
@@ -3319,17 +3312,17 @@ function lib_eyeCompress_extractFile($params=null){
     // ..... First part of the header
     for ($i=0; $i<148; $i++)
     {
-      $v_checksum+=utf8_ord(utf8_substr($v_binary_data,$i,1));
+      $v_checksum+=ord(substr($v_binary_data,$i,1));
     }
     // ..... Ignore the checksum value and replace it by ' ' (space)
     for ($i=148; $i<156; $i++)
     {
-      $v_checksum += utf8_ord(' ');
+      $v_checksum += ord(' ');
     }
     // ..... Last part of the header
     for ($i=156; $i<512; $i++)
     {
-      $v_checksum+=utf8_ord(utf8_substr($v_binary_data,$i,1));
+      $v_checksum+=ord(substr($v_binary_data,$i,1));
     }
     // TrFctMessage(__FILE__, __LINE__, 3, "Calculated checksum : $v_checksum");
 
@@ -3338,7 +3331,7 @@ function lib_eyeCompress_extractFile($params=null){
     $v_data = unpack("a100filename/a8mode/a8uid/a8gid/a12size/a12mtime/a8checksum/a1typeflag/a100link/a6magic/a2version/a32uname/a32gname/a8devmajor/a8devminor", $v_binary_data);
 
     // ----- Extract the checksum for check
-    $v_header['checksum'] = OctDec(utf8_trim($v_data['checksum']));
+    $v_header['checksum'] = OctDec(trim($v_data['checksum']));
     // TrFctMessage(__FILE__, __LINE__, 3, "File checksum : '".$v_header['checksum']."'");
     if ($v_header['checksum'] != $v_checksum)
     {
@@ -3366,17 +3359,17 @@ function lib_eyeCompress_extractFile($params=null){
     // TrFctMessage(__FILE__, __LINE__, 2, "File checksum is valid ($v_checksum)");
 
     // ----- Extract the properties
-    $v_header['filename'] = utf8_trim($v_data['filename']);
+    $v_header['filename'] = trim($v_data['filename']);
     // TrFctMessage(__FILE__, __LINE__, 2, "Name : '".$v_header['filename']."'");
-    $v_header['mode'] = OctDec(utf8_trim($v_data['mode']));
+    $v_header['mode'] = OctDec(trim($v_data['mode']));
     // TrFctMessage(__FILE__, __LINE__, 2, "Mode : '".DecOct($v_header['mode'])."'");
-    $v_header['uid'] = OctDec(utf8_trim($v_data['uid']));
+    $v_header['uid'] = OctDec(trim($v_data['uid']));
     // TrFctMessage(__FILE__, __LINE__, 2, "Uid : '".$v_header['uid']."'");
-    $v_header['gid'] = OctDec(utf8_trim($v_data['gid']));
+    $v_header['gid'] = OctDec(trim($v_data['gid']));
     // TrFctMessage(__FILE__, __LINE__, 2, "Gid : '".$v_header['gid']."'");
-    $v_header['size'] = OctDec(utf8_trim($v_data['size']));
+    $v_header['size'] = OctDec(trim($v_data['size']));
     // TrFctMessage(__FILE__, __LINE__, 2, "Size : '".$v_header['size']."'");
-    $v_header['mtime'] = OctDec(utf8_trim($v_data['mtime']));
+    $v_header['mtime'] = OctDec(trim($v_data['mtime']));
     // TrFctMessage(__FILE__, __LINE__, 2, "Date : ".date("l dS of F Y h:i:s A", $v_header['mtime']));
     if (($v_header['typeflag'] = $v_data['typeflag']) == "5")
     {
@@ -3385,19 +3378,19 @@ function lib_eyeCompress_extractFile($params=null){
     }
     // TrFctMessage(__FILE__, __LINE__, 2, "File typeflag : '".$v_header['typeflag']."'");
     /* ----- All these fields are removed form the header because they do not carry interesting info
-    $v_header[link] = utf8_trim($v_data[link]);
+    $v_header[link] = trim($v_data[link]);
     // TrFctMessage(__FILE__, __LINE__, 2, "Linkname : $v_header[linkname]");
-    $v_header[magic] = utf8_trim($v_data[magic]);
+    $v_header[magic] = trim($v_data[magic]);
     // TrFctMessage(__FILE__, __LINE__, 2, "Magic : $v_header[magic]");
-    $v_header[version] = utf8_trim($v_data[version]);
+    $v_header[version] = trim($v_data[version]);
     // TrFctMessage(__FILE__, __LINE__, 2, "Version : $v_header[version]");
-    $v_header[uname] = utf8_trim($v_data[uname]);
+    $v_header[uname] = trim($v_data[uname]);
     // TrFctMessage(__FILE__, __LINE__, 2, "Uname : $v_header[uname]");
-    $v_header[gname] = utf8_trim($v_data[gname]);
+    $v_header[gname] = trim($v_data[gname]);
     // TrFctMessage(__FILE__, __LINE__, 2, "Gname : $v_header[gname]");
-    $v_header[devmajor] = utf8_trim($v_data[devmajor]);
+    $v_header[devmajor] = trim($v_data[devmajor]);
     // TrFctMessage(__FILE__, __LINE__, 2, "Devmajor : $v_header[devmajor]");
-    $v_header[devminor] = utf8_trim($v_data[devminor]);
+    $v_header[devminor] = trim($v_data[devminor]);
     // TrFctMessage(__FILE__, __LINE__, 2, "Devminor : $v_header[devminor]");
     */
 
@@ -3490,12 +3483,12 @@ function lib_eyeCompress_extractFile($params=null){
     // TrFctStart(__FILE__, __LINE__, "PclTarHandleExtension", "tar=$p_tarname");
 
     // ----- Look for file extension
-    if ((utf8_substr($p_tarname, -7) == ".tar.gz") || (utf8_substr($p_tarname, -4) == ".tgz"))
+    if ((substr($p_tarname, -7) == ".tar.gz") || (substr($p_tarname, -4) == ".tgz"))
     {
       // TrFctMessage(__FILE__, __LINE__, 2, "Archive is a gzip tar");
       $v_tar_mode = "tgz";
     }
-    else if (utf8_substr($p_tarname, -4) == ".tar")
+    else if (substr($p_tarname, -4) == ".tar")
     {
       // TrFctMessage(__FILE__, __LINE__, 2, "Archive is a tar");
       $v_tar_mode = "tar";
@@ -3608,7 +3601,7 @@ function lib_eyeCompress_extractFile($params=null){
     $v_message .= "<p align=center><font color=red bgcolor=white><b>PclTarError Library has detected a fatal error on file '$p_file', line $p_line</b></font></p>";
     $v_message .= "<p align=center><font color=red bgcolor=white><b>$p_error_string</b></font></p>";
     $v_message .= "</body></html>";
-    // die($v_message); // eyeOS
+    // die($v_message); // oneye
   }
   // --------------------------------------------------------------------------------
 

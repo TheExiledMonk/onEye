@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 global $checknum;
@@ -66,15 +59,15 @@ if (um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 	$allUsers = um('getAllUsersBy');
 } elseif (um('userExist',array($selUser))) {
 	$allUsers[] = $selUser;
-} elseif (utf8_strlen($selUser)) {
-	$params = explode('/',$selUser);
+} elseif ( /* utf8 */ strlen($selUser) > 0) {
+	$params = /* utf8 */ explode('/', $selUser);
 	foreach ($params as $param) {
-		if ($param{0} == 'a') {
-			$array['after'] = utf8_trim(utf8_substr($param,1));
-		} elseif ($param{0} == 'b') {
-			$array['beginning'] = utf8_trim(utf8_substr($param,1));
-		} elseif ($param{0} == 'c') {
-			$array['count'] = intval(utf8_trim(utf8_substr($param,1)));
+		if ( /* utf8 */ substr($param, 0, 1) === 'a') {
+			$array['after'] = trim(substr($param, 1)); // utf8
+		} elseif ( /* utf8 */ substr($param, 0, 1) === 'b') {
+			$array['beginning'] = trim(substr($param, 1)); // utf8
+		} elseif ( /* utf8 */ substr($param, 0, 1) === 'c') {
+			$array['count'] = intval(trim(substr($param, 1))); // utf8
 		}
 	}
 	if ($array) {
@@ -92,19 +85,25 @@ foreach ($allUsers as $user) {
 	$userXML = $userXML['eyeUser'][0];
 	($userXML['fullname'][0]) ? $fullname = $userXML['fullname'][0] : $fullname = ' ';
 	$groups = '';
-	foreach ($userXML['group'] as $group) {
-		($groups) ? $groups = $groups . ', ' . $group : $groups = $group;
+	if (is_array($userXML['group'])) {
+		foreach ($userXML['group'] as $group) {
+			($groups) ? $groups = $groups . ', ' . $group : $groups = $group;
+		}
+	} else {
+		$groups = "-";
 	}
 	($userXML['email'][0]) ? $email = $userXML['email'][0] : $email = ' ';
-	($userXML['createDate'][0]) ? $createdate = date('d/m/Y',$userXML['createDate'][0]) : $createdate = ' ';
-	if (!$createdate) {
-		$createdate = ' ';
+	if (isset($userXML['createDate'][0])) {
+		$userXML['createDate'][0] = intval($userXML['createDate'][0]);
+		($userXML['createDate'][0] > 0) ? $createdate = date('Y-m-d', $userXML['createDate'][0]) : $createdate = '-';
+	} else {
+		$createdate = '-';
 	}
-	($userXML['lastLogin'][0]) ? $lastlogin = date('d/m/Y',$userXML['lastLogin'][0]) : $lastlogin = ' ';
+	($userXML['lastLogin'][0]) ? $lastlogin = date('Y-m-d',$userXML['lastLogin'][0]) : $lastlogin = ' ';
 	if (!$lastlogin) {
 		$lastlogin = ' ';
 	}
-	($userXML['expirationDate'][0]) ? $expirationDate = date('d/m/Y',$userXML['expirationDate'][0]) : $expirationDate = i18n('translate',array('Never'));
+	($userXML['expirationDate'][0]) ? $expirationDate = date('Y-m-d',$userXML['expirationDate'][0]) : $expirationDate = i18n('translate',array('Never'));
 	if (!$expirationDate || intval($userXML['expirationDate'][0]) == 0) {
 		$expirationDate = i18n('translate',array('Never'));
 	}
@@ -128,7 +127,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 10,
 	'y' => 0,
-	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/new.png'
+	'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/new.png'
 ));
 $myButton->show();
 // Edit
@@ -140,7 +139,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 90,
 	'y' => 0,
-	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png'
+	'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/paste.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -153,7 +152,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 170,
 	'y' => 0,
-	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/delete.png'
+	'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/delete.png'
 ));
 $myButton->addFriend($myTable);
 $myButton->show();
@@ -167,7 +166,7 @@ if (!um('checkMaintainer',array(eyeControl_lib_getConfigUser()))) {
 		'width' => 80,
 		'x' => 250,
 		'y' => 0,
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/refresh.png'
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/refresh.png'
 	));
 	$myButton->show();
 	if ($selUser == '[all]') {

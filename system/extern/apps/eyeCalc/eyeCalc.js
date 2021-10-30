@@ -1,36 +1,30 @@
-/*jslint */
+/*global eyeMessageBoxShow, xEvent */
+/*jslint browser: true, devel: true, newcap: true, sloppy: true, todo: true, windows: true */
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 var eyeCalc_$myPid = {
-	Action : 0,
-	ClearOnNext : 0,
-	Memory : 'null',
+	Action: 0,
+	ClearOnNext: 0,
+	Memory: 'null',
 
-	OnClickAddNumer : function () {
-		eyeCalc_$myPid.AddNumber(this.id.substr(this.id.length - 1)); 
+	OnClickAddNumer: function () {
+		eyeCalc_$myPid.AddNumber(this.id.substr(this.id.length - 1));
 	},
 
-	Init : function () {
+	Init: function () {
 		document.getElementById('$myPid_eyeCalc_Button_1').onclick = function () { eyeCalc_$myPid.AddNumber('1'); };
 		document.getElementById('$myPid_eyeCalc_Button_2').onclick = function () { eyeCalc_$myPid.AddNumber('2'); };
 		document.getElementById('$myPid_eyeCalc_Button_3').onclick = function () { eyeCalc_$myPid.AddNumber('3'); };
@@ -71,45 +65,49 @@ var eyeCalc_$myPid = {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.onkeydown = function (e) {
 			e = new xEvent(e);
-			if (e.keyCode == 48 || e.keyCode == 96) {
+			if (e.keyCode === 16 || e.keyCode === 17 || e.keyCode === 18 || e.keyCode === 91 || e.keyCode === 92) {
+				alert('Due to keyboard layout compatibility problems, special keys (shift, ctrl, alt, windows) are forbidden.\r\nPlease use your mouse to select operation');
+				return true;
+			}
+			if (e.keyCode === 48 || e.keyCode === 96) {
 				eyeCalc_$myPid.AddNumber('0');
-			} else if (e.keyCode == 49 || e.keyCode == 97) {
+			} else if (e.keyCode === 49 || e.keyCode === 97) {
 				eyeCalc_$myPid.AddNumber('1');
-			} else if (e.keyCode == 50 || e.keyCode == 98) {
+			} else if (e.keyCode === 50 || e.keyCode === 98) {
 				eyeCalc_$myPid.AddNumber('2');
-			} else if (e.keyCode == 51 || e.keyCode == 99) {
+			} else if (e.keyCode === 51 || e.keyCode === 99) {
 				eyeCalc_$myPid.AddNumber('3');
-			} else if (e.keyCode == 52 || e.keyCode == 100) {
+			} else if (e.keyCode === 52 || e.keyCode === 100) {
 				eyeCalc_$myPid.AddNumber('4');
-			} else if (e.keyCode == 53 || e.keyCode == 101) {
+			} else if (e.keyCode === 53 || e.keyCode === 101) {
 				eyeCalc_$myPid.AddNumber('5');
-			} else if (e.keyCode == 54 || e.keyCode == 102) {
+			} else if (e.keyCode === 54 || e.keyCode === 102) {
 				eyeCalc_$myPid.AddNumber('6');
-			} else if (e.keyCode == 55 || e.keyCode == 103) {
+			} else if (e.keyCode === 55 || e.keyCode === 103) {
 				eyeCalc_$myPid.AddNumber('7');
-			} else if (e.keyCode == 56 || e.keyCode == 104) {
+			} else if (e.keyCode === 56 || e.keyCode === 104) {
 				eyeCalc_$myPid.AddNumber('8');
-			} else if (e.keyCode == 57 || e.keyCode == 105) {
+			} else if (e.keyCode === 57 || e.keyCode === 105) {
 				eyeCalc_$myPid.AddNumber('9');
-			} else if (e.keyCode == 27) {
+			} else if (e.keyCode === 27) {
 				eyeCalc_$myPid.C();
-			} else if (e.keyCode == 46) {
+			} else if (e.keyCode === 46) {
 				eyeCalc_$myPid.CE();
-			} else if (e.keyCode == 8) {
+			} else if (e.keyCode === 8) {
 				eyeCalc_$myPid.Delete();
-			} else if (e.keyCode == 107) {
+			} else if (e.keyCode === 107) {
 				eyeCalc_$myPid.DoAction('+');
-			} else if (e.keyCode == 109) {
+			} else if (e.keyCode === 109 || e.keyCode === 189) {
 				eyeCalc_$myPid.DoAction('-');
-			} else if (e.keyCode == 106) {
+			} else if (e.keyCode === 106) {
 				eyeCalc_$myPid.DoAction('*');
-			} else if (e.keyCode == 111) {
+			} else if (e.keyCode === 111 || e.keyCode === 191) {
 				eyeCalc_$myPid.DoAction('/');
-			} else if (e.keyCode == 220) {
+			} else if (e.keyCode === 220) {
 				eyeCalc_$myPid.DoAction('^');
-			} else if (e.keyCode == 110 || e.keyCode == 188 || e.keyCode == 190) {
+			} else if (e.keyCode === 110 || e.keyCode === 188 || e.keyCode === 190) {
 				eyeCalc_$myPid.Dot();
-			} else if (e.keyCode == 13) {
+			} else if (e.keyCode === 13) {
 				eyeCalc_$myPid.Equal();
 			} else {
 				return true;
@@ -119,27 +117,28 @@ var eyeCalc_$myPid = {
 		e.readOnly = true;
 	},
 
-	Actions : {
-		Divide : function (one, two) {
-			var exponent = 0;
-			var temp = 0;
-			var output = '+';
-			var length = 20;
+	Actions: {
+		Divide: function (one, two) {
+			var exponent, length, output, temp;
+			exponent = 0;
+			temp = 0;
+			output = '+';
+			length = 20;
 			one = eyeCalc_$myPid.Actions.Input(one);
 			two = eyeCalc_$myPid.Actions.Input(two);
-			if (one.substr(0, 1) != two.substr(0, 1)) {
+			if (one.substr(0, 1) !== two.substr(0, 1)) {
 				output = '-';
 			}
 			one = one.substr(1);
 			two = two.substr(1);
 			while (parseFloat(one) > 0 && exponent <= length) {
-				exponent++;
-				if (output == '+' || output == '-') {
-					exponent--;
+				exponent += 1;
+				if (output === '+' || output === '-') {
+					exponent -= 1;
 				}
 				temp = 0;
 				while (parseFloat(one) >= parseFloat(eyeCalc_$myPid.Actions.Multiply(temp + 1, two))) {
-					temp++;
+					temp += 1;
 				}
 				one = eyeCalc_$myPid.Actions.Input(eyeCalc_$myPid.Actions.Multiply('10', eyeCalc_$myPid.Actions.Plus(one, '-' + eyeCalc_$myPid.Actions.Multiply(temp, two))));
 				output = output.substr(0, output.length - 1) + String(temp + Number(output.substr(output.length - 1) + '0'));
@@ -147,48 +146,49 @@ var eyeCalc_$myPid = {
 			return output + 'e-' + String(exponent);
 		},
 
-		Input : function (one) {
-			var dot = 0;
-			var exponent = '+';
-			var letter = '';
-			var output = '';
-			var sign = '+';
-			var zero = 1;
+		Input: function (one) {
+			var dot, exponent, letter, output, sign, zero;
+			dot = 0;
+			exponent = '+';
+			letter = '';
+			output = '';
+			sign = '+';
+			zero = 1;
 			one = String(one);
 			while (one.length) {
 				letter = one.substr(0, 1);
 				one = one.substr(1);
-				if (letter == '-' && output === '') {
-					if (sign == '+') {
+				if (letter === '-' && output === '') {
+					if (sign === '+') {
 						sign = '-';
 					} else {
 						sign = '+';
 					}
-				} else if (letter == '0' && output !== '') {
+				} else if (letter === '0' && output !== '') {
 					output += '0';
-				} else if (letter == '1' || letter == '2' || letter == '3' || letter == '4' || letter == '5' || letter == '6' || letter == '7' || letter == '8' || letter == '9') {
+				} else if (letter === '1' || letter === '2' || letter === '3' || letter === '4' || letter === '5' || letter === '6' || letter === '7' || letter === '8' || letter === '9') {
 					output += letter;
 					zero = 0;
-				} else if (letter == '.' && !dot) {
+				} else if (letter === '.' && !dot) {
 					dot = 1;
 					if (output === '') {
 						output += '0';
 					}
 					output += '.';
-				} else if (letter == 'e') {
+				} else if (letter === 'e') {
 					if (zero) {
 						return '+0';
 					}
 					while (one.length) {
 						letter = one.substr(0, 1);
 						one = one.substr(1);
-						if (letter == '-') {
-							if (exponent == '+') {
+						if (letter === '-') {
+							if (exponent === '+') {
 								exponent = '-';
-							} else if (exponent == '-') {
+							} else if (exponent === '-') {
 								exponent = '+';
 							}
-						} else if (letter == '0' && exponent != '+' && exponent != '-' || letter == '1' || letter == '2' || letter == '3' || letter == '4' || letter == '5' || letter == '6' || letter == '7' || letter == '8' || letter == '9') {
+						} else if ((letter === '0' && exponent !== '+' && exponent !== '-') || letter === '1' || letter === '2' || letter === '3' || letter === '4' || letter === '5' || letter === '6' || letter === '7' || letter === '8' || letter === '9') {
 							exponent += letter;
 						}
 					}
@@ -197,15 +197,15 @@ var eyeCalc_$myPid = {
 			if (zero) {
 				return '+0';
 			}
-			if (exponent != '+' && exponent != '-') {
+			if (exponent !== '+' && exponent !== '-') {
 				output = output.split('.');
-				if (typeof output[1] == 'undefined') {
+				if (output[1] === undefined) {
 					output[1] = '';
 				}
 				dot = 1;
 				exponent = Number(exponent);
 				if (exponent < 0) {
-					exponent = - exponent;
+					exponent = -exponent;
 					while (output[0].length < exponent) {
 						output[0] = '0' + output[0];
 					}
@@ -219,58 +219,60 @@ var eyeCalc_$myPid = {
 					output = output[0] + '.' + output[1];
 				}
 			}
-			while (dot && output.substr(output.length - 1) == '0') {
+			while (dot && output.substr(output.length - 1) === '0') {
 				output = output.substr(0, output.length - 1);
 			}
-			if (output.substr(output.length - 1) == '.') {
+			if (output.substr(output.length - 1) === '.') {
 				output = output.substr(0, output.length - 1);
 			}
-			while (output.substr(0, 1) == '0') {
+			while (output.substr(0, 1) === '0') {
 				output = output.substr(1);
 			}
-			if (output.substr(0, 1) == '.') {
+			if (output.substr(0, 1) === '.') {
 				output = '0' + output;
 			}
 			return sign + output;
 		},
 
-		LogGamma : function (x) { // Token from http://mathe-online.at/javacalc/jcintro.html
-			var v = 1;
+		LogGamma: function (x) { // Token from http://mathe-online.at/javacalc/jcintro.html
+			var v, w;
+			v = 1;
 			while (x < 8) {
 				v *= x;
-				x++;
+				x += 1;
 			}
-			var w = 1 / (x * x);
-			return ((((((((- 3617 / 122400) * w + 7 / 1092) * w - 691 / 360360) * w + 5 / 5940) * w - 1 / 1680) * w + 1 / 1260) * w - 1 / 360) * w + 1 / 12) / x + 0.5 * Math.log(2 * Math.PI) - Math.log(v) - x + (x - 0.5) * Math.log(x);
+			w = 1 / (x * x);
+			return ((((((((-3617 / 122400) * w + 7 / 1092) * w - 691 / 360360) * w + 5 / 5940) * w - 1 / 1680) * w + 1 / 1260) * w - 1 / 360) * w + 1 / 12) / x + 0.5 * Math.log(2 * Math.PI) - Math.log(v) - x + (x - 0.5) * Math.log(x);
 		},
 
-		Multiply : function (one, two) {
-			var dot = 0;
-			var letter = '';
-			var exponent = 0;
-			var output = '0';
-			var sign = '+';
+		Multiply: function (one, two) {
+			var dot, exponent, letter, output, sign;
+			dot = 0;
+			letter = '';
+			exponent = 0;
+			output = '0';
+			sign = '+';
 			one = eyeCalc_$myPid.Actions.Input(one);
 			two = eyeCalc_$myPid.Actions.Input(two);
-			if (one.substr(0, 1) != two.substr(0, 1)) {
+			if (one.substr(0, 1) !== two.substr(0, 1)) {
 				sign = '-';
 			}
 			one = one.substr(1);
 			two = two.substr(1);
-			if (one.length === 1 || one == '10') {
+			if (one.length === 1 || one === '10') {
 				one = Number(one);
 				while (one) {
 					output = eyeCalc_$myPid.Actions.Plus(output, two);
-					one--;
+					one -= 1;
 				}
 			} else {
 				while (one.length) {
 					letter = one.substr(0, 1);
-					if (letter == '.') {
+					if (letter === '.') {
 						dot = 1;
 					} else {
 						if (dot) {
-							exponent++;
+							exponent += 1;
 						}
 						output = eyeCalc_$myPid.Actions.Plus(eyeCalc_$myPid.Actions.Multiply('10', output), eyeCalc_$myPid.Actions.Multiply(letter, two));
 					}
@@ -280,26 +282,27 @@ var eyeCalc_$myPid = {
 			return sign + eyeCalc_$myPid.Actions.Input(output).substr(1) + 'e-' + String(exponent);
 		},
 
-		Output : function (one) {
+		Output: function (one) {
 			one = eyeCalc_$myPid.Actions.Input(one);
-			if (one.substr(0, 1) == '+') {
+			if (one.substr(0, 1) === '+') {
 				one = one.substr(1);
 			}
 			return parseFloat(one);
 		},
 
-		Plus : function(one, two) {
-			var action = '+';
-			var exponent = 0;
-			var n = 0;
-			var output = '';
-			var sign = '+';
-			var temp = '';
+		Plus: function (one, two) {
+			var action, exponent, n, output, sign, temp;
+			action = '+';
+			exponent = 0;
+			n = 0;
+			output = '';
+			sign = '+';
+			temp = '';
 			one = eyeCalc_$myPid.Actions.Input(one);
 			two = eyeCalc_$myPid.Actions.Input(two);
-			if (one.substr(0, 1) != two.substr(0, 1)) {
+			if (one.substr(0, 1) !== two.substr(0, 1)) {
 				action = '-';
-				if (one.substr(0, 1) == '-') {
+				if (one.substr(0, 1) === '-') {
 					temp = one;
 					one = two;
 					two = temp;
@@ -310,15 +313,15 @@ var eyeCalc_$myPid = {
 					one = two;
 					two = temp;
 				}
-			} else if (one.substr(0, 1) == '-') {
+			} else if (one.substr(0, 1) === '-') {
 				sign = '-';
 			}
 			one = one.substr(1).split('.');
 			two = two.substr(1).split('.');
-			if (typeof one[1] == 'undefined') {
+			if (one[1] === undefined) {
 				one[1] = '';
 			}
-			if (typeof two[1] == 'undefined') {
+			if (two[1] === undefined) {
 				two[1] = '';
 			}
 			while (one[0].length - two[0].length < 0) {
@@ -336,7 +339,7 @@ var eyeCalc_$myPid = {
 			exponent = one[1].length;
 			one = one[0] + one[1];
 			two = two[0] + two[1];
-			if (action == '+') {
+			if (action === '+') {
 				while (one.length) {
 					n = Number(one.substr(one.length - 1)) + Number(two.substr(two.length - 1)) + n;
 					output = String(n).substr(String(n).length - 1) + output;
@@ -367,20 +370,20 @@ var eyeCalc_$myPid = {
 		}
 	},
 
-	AddNumber : function (value) {
+	AddNumber: function (value) {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
-		if (e.value == '0' || eyeCalc_$myPid.ClearOnNext) {
+		if (e.value === '0' || eyeCalc_$myPid.ClearOnNext) {
 			e.value = value;
 			eyeCalc_$myPid.ClearOnNext = 0;
-		} else if (e.value == '-0') {
+		} else if (e.value === '-0') {
 			e.value = '-' + value;
 		} else {
 			e.value += value;
 		}
 	},
 
-	C : function () {
+	C: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = '0';
@@ -389,54 +392,55 @@ var eyeCalc_$myPid = {
 		eyeCalc_$myPid.Memory = 'null';
 	},
 
-	CE : function () {
+	CE: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = '0';
 		eyeCalc_$myPid.ClearOnNext = 0;
 	},
 
-	Cos : function () {
+	Cos: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.cos(parseFloat(e.value) / 180 * Math.PI));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Delete : function () {
+	Delete: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = e.value.substr(0, e.value.length - 1);
-		if (e.value === '' || e.value == '-' || eyeCalc_$myPid.ClearOnNext) {
+		if (e.value === '' || e.value === '-' || eyeCalc_$myPid.ClearOnNext) {
 			e.value = '0';
 			eyeCalc_$myPid.ClearOnNext = 0;
 		}
 	},
 
-	DoAction : function (action) {
+	DoAction: function (action) {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
-		if (eyeCalc_$myPid.Memory == 'null') {
+		if (eyeCalc_$myPid.Memory === 'null') {
 			eyeCalc_$myPid.Memory = parseFloat(e.value);
 		} else if (!eyeCalc_$myPid.ClearOnNext) {
-			if (eyeCalc_$myPid.Action == '/' && !parseFloat(e.value)) {
+			if (eyeCalc_$myPid.Action === '/' && !parseFloat(e.value)) {
 				eyeMessageBoxShow('$lang:Division by zero is invalid!');
 				e.focus();
 				return false;
-			} else if (eyeCalc_$myPid.Action == '^' && !eyeCalc_$myPid.Memory && parseFloat(e.value) <= 0) {
+			}
+			if (eyeCalc_$myPid.Action === '^' && !eyeCalc_$myPid.Memory && parseFloat(e.value) <= 0) {
 				eyeMessageBoxShow('$lang:Exponentiation of zero by a negative number or zero is invalid!');
 				e.focus();
 				return false;
 			}
-			if (eyeCalc_$myPid.Action == '+') {
+			if (eyeCalc_$myPid.Action === '+') {
 				eyeCalc_$myPid.Memory = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Plus(eyeCalc_$myPid.Memory, e.value));
-			} else if (eyeCalc_$myPid.Action == '-') {
+			} else if (eyeCalc_$myPid.Action === '-') {
 				eyeCalc_$myPid.Memory = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Plus(eyeCalc_$myPid.Memory, '-' + e.value));
-			} else if (eyeCalc_$myPid.Action == '*') {
+			} else if (eyeCalc_$myPid.Action === '*') {
 				eyeCalc_$myPid.Memory = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Multiply(eyeCalc_$myPid.Memory, e.value));
-			} else if (eyeCalc_$myPid.Action == '/') {
+			} else if (eyeCalc_$myPid.Action === '/') {
 				eyeCalc_$myPid.Memory = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Divide(eyeCalc_$myPid.Memory, e.value));
-			} else if (eyeCalc_$myPid.Action == '^') {
+			} else if (eyeCalc_$myPid.Action === '^') {
 				eyeCalc_$myPid.Memory = Math.pow(eyeCalc_$myPid.Memory, parseFloat(e.value));
 			}
 			e.value = String(eyeCalc_$myPid.Memory);
@@ -446,33 +450,33 @@ var eyeCalc_$myPid = {
 		return true;
 	},
 
-	Dot : function () {
+	Dot: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		if (eyeCalc_$myPid.ClearOnNext) {
 			e.value = '0';
 			eyeCalc_$myPid.ClearOnNext = 0;
 		}
-		if (e.value.substr(e.value.length - 1) == '.') {
+		if (e.value.substr(e.value.length - 1) === '.') {
 			e.value = e.value.substr(0, e.value.length - 1);
-		} else if (typeof e.value.split('.')[1] == 'undefined') {
+		} else if (e.value.split('.')[1] === undefined) {
 			e.value += '.';
 		}
 	},
 
-	Equal : function () {
+	Equal: function () {
 		eyeCalc_$myPid.DoAction(0);
 		eyeCalc_$myPid.Memory = 'null';
 	},
 
-	Exp : function () {
+	Exp: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.exp(parseFloat(e.value)));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	LN : function () {
+	LN: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		if (parseFloat(e.value) > 0) {
@@ -484,7 +488,7 @@ var eyeCalc_$myPid = {
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Log : function () {
+	Log: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		if (parseFloat(e.value) > 0) {
@@ -496,31 +500,31 @@ var eyeCalc_$myPid = {
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Factorial : function () {
-		var e = document.getElementById('$myPid_eyeCalc_Textbox');
+	Factorial: function () {
+		var e, num, output;
+		e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
-		var num = parseFloat(e.value);
-		if (num >= 0 && Math.floor(num) == num) {
-			var output = 1;
+		num = parseFloat(e.value);
+		if (num >= 0 && Math.floor(num) === num) {
+			output = 1;
 			while (num > 0) {
 				output *= num;
 				num -= 1;
 			}
 			e.value = String(output);
 		} else if (num < 0) {
-			if (Math.floor(num) == num) {
+			if (Math.floor(num) === num) {
 				eyeMessageBoxShow('$lang:Factorial of a negative number is invalid!');
 				return false;
-			} else {
-				e.value = String(Math.PI / (Math.sin(Math.PI * (num - 1)) * Math.exp(eyeCalc_$myPid.Actions.LogGamma(- num))));
 			}
+			e.value = String(Math.PI / (Math.sin(Math.PI * (num - 1)) * Math.exp(eyeCalc_$myPid.Actions.LogGamma(-num))));
 		} else {
 			e.value = String(Math.exp(eyeCalc_$myPid.Actions.LogGamma(num - 1)));
 		}
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	OneDivX : function () {
+	OneDivX: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		if (parseFloat(e.value)) {
@@ -532,42 +536,42 @@ var eyeCalc_$myPid = {
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Percentage : function () {
+	Percentage: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Input(e.value) + 'e-2'));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Pi : function () {
+	Pi: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.PI);
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Sign : function () {
+	Sign: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		if (eyeCalc_$myPid.ClearOnNext) {
 			e.value = '0';
 			eyeCalc_$myPid.ClearOnNext = 0;
 		}
-		if (e.value.substr(0, 1) == '-') {
+		if (e.value.substr(0, 1) === '-') {
 			e.value = e.value.substr(1);
 		} else {
 			e.value = '-' + e.value;
 		}
 	},
 
-	Sin : function () {
+	Sin: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.sin(parseFloat(e.value) / 180 * Math.PI));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Sqrt : function () {
+	Sqrt: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		if (parseFloat(e.value) >= 0) {
@@ -579,21 +583,21 @@ var eyeCalc_$myPid = {
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	Tan : function () {
+	Tan: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = String(Math.tan(parseFloat(e.value) / 180 * Math.PI));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	XPowThree : function () {
+	XPowThree: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Multiply(eyeCalc_$myPid.Actions.Multiply(e.value, e.value), e.value));
 		eyeCalc_$myPid.ClearOnNext = 1;
 	},
 
-	XPowTwo : function () {
+	XPowTwo: function () {
 		var e = document.getElementById('$myPid_eyeCalc_Textbox');
 		e.focus();
 		e.value = eyeCalc_$myPid.Actions.Output(eyeCalc_$myPid.Actions.Multiply(e.value, e.value));

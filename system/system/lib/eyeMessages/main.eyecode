@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function lib_eyeMessages_start($params=null) {
@@ -52,33 +45,25 @@ function lib_eyeMessages_sendMessage($params) {
 	}
 
 	if(!empty($to_users)) {
-		if(!utf8_strpos($to_users, ',')) {
-			if(!eyeSwap('send', array($to_users, $subject, $content, 'eyeMessages', $attach))){
-				return false;
-			}
-
-			$to = $to_users;
-		} else {
-			$addressees = explode(",", $to_users);
-			foreach($addressees as $ad) {
-				$ad = utf8_trim($ad);
-				if(eyeSwap('send', array($ad, $subject, $content, 'eyeMessages', $attach))) {
-					if(empty($to)) {
-						$to = $ad;
-					} else {
-						$to.= ', '.$ad;
-					}
+		$addressees = /* utf8 */ explode(',', $to_users);
+		foreach($addressees as $ad) {
+			$ad = /* utf8 */ trim($ad);
+			if(eyeSwap('send', array($ad, $subject, $content, 'eyeMessages', $attach))) {
+				if(empty($to)) {
+					$to = $ad;
+				} else {
+					$to.= ', '.$ad;
 				}
 			}
 		}
 	}
 
 	if(SEND_TO_GROUPS == 1 && !empty($to_groups)) {
-		$groups = explode(",", $to_groups);
+		$groups = /* utf8 */ explode(',', $to_groups);
 		foreach($groups as $group) {
-			$group = utf8_trim($group);
+			$group = /* utf8 */ trim($group);
 
-			if(!utf8_strpos($group, BANNED_SEND_GROUPS) && um('groupExists', array($group))) {
+			if (in_array($group, array_map('trim', explode(',', BANNED_SEND_GROUPS))) === false && um('groupExists', array($group)) === true) { // utf8
 				$usersInGroup = um('getAllUsersByGroup', array('group' => $group));
 
 				if(is_array($usersInGroup)) {
@@ -268,7 +253,10 @@ function lib_eyeMessages_restoreMessage($params) {
 
 function lib_eyeMessages_getUnread($params=null) {
 	$list = eyeSwap('list', array('eyeMessages'));
-	return $list;
+	if (is_array($list) === true) {
+		return $list;
+	}
+	return array();
 }
 
 function lib_eyeMessages_getRead($params=null) {
@@ -282,7 +270,7 @@ function lib_eyeMessages_getRead($params=null) {
 		$myArray[] = array(
 			'author' => $xml['swapMessage'][0]['header'][0]['from'][0],
 			'date' => $xml['swapMessage'][0]['header'][0]['date'][0],
-			'hash' => utf8_substr(utf8_basename($msg), 0, utf8_strlen(utf8_basename($msg))-utf8_strlen('.msgSwap')).',read',
+			'hash' => basename($msg, '.msgSwap') . ',read',
 			'subject' => $xml['swapMessage'][0]['header'][0]['subject'][0]
 		);
 	}
@@ -305,7 +293,7 @@ function lib_eyeMessages_getTrash($params=null) {
 		$myArray[] = array(
 			'author' => $xml['swapMessage'][0]['header'][0]['from'][0],
 			'date' => $xml['swapMessage'][0]['header'][0]['date'][0],
-			'hash' => utf8_substr(utf8_basename($msg), 0, utf8_strlen(utf8_basename($msg))-utf8_strlen('.msgSwap')).',trash',
+			'hash' => basename($msg, '.msgSwap') . ',trash',
 			'subject' => $xml['swapMessage'][0]['header'][0]['subject'][0]
 		);
 	}
@@ -324,7 +312,7 @@ function lib_eyeMessages_getSent($params=null) {
 		$myArray[] = array(
 			'to' => $xml['swapMessage'][0]['header'][0]['to'][0],
 			'date' => $xml['swapMessage'][0]['header'][0]['date'][0],
-			'hash' => utf8_substr(utf8_basename($msg), 0, utf8_strlen(utf8_basename($msg))-utf8_strlen('.msgSwap')).',sent',
+			'hash' => basename($msg, '.msgSwap') . ',sent',
 			'subject' => $xml['swapMessage'][0]['header'][0]['subject'][0]
 		);
 	}
@@ -337,7 +325,7 @@ function _move_message($from, $to) {
 		return;
 	}
 
-	$hash = utf8_basename($from);
+	$hash = basename($from);
 
 	while(vfs('real_fileExists',array($to.$hash.'.msgSwap'))) {
 		$hash = md5(uniqid(time()));

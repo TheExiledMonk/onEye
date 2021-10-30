@@ -1,31 +1,24 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 global $checknum;
 global $myPid;
 $menus = array('menu_files.xml','menu_trash.xml');
 foreach ($menus as $menu) {
-	$father = 'eyeFiles_Box_Actions_' . utf8_basename($menu,'.xml') . '_Container';
+	$father = 'eyeFiles_Box_Actions_' . basename($menu,'.xml') . '_Container';
 	$myContainer = new Container(array(
 		'father' => 'eyeFiles_Box_Actions',
 		'height' => $GLOBALS['eyeFiles_Box_Tree']->height - 35,
@@ -83,7 +76,7 @@ foreach ($menus as $menu) {
 		$myImagebox = new Imagebox(array(
 			'father' => $father . '_' . $entry['action'][0] . '_Container',
 			'name' => $father . '_' . $entry['action'][0] . '_Imagebox',
-			'url' => 'index.php?version=' . EXTERN_VERSION_CACHE . '&theme=1&extern=icons/16x16/' . $entry['icon'][0] . '.png',
+			'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/' . $entry['icon'][0] . '.png',
 			'x' => 10,
 			'y' => 7
 		));
@@ -96,7 +89,6 @@ foreach ($menus as $menu) {
 			'x' => 40,
 			'y' => 7
 		));
-		$myLabel->addFriend($myHidden);
 		$myLabel->show();
 		$myLabel->setCss(array('cursor' => 'pointer'));
 

@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeSheets_on_Message($params="") {
@@ -32,8 +25,8 @@ function eyeSheets_on_Resize($params=null) {
 	$height = intval($height);
 	$GLOBALS['eyeSheetsWND']->width = $width;
 	$GLOBALS['eyeSheetsWND']->height = $height;
-	$GLOBALS['eyeSheetsFrame']->setWidth($width-4);
-	$GLOBALS['eyeSheetsFrame']->setHeight($height-30);
+	$GLOBALS['eyeSheetsFrame']->setWidth($width - 2);
+	$GLOBALS['eyeSheetsFrame']->setHeight($height - 24);
 }
 
 function eyeSheets_on_fullScreen() {
@@ -42,8 +35,7 @@ function eyeSheets_on_fullScreen() {
 
 function eyeSheets_on_getSheet($params=null) {
 	global $myPid;
-	$file = $GLOBALS['sheetPath']->text;
-	if(!$file) {
+	if (isset($GLOBALS['sheetPath']) === false) {
 		echo "
 			cols = 10;
 			rows = 30;
@@ -51,6 +43,7 @@ function eyeSheets_on_getSheet($params=null) {
 		//Now, we are inside the iframe, so we have to exit now to not echo the ob_buffer
 		exit;
 	}
+	$file = $GLOBALS['sheetPath']->text;
 	$myReal = vfs('getRealName',array($file));
 
 	//Warning, maybe that's redundant?
@@ -58,8 +51,8 @@ function eyeSheets_on_getSheet($params=null) {
 		return false;
 	}
 	$udir = um('getCurrentUserDir').'/tmp/';
-	copy($myReal,$udir.$myPid.'_'.utf8_basename($file));
-	echo openFile($udir.$myPid.'_'.utf8_basename($file));
+	copy($myReal,$udir.$myPid.'_'.basename($file));
+	echo openFile($udir.$myPid.'_'.basename($file));
 	exit;
 }
 
@@ -85,9 +78,9 @@ function openFile($file) {
 	if(!vfs('real_checkPermissions',array($file))) {
 		return false;
 	}
-	$ext = utf8_pathinfo($file);
-	$newName = utf8_substr($file,0,utf8_strlen($file)-utf8_strlen($ext['extension']));
-	if(utf8_strtolower($ext['extension']) == 'ods') {
+	$ext = pathinfo($file);
+	$newName = substr($file, 0, -strlen($ext['extension'])); // utf8
+	if ( /* utf8 */ strtolower($ext['extension']) === 'ods') {
 		$ods = $file;
 	} else {
 		$ods = $newName.'zip';
@@ -108,7 +101,7 @@ function parseMyODS($content) {
 			for($i=0;$i<count($myOds->sheets[0]['rows'][$x]);$i++) {
 				if(isset($myOds->sheets[0]['rows'][$x][$i]['attrs']['TABLE:FORMULA'])) {
 					$formula = $myOds->sheets[0]['rows'][$x][$i]['attrs']['TABLE:FORMULA'];
-					$formula = utf8_substr($formula,5);
+					$formula = /* utf8 */ substr($formula, 5);
 					$formula = str_replace("[.","",$formula);
 					$formula = str_replace("[","",$formula);
 					$formula = str_replace("]","",$formula);
@@ -140,7 +133,7 @@ function eyeSheets_on_openFile($params=null) {
 
 function eyeSheets_on_saveFile($params=null) {
 	$sheetPath = $GLOBALS['sheetPath']->text;
-	if(empty($sheetPath)) { 
+	if(empty($sheetPath)) {
 		eyeSheets_on_SaveAs();
 		return;
 	}
@@ -148,11 +141,11 @@ function eyeSheets_on_saveFile($params=null) {
 	$arg = $params['arg1'][0];
 	$arg = base64_decode($arg);
 
-	$maxX = utf8_substr($arg, 0, utf8_strpos($arg, ','));
-	$arg = utf8_substr($arg, utf8_strpos($arg, "\n")+1);
-	$maxY = utf8_substr($arg, 0, utf8_strpos($arg, ','));
+	$maxX = substr($arg, 0, strpos($arg, ',')); // utf8
+	$arg = substr($arg, strpos($arg, "\n") + 1); // utf8
+	$maxY = substr($arg, 0, strpos($arg, ',')); // utf8
 
-	$myArgs = explode("\n",$arg);
+	$myArgs = /* utf8 */ explode("\n", $arg);
 	$pattern = '/\[(\d+)\,(\d+)\,\"([^"]+)\"/';
 
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeSheets/lib/ods'.EYE_CODE_EXTENSION);
@@ -166,7 +159,7 @@ function eyeSheets_on_saveFile($params=null) {
 
 	$stack = array();
 	foreach($myArgs as $value) {
-		preg_match($pattern,$value,$matchs);
+		/* utf8 */ preg_match($pattern, $value, $matchs);
 		$col = $matchs[1]; //column
 		$row = $matchs[2]; //row
 		$val = $matchs[3]; //value
@@ -189,14 +182,14 @@ function eyeSheets_on_saveFile($params=null) {
 			$stack[$row] = $col+1;
 			if($val[0] == '=') { //Is it a formula?
 				$ods->addFormula(0, $row, $col, $val);
-			} else { 
+			} else {
 				$ods->addCell(0, $row, $col, $val, $type);
 			}
 		}
 	}
 
 	$convertToExcel = 0;
-	if(utf8_substr($sheetPath, -4) == ".xls") {
+	if ( /* utf8 */ substr($sheetPath, -4) === '.xls') {
 		$convertToExcel = 1;
 	}
 	saveOds($ods, $sheetPath, $convertToExcel);
@@ -236,13 +229,13 @@ function eyeSheets_on_SelectFileSave($params=null) {
 
 	$file = $params['arg'][0];
 	if($file) {
-		if(!utf8_strpos($file, '.')) {
+		if ( /* utf8 */ strpos($file, '.') === false) {
 			$file .= '.ods';
 		}
 
 		$file = um('getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 
-		if (utf8_substr($file,-4) == ".ods" || utf8_substr($file,-4) == ".xls") {
+		if (substr($file, -4) === '.ods' || substr($file, -4) === '.xls') { // utf8
 			if(is_object($GLOBALS['sheetPath'])) {
 				$GLOBALS['sheetPath']->text = $file;
 			} else {

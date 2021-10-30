@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 $sortypes = array('Hidden','String','String','String','String');
@@ -46,7 +39,7 @@ $myButton = new Button(array(
 	'width' => 80,
 	'x' => 10,
 	'y' => 0,
-	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/new.png'
+	'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/new.png'
 ));
 $myButton->show();
 
@@ -58,7 +51,7 @@ $myButton1 = new Button(array(
 	'width' => 80,
 	'x' => 90,
 	'y' => 0,
-	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/paste.png'
+	'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/paste.png'
 ));
 $myButton1->addFriend($myTable);
 $myButton1->show();
@@ -71,27 +64,26 @@ $myButton3 = new Button(array(
 	'width' => 80,
 	'x' => 474,
 	'y' => 0,
-	'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/delete.png'
+	'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/delete.png'
 ));
 $myButton3->addFriend($myTable);
 $myButton3->show();
 
-$path = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL;
+$path = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/ACL';
 
 if(!file_exists($path)){
 	vfs('real_mkDir', array($path));
 }
 
-$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/'. ACL .'/'. "acl.xml";
+$file = EYE_ROOT .'/'. SYSTEM_DIR .'/'. SYSTEM_CONF_DIR .'/ACL/'. 'acl.xml';
 $config = eyeXML('getXMLfile', array($file));
 
-//$config = eyeXML('getXMLconfig',array('eyeACL','acl.xml'));
-	if($config){
-		foreach($config['GACL'][0] as $acl => $value) {
-				foreach($value as $value2){
-					$myTable->addRow(array($value2['id'][0],$value2['description'][0],$value2['action'][0],$value2['service'][0],$value2['call'][0]));
-				}
+if ($config) {
+	foreach($config['GACL'][0] as $acl => $value) {
+		foreach($value as $value2){
+			$myTable->addRow(array($value2['id'][0], $value2['description'][0], i18n('Translate', array($value2['action'][0])), $value2['service'][0], $value2['call'][0]));
 		}
 	}
+}
 
 ?>

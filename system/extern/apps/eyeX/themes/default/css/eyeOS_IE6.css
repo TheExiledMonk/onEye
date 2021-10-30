@@ -1,3 +1,18 @@
+/*
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
+
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
+
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
+*/
+
 .activeWindow, .eyeWindowTitle, .inactiveWindow {
 	background: url();
 	background-color: #8cb4de;
@@ -5,7 +20,7 @@
 	border-left: 0px;
 	border-right: 0px;
 	border-top: 1px solid #80b5ff;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/bg_top.png', sizingMethod='scale');
 	height: 23px;
 	left: 5px;
 	right: 5px;
@@ -31,7 +46,7 @@
 	background: url();
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #80b5ff;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_a.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/topTitleLeft_a.png', sizingMethod='scale');
 	height: 23px;
 	left: -5px;
 	top: -1px;
@@ -39,7 +54,7 @@
 
 .activeWindow_border_right {
 	background: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_a.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/topTitleRight_a.png', sizingMethod='scale');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #80b5ff;
 	height: 23px;
@@ -74,7 +89,7 @@
 .activeWindow, .eyeWindowTitle, .inactiveWindow {
 	background: url();
 	border: 1px solid #214e79;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/bg_top.png', sizingMethod='scale');
 	height: 23px;
 	left: 0px;
 	position: absolute;
@@ -83,7 +98,7 @@
 	width: expression(this.parentNode.offsetWidth - 0 - 0 - 0);
 }
 
-.activeWindow_border_left {} 
+.activeWindow_border_left {}
 .activeWindow_border_right {}
 */
 .eyeCheckbox, .eyeCheckbox:hover, .eyeRadio input , .eyeRadio:hover input {
@@ -96,14 +111,14 @@
 }
 
 .eyeBoxBottCent {
-	background-image: url(); 
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/bg_bottom_center.png', sizingMethod='scale');
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/widgets/bg_bottom_center.png', sizingMethod='scale');
 	height: 17px !important;
 }
 
 .eyeBoxSupCent {
-	background-image: url(); 
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/boxbg.png', sizingMethod='scale');
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/widgets/boxbg.png', sizingMethod='scale');
 	border-bottom: 1px solid #acacac;
 	height: 21px !important;
 	width: 100%;
@@ -112,13 +127,13 @@
 .eyeBoxTable {}
 
 .eyeBoxText {
-	background: transparent; 
+	background: transparent;
 	border: 0px;
 }
 
 .eyeButtonClass {
-	background-image: url(); 
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=newdefault&extern=images/widgets/buttonbg.png', sizingMethod='scale');
+	background-image: url();
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/widgets/buttonbg.png', sizingMethod='scale');
 }
 
 
@@ -164,7 +179,7 @@
 
 .eyeWindowCloseButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/close_x.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/close_x.png', sizingMethod='crop');
 }
 
 .eyeWindowContent, .eyeWindowMainDrag {
@@ -184,25 +199,25 @@
 
 .eyeWindowMainDrag {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/eyefilesbg.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/eyefilesbg.png', sizingMethod='crop');
 }
 
 .eyeWindowMaxButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/max_x.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/max_x.png', sizingMethod='crop');
 	padding-right: 31px;
 	right: 100px;
 }
 
 .eyeWindowMinimizeButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min_x.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/min_x.png', sizingMethod='crop');
 	padding-right: 37px;
 }
 
 .eyeWindowResizeButton {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/resizebutton.png', sizingMethod='crop');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/resizebutton.png', sizingMethod='crop');
 }
 
 .eyeWindowTitle {/*look at .activeWindow*/}
@@ -222,11 +237,11 @@
 .inactiveWindow {
 	background: url();
 	border: 1px solid #acacac;
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top_x.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/windows/bg_top_x.png', sizingMethod='scale');
 }
 
 .inactiveWindow_border_left {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleLeft_i.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/windows/topTitleLeft_i.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #acacac;
 	left: -5px;
@@ -234,7 +249,7 @@
 }
 
 .inactiveWindow_border_right {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/topTitleRight_i.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/windows/topTitleRight_i.png');
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #acacac;
 	right: -5px;
@@ -243,15 +258,15 @@
 
 .shadowLayer {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/bg.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/widgets/bg.png', sizingMethod='scale');
 }
 
 .sort-arrow.ascending {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/upsimple.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/widgets/upsimple.png', sizingMethod='scale');
 }
 
 .sort-arrow.descending {
 	background-image: url();
-	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/downsimple.png', sizingMethod='scale');
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='index.php?theme=USERTHEME&extern=images/widgets/downsimple.png', sizingMethod='scale');
 }

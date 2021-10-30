@@ -1,23 +1,16 @@
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 var windowd = document.getElementById('$myPid_eyeChess_Window_Content');
@@ -53,7 +46,7 @@ d=document
 A=E=d.all
 if(!E)event=0
 DM=d.getElementsByTagName||null
-if(DM||E){ windowd.innerHTML += '<img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" id="PI" name="PI" width="47" height="48" />';
+if(DM||E){ windowd.innerHTML += '<img src="index.php?theme=' + USERTHEME + '&extern=$imagesDir/0.png" id="PI" name="PI" width="47" height="48" />';
 A=(E||d.getElementsByTagName('img'))
 Ic=A['PI'].style}cp=function(a,b){return b[0]-a[0]}
 function Z(c,U,C,s,e,A,B,K){var z=-1,C=-C,V=8-U,b=Al,r=R,S,E=r[e],g,d
@@ -207,11 +200,11 @@ function dr(e){e=e||event
 Ic.left=(e.clientX+1)+'px'
 Ic.top=(e.clientY-4)+'px'}
 function O(x,y,z){if((A||x!='PI')&&z)x='i'+(P?119-x:x)
-d.images[x].src='index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/'+y+'.png'}
+d.images[x].src='index.php?theme=' + USERTHEME + '&extern=$imagesDir/'+y+'.png'}
 h='<table cellpadding="4" class="eyeChess_t">'
 for(y=90;y>10;y-=10){h+='<tr>'
 for(x=0;x<10;x++){z=y+x
-if(x&&x<9){h+=('<td class="'+(x+(y/10)&1?'eyeChess_b':'eyeChess_w')+'"><span onclick="B(P?119-'+z+':'+z+');" style="cursor: pointer;"><img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" width="0" height="48" border="0"><img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" width="47" height="48" name="i'+z+'" border="0" /><img src="index.php?version='+EXTERN_CACHE_VERSION+'&theme=1&extern=$imagesDir/0.png" width="0" height="48" border="0" /></span></td>\n')}}h+='</tr>\n'}h+='</table>'
+if(x&&x<9){h+=('<td class="'+(x+(y/10)&1?'eyeChess_b':'eyeChess_w')+'"><span onclick="B(P?119-'+z+':'+z+');" style="cursor: pointer;"><img src="index.php?theme=' + USERTHEME + '&extern=$imagesDir/0.png" width="0" height="48" border="0"><img src="index.php?theme=' + USERTHEME + '&extern=$imagesDir/0.png" width="47" height="48" name="i'+z+'" border="0" /><img src="index.php?theme=' + USERTHEME + '&extern=$imagesDir/0.png" width="0" height="48" border="0" /></span></td>\n')}}h+='</tr>\n'}h+='</table>'
 windowd.innerHTML += h;
 Rf(0);
 windowd.innerHTML += '<form name="FF"><div style="text-align: center;"><table class="eyeChess_Table" border="0"><tr><td></td><td><textarea name="b" style="margin-top:5px;margin-left:5px;height:457px;" cols="12" rows="24" class="eyeTextarea">$lang:Movements:</textarea></td></tr></table><input type="button" class="eyeButtonClass" value="$lang:Undo" class="eyeButton" style="margin-top: 6px; position:absolute; top:475px; left:400px;" onclick="Gb();" /><div class="eyeChess_Text" style="margin-top: 15px;">$lang:Next pawn becomes: <select name="h" class="eyeSelect"><option selected="selected">$lang:Queen</option><option>$lang:Bishop</option><option>$lang:Knight</option><option>$lang:Rook</option></select> &nbsp; $lang:Computer level: <select class="eyeSelect" name="i"><option>$lang:Easy</option><option selected="selected">$lang:Middling</option><option>$lang:Slow</option></select></div></div></form>';

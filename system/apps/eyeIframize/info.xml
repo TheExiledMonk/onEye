@@ -3,9 +3,9 @@
 	<category>Networking</category>
 	<version>1.9</version>
 	<description>Utility to run an url as Iframe</description>
-	<author>eyeOS Team</author>
+	<author>oneye Team</author>
 	<license>AGPL</license>
 	<type>Application</type>
-	<icon>index.php?theme=1&amp;extern=icons/48x48/eyeNav.png</icon>
+	<icon>index.php?theme=USERTHEME&amp;extern=icons/48x48/eyeNav.png</icon>
 	<openWith>1</openWith>
 </package>

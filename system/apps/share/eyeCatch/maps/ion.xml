@@ -28,7 +28,7 @@
 	<holes>
 		<hole>
 			<className>eyeCatch_ion_hole_top_left</className>
-			<message></message>
+			<message />
 			<left>0</left>
 			<top>0</top>
 			<width>165</width>
@@ -36,7 +36,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_top_center</className>
-			<message></message>
+			<message />
 			<left>165</left>
 			<top>0</top>
 			<width>210</width>
@@ -44,7 +44,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_top_right</className>
-			<message></message>
+			<message />
 			<left>375</left>
 			<top>0</top>
 			<width>175</width>
@@ -52,7 +52,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_left_top</className>
-			<message></message>
+			<message />
 			<left>0</left>
 			<top>30</top>
 			<width>30</width>
@@ -60,7 +60,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_left_bottom</className>
-			<message></message>
+			<message />
 			<left>0</left>
 			<top>260</top>
 			<width>30</width>
@@ -68,7 +68,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_center</className>
-			<message></message>
+			<message />
 			<left>155</left>
 			<top>205</top>
 			<width>10</width>
@@ -76,7 +76,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_center</className>
-			<message></message>
+			<message />
 			<left>373</left>
 			<top>205</top>
 			<width>10</width>
@@ -84,7 +84,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_right_top</className>
-			<message></message>
+			<message />
 			<left>520</left>
 			<top>30</top>
 			<width>30</width>
@@ -92,7 +92,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_right_bottom</className>
-			<message></message>
+			<message />
 			<left>520</left>
 			<top>260</top>
 			<width>30</width>
@@ -100,7 +100,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_bottom_left</className>
-			<message></message>
+			<message />
 			<left>0</left>
 			<top>420</top>
 			<width>165</width>
@@ -108,7 +108,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_bottom_center</className>
-			<message></message>
+			<message />
 			<left>165</left>
 			<top>435</top>
 			<width>210</width>
@@ -116,7 +116,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_ion_hole_bottom_right</className>
-			<message></message>
+			<message />
 			<left>375</left>
 			<top>420</top>
 			<width>175</width>
@@ -126,7 +126,7 @@
 	<enemies>
 		<enemy>
 			<className>eyeCatch_ion_enemy1</className>
-			<message></message>
+			<message />
 			<left>317</left>
 			<top>60</top>
 			<width>44</width>
@@ -136,7 +136,7 @@
 		</enemy>
 		<enemy>
 			<className>eyeCatch_ion_enemy2</className>
-			<message></message>
+			<message />
 			<left>386</left>
 			<top>339</top>
 			<width>88</width>
@@ -146,7 +146,7 @@
 		</enemy>
 		<enemy>
 			<className>eyeCatch_ion_enemy3</className>
-			<message></message>
+			<message />
 			<left>70</left>
 			<top>320</top>
 			<width>44</width>
@@ -156,7 +156,7 @@
 		</enemy>
 		<enemy>
 			<className>eyeCatch_ion_enemy4</className>
-			<message></message>
+			<message />
 			<left>70</left>
 			<top>70</top>
 			<width>44</width>

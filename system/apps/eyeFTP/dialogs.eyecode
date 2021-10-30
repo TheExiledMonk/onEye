@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/hosts'.EYE_CODE_EXTENSION);
@@ -26,16 +19,16 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/hosts'.EYE_CODE_EXTENSION);
 /*********************************************************************************************/
 /*   IMAGES URL                                                                              */
 /*********************************************************************************************/
-define('EYEFTP_IMG_CREATEFOLDERDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/48x48/folder.png');
-define('EYEFTP_IMG_RENAMEDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/48x48/rename.png');
-define('EYEFTP_IMG_DELETEDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/48x48/q.png');
-define('EYEFTP_IMG_UPLOADDLG_ICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/48x48/upload.png');
+define('EYEFTP_IMG_CREATEFOLDERDLG_ICON', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/folder.png');
+define('EYEFTP_IMG_RENAMEDLG_ICON', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/rename.png');
+define('EYEFTP_IMG_DELETEDLG_ICON', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/q.png');
+define('EYEFTP_IMG_UPLOADDLG_ICON', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/upload.png');
 /*********************************************************************************************/
 
 
 /**
  * Creates a dialog box with a textfield in order the user to type the name of the new folder to create
- * 
+ *
  * @see eyeFTP_on_eyeFTP_newFolder_createFolder_BTN()
  */
 function showCreateFolderDialog() {
@@ -58,7 +51,7 @@ function showCreateFolderDialog() {
 
 /**
  * Creates a dialog box with a textfield in order the user to type the new name of the selected file/folder
- * 
+ *
  * @param array $params
  * @see eyeFTP_on_eyeFTP_rename_rename_BTN()
  */
@@ -84,7 +77,7 @@ function showRenameDialog($params = '') {
 
 /**
  * Creates a dialog box asking user for confirmation of file/folder deletion
- * 
+ *
  * @param array $params
  * @see eyeFTP_on_eyeFTP_delete_deleteYes_BTN()
  * @see eyeFTP_on_eyeFTP_delete_deleteNo_BTN()
@@ -110,8 +103,8 @@ function showConfirmDeleteDialog($params = '') {
 
 /**
  * Creates a dialog box with a file input in order the user to select a file to upload
- * 
- * @see 
+ *
+ * @see
  */
 function showUploadDialog($params=null) {
 	global $checknum;
@@ -139,6 +132,7 @@ function showUploadDialog($params=null) {
 		'scroll' => 1
 	));
 	$myFrame->show();
+	$myFrame->focus();
 
 	$myHidden = new Hidden(array(
 		'name' => 'eyeFTP_upload_path_HID',

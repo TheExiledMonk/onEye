@@ -1,3 +1,18 @@
+/*
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
+
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
+
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
+*/
+
 img {
 	border: 0;
 }
@@ -28,15 +43,15 @@ ul.mktree li.liOpen .bullet, ul.mktree li.liClosed .bullet, ul.mktree li.liBulle
 }
 
 ul.mktree li.liOpen .bullet {
-	background: url('index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=icons/16x16/folder_open.png') center left no-repeat;
+	background: url('index.php?theme=USERTHEME&extern=icons/16x16/folder_open.png') center left no-repeat;
 }
 
 ul.mktree li.liClosed .bullet {
-	background: url('index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=icons/16x16/folder.png') center left no-repeat;
+	background: url('index.php?theme=USERTHEME&extern=icons/16x16/folder.png') center left no-repeat;
 }
 
 ul.mktree li.liBullet .bullet {
-	background: url('index.php?version=EXTERN_CACHE_VERSION&theme=1&extern=images/widgets/bullet.gif') center left no-repeat;
+	background: url('index.php?theme=USERTHEME&extern=images/widgets/bullet.gif') center left no-repeat;
 	cursor: default;
 }
 
@@ -76,6 +91,7 @@ body, html {
 	scrollbar-darkshadow-color: #ffffff;
 	scrollbar-arrow-color: #666666;
 	scrollbar-track-color: #f1f1f1;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 #background {
@@ -92,6 +108,10 @@ body, html, #background, #eyeApps, #eyeScreen, #eyecursor, #eyeWallpaper, #eyeWi
 body, html, #background, #eyeScreen, #eyeWallpaper {
 	min-height: 100%;
 	min-width: 100%;
+}
+
+textarea {
+	resize: none;
 }
 
 .calendar_calendarBody {
@@ -152,7 +172,7 @@ body, html, #background, #eyeScreen, #eyeWallpaper {
 	width: 100%;
 }
 
-.calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday {
+.calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday, .calendar_weekEnd, .calendar_pre, .calendar_rest {
 	font-family: Verdana,Arial,sans-serif,FreeSans;
 	font-size: 10px;
 	height: 90%;

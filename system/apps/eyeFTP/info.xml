@@ -2,9 +2,9 @@
 	<name>FTP Client</name>
 	<category>Networking</category>
 	<version>3.3.0-1</version>
-	<description>FTP client for eyeOS.</description>
+	<description>FTP client for oneye.</description>
 	<author>Nanawel [nanawel@eyeos.org]</author>
 	<license>AGPL</license>
 	<type>Application</type>
-	<icon>index.php?extern=icons/48x48/eyeFTP.png&amp;theme=1</icon>
+	<icon>index.php?theme=USERTHEME&amp;extern=icons/48x48/eyeFTP.png</icon>
 </package>

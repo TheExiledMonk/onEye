@@ -1,5 +1,5 @@
 <eyeNav>
-	<home>http://eyeos.org/navigator/</home>
+	<home>https://oneye-project.org/</home>
 	<plugin>iframe</plugin>
 	<sidebar>1</sidebar>
 	<bookmarks>
@@ -7,71 +7,44 @@
 		<bookmark>
 			<id>1</id>
 			<type>folder</type>
-			<name>eyeos</name>
+			<name>oneye</name>
 			<bookmark>
 				<name>Website</name>
 				<id>2</id>
-				<url>http://eyeos.org/</url>
-				<type>url</type>
-			</bookmark>
-			<bookmark>
-				<name>Blog</name>
-				<id>3</id>
-				<url>http://blog.eyeos.org/</url>
+				<url>https://oneye-project.org/</url>
 				<type>url</type>
 			</bookmark>
 			<bookmark>
 				<name>Forums</name>
 				<id>4</id>
-				<url>http://forums.eyeos.org/</url>
-				<type>url</type>
-			</bookmark>
-			<bookmark>
-				<name>Wiki</name>
-				<id>5</id>
-				<url>http://wiki.eyeos.org/</url>
+				<url>https://forums.oneye-project.org/</url>
 				<type>url</type>
 			</bookmark>
 		</bookmark>
 	</bookmarks>
 	<searches>
 		<title>Search</title>
-		<default>http://google.com/search?q=%s</default>
+		<default>https://www.bing.com/search?q=%s</default>
 		<category>
 			<name>Internet</name>
 			<link>
-				<name>Google</name>
-				<url>http://google.com/search?q=%s</url>
+				<name>Bing</name>
+				<url>https://www.bing.com/search?q=%s</url>
 			</link>
-			<link>
-				<name>Live.com</name>
-				<url>http://search.live.com/results.aspx?q=%s</url>
-			</link>
-		</category>
-		<category>
-			<name>Images</name>
 			<link>
 				<name>Google</name>
-				<url>http://images.google.com/images?q=%s</url>
-			</link>
-			<link>
-				<name>Live.com</name>
-				<url>http://search.live.com/images/results.aspx?q=%s</url>
-			</link>
-			<link>
-				<name>Flickr</name>
-				<url>http://flickr.com/search/?q=%s</url>
+				<url>https://www.google.com/custom?q=%s</url>
 			</link>
 		</category>
 		<category>
 			<name>Knowledge</name>
 			<link>
 				<name>Wikipedia</name>
-				<url>http://en.wikipedia.org/wiki/Special:Search?search=%s</url>
+				<url>https://en.wikipedia.org/wiki/Special:Search?search=%s</url>
 			</link>
 			<link>
 				<name>Wiktionary</name>
-				<url>http://en.wiktionary.org/wiki/Special:Search?search=%s</url>
+				<url>https://en.wiktionary.org/wiki/Special:Search?search=%s</url>
 			</link>
 		</category>
 	</searches>

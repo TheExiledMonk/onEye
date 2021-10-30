@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeCatch_on_ChooseMap($params = '') {
@@ -54,7 +47,7 @@ function eyeCatch_on_ChooseMap($params = '') {
 	if (is_array($files)) {
 		foreach ($files as $file) {
 			$xml = eyeXML('getXMLfile',array($file));
-			$mySortabletable->addRow(array(utf8_basename($file,'.xml'),$xml['map'][0]['infos'][0]['name'][0] . ' ' . $xml['map'][0]['infos'][0]['version'][0],$xml['map'][0]['infos'][0]['author'][0]));
+			$mySortabletable->addRow(array(basename($file,'.xml'),$xml['map'][0]['infos'][0]['name'][0] . ' ' . $xml['map'][0]['infos'][0]['version'][0],$xml['map'][0]['infos'][0]['author'][0]));
 		}
 	}
 	$currentUser = $oldUser;
@@ -68,9 +61,9 @@ function eyeCatch_on_ChooseMap($params = '') {
 	));
 	$myToolbar->show();
 	eyeWidgets('serialize',array($myToolbar));
-	$myToolbar->addItem('PlayMap','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/next.png','Play Map',array($mySortabletable));
+	$myToolbar->addItem('PlayMap','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/next.png','Play Map',array($mySortabletable));
 	$myToolbar->addLine();
-	$myToolbar->addItem('Fullscreen','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+	$myToolbar->addItem('Fullscreen','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fullScreen.png','Full Screen','',1);
 }
 
 function eyeCatch_on_PlayMap($params = '') {
@@ -83,7 +76,7 @@ function eyeCatch_on_PlayMap($params = '') {
 		if (is_object($GLOBALS['eyeCatch_Sortabletable'])) {
 			$GLOBALS['eyeCatch_Sortabletable']->remove();
 		}
-		eyex('rawjs',array('js' => 'if (!document.getElementById("eyeCatch_' . $map . '")) { dhtmlLoadCSS("index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=css/apps/eyeCatch/' . $map . '.css","eyeCatch_' . $map . '"); }'));
+		eyex('rawjs',array('js' => 'if (!document.getElementById("eyeCatch_' . $map . '")) { dhtmlLoadCSS("index.php?theme=' . $_SESSION['usertheme'] . '&extern=css/apps/eyeCatch/' . $map . '.css","eyeCatch_' . $map . '"); }'));
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		$xml = eyeXML('getXMLfile',array(EYE_ROOT . '/' . APP_DIR . '/' . APP_CONF_SHARE . '/eyeCatch/maps/' . $map . '.xml'));
@@ -100,13 +93,13 @@ function eyeCatch_on_PlayMap($params = '') {
 		eyex('runjs',array('js' => 'eyeCatch.CreatePlayer("' . $myPid . '_eyeCatch_Game",%s,' . intval($xml['map'][0]['player'][0]['left'][0]) . ',' . intval($xml['map'][0]['player'][0]['top'][0]) . ',' . intval($xml['map'][0]['player'][0]['width'][0]) . ',' . intval($xml['map'][0]['player'][0]['height'][0]) . ');','tokens' => array($xml['map'][0]['player'][0]['className'][0])));
 		foreach ($xml['map'][0]['holes'][0]['hole'] as $hole) {
 			if (!$hole['message'][0]) {
-				$hole['message'][0] = 'You felt into a hole after %s seconds.';
+				$hole['message'][0] = 'You fell into a hole after %s seconds.';
 			}
 			eyex('runjs',array('js' => 'eyeCatch.AddHole("' . $myPid . '_eyeCatch_Game",%s,%s,' . intval($hole['left'][0]) . ',' . intval($hole['top'][0]) . ',' . intval($hole['width'][0]) . ',' . intval($hole['height'][0]) . ');','tokens' => array($hole['className'][0],i18n('translate',array('<div style="font-weight: bold; text-align: center;">' . $hole['message'][0] . '</div>')))));
 		}
 		foreach ($xml['map'][0]['enemies'][0]['enemy'] as $enemy) {
 			if (!$enemy['message'][0]) {
-				$enemy['message'][0] = 'You got catched after %s seconds.';
+				$enemy['message'][0] = 'You were caught after %s seconds.';
 			}
 			eyex('runjs',array('js' => 'eyeCatch.AddEnemy("' . $myPid . '_eyeCatch_Game",%s,%s,' . intval($enemy['left'][0]) . ',' . intval($enemy['top'][0]) . ',' . intval($enemy['width'][0]) . ',' . intval($enemy['height'][0]) . ',' . intval($enemy['movex'][0]) . ',' . intval($enemy['movey'][0]) . ');','tokens' => array($enemy['className'][0],i18n('translate',array('<div style="font-weight: bold; text-align: center;">' . $enemy['message'][0] . '</div>')))));
 		}
@@ -118,10 +111,10 @@ function eyeCatch_on_PlayMap($params = '') {
 		));
 		$myToolbar->show();
 		eyeWidgets('serialize',array($myToolbar));
-		$myToolbar->addItem('ChooseMap','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/details.png','Choose Map');
-		eyex('runjs',array('js' => 'addItemToBar("' . $myPid . '_eyeCatch_Toolbar","PlayMap","index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/refresh.png",%s,"' . base64_encode('eyeParam("eyeCatch_Sortabletable","' . $map . '")') . '",' . $checknum . ',22,22,0,' . $myPid . ');','tokens' => array(i18n('translate',array('Restart Game')))));
+		$myToolbar->addItem('ChooseMap','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/details.png','Choose Map');
+		eyex('runjs',array('js' => 'addItemToBar("' . $myPid . '_eyeCatch_Toolbar","PlayMap","index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/refresh.png",%s,"' . base64_encode('eyeParam("eyeCatch_Sortabletable","' . $map . '")') . '",' . $checknum . ',22,22,0,' . $myPid . ');','tokens' => array(i18n('translate',array('Restart Game')))));
 		$myToolbar->addLine();
-		$myToolbar->addItem('Fullscreen','index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+		$myToolbar->addItem('Fullscreen','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fullScreen.png','Full Screen','',1);
 	} else {
 		eyex('messageBox',array('content' => 'Please select a map first.'));
 	}

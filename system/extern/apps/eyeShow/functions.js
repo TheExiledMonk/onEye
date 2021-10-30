@@ -165,8 +165,8 @@ function chooseColor(func, scope, button) {
 	div.id = 'divcolor';
 
 	div.scope = scope;
-	div.style.marginLeft = '484px'; 
-	div.style.marginTop = '90px'; 
+	div.style.marginLeft = '484px';
+	div.style.marginTop = '90px';
 	div.style.zIndex = '1000000';
 
 	var div2 = document.createElement('div');
@@ -1094,20 +1094,6 @@ function chooseColor(func, scope, button) {
 document.body.appendChild(div);
 
 }
-/**
- *  lets the user pick an image and then calls a function passing it the chosen image's URL
- *  	func: function to call when the image is selected (func is passed the image's URL as the first argument)
- */
-function chooseImage(func, scope, button) {
-//	var url = prompt("Enter the url of the image:", "images/sample.png");
-//	var newWindow = window.open('test.php','clipart','width=500;height=400');
-// 	func.call(scope, url);
-
-window.parent.sendMsg($checknum,'Clipart','');
-window.parent.scope = scope;
-window.parent.callback = func;
-
-}
 
 function chooseImageEye(func, scope, button) {
 //	var url = prompt("Enter the url of the image:", "images/sample.png");
@@ -1144,4 +1130,3 @@ function lang(text) {
 	}
 	return value;
 }
- 

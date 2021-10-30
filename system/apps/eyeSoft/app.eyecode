@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeSoft_run($params=null) {
@@ -41,7 +34,7 @@ function eyeSoft_run($params=null) {
 
 	$myTextBox = new Textbox(array('name'=>'search','father'=>'eyeSoft_Content',
 		'x'=>90,'y'=>15,'width'=>180,'horiz'=>1));
-	$myTextBox->show(); 
+	$myTextBox->show();
 	$myTextBox->addEnterEventMsg('search');
 
 	$myButton = new Button(array('name'=>'doSearch','father'=>'eyeSoft_Content',
@@ -54,7 +47,7 @@ function eyeSoft_run($params=null) {
 	$myBox->show();
 
 	$myHeader = array('App Name','Version','Installed');
-	$sortypes = array("String","Number","String");
+	$sortypes = array("String","String","String");
 
 	$myTable = new Sortabletable(array('name'=>'table_1','father'=>'eyeSoftHidden_Content',
 		'sortypes'=>$sortypes,'theader'=>$myHeader,'x'=>5,'y'=>0,'width'=>415,'height'=>330));
@@ -66,7 +59,7 @@ function eyeSoft_run($params=null) {
 		'signal'=>'Install',
 		'caption'=>'Install',
 		'x'=>20,'y'=>15,
-		'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/plus.png'
+		'img'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/plus.png'
 	));
 	$myButton->addFriend($myTable);
 	$myButton->show();
@@ -77,7 +70,7 @@ function eyeSoft_run($params=null) {
 		'signal'=>'Update',
 		'caption'=>'Update',
 		'x'=>110,'y'=>15,
-		'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/refresh.png'
+		'img'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/refresh.png'
 	));
 	$myButton->show();
 
@@ -87,7 +80,7 @@ function eyeSoft_run($params=null) {
 		'signal'=>'Uninstall',
 		'caption'=>'Uninstall',
 		'x'=>200,'y'=>15,
-		'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/minus.png'
+		'img'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/minus.png'
 	));
 	$myButton->addFriend($myTable);
 	$myButton->show();
@@ -98,7 +91,7 @@ function eyeSoft_run($params=null) {
 		'signal'=>'Help',
 		'caption'=>'Help',
 		'x'=>300,'y'=>15,
-		'img'=>'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/16x16/eyeHelp.png'
+		'img'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/eyeHelp.png'
 	));
 	$myButton->show();
 

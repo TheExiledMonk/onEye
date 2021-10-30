@@ -28,7 +28,7 @@
 	<holes>
 		<hole>
 			<className>eyeCatch_escapa_hole</className>
-			<message></message>
+			<message />
 			<left>0</left>
 			<top>0</top>
 			<width>450</width>
@@ -36,7 +36,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_escapa_hole</className>
-			<message></message>
+			<message />
 			<left>0</left>
 			<top>50</top>
 			<width>50</width>
@@ -44,7 +44,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_escapa_hole</className>
-			<message></message>
+			<message />
 			<left>400</left>
 			<top>50</top>
 			<width>50</width>
@@ -52,7 +52,7 @@
 		</hole>
 		<hole>
 			<className>eyeCatch_escapa_hole</className>
-			<message></message>
+			<message />
 			<left>0</left>
 			<top>400</top>
 			<width>450</width>
@@ -62,7 +62,7 @@
 	<enemies>
 		<enemy>
 			<className>eyeCatch_escapa_enemy</className>
-			<message></message>
+			<message />
 			<left>270</left>
 			<top>60</top>
 			<width>60</width>
@@ -72,7 +72,7 @@
 		</enemy>
 		<enemy>
 			<className>eyeCatch_escapa_enemy</className>
-			<message></message>
+			<message />
 			<left>300</left>
 			<top>330</top>
 			<width>100</width>
@@ -82,7 +82,7 @@
 		</enemy>
 		<enemy>
 			<className>eyeCatch_escapa_enemy</className>
-			<message></message>
+			<message />
 			<left>70</left>
 			<top>320</top>
 			<width>30</width>
@@ -92,7 +92,7 @@
 		</enemy>
 		<enemy>
 			<className>eyeCatch_escapa_enemy</className>
-			<message></message>
+			<message />
 			<left>70</left>
 			<top>70</top>
 			<width>60</width>

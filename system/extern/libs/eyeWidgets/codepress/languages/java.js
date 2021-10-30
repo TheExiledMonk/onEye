@@ -1,7 +1,7 @@
 /*
  * CodePress regular expressions for Java syntax highlighting
  */
- 
+
 // Java
 Language.syntax = [
 	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>'}, // strings double quote

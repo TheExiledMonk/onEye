@@ -1,28 +1,21 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
-	Error code library for eyeOS
+	Error code library for oneye
 */
 
 function lib_errorCodes_loadCodes($params=null){
@@ -42,8 +35,9 @@ function lib_errorCodes_loadCodes($params=null){
 	define('VFS_FILE_ALREADY_EXISTS',-102);
 	define('VFS_FILE_NOT_EXISTS',-103);
 	define('VFS_DIR_NOT_EXISTS',-104);
-	define('VFS_FILE_NOT_FOUND',105);
-	define('VFS_INVALID_CHARS',106);
+	define('VFS_FILE_NOT_FOUND',-105);
+	define('VFS_INVALID_CHARS',-106);
+	define('VFS_QUOTA_EXCEEDED',-107);
 
 	//Proc service errorCodes -200/-299
 	define('PROC_APP_NOT_ARE_RUNNING',-200);
@@ -58,10 +52,6 @@ function lib_errorCodes_loadCodes($params=null){
 	define('UM_USER_NOT_EXISTS',-303);
 	define('UM_USER_IS_DISABLED',-304);
 
-	//log service errorCodes -400/-499
-	define('EYEOS_LOG_BAD_VALUE',-400);
-	define('EYEOS_LOG_SERVICE_IGNORED',-401);
-
 	//php native errorCodes -500/599
 	define('PHP_ERROR_ON_FOPEN',-500);
 	define('PHP_ERROR_ON_UNLINK',-501);
@@ -71,7 +61,7 @@ function lib_errorCodes_loadCodes($params=null){
 
 /**
 * Sets the error code to a given value.
-* 
+*
 * @param $params array(ecode)
 * @param $ecode Numerical value of the new error code.
 * @return If no error code is specified, returns false. Else, this
@@ -92,7 +82,7 @@ function lib_errorCodes_setErrorCode($params) {
 
 /**
 * Gets the numerical value of the last error occurred.
-* 
+*
 * @return This function always returns the value of the global
 *	'errorCode' variable. It can be null if no error has been
 *	raised or an integer number otherwise.

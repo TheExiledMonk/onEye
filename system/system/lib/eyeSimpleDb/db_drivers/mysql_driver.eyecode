@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
@@ -30,7 +23,7 @@ function get_db_object(){
 }
 
 /*
-*This class i a filled interface for mysql database.   
+*This class i a filled interface for mysql database.
 */
 class dbDriver{
 
@@ -39,7 +32,7 @@ class dbDriver{
 	var $result;
 	var $connEncoding = 'utf8';//Our default encoding is utf8
 
-	//Constructor, check if mysql function are available 
+	//Constructor, check if mysql function are available
 	function dbDriver(){
 		if(!function_exists('mysql_connect')){
 			errorCodes('setErrorCode',array(DB_NO_SUPPORT));
@@ -47,7 +40,7 @@ class dbDriver{
 		}
 	}
 
-	//Do the necesary for communicate with database (in dbDriver for txt open the file etc 
+	//Do the necesary for communicate with database (in dbDriver for txt open the file etc
 	function connect($params){
 		$host = $params['host'];
 		$login = $params['login'];

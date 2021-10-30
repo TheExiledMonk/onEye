@@ -23,13 +23,13 @@
 <html>
 <head>
   <title>Simple Spreadsheet</title>
-<!-- 
+<!--
 	This website is brought to you by Simple Groupware
 	Simple Groupware is an open source Groupware and Web Application Framework created by Thomas Bley and licensed under GNU GPL v2.
 	Simple Groupware is copyright 2002-2009 by Thomas Bley.	Extensions and translations are copyright of their respective owners.
 	More information and documentation at http://www.simple-groupware.de/
 -->
-  <link media="all" href="index.php?version=$EXTERN_CACHE_VERSION&extern=apps/eyeSheets/styles.css" rel="stylesheet" type="text/css" />
+  <link media="all" href="index.php?extern=apps/eyeSheets/styles.css" rel="stylesheet" type="text/css" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <script src="index.php?extern=apps/eyeSheets/getjs.eyecode&type=dynamic&params[]=$myPid&params[]=$checknum" type="text/javascript"></script>
 </head>
@@ -45,7 +45,7 @@
 <script>
 var lang = "$userLang";
 loadScriptFile("index.php?extern=apps/eyeSheets/translations/"+lang+".js");
-if($useCode == 0) { // eyeOS
+if($useCode == 0) { // oneye
 	loadSheetFromUrl("index.php?msg=getSheet&checknum=$checknum");
 } else {
 	appendCode("index.php?msg=getFile&checknum=$checknum");

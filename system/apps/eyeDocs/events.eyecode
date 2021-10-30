@@ -1,43 +1,84 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 require_once(EYE_ROOT.'/'.APP_DIR.'/eyeDocs/lib'.EYE_CODE_EXTENSION);
 
 function eyeDocs_on_Open($params=null) {
+	/*$content = $GLOBALS['fileContent']->text;
+	$crc = $params['md5'][0];
+	$filecrc = md5($content);
+	if($filecrc != $crc) {
+		eyeX('messageBox',array('content' => 'Error - Document not saved. Please try again.'));
+		return;
+	}*/
+	$md5 = md5($GLOBALS['fileContent']->text);
+	if ((isset($GLOBALS['fileMD5']) === false || $md5 != $GLOBALS['fileMD5']->text) && !empty($GLOBALS['fileContent']->text)) {
+		eyex('messageBox',array(
+			'content' => 'Do you want to save changes?',
+			'type' => 3,
+			'title' => 'Delete warning',
+			'win_name' => 'delete_warning',
+			'win_style' => TITLE + MIN + CLOSE,
+			'btn1_capt' => 'Save',
+			'btn1_name' => 'Open_Save',
+			'btn2_capt' => 'Don\'t save',
+			'btn2_name' => 'Open_DoNotSave',
+			'btn3_capt' => 'Cancel',
+			'btn3_name' => 'Open_Cancel',
+			'img' => '?',
+			'win_removepid' => 0
+		));
+	} else {
+		eyeDocs_on_Open_DoNotSave();
+	}
+}
+
+function eyeDocs_on_Open_Cancel() {
+	if (is_object($GLOBALS['delete_warning'])) {
+		$GLOBALS['delete_warning']->close();
+	}
+}
+
+function eyeDocs_on_Open_DoNotSave() {
 	global $checknum;
-	$options = array(
+	
+	eyeDocs_on_Open_Cancel();
+	
+	proc('launch', array('eyeDialog', array(
 		EYEDIALOG_TYPE_OPENFILE,
 		'SelectFileOpen',
 		$checknum,
 		'',
-		array(
+		array (
 			'All files' => '*.*',
-			'eyeOS document file' => '*.eyedoc',
+			'oneye document file' => '*.eyedoc',
 			'MS Word document file' => '*.doc',
 			'Open Document Text file' => '*.odt'
 		)
-	);
-	proc('launch',array('eyeDialog',$options));
+	)));
+}
+
+function eyeDocs_on_Open_Save() {
+	eyeDocs_on_Open_Cancel();
+	
+	if (is_object($GLOBALS['filePath']) && $GLOBALS['filePath']->text) {
+		eyeDocs_saveFile($GLOBALS['fileContent']->text);
+	}
+	
+	eyeDocs_on_Open_DoNotSave();
 }
 
 function eyeDocs_on_SelectFileOpen($params=null) {
@@ -68,7 +109,7 @@ function eyeDocs_on_Save($params=null) {
 			$checknum,
 			'',
 			array(
-				'eyeOS document file' => '*.eyedoc',
+				'oneye document file' => '*.eyedoc',
 				'MS Word document file' => '*.doc',
 				'Open Document Text file' => '*.odt',
 				'All files' => '*.*'
@@ -86,8 +127,8 @@ function eyeDocs_on_SelectFileSave($params=null) {
 		}
 		$file = um('getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		//check if the extension is present
-		if(utf8_strtolower(utf8_substr($file,utf8_strlen($file)-utf8_strlen($params['fileType'][0])+1)) != utf8_strtolower(utf8_substr($params['fileType'][0],1))) {
-			$file .= utf8_substr($params['fileType'][0],1);
+		if (strtolower(substr($file, -strlen($params['fileType'][0]) + 1)) !== strtolower(substr($params['fileType'][0], 1))) { // utf8
+			$file .= /* utf8 */ substr($params['fileType'][0], 1);
 		}
 		eyeDocs_setCurrentFile($file);
 		$content = $GLOBALS['fileContent']->text;
@@ -110,7 +151,7 @@ function eyeDocs_on_SaveAs($params=null) {
 		$checknum,
 		'',
 		array(
-			'eyeOS document files' => '*.eyedoc',
+			'oneye document files' => '*.eyedoc',
 			'Microsoft Word file' => '*.doc',
 			'Open Document Text file' => '*.odt',
 			'All files' => '*.*'
@@ -135,7 +176,7 @@ function eyeDocs_on_Resize($params=null) {
 
 	//resize the textarea
 	//the second argument is to disable the shadow when resizing
-	$GLOBALS['fileContent']->setHeight($height,1); 
+	$GLOBALS['fileContent']->setHeight($height,1);
 	$GLOBALS['fileContent']->setWidth($width);
 }
 
@@ -153,7 +194,7 @@ function eyeDocs_on_Close($params=null) {
 		return;
 	}
 	$md5 = md5($GLOBALS['fileContent']->text);
-	if($md5 != $GLOBALS['fileMD5']->text && !empty($GLOBALS['fileContent']->text)) {
+	if ((isset($GLOBALS['fileMD5']) === false || $md5 != $GLOBALS['fileMD5']->text) && !empty($GLOBALS['fileContent']->text)) {
 		eyex('messageBox',array(
 			'content' => 'Do you want to save changes?',
 			'type' => 3,
@@ -196,7 +237,7 @@ function eyeDocs_on_yDelete(){
 			$checknum,
 			'',
 			array(
-				'eyeOS document file' => '*.eyedoc',
+				'oneye document file' => '*.eyedoc',
 				'MS Word document file' => '*.doc',
 				'Open Document Text file' => '*.odt',
 				'All files' => '*.*'
@@ -225,8 +266,8 @@ function eyeDocs_on_SelectFileSaveClose($params=null) {
 		}
 		$file = um('getCurrentUserDir') . FILES_USER_DIR . '/' . $file;
 		//check if the extension is present
-		if(utf8_strtolower(utf8_substr($file,utf8_strlen($file)-utf8_strlen($params['fileType'][0])+1)) != utf8_strtolower(utf8_substr($params['fileType'][0],1))) {
-			$file .= utf8_substr($params['fileType'][0],1);
+		if (strtolower(substr($file, -strlen($params['fileType'][0]) + 1)) !== strtolower(substr($params['fileType'][0], 1))) { // utf8
+			$file .= /* utf8 */ substr($params['fileType'][0], 1);
 		}
 		eyeDocs_setCurrentFile($file);
 		$content = $GLOBALS['fileContent']->text;

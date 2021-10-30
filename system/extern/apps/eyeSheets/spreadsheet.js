@@ -1,7 +1,7 @@
-// eyeOS
+// oneye
 var myPid = $myPid;
 var myChecknum = $checknum;
-var EXTERN_CACHE_VERSION = $EXTERN_CACHE_VERSION;
+var USERTHEME = '$usertheme';
 
 /**************************************************************************\
 	* Simple Groupware 0.532                                                   *
@@ -76,7 +76,7 @@ var saveMethod = "save('js')";
 var closeMethod = "";
 var isWriteable = true;
 var tab = String.fromCharCode(9);
-var printstyle = "index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=css/apps/eyeSheets/print.css";
+var printstyle = "index.php?theme=" + USERTHEME + "&extern=css/apps/eyeSheets/print.css";
 
 function trans(key) {
   if (strings[key]) return strings[key]; else return "["+key+"]";
@@ -283,19 +283,19 @@ function display() {
   var out = "";
   if (isWriteable) {
   	out += '<div class="blockbar">';
-	out += '<div class="blockbarItem" onclick="load(init_data); resetPath();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/filenew.png" /><div class="blockbarText">'+trans('New')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="loadCode();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/fileopen.png" /><div class="blockbarText">'+trans('Open')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="saveCode();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/filesave.png" /><div class="blockbarText">'+trans('Save')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="saveAs();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/filesaveas.png" /><div class="blockbarText">'+trans('Save As')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="load(init_data); resetPath();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/filenew.png" /><div class="blockbarText">'+trans('New')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="loadCode();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/fileopen.png" /><div class="blockbarText">'+trans('Open')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="saveCode();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/filesave.png" /><div class="blockbarText">'+trans('Save')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="saveAs();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/filesaveas.png" /><div class="blockbarText">'+trans('Save As')+'</div></div>';
 	out += '<span class="blockbarline" /></span>';
-	out += '<div class="blockbarItem" onclick="insertRow();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/newrow.png" /><div class="blockbarText">'+trans('Ins. Row')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="insertColumn();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/newcolumn.png" /><div class="blockbarText">'+trans('Ins. Column')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="deleteRow();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/deleterow.png" /><div class="blockbarText">'+trans('Del. Row')+'</div></div>';
-	out += '<div class="blockbarItem" onclick="deleteColumn();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/deletecolumn.png" /><div class="blockbarText">'+trans('Del. Column')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="insertRow();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/newrow.png" /><div class="blockbarText">'+trans('Ins. Row')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="insertColumn();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/newcolumn.png" /><div class="blockbarText">'+trans('Ins. Column')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="deleteRow();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/deleterow.png" /><div class="blockbarText">'+trans('Del. Row')+'</div></div>';
+	out += '<div class="blockbarItem" onclick="deleteColumn();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/deletecolumn.png" /><div class="blockbarText">'+trans('Del. Column')+'</div></div>';
 	out += '<span class="blockbarline" /></span>';
-	out += '<div class="blockbarItem" onclick="print();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/agt_print.png" /><div class="blockbarText">'+trans('Print')+'</div></div>';
-	out += '<div class="blockbarItem_right" onclick="help();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/help.png" /><div class="blockbarText">'+trans('Help')+'</div></div>';
-	out += '<div class="blockbarItem_right" onclick="fullScreen();" ><img class="blockbarImg" src="index.php?version=' + EXTERN_CACHE_VERSION + '&theme=1&extern=icons/22x22/fullScreen.png" /><div class="blockbarText">' + trans('Full Screen') + '</div></div>';
+	out += '<div class="blockbarItem" onclick="print();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/agt_print.png" /><div class="blockbarText">'+trans('Print')+'</div></div>';
+	out += '<div class="blockbarItem_right" onclick="help();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/help.png" /><div class="blockbarText">'+trans('Help')+'</div></div>';
+	out += '<div class="blockbarItem_right" onclick="fullScreen();" ><img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&extern=icons/22x22/fullScreen.png" /><div class="blockbarText">' + trans('Full Screen') + '</div></div>';
 	out += '</div>';
   }
   out += "<textarea id='focus' onfocus='this.blur();'></textarea><div id='header' class='header'><table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td nowrap>";
@@ -379,13 +379,13 @@ function display() {
   out += "<div class='footer' id='footer' onmouseover='getObj(\"status\").innerHTML=\"\";'>&nbsp;";
   if (allowPaging) {
     if (col0-cols>=0) {
-      out += "<a href='#' onclick='col0 -= cols; currCol -= cols; display(); return false;'><img border='0' src='index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=icons/16x16/back.png'></a> ";
-    } else out += "<img border='0' src='index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=icons/16x16/back.png'> ";
-    out += "<a href='#' onclick='col0 += cols; currCol += cols; display(); return false;'><img border='0' src='index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=icons/16x16/forward.png'></a> ";
+      out += "<a href='#' onclick='col0 -= cols; currCol -= cols; display(); return false;'><img border='0' src='index.php?theme=" + USERTHEME + "&extern=icons/16x16/back.png'></a> ";
+    } else out += "<img border='0' src='index.php?theme=" + USERTHEME + "&extern=icons/16x16/back.png'> ";
+    out += "<a href='#' onclick='col0 += cols; currCol += cols; display(); return false;'><img border='0' src='index.php?theme=" + USERTHEME + "&extern=icons/16x16/forward.png'></a> ";
     if (row0-rows>=0) {
-      out += "<a href='#' onclick='row0 -= rows; currRow -= rows; display(); return false;'><img border='0' src='index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=icons/16x16/restore.png'></a> ";
-    } else out += " <img border='0' src='index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=icons/16x16/restore.png'> ";
-    out += "<a href='#' onclick='row0 += rows; currRow += rows; display(); return false;'><img border='0' src='index.php?version=" + EXTERN_CACHE_VERSION + "&theme=1&extern=icons/16x16/download.png'></a> ";
+      out += "<a href='#' onclick='row0 -= rows; currRow -= rows; display(); return false;'><img border='0' src='index.php?theme=" + USERTHEME + "&extern=icons/16x16/restore.png'></a> ";
+    } else out += " <img border='0' src='index.php?theme=" + USERTHEME + "&extern=icons/16x16/restore.png'> ";
+    out += "<a href='#' onclick='row0 += rows; currRow += rows; display(); return false;'><img border='0' src='index.php?theme=" + USERTHEME + "&extern=icons/16x16/download.png'></a> ";
 
   }
   
@@ -429,11 +429,11 @@ function showHeaderFooter(show) {
 
 function previewValue() {
   var value = getObj("value").value;
-  if (!getObj("value").disabled && 
+  if (!getObj("value").disabled &&
 	 (value.length>25 || value.indexOf("\\n")!=-1 || value.indexOf("html:")==0)) {
     getObj("multiline").style.display = "inline";
 	//getObj("content").style.overflow = "hidden"; // needed for invisible cursor
-    if (getObj("multiline").contentWindow.update) { // eyeOS
+    if (getObj("multiline").contentWindow.update) { // oneye
 	  getObj("multiline").contentWindow.update();
 	}
   }
@@ -477,7 +477,7 @@ function manual() {
 
 function isWritable(style) {
   if (style.indexOf("readonly:true")==-1 && isWriteable) return true;
-  return false; 
+  return false;
 }
 
 // convert e.g. B3 to (1,2)
@@ -549,7 +549,7 @@ function load(code) {
   } else {
     try { eval(code); }
     catch (err) {
-      // alert(trans("Error loading data:")+" "+err); // eyeOS
+      // alert(trans("Error loading data:")+" "+err); // oneye
 	  return;
     }
 	window.registerFuncs = registerFuncs;
@@ -576,7 +576,7 @@ function load(code) {
       }
     }
     catch (err) {
-      // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\""); // eyeOS
+      // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\""); // oneye
 	  return;
     }
   }
@@ -618,7 +618,7 @@ function loadTSV(code) {
 function loadDbCells(code) {
   try { eval(code); }
   catch (err) {
-    // alert(trans("Error loading data:")+" "+err); // eyeOS
+    // alert(trans("Error loading data:")+" "+err); // oneye
 	return false;
   }
   // process 1 dimensional dbCells to 2 dimensional data
@@ -631,7 +631,7 @@ function loadDbCells(code) {
           cells[i-1][i2] = new Array(dbCells[i][i2]+"","","","");
   } } } }
   catch (err) {
-    // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\""); // eyeOS
+    // alert(trans("Error parsing data:")+" "+err+" i="+i+" cells=\""+dbCells[i]+"\""); // oneye
 	return false;
   }
   return cells;
@@ -760,40 +760,48 @@ function saveSGS() {
 function loadSheetFromUrl(location) {
   var script = document.createElement("script");
   script.type = "text/javascript";
-  if (window.addEventListener) {
-    window.addEventListener("load",function() { load("// dbCells"); },false);
-  } else {
-    script.onreadystatechange = function() { if (this.readyState == 'loaded') load("// dbCells"); }
-  }
+  script.onload = script.onreadystatechange = function (event) { /* oneye */
+	if (agent === 'msie') {
+		if (script.readyState === 'loaded' || script.readyState === 'complete') {
+			load('// dbCells');
+		}
+	} else if (agent === 'opera') {
+		if (typeof event !== 'string' && event.type === 'load') {
+			load('// dbCells');
+		}
+	} else if (typeof event !== 'string' && (event.type === 'load' || (event.type === 'readystatechange' && (event.target.readyState === 'complete' || event.target.readyState === 'loaded')))) {
+		load('// dbCells');
+	}
+  };
   script.src = location;
   document.getElementsByTagName("head").item(0).appendChild(script);
 }
 
-function resetPath() { // eyeOS
+function resetPath() { // oneye
 	window.parent.sendMsg($checknum,'resetPath','');
 }
 
-function saveCode() { // eyeOS
+function saveCode() { // oneye
 	window.parent.sendMsg($checknum,'saveFile','<arg1>' + Base64.encode(cellsToJS()) + '</arg1>');
 }
 
-function saveCodeClose() { // eyeOS
+function saveCodeClose() { // oneye
 	window.parent.sendMsg($checknum,'yDelete','<arg1>' + Base64.encode(cellsToJS()) + '</arg1>');
 }
 
-function saveAs() { // eyeOS
+function saveAs() { // oneye
 	window.parent.sendMsg($checknum,'saveAs','');
 }
 
-function loadCode() { // eyeOS
+function loadCode() { // oneye
 	window.parent.sendMsg($checknum,'openFile','');
 }
 
-function help() { // eyeOS
+function help() { // oneye
 	window.parent.sendMsg($checknum,'help','');
 }
 
-function fullScreen() { // eyeOS
+function fullScreen() { // oneye
 	window.parent.sendMsg($checknum,'fullScreen','');
 }
 
@@ -991,7 +999,7 @@ function paste() {
 	if (clipboard_mode=="cut") {
 	  for (var row=sRange[0]; row<=sRange[2]; row++) {
 	    for (var col=sRange[1]; col<=sRange[3]; col++) {
-		  if ((row < cRange[0] || row > cRange[2]) || 
+		  if ((row < cRange[0] || row > cRange[2]) ||
 		      (col < cRange[1] || col > cRange[3])) removeCell(row,col);
 	    }
 	  }
@@ -1005,7 +1013,7 @@ function paste() {
 	      copyCell(clipboard_row,clipboard_col,row,col);
 		}
 	  }
-      if (clipboard_mode=="cut" && (clipboard_row < cRange[0] || clipboard_row > cRange[2] || 
+      if (clipboard_mode=="cut" && (clipboard_row < cRange[0] || clipboard_row > cRange[2] ||
 		  clipboard_col < cRange[1] || clipboard_col > cRange[3])
 	  ) {
 	    removeCell(clipboard_row,clipboard_col);
@@ -1202,7 +1210,7 @@ function showCell(row,col,calls) {
     }
     try { eval("value"+cmd); }
     catch (err) {
-      // alert(trans("Error evaluating")+" "+buildColName(col)+(row+1)+" \""+value+"\"\n\n"+err+"\n\n"+trans("value")+cmd); // eyeOS
+      // alert(trans("Error evaluating")+" "+buildColName(col)+(row+1)+" \""+value+"\"\n\n"+err+"\n\n"+trans("value")+cmd); // oneye
     }
   }
   if (cells[row] && cells[row][col]) cells[row][col][3] = value;
@@ -1256,7 +1264,7 @@ function gotoCell(pos) {
 	  return;
 	}
   }
-  // alert(trans("Invalid cell.")); // eyeOS
+  // alert(trans("Invalid cell.")); // oneye
 }
 function editCell(row,col,keyCode) {
   active = "content";
@@ -1284,14 +1292,14 @@ function editCell(row,col,keyCode) {
     getObj("value").value = getCellsR(row,col,0);
   }
   if (!getObj("value").disabled) {
-    getObj("value").focus(); 
+    getObj("value").focus();
   } else {
-    getObj("styling").focus(); 
+    getObj("styling").focus();
   }
 }
 function copyCell(row,col,cRow,cCol) {
   if (!isWritable(getCellsR(cRow,cCol,1))) {
-    // alert(trans("Cannot edit: cell is marked as readonly.")); // eyeOS
+    // alert(trans("Cannot edit: cell is marked as readonly.")); // oneye
 	return;
   }
   if (row!=cRow || col!=cCol) {
@@ -1332,7 +1340,7 @@ function cancelCell() {
 }
 function removeCell(row,col) {
   if (!isWritable(getCellsR(row,col,1))) {
-    // alert(trans("Cannot edit: cell is marked as readonly.")); // eyeOS
+    // alert(trans("Cannot edit: cell is marked as readonly.")); // oneye
 	return;
   }
   setCellsR(row,col,0,"");
@@ -1430,7 +1438,7 @@ function htmlEscape(str,fill) {
   return str;
 }
 function handleErr(msg,url,l) {
-  // alert(trans("There was an error on this page.")+"\n\n"+trans("Error:")+" "+msg+"\n"+trans("Url")+": "+url+"\n"+trans("Line:")+" "+l); // eyeOS
+  // alert(trans("There was an error on this page.")+"\n\n"+trans("Error:")+" "+msg+"\n"+trans("Url")+": "+url+"\n"+trans("Line:")+" "+l); // oneye
   return true;
 }
 
@@ -1537,7 +1545,7 @@ function formatNumber(val) {
   } else output += number;
   if (val-number != 0) {
     output += Math.abs(val-number).toFixed(2).replace("0.",".");
-  }   
+  }
   return sign+output;
 }
 function param(str) {
@@ -1590,7 +1598,7 @@ function graph(type,title,data,keys,xtitle,ytitle,width,height) {
     else if (type=="pie") type = "p3";
     else if (type=="bar") type = "bvg";
     else if (type=="scatter") type = "s";
-// Check: linesteps, 
+// Check: linesteps,
 
   var url = "img:http://chart.apis.google.com/chart?cht="+param(type)+"&chtt="+param(title);
   if (type!="s") {

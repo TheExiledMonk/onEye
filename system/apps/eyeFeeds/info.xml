@@ -2,9 +2,9 @@
 	<name>RSS Feed Reader</name>
 	<category>Networking</category>
 	<version>1.2-3</version>
-	<description>RSS feeds reader for eyeOS.</description>
+	<description>RSS feeds reader for oneye.</description>
 	<author>Nanawel [nanawel@eyeos.org]</author>
 	<license>AGPL</license>
 	<type>Application</type>
-	<icon>index.php?theme=1&amp;extern=icons/48x48/RSS.png</icon>
+	<icon>index.php?theme=USERTHEME&amp;extern=icons/48x48/RSS.png</icon>
 </package>

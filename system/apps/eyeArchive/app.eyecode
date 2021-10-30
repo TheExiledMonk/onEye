@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeArchive_run($params=null) {
@@ -36,13 +29,13 @@ function eyeArchive_run($params=null) {
 
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'mainWindow_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('Open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fileopen.png','Open');
-	$myToolbar->addItem('Extract','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/archive-extract.png','Extract',array($myTextBox));
-	$myToolbar->addItem('Compress','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/archive-insert.png','Compress',array($myTextBox));
+	$myToolbar->addItem('Open','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fileopen.png','Open');
+	$myToolbar->addItem('Extract','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/archive-extract.png','Extract',array($myTextBox));
+	$myToolbar->addItem('Compress','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/archive-insert.png','Compress',array($myTextBox));
 
 
 	$myButton = new Button(array('name'=>'selectDest','father'=>'mainWindow_Content','signal'=>'SelectDest',
-	'caption'=>'...','x'=>505,'y'=>85,'img'=>'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/16x16/folder.png'));
+	'caption'=>'...','x'=>505,'y'=>85,'img'=>'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/16x16/folder.png'));
 	$myButton->show();
 
 

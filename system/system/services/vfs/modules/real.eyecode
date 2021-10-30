@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
@@ -33,13 +26,13 @@
 //
 
 global $charBlackList;
-$charBlackList = array("/","\\","<",">","[","]","htaccess","php.ini");
+$charBlackList = array("/","\\","<",">","htaccess","php.ini");
 
 
 /**
 * Creates an abstract file, with the possibility to specify
 * which app created it.
-* 
+*
 * @param $params array(file,[creationApp])
 * @param $file Path to the new file.
 * @param $creationApp Name of the application that creates the file.
@@ -75,12 +68,12 @@ function service_vfs_create($params) {
 
 		//add secure name
 		if(vfs('isGroupDir',array($file))) {
-			$fileToCreate = $file.'_'.md5(uniqid(rand())); //path/filename+id.
+			$fileToCreate = $file.'_'.md5(uniqid(mt_rand(0, 99999))); //path/filename+id.
 
 			$data = array(
 				'eyeFile' => array(
 					array(
-						"filename" => array(utf8_basename($file)),
+						"filename" => array(basename($file)),
 						"author" => array($currentUser),
 						"created" => array($time),
 						"creationapp" => array($creationApp)
@@ -103,7 +96,7 @@ function service_vfs_create($params) {
 
 /**
 * Restores a virtual file from trash.
-* 
+*
 * @param $params array(file,destination)
 * @param $file Path to the file to restore
 * @param $destination Path
@@ -124,8 +117,8 @@ function service_vfs_restore($params = '') {
 		errorCodes('setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
 		return false;
 	}
-	if (utf8_substr($params[0],- utf8_strlen('.' . EYEOS_TRASH_EXT)) == '.' . EYEOS_TRASH_EXT) {
-		$params[0] = utf8_substr($params[0], 0,- utf8_strlen('.' . EYEOS_TRASH_EXT));
+	if (substr($params[0], -strlen('.' . EYEOS_TRASH_EXT)) === '.' . EYEOS_TRASH_EXT) { // utf8
+		$params[0] = substr($params[0], 0, -strlen('.' . EYEOS_TRASH_EXT)); // utf8
 	}
 	if (vfs('real_fileExists',array($params[0] . '.' . EYEOS_INFO_EXT))) {
 		if (vfs('isGroupDir',array($params[1]))) {
@@ -141,7 +134,7 @@ function service_vfs_restore($params = '') {
 
 /**
 * Restores a virtual directory from trash.
-* 
+*
 * @param $params array(dir,destination)
 * @param $dir Path to the file to restore
 * @param $destination Path
@@ -154,8 +147,8 @@ function service_vfs_restoreDir($params = '') {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
-	if (utf8_substr($params[0],- utf8_strlen('.' . EYEOS_TRASH_EXT)) == '.' . EYEOS_TRASH_EXT) {
-		$params[0] = utf8_substr($params[0],0,utf8_strlen('.' . EYEOS_TRASH_EXT));
+	if (substr($params[0], -strlen('.' . EYEOS_TRASH_EXT)) === '.' . EYEOS_TRASH_EXT) { // utf8
+		$params[0] = substr($params[0], 0, strlen('.' . EYEOS_TRASH_EXT)); // utf8
 	}
 	if (vfs('real_move',array($params[0] . '/',$params[1] . '/'))) {
 		return vfs('real_delete',array($params[0] . '.' . EYEOS_TRASH_EXT));
@@ -165,7 +158,7 @@ function service_vfs_restoreDir($params = '') {
 
 /**
 * Deletes a virtual file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to delete
 * @return If the function succeeds, returns true. Otherwise, it
@@ -200,19 +193,19 @@ function service_vfs_delete($params) {
 	}
 
 	if (vfs('fileExists',array($file))) {
-		$ancientName = utf8_basename($file);
+		$ancientName = basename($file);
 		$file = getRealFileName($file);
 		if($sendToTrash == 1) {
 			$myUserDir = um('getCurrentUserDir');
-			$name = utf8_basename($file);
-			$name .= uniqid(srand(time()));
+			$name = basename($file);
+			$name .= uniqid(mt_rand(0, 99999));
 
 			if(vfs('isGroupDir',array($file))) {
-				if (copy($file.'.'.EYEOS_FILE_EXT,$myUserDir.'/'.TRASH_USER_DIR.'/'.$name.'.'.EYEOS_FILE_EXT) && 
+				if (copy($file.'.'.EYEOS_FILE_EXT,$myUserDir.'/'.TRASH_USER_DIR.'/'.$name.'.'.EYEOS_FILE_EXT) &&
 					copy($file.'.'.EYEOS_INFO_EXT,$myUserDir.'/'.TRASH_USER_DIR.'/'.$name.'.'.EYEOS_INFO_EXT) &&
 					unlink($file.'.'.EYEOS_FILE_EXT) && unlink($file.'.'.EYEOS_INFO_EXT)) {
 					$data = array(
-						'eyeTrash' => array( 
+						'eyeTrash' => array(
 							array(
 							"deleteDate" => array(time()),
 							"restorePoint" => array($file),
@@ -221,7 +214,6 @@ function service_vfs_delete($params) {
 							)
 						)
 					);
-					//converting array to xml
 					file_put_contents($myUserDir . '/' . TRASH_USER_DIR . '/' . $name . '.' . EYEOS_TRASH_EXT, eyeXML('array2xml',array($data)));
 					return true;
 				} else {
@@ -229,10 +221,9 @@ function service_vfs_delete($params) {
 					return false;
 				}
 			} else {
-				if (copy($file,$myUserDir.'/'.TRASH_USER_DIR.'/'.$name.'.'.EYEOS_FILE_EXT) && 
-					unlink($file)) {
+				if (copy($file,$myUserDir.'/'.TRASH_USER_DIR.'/'.$name.'.'.EYEOS_FILE_EXT) && unlink($file)) {
 					$data = array(
-						'eyeTrash' => array( 
+						'eyeTrash' => array(
 							array(
 							"deleteDate" => array(time()),
 							"restorePoint" => array($file),
@@ -274,7 +265,7 @@ function service_vfs_delete($params) {
 
 /**
 * Opens a virtual file and returns a handler to work with.
-* 
+*
 * @param $params array(file,mode)
 * @param $file Path to the file to open.
 * @param $mode Mode used to open the file. It is the same format as the PHP
@@ -303,19 +294,30 @@ function service_vfs_open($params) {
 		return false;
 	}
 
-	if(!vfs('fileExists',array($file))) {
-		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
-		return false;
-	}
 	$file = vfs('getRealName',array($file));
 	$fp = fopen($file,$mode); //the handling of opens should be a handler or false
 	return $fp;
 }
 
+function service_vfs_getFileContents($params) {
+	if (count($params) < 1) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	}
+	if (vfs('checkPermissions', array($params[0], 'r')) === false) {
+		return false;
+	}
+	if (vfs('fileExists', array($params[0])) === false) {
+		errorCodes('setErrorCode', array(VFS_FILE_NOT_EXISTS));
+		return false;
+	}
+	return file_get_contents(vfs('getRealName', array($params[0])));
+}
+
 
 /**
 * Deletes the contents of a virtual file, leaving it blank.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to erase.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -354,7 +356,7 @@ function service_vfs_erase($params) {
 
 /**
 * Copies a virtual file to a specified destination.
-* 
+*
 * @param $params array(orig,dest)
 * @param $orig Path to the original file.
 * @param $dest Directory where to copy the file.
@@ -389,11 +391,11 @@ function service_vfs_copy($params) {
 	if(!vfs('checkQuota',array(vfs('getRealName', array($orig))))) {
 		return false;
 	}
-	//Check if exists	 
+	//Check if exists
 	if(!vfs('fileExists',array($orig))) {
 		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
-	}	 
+	}
 	if(vfs('fileExists',array($dest))) {
 		errorCodes('setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
 		return false;
@@ -405,10 +407,10 @@ function service_vfs_copy($params) {
 			$orig = getRealFileName($orig);//Get the real name
 			//TODO: decide if make a new secure number
 			$subdest = $dest;
-			$dest .=  '_'.utf8_substr($orig,utf8_strlen($orig)-utf8_strlen(strrchr($orig,'_'))+1);
+			$dest .= '_' . substr($orig, strrpos($orig, '_') + 1); // utf8
 			if (copy($orig.'.'.EYEOS_FILE_EXT,$dest.'.'.EYEOS_FILE_EXT)){
 				$xml = eyeXML('xml2array',array(file_get_contents($orig . '.' . EYEOS_INFO_EXT)));
-				$xml['eyeFile'][0]['filename'][0] = utf8_basename($subdest);
+				$xml['eyeFile'][0]['filename'][0] = basename($subdest);
 				file_put_contents($dest . '.' . EYEOS_INFO_EXT, eyeXML('array2xml',array($xml)));
 				return true;
 			} else {
@@ -425,17 +427,15 @@ function service_vfs_copy($params) {
 			}
 		}
 	} else {
-		if(vfs('isGroupDir',array($dest))) {
-			vfs('create',array($dest));
-			$real = getRealFileName($dest);
-			copy($orig,$real.'.'.EYEOS_FILE_EXT);
+		if (vfs('isGroupDir', array($dest))) {
+			vfs('create', array($dest));
+			$dest = getRealFileName($dest) . '.' . EYEOS_FILE_EXT;
+		}
+		if (copy($orig, $dest) === true) {
+			return true;
 		} else {
-			if(copy($orig,$dest)) {
-				return true;
-			} else {
-				errorCodes('setErrorCode',array(PHP_ERROR_ON_COPY));
-				return false;
-			}
+			errorCodes('setErrorCode', array(PHP_ERROR_ON_COPY));
+			return false;
 		}
 	}
 }
@@ -443,7 +443,7 @@ function service_vfs_copy($params) {
 
 /**
 * Copies a directory and its contents.
-* 
+*
 * @param $params array(orig,dest)
 * @param $orig Path to the directory to copy.
 * @param $dest URL of the new directory.
@@ -476,7 +476,7 @@ function service_vfs_copyDir($params) {
 		return false;
 	}
 
-	//Check if exists	 
+	//Check if exists
 	if(!vfs('isdir',array($orig))) {
 		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
@@ -484,7 +484,7 @@ function service_vfs_copyDir($params) {
 
 	$orig_real = realpath($orig . '/');
 	$orig_dest = realpath(dirname($dest) . '/');
-	if(utf8_strpos($orig_dest,$orig_real) !== 0){
+	if ( /* utf8 */ strpos($orig_dest, $orig_real) !== 0) {
 		dircopy($orig,$dest);
 		return true;
 	} else {
@@ -495,7 +495,7 @@ function service_vfs_copyDir($params) {
 
 /**
 * Moves a virtual file.
-* 
+*
 * @param $params array(orig,dest)
 * @param $orig Path to the file to move.
 * @param $dest Destination path where the file must be moved.
@@ -528,11 +528,11 @@ function service_vfs_move($params) {
 		return false;
 	}
 
-	//Check if exists	 
+	//Check if exists
 	if(!vfs('fileExists',array($orig))) {
 		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
-	}	 
+	}
 	if(vfs('fileExists',array($dest))) {
 		errorCodes('setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
 		return false;
@@ -544,11 +544,11 @@ function service_vfs_move($params) {
 			$orig = getRealFileName($orig);//Get the real name
 			//TODO: decide if make a new secure number
 			$subdest = $dest;
-			$dest .=  '_'.utf8_substr($orig,utf8_strlen($orig)-utf8_strlen(strrchr($orig,'_'))+1);
+			$dest .= '_' . substr($orig, strrpos($orig, '_') + 1); // utf8
 
 			if (@rename($orig.'.'.EYEOS_FILE_EXT,$dest.'.'.EYEOS_FILE_EXT)){
 				$xml = eyeXML('xml2array',array(file_get_contents($orig . '.' . EYEOS_INFO_EXT)));
-				$xml['eyeFile'][0]['filename'][0] = utf8_basename($subdest);
+				$xml['eyeFile'][0]['filename'][0] = basename($subdest);
 				file_put_contents($dest . '.' . EYEOS_INFO_EXT, eyeXML('array2xml',array($xml)));
 				if(@unlink($orig.'.'.EYEOS_INFO_EXT)) {
 					return true;
@@ -593,7 +593,7 @@ function service_vfs_move($params) {
 
 /**
 * Changes the name of an abstract file.
-* 
+*
 * @param $params array(orig,dest)
 * @param $orig Path to the file or directory to rename.
 * @param $dest New name of the file.
@@ -625,17 +625,31 @@ function service_vfs_rename($params) {
 		return false;
 	}
 
-	//Check if exists	 
+	//Check if exists
 	if(!vfs('fileExists',array($orig))) {
 		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
-	}	 
+	}
 	if(vfs('fileExists',array($dest))) {
 		errorCodes('setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
 		return false;
 	}
 	if(is_dir($orig)) {
-		return @rename($orig,$dest);
+		if (rename($orig, $dest)) {
+			return true;
+		} else {
+			// PHP has problems moving folders across partitions and shares (ie. from samba to local). So we ask the Host OS to do it instead.
+			if (strtolower(substr(PHP_OS, 0, 3)) !== 'win') { // utf8
+				$cmd = 'mv ';
+			} else {
+				$cmd = 'move ';
+			}
+			$cmd .= escapeshellarg($orig) . ' ' . escapeshellarg($dest);
+			shell_exec($cmd);
+			if(vfs('real_fileExists',array($dest))) {
+				return true;
+			}
+		}
 	}else {
 		return vfs('move',array($orig,$dest));
 	}
@@ -644,7 +658,7 @@ function service_vfs_rename($params) {
 
 /**
 * Calculates the size of an abstract file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to check.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -681,11 +695,11 @@ function service_vfs_filesize($params) {
 
 /**
 * Gets the last modification time of an abstract file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to check.
 * @return If the function succeeds, returns the size of the given file.
-*	Otherwise, it returns false and sets the error code according to 
+*	Otherwise, it returns false and sets the error code according to
 *	the error occurred.
 * @exception INCORRECT_PARAMS No file has been specified.
 * @exception VFS_INSUFFICIENT_PERMISSIONS There are not enough permissions to check the file's size.
@@ -718,7 +732,7 @@ function service_vfs_filemtime($params) {
 
 /**
 * Checks if an abstract file exists.
-* 
+*
 * @param $params array(file)
 * @param $file File to check.
 * @return If file exists and there are enough permissions on the file,
@@ -752,7 +766,7 @@ function service_vfs_fileExists($params) {
 
 	if(vfs('isGroupDir',array($file))) {
 		//Checking now if eyeFile exists
-		$file = utf8_substr($file,0,utf8_strrpos($file,'.'));
+		$file = substr($file, 0, strrpos($file, '.')); // utf8
 		$file .= '.'.EYEOS_INFO_EXT;
 	}
 
@@ -772,7 +786,7 @@ function service_vfs_fileExists($params) {
 /**
 * Reads a virtual file's info part and returns its contents as
 * an array.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the virtual file to read.
 * @return If the function succeeds, returns an array (using the output
@@ -792,8 +806,8 @@ function service_vfs_readInfo($params)
 
 	$file = getRealFileName($file);
 	if(vfs('isGroupDir',array($file))) {
-		if (vfs('real_fileExists',array($file.'.'.EYEOS_INFO_EXT))) {
-		return eyeXML('xml2array',array(file_get_contents($file . '.' . EYEOS_INFO_EXT)));
+		if (vfs('real_fileExists',array($file . '.' . EYEOS_INFO_EXT))) {
+			return eyeXML('xml2array',array(file_get_contents($file . '.' . EYEOS_INFO_EXT)));
 		} else {
 			return false;
 		}
@@ -802,7 +816,7 @@ function service_vfs_readInfo($params)
 		$arr = array(
 			'eyeFile' => array(
 				array(
-					'filename' => array(utf8_basename($file)),
+					'filename' => array(basename($file)),
 					'author' => array($currentUser),
 				)
 			)
@@ -821,7 +835,7 @@ function service_vfs_readInfo($params)
 
 /**
 * Creates a directory in the user's abstract files.
-* 
+*
 * @param $params array(dir)
 * @param $dir Name of the directory to create.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -862,7 +876,7 @@ function service_vfs_mkdir($params) {
 
 /**
 * Checks if a given path points to a directory.
-* 
+*
 * @param $params array(file)
 * @param $file Path to check.
 * @return If the file provided is a directory returns true, otherwise
@@ -884,7 +898,7 @@ function service_vfs_isdir($params) {
 
 /**
 * Deletes a directory and its content.
-* 
+*
 * @param $params array(dir,[trash])
 * @param $dir Directory to delete.
 * @param $trash If set (to any value), moves the directory to the user's
@@ -918,15 +932,24 @@ function service_vfs_rmdir($params) {
 	if($trash == 1) {
 		$myUserDir = um('getCurrentUserDir');
 		$trashDir = $myUserDir.'/'.TRASH_USER_DIR.'/';
-		$name = uniqid(srand(time()));
-		rename($dir,$trashDir.$name);
+		$name = uniqid(mt_rand(0, 99999));
+		if (!rename($dir,$trashDir.$name)) {
+			// PHP has problems moving folders across partitions and shares (ie. from samba to local). So we ask the Host OS to do it instead.
+			if (strtolower(substr(PHP_OS, 0, 3)) !== 'win') { // utf8
+				$cmd = 'mv ';
+			} else {
+				$cmd = 'move ';
+			}
+			$cmd .= escapeshellarg($orig) . ' ' . escapeshellarg($dest);
+			shell_exec($cmd);
+		}
 		vfs('real_create',array($trashDir.$name.'.'.EYEOS_TRASH_EXT));
 		$data = array(
-			'eyeTrash' => array( 
+			'eyeTrash' => array(
 				array(
 				"deleteDate" => array(time()),
 				"restorePoint" => array($dir),
-				"lastname" => array(utf8_basename($dir)),
+				"lastname" => array(basename($dir)),
 				"type" => array('dir')
 				)
 			)
@@ -941,7 +964,7 @@ function service_vfs_rmdir($params) {
 
 /**
 * Checks the permissions of a file.
-* 
+*
 * @param $params array(file,[mode])
 * @param $file URL to the file.
 * @param $mode Mode of the check.
@@ -959,7 +982,7 @@ function service_vfs_checkPermissions($params) {
 	}
 
 	$file = $params[0];
-	if(!vfs('checkSpecialChars',array(utf8_basename($file)))){
+	if(!vfs('checkSpecialChars',array(basename($file)))){
 		errorCodes('setErrorCode',array(VFS_INVALID_CHARS));
 		return false;
 	}
@@ -969,7 +992,7 @@ function service_vfs_checkPermissions($params) {
 	$userdir = um('getCurrentUserDir').'/';
 	$usertmpdir = um('getCurrentUserDir').'/'.TMP_USER_DIR.'/';
 	if(!is_dir($file)) {
-		$filename = utf8_basename($file);
+		$filename = basename($file);
 		$file = dirname($file);
 	}
 	$userdir_path = realpath($userdir);
@@ -983,8 +1006,8 @@ function service_vfs_checkPermissions($params) {
 		if($groupDir) {
 			if(realpath($params[0]) == $groupDir && $params[1] == 'e') {
 				return false;
-			} 
-			if (0 === utf8_strpos($file_path,$groupDir)) {
+			}
+			if ( /* utf8 */ strpos($file_path, $groupDir) === 0) {
 				$xml = um('retrieveUser',array($currentUser));
 				if (is_array($xml['eyeUser'][0]['maintain']) && in_array($key,$xml['eyeUser'][0]['maintain'])) {
 					return true;
@@ -994,7 +1017,7 @@ function service_vfs_checkPermissions($params) {
 					$myFile = $file_path.'/'.$filename;
 					$myRealName = vfs('getRealName',array($myFile));
 					$eyeFile = realpath($myRealName);
-					$eyeInfo = utf8_substr($eyeFile,0,utf8_strrpos($eyeFile,'.'));
+					$eyeInfo = substr($eyeFile, 0, strrpos($eyeFile, '.')); // utf8
 					$eyeInfo .= '.'.EYEOS_INFO_EXT;
 					$eyeInfo = realpath($eyeInfo);
 					if($eyeFile && $eyeInfo && $myRealName) {
@@ -1003,15 +1026,15 @@ function service_vfs_checkPermissions($params) {
 							return true;
 						}
 						$xml = eyeXML('xml2array',array(file_get_contents($eyeInfo)));
-							if($xml['eyeFile'][0]['author'][0] == $currentUser) {
-								return true;
-							}
+						if($xml['eyeFile'][0]['author'][0] == $currentUser) {
+							return true;
+						}
 					} else {
 						if(is_dir($file_path) || $params[1] == 'e' || $params[1] == 'd') {
 							if(ALLOW_PUBLIC_DIRS == 0) {
 								return false;
 							}
-						} 
+						}
 						return true;
 					}
 				} else {
@@ -1019,7 +1042,7 @@ function service_vfs_checkPermissions($params) {
 						if(ALLOW_PUBLIC_DIRS == 0) {
 							return false;
 						}
-					} 
+					}
 					return true;
 				}
 			}
@@ -1030,16 +1053,16 @@ function service_vfs_checkPermissions($params) {
 			return false;
 		}
 	}
-	if (0 === utf8_strpos($file_path,$userdir_path)) {
+	if ( /* utf8 */ strpos($file_path, $userdir_path) === 0) {
 		return true;
-	} elseif (0 === utf8_strpos($file_path,$usertmpdir_path)) {
+	} else if ( /* utf8 */ strpos($file_path, $usertmpdir_path) === 0) {
 		return true;
 	} elseif ($currentUser == ROOTUSER) {
 		//If the user is really an admin and the admins are jailed
-		if(($currentUser != REAL_ROOTUSERS && ADMINS_JAILED == 1) ||
+		if(($currentUser != REAL_ROOTUSER && ADMINS_JAILED == 1) ||
 			($currentUser == REAL_ROOTUSER && ROOT_JAILED == 1)){
 			$real_eyeroot = realpath(EYE_ROOT);
-			if(0 === utf8_strpos ($file_path,$real_eyeroot)){
+			if ( /* utf8 */ strpos($file_path, $real_eyeroot) === 0) {
 				return true;
 			}
 			errorCodes('setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
@@ -1058,7 +1081,7 @@ function service_vfs_checkPermissions($params) {
 /**
 * Returns a list of the virtual files found in a directory
 * under the specified search pattern.
-* 
+*
 * @param $params array(dirToRead,[exp])
 * @param $dirToRead Path to the directory to search.
 * @param $exp Pattern to determine which files to get. It has the same
@@ -1083,7 +1106,7 @@ function service_vfs_getDirContent($params) {
 
 	$dirToRead = $params[0];
 
-	//$dirToRead = html_entity_decode($dirToRead,ENT_QUOTES,'UTF-8');
+	//$dirToRead = utf8_html_entity_decode($dirToRead, ENT_QUOTES);
 
 	//Check the permissions.
 	if(!vfs('checkPermissions',array($dirToRead,'r'))) {
@@ -1106,16 +1129,15 @@ function service_vfs_getDirContent($params) {
 		$files = glob($dirToRead."/$exp");
 		if($files != false && is_array($files)){
 			foreach ($files as $fileName) {
-				$info = utf8_pathinfo($fileName);
-				$ext = $info['extension'];
-				if($ext == EYEOS_INFO_EXT) {
-				$xml = eyeXML('xml2array',array(file_get_contents($fileName)));
+				$info = pathinfo($fileName);
+				if (isset($info['extension']) === true && $info['extension'] === EYEOS_INFO_EXT) {
+					$xml = eyeXML('xml2array',array(file_get_contents($fileName)));
 					if($xml['eyeFile'][0]['filename'][0]) {
 						$dirFiles[] = $info['dirname'].'/'.$xml['eyeFile'][0]['filename'][0];
 					}
-				} elseif((is_dir($fileName) || $ext == EYEOS_LINK_EXT) && $fileName != '.') {
+				} else if ((is_dir($fileName) === true || isset($info['extension']) === true && $info['extension'] === EYEOS_LINK_EXT) && $fileName !== '.') {
 					$dirFiles[] = $fileName;
-				} 
+				}
 			}
 		}
 	} else {
@@ -1132,7 +1154,7 @@ function service_vfs_getDirContent($params) {
 
 /**
 * Returns the real filename in which a virtual file is stored.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file.
 * @return If the function succeeds, returns the name of the file that
@@ -1155,7 +1177,7 @@ function service_vfs_getRealName($params)
 	if(!vfs('isGroupDir',array($file))) {
 		return $file;
 	}
-	$fileName = utf8_basename($file);
+	$fileName = basename($file);
 	$path = dirname($file);
 
 	$fileList = vfs('real_getDirContent_group',array($path,$fileName.'_*'));
@@ -1166,15 +1188,14 @@ function service_vfs_getRealName($params)
 		return false;
 	}
 
-	$file = utf8_substr($fileList[0],0,utf8_strlen($fileList[0])-utf8_strlen(strrchr($fileList[0],'.')));
-	return $file.'.'.EYEOS_FILE_EXT;
+	return substr($fileList[0], 0, strrpos($fileList[0], '.')) . '.' . EYEOS_FILE_EXT; // utf8
 }
 
 
 
 /**
 * Returns the content of a file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file.
 * @return If the function succeeds, returns its content. Otherwise, it
@@ -1219,7 +1240,7 @@ function service_vfs_writeFile($params) {
 	$file = $params[0];
 	$content = $params[1];
 
-	if(!vfs('checkQuota',array(utf8_strlen($content),1))) {
+	if (vfs('checkQuota', array( /* utf8 */ strlen($content), 1)) === false) {
 		return false;
 	}
 
@@ -1240,7 +1261,7 @@ function service_vfs_writeFile($params) {
 
 /**
 * Creates a blank real file.
-* 
+*
 * @param $params array(file)
 * @param $file Path including the file to create.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -1277,7 +1298,7 @@ function service_vfs_real_create($params) {
 
 /**
 * Copies a file to the specified destination.
-* 
+*
 * @param $params array(orig)
 * @param $orig Path to the file to copy.
 * @param $dest Destination path where to copy the file.
@@ -1312,7 +1333,7 @@ function service_vfs_real_copyDir($params) {
 		return false;
 	}
 
-	//Check if exists	 
+	//Check if exists
 	if(!vfs('isdir',array($orig))) {
 		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
@@ -1320,7 +1341,7 @@ function service_vfs_real_copyDir($params) {
 
 	$orig_real = realpath($orig . '/');
 	$orig_dest = realpath(dirname($dest) . '/');
-	if(utf8_strpos($orig_dest,$orig_real) !== 0){
+	if ( /* utf8 */ strpos($orig_dest, $orig_real) !== 0) {
 		dircopy($orig,$dest);
 		return true;
 	} else {
@@ -1332,7 +1353,7 @@ function service_vfs_real_copyDir($params) {
 
 /**
 * Deletes a real file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to delete.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -1373,7 +1394,7 @@ function service_vfs_real_delete($params) {
 
 /**
 * Returns a handler to work with a file.
-* 
+*
 * @param $params array(file,mode)
 * @param $file Path to the file to open.
 * @param $mode Mode used to open the file. It is the same notation as used
@@ -1396,12 +1417,7 @@ function service_vfs_real_open($params) {
 	$file = $params[0];
 	$mode = $params[1];
 
-	if(!vfs('real_checkPermissions',array($file))) {
-		return false;
-	}
-
-	if (!vfs('real_fileExists',array($file))) {
-		errorCodes('setErrorCode',array(VFS_FILE_NOT_FOUND));
+	if(!vfs('real_checkPermissions',array($file, $mode))) {
 		return false;
 	}
 
@@ -1419,7 +1435,7 @@ function service_vfs_real_getFileContent($params) {
 
 	$file = $params[0];
 
-	if(!vfs('real_checkPermissions',array($file))) {
+	if(!vfs('real_checkPermissions',array($file, 'r'))) {
 		return false;
 	}
 
@@ -1448,7 +1464,7 @@ function service_vfs_real_putFileContent($params) {
 
 /**
 * Blanks a real file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to erase.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -1484,7 +1500,7 @@ function service_vfs_real_erase($params) {
 /**
 * Changes the location of a real file from one location to
 * another.
-* 
+*
 * @param $params array(orig,dest)
 * @param $orig Path to the file to move.
 * @param $dest Destination path where to move the file.
@@ -1514,7 +1530,7 @@ function service_vfs_real_move($params) {
 	if(!vfs('real_checkPermissions',array($dest))) {
 		return false;
 	}
- 
+
 	if(!vfs('real_fileExists',array($orig))) {
 		errorCodes('setErrorCode',array(VFS_FILE_NOT_EXISTS));
 		return false;
@@ -1525,8 +1541,20 @@ function service_vfs_real_move($params) {
 		return false;
 	}
 
-	if(rename($orig,$dest)){
+	if (rename($orig, $dest)){
 		return true;
+	} else {
+		// PHP has problems moving folders across partitions and shares (ie. from local to samba). So we ask the Host OS to do it instead.
+		if (strtolower(substr(PHP_OS, 0, 3)) !== 'win') { // utf8
+			$cmd = 'mv ';
+		} else {
+			$cmd = 'move ';
+		}
+		$cmd .= escapeshellarg($orig) . ' ' . escapeshellarg($dest);
+		shell_exec($cmd);
+		if(vfs('real_fileExists',array($dest))) {
+			return true;
+		}
 	}
 }
 
@@ -1534,7 +1562,7 @@ function service_vfs_real_move($params) {
 
 /**
 * Copies a file to the specified destination.
-* 
+*
 * @param $params array(orig)
 * @param $orig Path to the file to copy.
 * @param $dest Destination path where to copy the file.
@@ -1560,7 +1588,7 @@ function service_vfs_real_copy($params) {
 		return false;
 	}
 
-	if(!vfs('real_checkPermissions',array($orig))) {
+	if(!vfs('real_checkPermissions',array($orig, 'r'))) {
 		return false;
 	}
 
@@ -1590,7 +1618,7 @@ function service_vfs_real_copy($params) {
 
 /**
 * Returns the size of a file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to get the filesize from.
 * @return If the function succeeds, returns an integer with the file's
@@ -1609,7 +1637,7 @@ function service_vfs_real_filesize($params) {
 	}
 	$file = $params[0];
 
-	if(!vfs('real_checkPermissions',array($file))) {
+	if(!vfs('real_checkPermissions',array($file, 'r'))) {
 		return false;
 	}
 
@@ -1624,7 +1652,7 @@ function service_vfs_real_filesize($params) {
 
 /**
 * Checks if a specified real file exists or not.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to check.
 * @return If the file exists, returns true. Otherwise, returns false
@@ -1653,7 +1681,7 @@ function service_vfs_real_fileExists($params) {
 /**
 * Checks whether there are enough permissions with a
 * non-virtual file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file to check.
 * @return If there are enough permissions on the file, returns true.
@@ -1673,12 +1701,12 @@ function service_vfs_real_checkPermissions($params) {
 	global $currentUser;
 	$userdir = um('getCurrentUserDir');
 	$file = $params[0];
-	if(!vfs('checkSpecialChars',array(utf8_basename($file)))){
+	if(!vfs('checkSpecialChars',array(basename($file)))){
 		errorCodes('setErrorCode',array(VFS_INVALID_CHARS));
 		return false;
 	}
 	if(isset($params[1])){
-		$read = $params[1];
+		$mode = $params[1];
 	}
 
 	if ($file == um('getUserFilePath',array($currentUser))) {
@@ -1690,13 +1718,16 @@ function service_vfs_real_checkPermissions($params) {
 	$file_path = realpath($file);
 	$group_path = realpath(GROUPS_DIR);
 	//That's about groups :)
- 	if(utf8_strpos($file_path,$group_path) === 0){
+	if ( /* utf8 */ strpos($file_path, $group_path) === 0) {
 		$groups = um('getCurrentGroups');
 		foreach($groups as $key=>$value) {
-			$groupDir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$key.'/'.CONF_GROUP_DIR;
-			$groupDir = realpath($groupDir);
-			if($groupDir) {
-				if (0 === utf8_strpos($file_path,$groupDir)) {
+			$groupDir = realpath(EYE_ROOT . '/' . GROUPS_DIR . '/' . $key);
+			if ($groupDir) {
+				if ($mode === 'r' && /* utf8 */ strpos($file_path, $groupDir) === 0) {
+					return true;
+				}
+				$groupDir = realpath(EYE_ROOT . '/' . GROUPS_DIR . '/' . $key . '/' . CONF_GROUP_DIR);
+				if ( /* utf8 */ strpos($file_path, $groupDir) === 0) {
 					return true;
 				}
 			}
@@ -1704,14 +1735,14 @@ function service_vfs_real_checkPermissions($params) {
 	}
 
 	$userdir_path = realpath($userdir);
-	if (0 === utf8_strpos ($file_path,$userdir_path)) {
+	if ( /* utf8 */ strpos($file_path, $userdir_path) === 0) {
 		return true;
-	} elseif ($currentUser == ROOTUSER) {
+	} elseif ($currentUser === REAL_ROOTUSER || defined('ROOTUSER') === true && $currentUser == ROOTUSER) {
 		//If the user is really an admin and the admins are jailed
-		if(($currentUser != REAL_ROOTUSERS && ADMINS_JAILED == 1) ||
+		if(($currentUser != REAL_ROOTUSER && ADMINS_JAILED == 1) ||
 			($currentUser == REAL_ROOTUSER && ROOT_JAILED == 1)){
 			$real_eyeroot = realpath(EYE_ROOT);
-			if(0 === utf8_strpos ($file_path,$real_eyeroot)){
+			if ( /* utf8 */ strpos($file_path, $real_eyeroot) === 0) {
 				return true;
 			}
 			errorCodes('setErrorCode',array(VFS_INSUFFICIENT_PERMISSIONS));
@@ -1730,7 +1761,7 @@ function service_vfs_real_checkPermissions($params) {
 /**
 * Searches the real files in a directory matching a given
 * search pattern.
-* 
+*
 * @param $params array(dirToRead,[exp])
 * @param $dirToRead Path to the directory to search.
 * @param $exp Pattern to determine which files to get. It has the same
@@ -1756,7 +1787,7 @@ function service_vfs_real_getDirContent($params) {
 	$dirToRead = $params[0];
 
 	//Check the permissions.
-	if(!vfs('real_checkPermissions',array($dirToRead))) {
+	if(!vfs('real_checkPermissions',array($dirToRead, 'r'))) {
 		return false;
 	}
 	//We're not falling in an infinite loop because dirtoread only can be dir (this are checked in fileExists).
@@ -1783,7 +1814,7 @@ function service_vfs_real_getDirContent($params) {
 /**
 * Searches the real files in a directory matching a given
 * search pattern.
-* 
+*
 * @param $params array(dirToRead,[exp])
 * @param $dirToRead Path to the directory to search.
 * @param $exp Pattern to determine which files to get. It has the same
@@ -1812,9 +1843,7 @@ function service_vfs_real_getDirContent_group($params) {
 	if(!vfs('checkPermissions',array($dirToRead,'r'))) {
 		return false;
 	}
-	//We're not falling in an infinite loop because dirtoread only can be dir (this are checked in fileExists).
-	if(!vfs('fileExists',array($dirToRead)))
-	{
+	if (!vfs('isdir', array($dirToRead))) {
 		errorCodes('setErrorCode',array(VFS_DIR_NOT_EXISTS));
 		return false;
 	}
@@ -1834,7 +1863,7 @@ function service_vfs_real_getDirContent_group($params) {
 
 /**
 * Creates a directory.
-* 
+*
 * @param $params array(dir)
 * @param $dir Path including the directory to create.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -1875,7 +1904,7 @@ function service_vfs_real_mkDir($params) {
 
 /**
 * Deletes a directory and its content.
-* 
+*
 * @param $params array(dir)
 * @param $dir Path to the directory to delete.
 * @return If the function succeeds, returns true. Otherwise, it
@@ -1905,7 +1934,7 @@ function service_vfs_real_rmdir($params) {
 
 /**
 * Makes a virtual file out of a real one without deleting it.
-* 
+*
 * @param $params array(file,[creationApp])
 * @param $file Path to the real file to transform.
 * @param $creationApp Name of the application that makes the transformation.
@@ -1937,7 +1966,7 @@ function service_vfs_realToVirtual($params=null){
 //Generate current info
 	$file = $params[0];
 	//Generate the new name
-	$fileToCreate = $file.'_'.md5(uniqid(rand())); //path/filename+id.
+	$fileToCreate = $file.'_'.md5(uniqid(mt_rand(0, 99999))); //path/filename+id.
 
 //eyeInfo creation
 	//Getting information
@@ -1953,9 +1982,9 @@ function service_vfs_realToVirtual($params=null){
 
 	//Creating the xml information
 	$data = array(
-		'eyeFile' => array( 
+		'eyeFile' => array(
 			array(
-				"filename" => array(utf8_basename($file)),
+				"filename" => array(basename($file)),
 				"author" => array($currentUser),
 				"created" => array($time),
 				"creationapp" => array($creationApp)
@@ -1971,7 +2000,7 @@ function service_vfs_realToVirtual($params=null){
 	//Moving it
 	if(!rename($file,$fileToCreate.'.'.EYEOS_FILE_EXT)){
 		//Don't set any error code because real_crate function already setted
-		return false; 
+		return false;
 	}
 	return true;
 }
@@ -1982,7 +2011,7 @@ function service_vfs_realToVirtual($params=null){
 * Transforms a directory's files to virtual mode. Each real
 * file found will have in the same directory an equivalent
 * file in virtual mode.
-* 
+*
 * @param $params array(dir)
 * @param $dir Path to the directory to transform.
 * @return If the function succeeds, returns the number of files
@@ -2008,8 +2037,8 @@ function service_vfs_realToVirtualDir($params=null){
 	}
 	if ($handler = opendir($dir)) {
 		while (false !== ($file = readdir($handler))) {
-			$info = utf8_pathinfo($file);
-			if($file{0} != '.' && $info['extension'] != EYEOS_FILE_EXT && $info['extension'] != EYEOS_INFO_EXT) {
+			$info = pathinfo($file);
+			if ( /* utf8 */ substr($file, 0, 1) !== '.' && $info['extension'] !== EYEOS_FILE_EXT && $info['extension'] !== EYEOS_INFO_EXT) {
 				if(is_dir($dir.'/'.$file)) {
 					$num += vfs('realToVirtualDir',array($dir.'/'.$file));
 				} else {
@@ -2035,11 +2064,11 @@ function service_vfs_virtualToReal($params = '') {
 		errorCodes('setErrorCode',array(VFS_FILE_ALREADY_EXISTS));
 		return false;
 	}
-	$virtual = utf8_basename(getRealFileName($params[0]) . '.' . EYEOS_INFO_EXT);
-	$path = utf8_substr($params[0],0,- utf8_strlen(utf8_basename($params[0])));
+	$virtual = basename(getRealFileName($params[0]) . '.' . EYEOS_INFO_EXT);
+	$path = substr($params[0], 0, -strlen(basename($params[0]))); // utf8
 	$info = eyeXML('getXMLfile',array($path . '/' . $virtual));
 	$real = $info['eyeFile'][0]['filename'][0];
-	if (rename($path . '/' . utf8_substr($virtual,0,- utf8_strlen(EYEOS_INFO_EXT)) . EYEOS_FILE_EXT,$path . '/' . $real) && unlink($path . '/' . $virtual)) {
+	if (rename($path . '/' . substr($virtual, 0, -strlen(EYEOS_INFO_EXT)) . EYEOS_FILE_EXT, $path . '/' . $real) && unlink($path . '/' . $virtual)) { // utf8
 		return true;
 	}
 	return false;
@@ -2066,7 +2095,7 @@ function service_vfs_virtualToRealDir($params = '') {
 * Checks whether a file has the same extension as the one used
 * for storing a virtual file's content (defined by the
 * EYEOS_FILE_EXT constant).
-* 
+*
 * @param $params array(path)
 * @param $path Path to the file.
 * @return If the file has the EYEOS_FILE_EXT, returns this extension.
@@ -2083,13 +2112,13 @@ function service_vfs_real_getExtension($params){
 
 	$path = $params[0];
 	//Getting the real extension
-	$utf8_pathinfo = utf8_pathinfo($path);
-	$fileExtension = $utf8_pathinfo['extension'];
+	$pathinfo = pathinfo($path);
+	$fileExtension = $pathinfo['extension'];
 
-	//if is a eyeOS virtual file
+	//if is a oneye virtual file
 	if($fileExtension == EYEOS_FILE_EXT){
 		//Getting the real file string
-		$path = utf8_substr($path,0,utf8_strrpos($path,'_'));
+		$path = substr($path, 0, strrpos($path, '_')); // utf8
 		//Getting the reale extension
 		$extension = _getExtension($path);
 		return $extension;
@@ -2105,7 +2134,7 @@ function service_vfs_real_getExtension($params){
 * Checks whether a virtual file has the same extension as the
 * one used for storing a virtual file's content (defined by
 * the EYEOS_FILE_EXT constant).
-* 
+*
 * @param $params array(path)
 * @param $path Path to the file.
 * @return If the file has the EYEOS_FILE_EXT, returns this extension.
@@ -2117,7 +2146,7 @@ function service_vfs_getExtension($params){
 		return false;
 	}
 	$path = $params[0];
-	$extension = utf8_substr(strrchr($path, "."), 1);
+	$extension = substr($path, strrpos($path, '.') + 1); // utf8
 	if($extension == EYEOS_FILE_EXT){
 		return EYEOS_FILE_EXT;
 	}else{
@@ -2129,7 +2158,7 @@ function service_vfs_getExtension($params){
 
 /**
 * Gets the real name of a virtual file.
-* 
+*
 * @param $params array(file)
 * @param $file Path to the file.
 * @return If the function succeeds, returns the name of the virtual
@@ -2143,14 +2172,14 @@ function service_vfs_getVirtualName($params){
 	if(!vfs('isGroupDir',array($params[0]))) {
 		return $params[0];
 	}
-	return utf8_substr($params[0],0,utf8_strrpos($params[0],'_'));
+	return substr($params[0], 0, strrpos($params[0], '_')); // utf8
 
 }
 
 
 /**
 * Empties a user's temporal directory.
-* 
+*
 * @return If the function succeeds, returns true. Otherwise, it
 *	returns false and sets the error code according to the error
 *	occurred.
@@ -2179,9 +2208,9 @@ function service_vfs_cleanTemp() {
 //
 function _getExtension($path){
 	$preExtensions = array('tar'=>array('gz','bz2'));
-	$info = utf8_pathinfo($path);
-	$extension = utf8_substr(strrchr($path, "."), 1);
-	$extension0 = utf8_substr(strrchr($info['filename'], "."), 1);
+	$info = pathinfo($path);
+	$extension = substr($path, strrpos($path, '.') + 1); // utf8
+	$extension0 = substr($info['filename'], strrpos($info['filename'], '.') + 1); // utf8
 	//if new extension found
 	if($extension0){
 		//if extension is an exception
@@ -2225,7 +2254,7 @@ function getRealFileName($file) {
 	if(!vfs('isGroupDir',array($file))) {
 		return $file;
 	}
-	$fileName = utf8_basename($file);
+	$fileName = basename($file);
 	$path = dirname($file);
 
 	$fileList = vfs('real_getDirContent_Group',array($path,$fileName.'_*'));
@@ -2236,8 +2265,7 @@ function getRealFileName($file) {
 		return false;
 	}
 
-	$file = utf8_substr($fileList[0],0,utf8_strlen($fileList[0])-utf8_strlen(strrchr($fileList[0],'.')));
-	return $file;
+	return substr($fileList[0], 0, strrpos($fileList[0], '.')); // utf8
 }
 
 function dircopy($srcdir, $dstdir) {
@@ -2257,7 +2285,7 @@ function dircopy($srcdir, $dstdir) {
 						} else {
 							return false;
 						}
-					}                  
+					}
 				} else if(is_dir($srcfile)) {
 					dircopy($srcfile, $dstfile);
 				}
@@ -2269,7 +2297,7 @@ function dircopy($srcdir, $dstdir) {
 
 function service_vfs_getDirSize($params){
 	$dir = $params[0];
-	if(!vfs('real_checkPermissions',array($dir))){
+	if(!vfs('real_checkPermissions',array($dir, 'r'))){
 		return false;
 	}
 	//at the moment, only need it
@@ -2294,7 +2322,7 @@ function service_vfs_getDirSize($params){
 		$size = $ref->size;
 	}elseif($os == 'unix'){
 		$size = shell_exec("du -sb ".escapeshellarg($dir));
-		preg_match("/^\d*/",$size,$int);
+		/* utf8 */ preg_match('/^\\d*/', $size, $int);
 		$size = $int[0];
 	}
 	//if system do fails, try a pure php function
@@ -2306,7 +2334,8 @@ function service_vfs_getDirSize($params){
 
 function service_vfs_checkQuota($params) {
 	global $currentUser;
-	if ($currentUser == ROOTUSER || DEFAULT_QUOTA == 0) {
+	$quota = vfs('getQuota');
+	if ($currentUser == ROOTUSER || $quota == 0) {
 		return true;
 	}
 	$filename = $params[0];
@@ -2321,16 +2350,27 @@ function service_vfs_checkQuota($params) {
 	}
 	$home = um('getCurrentUserDir');
 	$dirsize = vfs('getDirSize',array($home));
-	if(($dirsize + $size) > DEFAULT_QUOTA) {
+	if(($dirsize + $size) > $quota) {
+		errorCodes('setErrorCode',array(VFS_QUOTA_EXCEEDED));
 		return false;
 	} else {
 		return true;
 	}
 }
 
+function service_vfs_getQuota($params) {
+	global $currentUser;
+
+	$info = um('retrieveUser', array($currentUser));
+	if (is_numeric($info['eyeUser'][0]['quota'][0]) === false) {
+		$info['eyeUser'][0]['quota'][0] = DEFAULT_QUOTA;
+	}
+	return intval($info['eyeUser'][0]['quota'][0]);
+}
+
 /**
 * Checks if a file has illegal characters in its name.
-* 
+*
 * @param $params array(file)
 * @param $file Path to check.
 * @return If the file name is valid returns true, otherwise returns
@@ -2341,7 +2381,7 @@ function service_vfs_checkSpecialChars($params){
 	$fileName = $params[0];
 	global $charBlackList;
 	foreach($charBlackList as $char){
-		if(utf8_strpos($fileName,$char) !== false){
+		if ( /* utf8 */ strpos($fileName, $char) !== false) {
 			return false;
 		}
 	}
@@ -2356,7 +2396,7 @@ function service_vfs_isGroupDir($params) {
 	}
 	$group = realpath(EYE_ROOT.'/'.GROUPS_DIR.'/');
 	$check = realpath($dir);
-	if (0 === utf8_strpos($check,$group)) {
+	if ( /* utf8 */ strpos($check, $group) === 0) {
 		return true;
 	} else {
 		return false;
@@ -2369,15 +2409,15 @@ function service_vfs_isGroupDir($params) {
  * @param string $path The path of a FOLDER to resolve (do NOT pass a file)
  *                                         (e.g. '/Documents/Images/..',
  *                                           or  './users/jn4/john/files/Documents/Images/..',
- *                                           or  '/home/john/eyeos/users/jn4/john/files/Documents/Images/..',
- *                                           or  'C:\My Documents\john\eyeos\users\jn4\john\files\Documents\Images\..')
+ *                                           or  '/home/john/oneye/users/jn4/john/files/Documents/Images/..',
+ *                                           or  'C:\My Documents\john\oneye\users\jn4\john\files\Documents\Images\..')
  * @param string $referenceDirectory 'user_files' for current user's files directory
  * 									 'group_files' for groups files directory
- * @param bool $returnReferenceFolderRelative FALSE to get a resolved path from eyeOS root directory
+ * @param bool $returnReferenceFolderRelative FALSE to get a resolved path from oneye root directory
  *                                              	(e.g. ./users/jn4/john/files/Documents)
  * 												TRUE to get a resolved path in the reference folder (e.g. '/Documents')
  * @param string $groupName The name of the group if $referenceDirectory is set to 'group_files'
- *                                        
+ *
  * @return mixed The resolved path or FALSE if the given path is not in the reference directory or if an error occured
  * @exception INCORRECT_PARAMS No file has been specified.
  */
@@ -2394,7 +2434,7 @@ function service_vfs_resolvePath($params) {
 	}
 	elseif ($params[1] == 'group_files') {
 		if ($params[3]) {
-			$groupName = utf8_basename($params[3]);
+			$groupName = basename($params[3]);
 			$referenceDirectory = EYE_ROOT.'/'.GROUPS_DIR.'/'.$groupName.'/'.FILES_GROUP_DIR;
 		}
 		else {
@@ -2415,33 +2455,28 @@ function service_vfs_resolvePath($params) {
 
 	$resolvedPath = '';
 	//$path is a realpath
-	// UN*X: /home/john/eyeos/users/jn4/john/files/Documents
-	// WIN:  C:\My Documents\john\eyeos\users\jn4\john\files\Documents
-	if (stripos($path, realpath($referenceDirectory)) === 0)
-	{
-		$relativePath = utf8_substr(realpath($path),utf8_strlen(realpath($referenceDirectory)));
+	// UN*X: /home/john/oneye/users/jn4/john/files/Documents
+	// WIN:  C:\My Documents\john\oneye\users\jn4\john\files\Documents
+	if (utf8_stripos($path, realpath($referenceDirectory)) === 0) {
+		$relativePath = substr(realpath($path), strlen(realpath($referenceDirectory))); // utf8
 		$resolvedPath = service_vfs_resolvePath(array($relativePath,$params[1],$returnReferenceFolderRelative,$groupName));
 	}
-	//$path is a relative path in the eyeOS root directory
-	elseif (stripos($path,$referenceDirectory) === 0) {
-		$relativePath = utf8_substr($path,utf8_strlen($referenceDirectory));
+	//$path is a relative path in the oneye root directory
+	elseif (utf8_stripos($path, $referenceDirectory) === 0) {
+		$relativePath = substr($path, strlen($referenceDirectory)); // utf8
 		$resolvedPath = service_vfs_resolvePath(array($relativePath,$params[1],$returnReferenceFolderRelative,$groupName));
 	}
 	//$path is a relative path in the user files directory
 	else
 	{
 		//designated path is NOT in the user files folder => ERROR
-		if (stripos(realpath($referenceDirectory.dirname($path)),
-							realpath($referenceDirectory)) === false) {
+		if (utf8_stripos(realpath($referenceDirectory . dirname($path)), realpath($referenceDirectory)) === false) {
 			return false;
 		}
 		if ($returnReferenceFolderRelative) {
-			$resolvedPath = '/'.utf8_substr(realpath($referenceDirectory.'/'.$path),
-							utf8_strlen(realpath($referenceDirectory).'/'));
-		}
-		else {
-			$resolvedPath = '.'.utf8_substr(realpath($referenceDirectory.'/'.$path),
-							utf8_strlen(realpath('.')));
+			$resolvedPath = '/' . substr(realpath($referenceDirectory . '/' . $path), strlen(realpath($referenceDirectory) . '/')); // utf8
+		} else {
+			$resolvedPath = '.' . substr(realpath($referenceDirectory . '/' . $path), strlen(realpath('.'))); // utf8
 		}
 	}
 	//replace backslashes by slashes (Windows servers)
@@ -2453,14 +2488,14 @@ function _getDirSizePurePhp($dir){
 	$size = 0;
 	$dir .= '/';
 	//That's not needed but well, doesn't bother :)
-	if(!vfs('real_checkPermissions',array($dir))){
+	if(!vfs('real_checkPermissions',array($dir, 'r'))){
 		return false;
 	}
 	if($handle = opendir($dir)){
 		while(($file = readdir($handle)) !== false){
 			if($file != '.' && $file != '..'){
 				$filePath = $dir.'/'.$file;
-				//TODO: Maybe is_file doesn't follow syms link, we want sym links? 
+				//TODO: Maybe is_file doesn't follow syms link, we want sym links?
 				if(is_file($filePath)){
 					$size += filesize($filePath);
 				}elseif(is_dir($filePath)){
@@ -2478,17 +2513,17 @@ function _getDirSizePurePhp($dir){
 }
 
 /*
- * xml-rpc functions. 
- * 
+ * xml-rpc functions.
+ *
  * this functions are normal vfs functions, can be used from any program, but are thinked to be executed remotely.
- * 
+ *
  */
 
 function service_vfs_appendToFileBinary($params) {
 	$file = $params[0];
 	$content = base64_decode($params[1]);
 
-	if(!vfs('checkQuota',array(utf8_strlen($content),1))) {
+	if (vfs('checkQuota', array( /* utf8 */ strlen($content), 1)) === false) {
 		return false;
 	}
 
@@ -2508,7 +2543,7 @@ function service_vfs_appendToFileBinary($params) {
 
 /**
  * Returns the content of a file.
- * 
+ *
  * @param $params array(file)
  * @param $file Path to the file.
  * @return If the function succeeds, returns its base64-encoded content. Otherwise, it returns false and sets the error code according to the error occurred.
@@ -2526,7 +2561,7 @@ function service_vfs_getFileBinary($params) {
 
 /**
  * Returns an array with all folders and subfolders.
- * 
+ *
  * @param $params array(folder)
  * @param $folder Path to be used as root folder.
  * @return If the function succeeds, returns its array. Otherwise, it returns false and sets the error code according to the error occurred.

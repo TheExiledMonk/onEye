@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/events'.EYE_CODE_EXTENSION);
@@ -26,12 +19,12 @@ include_once(EYE_ROOT.'/'.APP_DIR.'/eyeFTP/events'.EYE_CODE_EXTENSION);
 /*********************************************************************************************/
 /*   IMAGES URL                                                                              */
 /*********************************************************************************************/
-define('EYEFTP_IMG_MANAGEHOSTSDLG_HOST', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeFTP/toolbar/host.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_ADD', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeFTP/toolbar/addhost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_EDIT', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeFTP/toolbar/edithost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_DELETE', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeFTP/toolbar/deletehost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_LOAD', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeFTP/toolbar/loadhost.png');
-define('EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON', 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeFTP/minihost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_HOST', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeFTP/toolbar/host.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_ADD', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeFTP/toolbar/addhost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_EDIT', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeFTP/toolbar/edithost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_DELETE', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeFTP/toolbar/deletehost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_LOAD', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeFTP/toolbar/loadhost.png');
+define('EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON', 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeFTP/minihost.png');
 
 /*********************************************************************************************/
 /*********************************************************************************************/
@@ -191,8 +184,7 @@ function eyeFTP_refreshHostsTable() {
 	eyeFTP_emptyHostsTable();
 
 	foreach($hosts as $id => $hostData) {
-		$hiddenPassword = "";
-		for($i = 0 ; $i < utf8_strlen($hostData['password']) ; $i++) { $hiddenPassword .= '*'; }
+		$hiddenPassword = /* utf8 */ str_pad('', utf8_strlen($hostData['password']), '*');
 		$GLOBALS['eyeFTP_manageHosts_savedHosts_TAB']->addRow(array(
 			'<img src="'.EYEFTP_IMG_MANAGEHOSTSDLG_HOSTICON.'" />',
 			$hostData['name'],
@@ -211,7 +203,7 @@ function eyeFTP_refreshHostsTable() {
  * Note: the array returned is indexed from 1 not 0, because this index is used as a key
  *       in the SortableTable Widget and this one doesn't work well with null-like values
  *       for cells (0, ' ', etc...)
- * 
+ *
  * @return array array(array(name => ..., port => ..., username => ..., password => ...))
  */
 function eyeFTP_getSavedHosts() {
@@ -255,8 +247,8 @@ function eyeFTP_emptyHostsTable() {
 }
 
 /**
- * Saves and replaces hosts saved in the XML config file with the ones specified in argument 
- * 
+ * Saves and replaces hosts saved in the XML config file with the ones specified in argument
+ *
  * @param array $hosts The hosts data to save, organized the same way the data returned
  *                     by eyeFTP_getSavedHosts():
  *                     array(array(name => ..., port => ..., username => ..., password => ...))
@@ -291,7 +283,7 @@ function eyeFTP_saveHosts($hosts) {
 
 /**
  * Enable/disable the textfields of the host editor form
- * 
+ *
  * @param boolean $enable
  */
 function eyeFTP_enableHostForm($enable) {
@@ -317,7 +309,7 @@ function eyeFTP_enableHostForm($enable) {
 
 /**
  * Creates a dialog box to manage saved hosts
- * 
+ *
  * @param array $params
  * @see eyeFTP_on_eyeFTP_rename_rename_BTN()
  */
@@ -347,7 +339,7 @@ function showManageHostsDialog($params=null) {
 		'father' => 'eyeFTP_manageHosts_DLG_Content',
 		'x' => 10,
 		'y' => 10,
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/apps/eyeFTP/managehosts.png'
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/apps/eyeFTP/managehosts.png'
 	));
 	$logo->show();
 

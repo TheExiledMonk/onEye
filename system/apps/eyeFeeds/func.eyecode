@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 define('EYEFEEDS_FEEDITEMS_FETCHNUMBER', 16);
@@ -27,8 +20,8 @@ define('EYEFEEDS_FEEDITEMS_CACHEDURATION', 3600);
 define('EYEFEEDS_FEEDITEMS_CONTENT_DISPLAYEDSIZE', 1800);
 define('EYEFEEDS_FEEDITEMS_READINGHISTORYDURATION', 60);
 
-define('EYEFEEDS_FEEDITEM_ICONURL_READ', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/item_read.png');
-define('EYEFEEDS_FEEDITEM_ICONURL_UNREAD', 'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/item_unread.png');
+define('EYEFEEDS_FEEDITEM_ICONURL_READ', 'index.php?extern=apps/eyeFeeds/gfx/item_read.png');
+define('EYEFEEDS_FEEDITEM_ICONURL_UNREAD', 'index.php?extern=apps/eyeFeeds/gfx/item_unread.png');
 
 /*********************************************************************************************/
 //		EYEFEEDS GRAPHICAL FUNCTIONS
@@ -63,7 +56,7 @@ function eyeFeeds_drawFeedsTree($folderNode) {
 
 	if(is_array($folderNode['feed'])) {
 		foreach($folderNode['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = utf8_strlen($node['name'][0]) > 20 ? utf8_substr($node['name'][0], 0, 19) . '…' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$myTree->addItem('feeds#folder_root', 'feeds#item_'.$node['id'][0], $displayedNodeName);
 				$myTree->addSubList('feeds#item_'.$node['id'][0], 'feeds#folder_'.$node['id'][0]);
@@ -81,7 +74,7 @@ function eyeFeeds_drawFeedsTree($folderNode) {
 function eyeFeeds_drawFeedsTreeNode($treeObject, $parentNode, $folderNode, $foldersOnly=false, $itemsNamesPrefix='') {
 	if(is_array($folderNode['feed'])) {
 		foreach($folderNode['feed'] as $node) {
-			$displayedNodeName = (utf8_strlen($node['name'][0]) > 20)? utf8_substr($node['name'][0], 0, 17).'...' : $node['name'][0];
+			$displayedNodeName = utf8_strlen($node['name'][0]) > 20 ? utf8_substr($node['name'][0], 0, 19) . '…' : $node['name'][0];
 			if($node['type'][0] == 'folder') {
 				$treeObject->addItem($parentNode,
 									$itemsNamesPrefix.'item_'.$node['id'][0],
@@ -102,7 +95,7 @@ function eyeFeeds_drawFeedsTreeNode($treeObject, $parentNode, $folderNode, $fold
 	}
 }
 function eyeFeeds_drawFeedsTree_addContextMenu($menuName, $nodeName, $addOnly=false) {
-	$feedId = utf8_substr($nodeName, stripos($nodeName, '_')+1);
+	$feedId = substr($nodeName, stripos($nodeName, '_') + 1); // utf8
 
 	//add context menu
 	$myMenu = new ContextMenu(array(
@@ -114,7 +107,7 @@ function eyeFeeds_drawFeedsTree_addContextMenu($menuName, $nodeName, $addOnly=fa
 
 	//ADD FEED
 	$myMenu->addEntry(
-		'<img id="' . $menuName . 'addfeed_menu" style="height: 16px; width: 16px;" src="index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/addfeed_menu.png" /> &nbsp; '.htmlspecialchars(i18n('translate',array('Add feed')),ENT_QUOTES,'UTF-8'),
+		'<img id="' . $menuName . 'addfeed_menu" style="height: 16px; width: 16px;" src="index.php?extern=apps/eyeFeeds/gfx/addfeed_menu.png" /> &nbsp; '.utf8_htmlspecialchars(i18n('translate',array('Add feed')), ENT_QUOTES),
 		'feeds_CMN_addFeed_ENT',
 		'feeds_CMN_addFeed_ENT',
 		$feedId,
@@ -122,7 +115,7 @@ function eyeFeeds_drawFeedsTree_addContextMenu($menuName, $nodeName, $addOnly=fa
 	);
 	//ADD FOLDER
 	$myMenu->addEntry(
-		'<img id="' . $menuName . 'addfolder_menu" style="height: 16px; width: 16px;" src="index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/addfolder_menu.png" /> &nbsp; '.htmlspecialchars(i18n('translate',array('Add folder')),ENT_QUOTES,'UTF-8'),
+		'<img id="' . $menuName . 'addfolder_menu" style="height: 16px; width: 16px;" src="index.php?extern=apps/eyeFeeds/gfx/addfolder_menu.png" /> &nbsp; '.utf8_htmlspecialchars(i18n('translate',array('Add folder')), ENT_QUOTES),
 		'feeds_CMN_addFolder_ENT',
 		'feeds_CMN_addFolder_ENT',
 		$feedId,
@@ -131,7 +124,7 @@ function eyeFeeds_drawFeedsTree_addContextMenu($menuName, $nodeName, $addOnly=fa
 	if (!$addOnly) {
 		//EDIT
 		$myMenu->addEntry(
-			'<img id="' . $menuName . 'editfeedfolder_menu" style="height: 16px; width: 16px;" src="index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/editfeedfolder_menu.png" /> &nbsp; '.htmlspecialchars(i18n('translate',array('Edit')),ENT_QUOTES,'UTF-8'),
+			'<img id="' . $menuName . 'editfeedfolder_menu" style="height: 16px; width: 16px;" src="index.php?extern=apps/eyeFeeds/gfx/editfeedfolder_menu.png" /> &nbsp; '.utf8_htmlspecialchars(i18n('translate',array('Edit')), ENT_QUOTES),
 			'feeds_CMN_edit_ENT',
 			'feeds_CMN_edit_ENT',
 			$feedId,
@@ -139,7 +132,7 @@ function eyeFeeds_drawFeedsTree_addContextMenu($menuName, $nodeName, $addOnly=fa
 		);
 		//DELETE
 		$myMenu->addEntry(
-			'<img id="' . $menuName . 'delfeedfolder_menu" style="height: 16px; width: 16px;" src="index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/delfeedfolder_menu.png" /> &nbsp; '.htmlspecialchars(i18n('translate',array('Delete')),ENT_QUOTES,'UTF-8'),
+			'<img id="' . $menuName . 'delfeedfolder_menu" style="height: 16px; width: 16px;" src="index.php?extern=apps/eyeFeeds/gfx/delfeedfolder_menu.png" /> &nbsp; '.utf8_htmlspecialchars(i18n('translate',array('Delete')), ENT_QUOTES),
 			'feeds_CMN_del_ENT',
 			'feeds_CMN_del_ENT',
 			$feedId,
@@ -166,7 +159,7 @@ function eyeFeeds_clearFeedItems() {
 		'y' => 26,
 		'width' => $GLOBALS['itemsList_BOX']->width - 8,
 		'height' => $GLOBALS['itemsList_BOX']->height - 30,
-		'sortypes' => array('Html', 'String', 'String', 'String', 'Hidden'),
+		'sortypes' => array('Html', 'String', 'Date', 'String', 'Hidden'),
 		'master' => 4,
 		'theader' => array(' ', 'Title', 'Date', 'Author'),
 		'signal' => 'feedItemClick',
@@ -243,8 +236,7 @@ function eyeFeeds_displayItemContent($item) {
 	} else {
 		$content = $item['content'];
 		if (utf8_strlen($content) > $settings['contentSize'][0]) {
-			$content = utf8_substr($content, 0 , $settings['contentSize'][0]);
-			$content .= ' (...)';
+			$content = utf8_substr($content, 0, $settings['contentSize'][0]) . ' (…)';
 		}
 		$content = cleanString(eyeFeeds_replaceUrlMarksByEyeNavCalls($content));
 		$content .= $enclosuresLinks;
@@ -381,19 +373,17 @@ function eyeFeeds_deleteFeedFolder($feeds, $feedId) {
 }
 
 function eyeFeeds_saveFeedsToFile($feeds, $redrawFeedsTree=true, $sortFeeds=true) {
-	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeFeeds/conf.xml';
-	$conf = eyeXML('getXMLfile', array($path));
-
+	$conf = eyeXML('getXMLconfig', array('eyeFeeds', 'conf.xml'));
 	if ($sortFeeds)
 		$feeds['feed'] = eyeFeeds_sortFeeds($feeds['feed']);
 
 	$conf['eyeFeeds'][0]['base'][0] = $feeds;
-	if (!eyeXML('setXMLfile',array($path, $conf))) {
+	if (!eyeXML('setXMLconfig', array('eyeFeeds', 'conf.xml', $conf))) {
 		return false;
 	}
 
 	//redraw tree with saved configuration
-	$conf2 = eyeXML('getXMLfile', array($path));
+	$conf2 = eyeXML('getXMLconfig', array('eyeFeeds', 'conf.xml'));
 	if ($redrawFeedsTree) {
 		$tree = eyeFeeds_drawFeedsTree($conf2['eyeFeeds'][0]['base'][0]);
 		$tree->expandTree();
@@ -415,7 +405,7 @@ function eyeFeeds_sortFeeds($feeds) {
 function eyeFeeds_sortFeeds_compare($a,$b) {
 	$return = 0;
 	if ($a['type'][0] == $b['type'][0]) {
-		$return = utf8_strcasecmp($a['name'][0],$b['name'][0]);
+		$return = utf8_strcasecmp($a['name'][0], $b['name'][0]);
 	}
 	if ($a['type'][0] == 'folder' && $b['type'][0] != 'folder')
 		$return -1;
@@ -430,8 +420,7 @@ function eyeFeeds_sortFeeds_compare($a,$b) {
  * @return array The saved feeds
  */
 function eyeFeeds_getSavedFeeds() {
-	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeFeeds/conf.xml';
-	$conf = eyeXML('getXMLfile', array($path));
+	$conf = eyeXML('getXMLconfig', array('eyeFeeds', 'conf.xml'));
 
 	if (!is_array($conf))
 		$conf = array('eyeFeeds' => array());
@@ -446,7 +435,7 @@ function eyeFeeds_getSavedFeeds() {
 }
 
 function eyeFeeds_replaceUrlMarksByEyeNavCalls($htmlText) {
-	$return = preg_replace_callback('/<a (.*?)href="(.*?)"(.*?)>/i',
+	$return = /* utf8 */ preg_replace_callback('/<a (.*?)href="(.*?)"(.*?)>/i',
 									eyeFeeds_replaceUrlMarksByEyeNavCalls_callback,
 									$htmlText);
 	return $return;
@@ -469,8 +458,7 @@ function eyeFeeds_getEyeNavLinkFromUrl($url, $linkText=null) {
 //		READING HISTORY FUNCTIONS
 /*********************************************************************************************/
 function eyeFeeds_loadReadingHistory() {
-	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeFeeds/conf.xml';
-	$conf = eyeXML('getXMLfile', array($path));
+	$conf = eyeXML('getXMLconfig', array('eyeFeeds', 'conf.xml'));
 
 	if (!is_array($conf))
 		$conf = array('eyeFeeds' => array());
@@ -501,11 +489,10 @@ function eyeFeeds_loadReadingHistory() {
 }
 
 function eyeFeeds_saveReadingHistory($newReadingHistory) {
-	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeFeeds/conf.xml';
-	$conf = eyeXML('getXMLfile', array($path));
+	$conf = eyeXML('getXMLconfig', array('eyeFeeds', 'conf.xml'));
 
 	$conf['eyeFeeds'][0]['readingHistory'][0]['title'] = $newReadingHistory;
-	return eyeXML('setXMLfile',array($path, $conf));
+	return eyeXML('setXMLconfig', array('eyeFeeds', 'conf.xml', $conf));
 }
 
 function eyeFeeds_isTitleRead($url) {
@@ -540,8 +527,7 @@ function eyeFeeds_setTitleAsRead($url) {
 //		SETTINGS FUNCTIONS
 /*********************************************************************************************/
 function eyeFeeds_loadSettings() {
-	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeFeeds/conf.xml';
-	$conf = eyeXML('getXMLfile', array($path));
+	$conf = eyeXML('getXMLconfig', array('eyeFeeds', 'conf.xml'));
 
 	if (!is_array($conf))
 		$conf = array('eyeFeeds' => array());
@@ -559,11 +545,10 @@ function eyeFeeds_loadSettings() {
 }
 
 function eyeFeeds_saveSettings($newSettings) {
-	$path = um('getCurrentUserDir').'/'.CONF_USER_DIR.'/eyeFeeds/conf.xml';
-	$conf = eyeXML('getXMLfile', array($path));
+	$conf = eyeXML('getXMLconfig', array('eyeFeeds', 'conf.xml'));
 
 	$conf['eyeFeeds'][0]['settings'][0] = $newSettings;
-	return eyeXML('setXMLfile',array($path, $conf));
+	eyeXML('setXMLconfig', array('eyeFeeds', 'conf.xml', $conf));
 }
 
 /*********************************************************************************************/
@@ -636,7 +621,7 @@ function eyeFeeds_fetchFeedItemsFromUrl($url, $forceRefresh=false) {
 			foreach($enclosures_tmp as $enc) {
 				$enclosures[] = array(
 					'title' => $enc->get_title(),
-					'filename' => utf8_substr($enc->get_link(), utf8_strrpos($enc->get_link(), '/') + 1),
+					'filename' => substr($enc->get_link(), strrpos($enc->get_link(), '/') + 1), // utf8
 					'link' => $enc->get_link(),
 					'type' => $enc->get_type(),
 					'embed' => $enc->embed('',true)
@@ -648,7 +633,7 @@ function eyeFeeds_fetchFeedItemsFromUrl($url, $forceRefresh=false) {
 			'id' => $simplePieItem->get_id(),
 			'permalink' => $simplePieItem->get_permalink(),
 			'title' => $simplePieItem->get_title(),
-			'date' => $simplePieItem->get_date(),
+			'date' => $simplePieItem->get_date('Y-m-d G:i'),
 			'author_name' => ($simplePieItem->get_author())? $simplePieItem->get_author()->get_name() : ' ',
 			'author_email' => ($simplePieItem->get_author())? $simplePieItem->get_author()->get_email() : ' ',
 			'author_link' => ($simplePieItem->get_author())? $simplePieItem->get_author()->get_link() : ' ',
@@ -690,7 +675,7 @@ function eyeFeeds_importFeeds($rootFeed, $parentFolderId, $inputFilePath) {
 			$newNode = eyeFeeds_createFeedNodeFromOpml($outline);
 			if ($newNode) {
 				$rootFeed['feed'][] = $newNode;
-			} 
+			}
 		}
 		return $rootFeed;
 	}
@@ -719,9 +704,9 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 	 * @see http://fr3.php.net/manual/en/book.simplexml.php#85674
 	 */
 	$title = $xmlObject['title']->asXML();
-	$title = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $title));
+	$title = trim(preg_replace('/.*="(.*?)".*/', '$1', $title)); // utf8
 	$text = $xmlObject['text']->asXML();
-	$text = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $text));
+	$text = trim(preg_replace('/.*="(.*?)".*/', '$1', $text)); // utf8
 
 	$name = '';
 	if ($title) {
@@ -749,13 +734,13 @@ function eyeFeeds_createFeedNodeFromOpml($xmlObject) {
 	else {
 		/** BIG HACK AGAIN */
 		$url = $xmlObject['xmlUrl']->asXML();
-		$url = utf8_trim(preg_replace('/.*="(.*?)".*/', '$1', $url));
+		$url = trim(preg_replace('/.*="(.*?)".*/', '$1', $url)); // utf8
 
 		//if no name/title is provided in the OPML file, use the hostname instead
 		if ($name == '') {
 			$urlParts = parse_url($url);
 			if (is_array($urlParts)) {
-				if (preg_match('/^www\.(.*)/i', $urlParts['host'], $matches)) {
+				if ( /* utf8 */ preg_match('/^www\\.(.*)/i', $urlParts['host'], $matches)) {
 					$name = $matches[1];
 				} else {
 					$name = $urlParts['host'];
@@ -867,9 +852,11 @@ function isFromBouncedRequest($params="") {
 }
 
 function cleanString($string) {
-	$return = '';
-	$return = @html_entity_decode($string, ENT_QUOTES, mb_detect_encoding($string));
-	return $return;
+	$encodding = 'UTF-8';
+	if (function_exists('mb_detect_encoding') === true) {
+		$encoding = mb_detect_encoding($string);
+	}
+	return @html_entity_decode($string, ENT_QUOTES, $encoding); // utf8
 }
 
 ?>

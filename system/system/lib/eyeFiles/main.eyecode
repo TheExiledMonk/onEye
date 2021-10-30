@@ -1,25 +1,20 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
+
+include_once EYE_ROOT . '/' . SYSTEM_DIR . '/lib/eyeFiles/images' . EYE_CODE_EXTENSION;
 
 /*
 $params[0] -> path (default: "/")
@@ -28,34 +23,40 @@ $params[1] -> type (default: "home")
 function lib_eyeFiles_cleanPath($params = '') {
 	global $currentUser;
 	$path = $params[0];
-	$type = $params[1];
+	$type = null;
+	if (isset($params[1]) === true) {
+		$type = $params[1];
+		if (is_string($type) === true) {
+			$type = /* utf8 */ strtolower($type);
+		}
+	}
 	$path = str_replace('\\','/',$path) . '/';
-	if (in_array(utf8_strtolower($type),array('home','groups','trash')) || $currentUser == ROOTUSER && in_array(utf8_strtolower($type),array('real','users'))) {
-		$type = utf8_strtolower($type);
-	} elseif (utf8_strtolower(utf8_substr($path,0,7)) == 'home://') {
+	if (in_array($type,array('home','groups','trash')) || $currentUser == ROOTUSER && in_array($type,array('real','users'))) {
+		$type = $type;
+	} elseif (strtolower(substr($path, 0, 7)) === 'home://') { // utf8
 		$type = 'home';
-		$path = utf8_substr($path,7);
-	} elseif (utf8_strtolower(utf8_substr($path,0,9)) == 'groups://') {
+		$path = /* utf8 */ substr($path, 7);
+	} elseif (strtolower(substr($path, 0, 9)) === 'groups://') { // utf8
 		$type = 'groups';
-		$path = utf8_substr($path,9);
-	} elseif (utf8_strtolower(utf8_substr($path,0,8)) == 'trash://') {
+		$path = /* utf8 */ substr($path, 9);
+	} elseif (strtolower(substr($path, 0, 8)) === 'trash://') { // utf8
 		$type = 'trash';
-		$path = utf8_substr($path,8);
-	} elseif ($currentUser == ROOTUSER && utf8_strtolower(utf8_substr($path,0,8)) == 'users://') {
+		$path = /* utf8 */ substr($path, 8);
+	} elseif ($currentUser === ROOTUSER && strtolower(substr($path, 0, 8)) === 'users://') { // utf8
 		$type = 'users';
-		$path = utf8_substr($path,8);
-	} elseif ($currentUser == ROOTUSER && utf8_strtolower(utf8_substr($path,0,7)) == 'real://') {
+		$path = /* utf8 */ substr($path, 8);
+	} elseif ($currentUser === ROOTUSER && strtolower(substr($path, 0, 7)) === 'real://') { // utf8
 		$type = 'real';
-		$path = utf8_substr($path,7);
-	} elseif (utf8_strpos(realpath($path),realpath(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/')) === 0) {
+		$path = /* utf8 */ substr($path, 7);
+	} elseif ( /* utf8 */ strpos(realpath($path), realpath(um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/')) === 0) {
 		$type = 'home';
-	} elseif (utf8_strpos(realpath($path),realpath(EYE_ROOT . '/' . GROUPS_DIR . '/')) === 0) {
+	} elseif ( /* utf8 */ strpos(realpath($path), realpath(EYE_ROOT . '/' . GROUPS_DIR . '/')) === 0) {
 		$type = 'groups';
-	} elseif (utf8_strpos(realpath($path),realpath(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/')) === 0) {
+	} elseif ( /* utf8 */ strpos(realpath($path), realpath(um('getCurrentUserDir') . '/' . TRASH_USER_DIR . '/')) === 0) {
 		$type = 'trash';
-	} elseif (utf8_strpos(realpath($path),realpath(EYE_ROOT . '/' . USERS_DIR . '/')) === 0) {
+	} elseif ( /* utf8 */ strpos(realpath($path), realpath(EYE_ROOT . '/' . USERS_DIR . '/')) === 0) {
 		$type = 'users';
-	} elseif (utf8_strpos(realpath($path),realpath(EYE_ROOT . '/')) === 0) {
+	} elseif ( /* utf8 */ strpos(realpath($path), realpath(EYE_ROOT . '/')) === 0) {
 		$type = 'real';
 	}
 	if ($type == 'groups') {
@@ -72,24 +73,24 @@ function lib_eyeFiles_cleanPath($params = '') {
 		$sub = um('getCurrentUserDir') . '/' . FILES_USER_DIR . '/';
 	}
 	if ($type == 'groups' || $type == 'users') {
-		if (utf8_strpos(realpath($path),realpath($sub)) === 0) {
-			$path = str_replace('\\','/',utf8_substr(realpath($path),utf8_strlen(realpath($sub))));
+		if ( /* utf8 */ strpos(realpath($path), realpath($sub)) === 0) {
+			$path = str_replace('\\', '/', substr(realpath($path), strlen(realpath($sub)))); // utf8
 		}
-		$path = str_replace('//','/',str_replace('//','/',utf8_trim($path,'/')));
+		$path = str_replace('//', '/', str_replace('//', '/', /* utf8 */ trim($path, '/')));
 		$sPath = $sub.$path;
-		if ((utf8_strpos(realpath($sPath),realpath($sub)) === 0 && vfs('isdir',array($sPath))) && (substr_count($path,'/') > 1 || substr_count($path,'/') && $type != 'users')) {
-			$path = str_replace('\\','/',utf8_substr(realpath($sPath),utf8_strlen(realpath($sub))));
+		if ((strpos(realpath($sPath), realpath($sub)) === 0 && vfs('isdir', array($sPath))) && ($type !== 'users' && substr_count($path, '/') > 0 || substr_count($path, '/') > 1)) { // utf8
+			$path = str_replace('\\','/', substr(realpath($sPath), strlen(realpath($sub)))); // utf8
 		} else {
 			$path .= '/';
-			$temp = utf8_substr($path,0,utf8_strpos($path,'/'));
+			$temp = substr($path, 0, strpos($path, '/')); // utf8
 			if ($type == 'groups' && $temp) {
-				$path = $temp . '/' . FILES_GROUP_DIR . '/' . utf8_substr($path,utf8_strlen($temp));
+				$path = $temp . '/' . FILES_GROUP_DIR . '/' . substr($path, strlen($temp)); // utf8
 			} elseif ($type == 'users' && $temp) {
-				$path = utf8_substr($path,1 + utf8_strlen($temp));
-				$temp2 = utf8_substr($path,0,utf8_strpos($path,'/'));
+				$path = substr($path, 1 + strlen($temp)); // utf8
+				$temp2 = substr($path, 0, strpos($path, '/')); // utf8
 				if ($temp2) {
 					$temp .= '/' . $temp2 . '/' . FILES_USER_DIR;
-					$path = utf8_substr($path,utf8_strlen($temp2));
+					$path = substr($path, strlen($temp2)); // utf8
 				}
 				$path = $temp . '/' . $path;
 			} else {
@@ -97,30 +98,30 @@ function lib_eyeFiles_cleanPath($params = '') {
 			}
 		}
 	}
-	if ($type != 'real' && utf8_strpos(realpath($path),realpath($sub)) !== 0 || utf8_substr($path,0,2) != './') {
+	if ($type !== 'real' && strpos(realpath($path),realpath($sub)) !== 0 || substr($path, 0, 2) !== './') { // utf8
 		$path = $sub . $path;
 	}
-	if ($currentUser != ROOTUSER && !vfs('checkPermissions',array($path,'r')) || $type != 'real' && utf8_strpos(realpath($path),realpath($sub)) !== 0 || !vfs('isdir',array($path))) {
+	if ($currentUser !== ROOTUSER && vfs('checkPermissions', array($path, 'r')) === false || $type !== 'real' && /* utf8 */ strpos(realpath($path), realpath($sub)) !== 0 || vfs('isdir',array($path)) === false) {
 		$path = $sub;
 	}
 	$path = str_replace('//','/',str_replace('//','/',$path));
-	if ($type == 'real' && utf8_strpos(realpath($path),realpath($sub)) !== 0) {
-		$show = utf8_substr($path,2);
+	if ($type == 'real' && /* utf8 */ strpos(realpath($path),realpath($sub)) !== 0) {
+		$show = /* utf8 */ substr($path, 2);
 	} else {
-		$show = str_replace('\\','/',utf8_substr(realpath($path),utf8_strlen(realpath($sub))));
-		$show = utf8_trim($show,'/') . '/';
+		$show = str_replace('\\', '/', substr(realpath($path), strlen(realpath($sub)))); // utf8
+		$show = /* utf8 */ trim($show, '/') . '/';
 		if (($type == 'groups' || $type == 'users') && $show != '/') {
-			$temp = utf8_substr($show,0,utf8_strpos($show,'/'));
-			$show = utf8_substr($show,1 + utf8_strlen($temp)) . '/';
+			$temp = substr($show, 0, strpos($show, '/')); // utf8
+			$show = substr($show, 1 + strlen($temp)) . '/'; // utf8
 			if ($type == 'users') {
-				$temp2 = utf8_substr($show,0,utf8_strpos($show,'/'));
+				$temp2 = substr($show, 0, strpos($show,'/')); // utf8
 				if ($temp2) {
 					$temp .= '/' . $temp2;
-					$show = utf8_substr($show,1 + utf8_strlen($temp2)) . '/';
+					$show = substr($show, 1 + strlen($temp2)) . '/'; // utf8
 				}
 			}
-			$show = $temp . '/' . utf8_substr($show,utf8_strpos($show,'/'));
-			$show = str_replace('//','/',str_replace('//','/',utf8_trim($show,'/'))) . '/';
+			$show = $temp . '/' . substr($show, strpos($show, '/')); // utf8
+			$show = str_replace('//', '/', str_replace('//', '/', /* utf8 */ trim($show, '/'))) . '/';
 		}
 	}
 	return array($path,$type,$show,$sub);
@@ -129,52 +130,33 @@ function lib_eyeFiles_cleanPath($params = '') {
 /*
 $params[0] -> path
 $params[1] -> filename
-$params[2] -> max width and height (default: 60)
+$params[2] -> max width (default: 60)
+$params[3] -> max height (default: 48)
 */
 function lib_eyeFiles_createThumbnail($params = '') {
-	if (!$params[0] || !$params[1]) {
+	if (!is_array($params) || !isset($params[0]) || !isset($params[1])) {
 		return false;
-	} elseif (!$params[2]) {
+	}
+	if (!isset($params[2])) {
 		$params[2] = 60;
 	}
-	$extension = utf8_strtolower(utf8_substr(strrchr($params[1],'.'),1));
-	$path = eyeFiles('cleanPath',array($params[0]));
-	$type = $path[1];
-	$path = $path[0] . '/' . $params[1];
-	if ($type != 'real') {
-		$path = vfs('getRealName',array($path));
-		if (!vfs('checkPermissions',array($path,'r'))) {
-			exit;
-		}
+	if (!isset($params[3])) {
+		$params[3] = 48;
 	}
-	if ($extension == 'bmp') {
-		$image = eyeFiles('imagecreatefrombmp',array($path));
-	} elseif ($extension == 'jpeg' || $extension == 'jpg') {
-		$image = imagecreatefromjpeg($path);
-	} elseif ($extension == 'gif') {
-		$image = imagecreatefromgif($path);
-	} elseif($extension == 'png') {
-		$image = imagecreatefrompng($path);
-	} else {
-		exit;
+	$path = eyeFiles('cleanPath', array($params[0]));
+	$path = vfs('getRealName', array($path[0] . '/' . $params[1]));
+	if (vfs('checkPermissions', array($path, 'r')) === false) {
+		return false;
+	}
+	$image = images_imagecreatefromfile($path);
+	if ($image === false) {
+		return false;
 	}
 	$info = @getimagesize($path);
-	if ($info[0] > $info[1]) {
-		$height = $params[2] / $info[0] * $info[1];
-		$width = $params[2];
-	} else {
-		$height = $params[2];
-		$width = $params[2] / $info[1] * $info[0];
-	}
-	$thumbnail = imagecreatetruecolor($width,$height);
-	imagealphablending($thumbnail,0);
-	imagefill($thumbnail,0,0,imagecolorallocatealpha($thumbnail,0,0,0,255));
-	imagesavealpha($thumbnail,1);
-	imagecopyresampled($thumbnail,$image,0,0,0,0,$width,$height,$info[0],$info[1]);
-	header('Content-Disposition: inline; filename="' . utf8_basename($params[1],'.' . $extension) . '_thumbnail.png"');
+	$thumbnail = images_Resize($image, $params[2], $params[3]);
+	header('Content-Disposition: inline; filename="' . basename($params[1]) . '_thumbnail.png"');
 	header('Content-Type: image/png');
 	header('Accept-Ranges: bytes');
-	header('X-Pad: avoid browser bug');
 	imagepng($thumbnail);
 	imagedestroy($image);
 	imagedestroy($thumbnail);
@@ -190,14 +172,14 @@ function lib_eyeFiles_filterFile($params = '') {
 	if (!$params[0] || !$params[1]) {
 		return false;
 	}
-	$filters = explode(',',$params[1]);
+	$filters = /* utf8 */ explode(',', $params[1]);
 	foreach ($filters as $filter) {
-		$filter = utf8_trim($filter,' ');
-		if (utf8_substr($filter,0,1) == '*' && utf8_substr($filter,-1) == '*' && utf8_strpos($params[0],utf8_substr($filter,1,-1)) != false) {
+		$filter = /* utf8 */ trim($filter, ' ');
+		if (substr($filter, 0, 1) === '*' && substr($filter, -1) === '*' && strpos($params[0], substr($filter, 1, -1)) !== false) { // utf8
 			$filtered[] = 1;
-		} elseif (utf8_substr($filter,0,1) == '*' && utf8_substr($params[0],1 - utf8_strlen($filter)) == utf8_substr($filter,1)) {
+		} elseif (substr($filter, 0, 1) === '*' && substr($params[0], 1 - strlen($filter)) === substr($filter, 1)) { // utf8
 			$filtered[] = 1;
-		} elseif (utf8_substr($filter,-1) == '*' && utf8_substr($params[0],0,utf8_strlen($filter) - 1) == utf8_substr($filter,0,-1)) {
+		} elseif (substr($filter, -1) === '*' && substr($params[0], 0, strlen($filter) - 1) === substr($filter, 0, -1)) { // utf8
 			$filtered[] = 1;
 		} elseif ($filter == $params[0]) {
 			$filtered[] = 1;
@@ -230,9 +212,10 @@ function lib_eyeFiles_getDeskContent($params = '') {
 		}
 		$currentUser = $oldUser;
 	}
+	$return = array();
 	$files = eyeFiles('getDirContent',array($path));
 	$config = eyeXML('getXMLconfig',array('eyeDesk','conf.xml'));
-	if ($config['eyeDesk'][0]['loadIconPositions'][0] != 3) {
+	if (isset($config['eyeDesk'][0]['loadIconPositions']) === false || $config['eyeDesk'][0]['loadIconPositions'][0] != 3) {
 		$icons = eyeXML('getXMLconfig',array('eyeDesk','icons.xml'));
 		if (is_array($icons['icon'])) {
 			foreach ($icons['icon'] as $value) {
@@ -245,9 +228,6 @@ function lib_eyeFiles_getDeskContent($params = '') {
 				}
 			}
 		}
-	}
-	if (!is_array($return)) {
-		$return = array();
 	}
 	if (!is_array($files)) {
 		$files = array();
@@ -275,13 +255,16 @@ function lib_eyeFiles_getDirContent($params = '') {
 	$listFolders = array();
 	$listLinks = array();
 	$return = array();
-	$type = $params[1];
+	$type = null;
+	if (isset($params[1]) === true) {
+		$type = $params[1];
+	}
 	if ($type == 'groups' && realpath($params[0] . '/') == realpath(EYE_ROOT . '/' . GROUPS_DIR . '/')) {
 		$xml = um('retrieveUser',array($currentUser));
 		foreach ($xml['eyeUser'][0]['group'] as $group) {
-			if (vfs('isdir',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . utf8_basename($group)))) {
+			if (vfs('isdir',array(EYE_ROOT . '/' . GROUPS_DIR . '/' . basename($group)))) {
 				$element = array();
-				$element[] = utf8_basename($group);
+				$element[] = basename($group);
 				$element[] = 'folder';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
@@ -301,9 +284,9 @@ function lib_eyeFiles_getDirContent($params = '') {
 		foreach ($files as $file) {
 			$element = array();
 			if ($type == 'trash') {
-				if (utf8_strtolower(strrchr($file,'.')) == utf8_strtolower('.' . EYEOS_TRASH_EXT)) {
+				if (strtolower(strrchr($file,'.')) === strtolower('.' . EYEOS_TRASH_EXT)) { // utf8
 					$info = eyeXML('getXMLfile',array($file));
-					$element[] = utf8_basename($file);
+					$element[] = basename($file);
 					if ($info['eyeTrash'][0]['type'][0] == 'dir') {
 						$element[] = 'folder';
 						$element[] = $info['eyeTrash'][0]['lastname'][0];
@@ -317,16 +300,16 @@ function lib_eyeFiles_getDirContent($params = '') {
 						$element[] = 'file';
 						$element[] = $info['eyeTrash'][0]['lastname'][0];
 						if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
-							$info2 = eyeXML('getXMLfile',array(utf8_substr($file,0,- utf8_strlen(EYEOS_TRASH_EXT)) . EYEOS_INFO_EXT));
+							$info2 = eyeXML('getXMLfile', array(substr($file, 0, -strlen(EYEOS_TRASH_EXT)) . EYEOS_INFO_EXT)); // utf8
 							$element[] = $info['eyeTrash'][0]['deleteDate'][0];
-							$element[] = vfs('real_filesize',array(utf8_substr($file,0,- utf8_strlen(EYEOS_TRASH_EXT)) . EYEOS_FILE_EXT));
+							$element[] = vfs('real_filesize', array(substr($file, 0, -strlen(EYEOS_TRASH_EXT)) . EYEOS_FILE_EXT)); // utf8
 							$element[] = $info2['eyeFile'][0]['author'][0];
 							$listFiles[] = $element;
 						}
 					}
 				}
 			} elseif (vfs('isdir',array($file))) {
-				$element[] = utf8_basename($file);
+				$element[] = basename($file);
 				$element[] = 'folder';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
@@ -336,7 +319,7 @@ function lib_eyeFiles_getDirContent($params = '') {
 					$listFolders[] = $element;
 				}
 			} elseif ($currentUser == ROOTUSER && $type == 'real') {
-				$element[] = utf8_basename($file);
+				$element[] = basename($file);
 				$element[] = 'file';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
@@ -345,8 +328,8 @@ function lib_eyeFiles_getDirContent($params = '') {
 					$element[] = ' ';
 					$listFiles[] = $element;
 				}
-			} elseif (utf8_strtolower(strrchr($file,'.')) == utf8_strtolower('.' . EYEOS_LINK_EXT) && vfs('real_fileExists',array($file))) {
-				$element[] = utf8_basename($file);
+			} elseif (strtolower(strrchr($file, '.')) == strtolower('.' . EYEOS_LINK_EXT) && vfs('real_fileExists', array($file))) { // utf8
+				$element[] = basename($file);
 				$element[] = 'link';
 				$element[] = $element[0];
 				if (!isset($params[3]) || $params[3] == '1' || eyeFiles('filterFile',array($element[2],$params[2],$params[3] - 2))) {
@@ -369,10 +352,10 @@ function lib_eyeFiles_getDirContent($params = '') {
 			}
 		}
 	}
-	if ($params[4] || !isset($params[4])) {
+	if (!isset($params[4]) || $params[4]) {
 		$return = array_merge($listFiles,$return);
 	}
-	if ($params[5] || !isset($params[5])) {
+	if (!isset($params[5]) || $params[5]) {
 		$return = array_merge($listLinks,$return);
 	}
 	if (isset($params[6]) && !$params[6]) {
@@ -393,84 +376,53 @@ function intern_eyeFiles_SortFilesArrays($a,$b) {
 	return utf8_strcasecmp($a[2],$b[2]);
 }
 
-/*
-$params[0] -> windows bmp file path
-
-Original function from http://php.net/manual/function.imagecreatefromwbmp.php#86214
-*/
-function lib_eyeFiles_imagecreatefrombmp($params = '') {
-	if (!$params[0]) {
+function lib_eyeFiles_imagebmp($params = array()) {
+	if (is_array($params) === false || isset($params[0]) === false || isset($params[1]) === false) {
 		return false;
 	}
-	$file = fopen($params[0],'rb');
-	$read = fread($file,10);
-	while (!feof($file) && $read != '') {
-		$read .= fread($file,1024);
+	return images_SaveAsBmp($params[0], $params[1]);
+}
+
+function lib_eyeFiles_imagecreatefrombmp($params = '') {
+	if (is_array($params) === false || isset($params[0]) === false) {
+		return false;
 	}
-	$temp = unpack('H*',$read);
-	$hex = $temp[1];
-	$header = utf8_substr($hex,0,108);
-	if (utf8_substr($header,0,4) == '424d') {
-		$header_parts = utf8_str_split($header,2);
-		$width = hexdec($header_parts[19] . $header_parts[18]);
-		$height = hexdec($header_parts[23] . $header_parts[22]);
+	if (isset($params[1]) === false) {
+		$params[1] = false;
 	}
-	$x = 0;
-	$y = 1;
-	$image  = imagecreatetruecolor($width,$height);
-	$body = utf8_substr($hex,108);
-	$body_size = (utf8_strlen($body) / 2);
-	$header_size = ($width * $height);
-	$usePadding = ($body_size > $header_size * 3 + 4);
-	for ($i = 0; $i < $body_size; $i += 3) {
-		if ($x >= $width) {
-			if ($usePadding) {
-				$i += $width % 4;
-			}
-			$x = 0;
-			$y++;
-			if ($y > $height) {
-				break;
-			}
-		}
-		$i_pos = $i * 2;
-		$r = hexdec($body[$i_pos + 4] . $body[$i_pos + 5]);
-		$g = hexdec($body[$i_pos + 2] . $body[$i_pos + 3]);
-		$b = hexdec($body[$i_pos] . $body[$i_pos + 1]);
-		$color = imagecolorallocate($image,$r,$g,$b);
-		imagesetpixel($image,$x,$height - $y,$color);
-		$x++;
-	}
-	return $image;
+	return images_ReadBmp($params[0], $params[1]);
 }
 
 /*
 $params[0] -> command
 */
 function lib_eyeFiles_launchCommand($params = '') {
-	$link = explode(' ', utf8_trim($params[0]));
-	if (strrchr($link[0],'.') == '.app') {
-		proc('launch',array(utf8_basename($link[0],'.app'),array_slice($link,1)));
-	} elseif (utf8_substr($params[0],0,7) == 'http://' || utf8_substr($params[0],0,8) == 'https://') {
-		proc('launch',array('eyeNav',$params[0]));
-	} elseif (utf8_substr($params[0],0,7) == 'ftp://') {
-		proc('launch',array('eyeFTP',$params[0]));
+	$link = /* utf8 */ explode(' ', /* utf8 */ trim($params[0]));
+	if (!isset($params[1]) || is_array($params[1]) === 0) {
+		$params[1] = array();
+	}
+	if ( /* utf8 */ strrchr($link[0], '.') === '.app') {
+		proc('launch',array(basename($link[0],'.app'),array_slice($link,1),$params[1]));
+	} elseif (strtolower(substr($params[0], 0, 7)) === 'http://' || strtolower(substr($params[0], 0, 8)) === 'https://') { // utf8
+		proc('launch',array('eyeNav',$params[0],$params[1]));
+	} elseif (strtolower(substr($params[0], 0, 7)) == 'ftp://') { // utf8
+		proc('launch',array('eyeFTP',$params[0],$params[1]));
 	} else {
 		$params[0] = str_replace('\\','/',$params[0]);
-		if (utf8_substr($params[0],-1) == '/') {
+		if ( /* utf8 */ substr($params[0], -1) === '/') {
 			$temp = $params[0];
 		} else {
-			$file = utf8_basename($params[0]);
-			$temp = utf8_substr($params[0],0,- utf8_strlen($file));
+			$file = basename($params[0]);
+			$temp = substr($params[0], 0, -strlen($file)); // utf8
 		}
 		$path = eyeFiles('cleanPath',array($temp));
 		if (isset($file)) {
 			$path[0] .= '/' . $file;
 		}
 		if (vfs('isdir',array($path[0]))) {
-			proc('launch',array('eyeFiles',array($params[0])));
+			proc('launch',array('eyeFiles',array($params[0]),$params[1]));
 		} else {
-			$xml = getConfig('filetypes',utf8_strtolower(utf8_substr(strrchr($path[0],'.'),1)) . '.xml');
+			$xml = getConfig('filetypes', strtolower(substr(strrchr($path[0], '.'), 1)) . '.xml'); // utf8
 			if ($xml['fileType'][0]['app'][0]) {
 				proc('launch',array($xml['fileType'][0]['app'][0],$path[0]));
 			} else {
@@ -478,6 +430,51 @@ function lib_eyeFiles_launchCommand($params = '') {
 			}
 		}
 	}
+}
+
+/**
+* Interprets a string dictating Kilo- Mega- Giga- or Terra-bytes into an Integer value
+*
+* @param $value The string to interpret. Can be a number, or a number followed by a one or two letter suffix.
+* @return If no $value is provided returns false and sets error code.
+*	If $value is -1, returns float INF.
+*	Otherwise returns Integer value of number of bytes specified in original string
+* @exception INCORRECT_PARAMS No $value specified.
+* @date 2012/02/14
+*/
+function lib_eyeFiles_stringToBytes($params = null) {
+	if (is_array($params) === false || isset($params[0]) === false) {
+		errorCodes('setErrorCode', array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	// get integer and a valid string
+	$return = intval($params[0]);
+	$value = /* utf8 */ trim(strval($params[0]));
+	
+	// -1 means unlimited
+	if ($return < 0) {
+		return INF;
+	}
+	
+	// get unit character
+	$unit = strtolower(substr($value, -1)); // utf8
+	if ($unit === 'b') {
+		$unit = strtolower(substr($value, -2, -1)); // utf8
+	}
+	
+	// multiply by unit
+	switch ($unit) {
+		case 't':
+			$return *= 1024;
+		case 'g':
+			$return *= 1024;
+		case 'm':
+			$return *= 1024;
+		case 'k':
+			$return *= 1024;
+	}
+	return $return;
 }
 
 /*

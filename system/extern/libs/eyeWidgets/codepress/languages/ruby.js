@@ -4,7 +4,7 @@
 
 // Ruby
 Language.syntax = [
-	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' }, // strings double quote 
+	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' }, // strings double quote
 	{ input : /\'(.*?)(\'|<br>|<\/P>)/g, output : '<s>\'$1$2</s>' }, // strings single quote
 	{ input : /([\$\@\%]+)([\w\.]*)/g, output : '<a>$1$2</a>' }, // vars
 	{ input : /(def\s+)([\w\.]*)/g, output : '$1<em>$2</em>' }, // functions

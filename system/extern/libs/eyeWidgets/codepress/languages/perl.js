@@ -4,7 +4,7 @@
  */
 
 // Perl
-Language.syntax = [ 
+Language.syntax = [
 	{ input  : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' }, // strings double quote
 	{ input  : /\'(.*?)(\'|<br>|<\/P>)/g, output : '<s>\'$1$2</s>' }, // strings single quote
 	{ input  : /([\$\@\%][\w\.]*)/g, output : '<a>$1</a>' }, // vars

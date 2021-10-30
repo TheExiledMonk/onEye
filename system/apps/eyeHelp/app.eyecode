@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeHelp_run($params=null) {
@@ -28,8 +21,10 @@ function eyeHelp_run($params=null) {
 	include_once(EYE_ROOT.'/'.APP_DIR.'/eyeHelp/events'.EYE_CODE_EXTENSION);
 	//This checks if there were passed any params (can be APP_NAME or APP_NAME.eyeHelp)
 	if($params[0]!=''){
-		if(utf8_strtolower(strrchr($params[0],'.')) == utf8_strtolower('.eyeHelp'))$params[0] = utf8_substr($params[0],0,-(utf8_strlen('.eyeHelp')));
-		$folder = eyeHelp_getFolder(array(utf8_basename($params[0])));
+		if (strtolower(strrchr($params[0], '.')) === '.eyehelp') { // utf8
+			$params[0] = /* utf8 */ substr($params[0], 0, -8);
+		}
+		$folder = eyeHelp_getFolder(array(basename($params[0])));
 	}else{
 		$folder = eyeHelp_getFolder(array(''));
 	}
@@ -130,8 +125,13 @@ function eyeHelp_run($params=null) {
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
 	$myDir = $folder;
-	if(utf8_substr($myDir, -1)!='/')$myDir = $myDir.'/';
+	if ( /* utf8 */ substr($myDir, -1) !== '/') {
+		$myDir .= '/';
+	}
 	$myInfoFile = $myDir.'info.xml';
+	if (file_exists($myDir . $_SESSION['lang'] . '.xml') === true) {
+		$myInfoFile = $myDir . $_SESSION['lang'] . '.xml';
+	}
 	$size = vfs('real_filesize',array($myInfoFile));
 	if ($size > 0) {
 		$fp = vfs('real_open',array($myInfoFile,'r'));
@@ -143,10 +143,9 @@ function eyeHelp_run($params=null) {
 	$info = eyeXML('xml2array',array($InfoContent));
 	$info = $info['eyeHelp'][0];
 
-	if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
-		else $title = utf8_trim($info['title'][0]);
-	$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
-	if($title=="")$title = utf8_basename($myDir2);
+	$title = /* utf8 */ trim($info['title'][0]);
+	$myDir2 = /* utf8 */ substr($myDir, 0, -1);
+	if($title=="")$title = basename($myDir2);
 
 	//Show the title of the main topic above the tree
 	$myLabel2 = new Label(array(
@@ -193,7 +192,7 @@ function eyeHelp_run($params=null) {
 
 	//CSS
 	eyex('loadCss',array(
-		'url' => 'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=css/apps/eyeHelp/eyeHelp.css&type=css',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=css/apps/eyeHelp/eyeHelp.css&type=css',
 		'id' => 'eyeHelp.css'
 	));
 }
@@ -213,9 +212,14 @@ function drawTree($object,$tree,$dir) {
 			if(is_dir($value)){
 				$oldUser = $currentUser;
 				$myDir = $value;
-				if($myDir{utf8_strlen($myDir)-1}!='/')$myDir = $myDir.'/';
+				if ( /* utf8 */ substr($myDir, -1) !== '/') {
+					$myDir .= '/';
+				}
 				$currentUser = ROOTUSER;
 				$myInfoFile = $myDir.'info.xml';
+				if (file_exists($myDir . $_SESSION['lang'] . '.xml') === true) {
+					$myInfoFile = $myDir . $_SESSION['lang'] . '.xml';
+				}
 				$size = vfs('real_filesize',array($myInfoFile));
 				if ($size > 0) {
 					$fp = vfs('real_open',array($myInfoFile,'r'));
@@ -226,12 +230,11 @@ function drawTree($object,$tree,$dir) {
 
 				$info = eyeXML('xml2array',array($InfoContent));
 				$info = $info['eyeHelp'][0];
-//				$treeImg = '<img src="'. $info['img'][0].'" alt="" />';
-				if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
-					else $title = utf8_trim($info['title'][0]);
+//				$treeImg = '<img src="' . str_replace('theme=USERTHEME', 'theme=' . $_SESSION['usertheme'], $info['img'][0]) . '" alt="" />';
+				$title = /* utf8 */ trim($info['title'][0]);
 //				$fulltitle = $treeImg . $title;
-				$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
-				if($title=="")$title = utf8_basename($myDir2);
+				$myDir2 = /* utf8 */ substr($myDir, 0, -1);
+				if($title=="")$title = basename($myDir2);
 
 				$object->addSubList('item_'.$dir,'list_'.$dir);
 				$object->addItem($tree,'item_'.$value,$title);

@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /**
@@ -59,57 +52,57 @@ function eyeFeeds_run($params=null) {
 	$toolbar->show();
 	$toolbar->addItem(
 		'addFeed_ITM',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/addfeed.png',
+		'index.php?extern=apps/eyeFeeds/gfx/addfeed.png',
 		'Add feed'
 	);
 	$toolbar->addItem(
 		'addFolder_ITM',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/newfolder.png',
+		'index.php?extern=apps/eyeFeeds/gfx/newfolder.png',
 		'Add folder'
 	);
 	$toolbar->addLine();
 	$toolbar->addItem(
 		'editFeedFolder_ITM',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/editfeedfolder.png',
+		'index.php?extern=apps/eyeFeeds/gfx/editfeedfolder.png',
 		'Edit'
 	);
 	$toolbar->addItem(
 		'delFeedFolder_ITM',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/delfeedfolder.png',
+		'index.php?extern=apps/eyeFeeds/gfx/delfeedfolder.png',
 		'Delete'
 	);
 	$toolbar->addLine();
 	$toolbar->addItem(
 		'refreshFeed_ITM',
-		'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/refresh.png',
+		'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/toolbar/refresh.png',
 		'Refresh'
 	);
 	$toolbar->addItem(
 		'import_ITM',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/import.png',
+		'index.php?extern=apps/eyeFeeds/gfx/import.png',
 		'Import'
 	);
 	$toolbar->addItem(
 		'export_ITM',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/export.png',
+		'index.php?extern=apps/eyeFeeds/gfx/export.png',
 		'Export'
 	);
 	$toolbar->addLine();
 	$toolbar->addItem(
 		'settings_ITM',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&extern=apps/eyeFeeds/gfx/settings.png',
+		'index.php?extern=apps/eyeFeeds/gfx/settings.png',
 		'Settings'
 	);
 	$toolbar->addItem(
 		'help_ITM',
-		'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/toolbar/help.png',
+		'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/toolbar/help.png',
 		'Help',
 		'',
 		1
 	);
 	$toolbar->addItem(
 		'fullscreen',
-		'index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=images/toolbar/fullScreen.png',
+		'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/toolbar/fullScreen.png',
 		'Full Screen',
 		'',
 		1
@@ -218,7 +211,7 @@ function eyeFeeds_run($params=null) {
 	eyex('rawjs',array('js' => 'document.getElementById("'.$myPid.'_content_LBL_Container").style.overflow="auto";'));
 
 
-	//"LOADING" IMAGE+LABEL 
+	//"LOADING" IMAGE+LABEL
 	$loadingContainer = new Container(array(
 		'name'=>'loading_CTN',
 		'father'=>'itemsList_BOX',
@@ -233,7 +226,7 @@ function eyeFeeds_run($params=null) {
 	$loadingImage = new Imagebox(array(
 		'name' => 'loading_IMG',
 		'father' => 'loading_CTN',
-		'url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=images/desktop/loading.gif',
+		'url' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=images/desktop/loading.gif',
 		'x' => 50,
 		'y' => 0
 	));
@@ -266,13 +259,6 @@ function eyeFeeds_run($params=null) {
 		'text' => ''
 	));
 	eyeWidgets('serialize',array($selectedFeedId));
-
-
-	//check the user's configuration directory and create it if needed
-	$confDir = um('getCurrentUserDir').CONF_USER_DIR.'/eyeFeeds';
-	if(!vfs('real_fileExists',array($confDir))) {
-		vfs('real_mkdir',array($confDir));
-	}
 
 	//Listener service call to resize the app in fullScreen mode when browser is resized
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');

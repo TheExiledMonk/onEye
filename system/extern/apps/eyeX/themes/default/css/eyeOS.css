@@ -1,10 +1,25 @@
+/*
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
+
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
+
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
+*/
+
 * {
 	direction: ltr;
 }
 
 .activeWindow, .eyeWindowTitle, .inactiveWindow {
 	background-color: #8cb4de;
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/bg_top.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/windows/bg_top.png');
 	background-repeat: repeat-x;
 	border: 1px solid #80b5ff;
 	color: #0861A0;
@@ -14,6 +29,19 @@
 	right: 0;
 	text-shadow: 1px 1px 3px #ffffff;
 	top: 0;
+}
+
+.activeWindow > img, .eyeWindowTitle > img, .inactiveWindow > img {
+	height: 16px;
+	left: 4px;
+	position: absolute;
+	top: 4px;
+	width: 16px;
+	z-index: 1;
+}
+
+.activeWindow > img + .eyeWindowTitle_text, .eyeWindowTitle > img + .eyeWindowTitle_text, .inactiveWindow > img + .eyeWindowTitle_text {
+	padding-left: 24px;
 }
 
 .activeWindow_center, .inactiveWindow_center, .eyeWindowTitle_center {
@@ -39,10 +67,11 @@
 }
 
 #background {
-	background: #eeeeee url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/wallpapers/default.jpg') repeat top center;
+	background-color: #eeeeee;
+	background-image: url('index.php?theme=USERTHEME&extern=images/wallpapers/default.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 	height: 100%;
-	min-height: 400px;
-	min-width: 500px;
 	position: absolute;
 	width: 100%;
 }
@@ -92,7 +121,7 @@
 }
 
 .blockbarline, .blockbarline_right {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/top_menu_line.png') no-repeat center;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/top_menu_line.png') no-repeat center;
 	float: left;
 	height: 40px;
 	margin-left: 4px;
@@ -175,6 +204,52 @@
 .calendar_weekDay, .calendar_weekDayClicked, .calendar_weekDayToday{
 	/*text-shadow: 0px 0px 0px;*/
 }
+/*	.calendar_weekDay,	.calendar_weekMonth, */
+.calendar_weekDayToday, .calendar_weekDayClicked {
+	border-radius: 3px;
+}
+.calendar_weekMonthToday, .calendar_weekMonthClicked, .calendar_weekDaysNames {
+	border-radius: 4px;
+}
+
+.calendar_weekDay, .calendar_weekMonth, .calendar_weekEnd {
+	border: solid 1px transparent;
+}
+.calendar_weekEnd {
+	color: #2E7ABB;
+	border: solid 1px transparent;
+}
+.calendar_pre, .calendar_rest {
+	color: #bbbbbb;
+	border: solid 1px transparent;
+}
+.calendar_weekDayToday {
+	border: solid 1px #5C5C5C;
+	color: #FFF;
+	background-color: #737373;
+}
+.calendar_weekMonthToday {
+	border-color: #E1E1E1;
+	background-color: #E1E1E1;
+}
+.calendar_weekDayClicked {
+	border: solid 1px #558FC7;
+}
+.calendar_weekMonthClicked {
+	border: solid 1px #C7DFF6;
+	background-color: #C7DFF6;
+}
+.calendar_rowsAndDate {
+	color: #145689;
+}
+.calendar_weekDaysNames {
+	background-color: #4886CE;
+}
+.calendar_dayName {
+	color: #FFF;
+	text-align: center;
+}
+
 
 .eyeListbox_box {
 	overflow-x: hidden;
@@ -223,7 +298,7 @@
 }
 
 .dynamic-slider-control.horizontal.handle {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/handle.horizontal.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/handle.horizontal.png');
 	height: 14px;
 	width: 31px;
 }
@@ -250,7 +325,7 @@
 }
 
 .dynamic-slider-control.vertical.handle {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/handle.vertical.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/handle.vertical.png');
 	height: 31px;
 	width: 15px;
 }
@@ -262,7 +337,7 @@
 }
 
 .eyeBoxBottCent {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x bottom;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x bottom;
 	height: 20px;
 }
 
@@ -275,7 +350,7 @@
 
 .eyeBoxText {
 	background-color: #ffffff;
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png');
 	background-repeat: repeat-x;
 	background-position: bottom;
 	color: #0968B0;
@@ -292,7 +367,7 @@
 
 .eyeButtonClass {
 	background-color: #ffffff;
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/buttonbg.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/buttonbg.png');
 	background-repeat: repeat-x;
 	background-position: center;
 	border-color: #cccccc #aaaaaa #aaaaaa #cccccc;
@@ -300,12 +375,12 @@
 	border-width: 1px;
 	cursor: pointer;
 	font-size: 11px;
-	padding: 1px;
+	padding: 2px 5px;
 	text-shadow: 1px 1px 2px #ffffff;
 }
 
 .eyeButtonClass:focus {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/buttonbg_press.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/buttonbg_press.png');
 }
 
 .eyeButtonClass:hover {
@@ -313,7 +388,7 @@
 }
 
 .eyeContextMenu {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png');
 	background-color: #eeeeee;
 	background-position: bottom;
 	background-repeat: repeat-x;
@@ -338,14 +413,14 @@
 }
 
 .eyeContextMenuEntry:hover {
-	background: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/select.png') repeat-y right;
+	background: url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/select.png') repeat-y right;
 	background-color: #f5f5f5;
 	border-bottom: 1px solid #ffffff;
 	border-top: 1px solid #cccccc;
 }
 
 .eyecursor {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/desktop/loadingcursor/loading.png&theme=default');
+	background-image: url('index.php?theme=USERTHEME&extern=images/desktop/loadingcursor/loading.png');
 	display: none;
 	height: 30px;
 	left: 0;
@@ -364,7 +439,7 @@
 }
 
 .eyeIcon:hover, .eyeFiles_icons:hover {
-	background: #f1f1f1 url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x center bottom;
+	background: #f1f1f1 url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x center bottom;
 	position: absolute;
 	z-index: 1;
 }
@@ -402,7 +477,7 @@
 }
 
 .eyeDock_bottom_left_menu_entries, .eyeDock_bottom_right_menu_entries, .eyeDock_left_top_menu_entries, .eyeDock_right_top_menu_entries, .eyeDock_top_left_menu_entries, .eyeDock_top_right_menu_entries {
-	background: #dddddd url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x bottom;
+	background: #dddddd url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x bottom;
 	border-left: 2px groove #ffffff;
 	border-right: 2px ridge #ffffff;
 	cursor: default;
@@ -422,7 +497,7 @@
 }
 
 .eyeDock_bottom_left_menu_entry_icon:hover, .eyeDock_bottom_right_menu_entry_icon:hover, .eyeDock_left_top_menu_entry_icon:hover, .eyeDock_right_top_menu_entry_icon:hover, .eyeDock_top_left_menu_entry_icon:hover, .eyeDock_top_right_menu_entry_icon:hover {
-	background: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/select.png') repeat-y left;
+	background: url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/select.png') repeat-y left;
 	background-color: #d1d1d1;
 	border-bottom: 1px solid #ffffff;
 	border-top: 1px solid #888888;
@@ -440,13 +515,13 @@
 }
 
 .eyeDock_bottom_left_menu_entry_icon_arrow, .eyeDock_bottom_right_menu_entry_icon_arrow, .eyeDock_left_top_menu_entry_icon_arrow, .eyeDock_right_top_menu_entry_icon_arrow, .eyeDock_top_left_menu_entry_icon_arrow, .eyeDock_top_right_menu_entry_icon_arrow {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=icons/22x22/rating.png');
+	background-image: url('index.php?theme=USERTHEME&extern=icons/22x22/rating.png');
 	margin-top: 0;
 	opacity: 0.8;
 }
 
 .eyeDock_bottom_left_menu_entry_icon_arrow_exists, .eyeDock_bottom_right_menu_entry_icon_arrow_exists, .eyeDock_left_top_menu_entry_icon_arrow_exists, .eyeDock_right_top_menu_entry_icon_arrow_exists, .eyeDock_top_left_menu_entry_icon_arrow_exists, .eyeDock_top_right_menu_entry_icon_arrow_exists {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=icons/22x22/rating_g.png');
+	background-image: url('index.php?theme=USERTHEME&extern=icons/22x22/rating_g.png');
 	cursor: default;
 	margin-top: 0;
 	opacity: 0.8;
@@ -530,7 +605,7 @@
 }
 
 .eyeDock_bottom_left_line, .eyeDock_bottom_right_line {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/bottom_menu_line.png') no-repeat top;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/bottom_menu_line.png') no-repeat top;
 	display: inline-block;
 	float: left;
 	height: 31px;
@@ -545,7 +620,7 @@
 }
 
 .eyeDock_bottom_left_menu:hover, .eyeDock_bottom_right_menu:hover, .eyeDock_bottom_left_icon:hover {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/Icon_hover_bottom.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/Icon_hover_bottom.png');
 }
 
 .eyeDock_bottom_left_menu:hover,.eyeDock_top_left_menu:hover, .eyeDock_bottom_right_menu:hover, .eyeDock_bottom_left_icon:hover, .eyeDock_top_right_icon:hover, .eyeDock_bottom_right_menu_selected, .eyeDock_top_right_menu_selected, .eyeDock_top_left_menu_selected {
@@ -642,7 +717,7 @@
 }
 
 .eyeDock_bottom_right_menu_div, .eyeDock_top_right_menu_div {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/clock.png') no-repeat center center;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/clock.png') no-repeat center center;
 	direction: ltr;
 	display: inline-block;
 }
@@ -736,7 +811,7 @@
 
 .eyeDock_bottom {
 	background-color: #85C2FF;
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/bottom.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/bottom.png');
 	background-position: bottom;
 	background-repeat: repeat-x;
 	bottom: 0;
@@ -778,19 +853,25 @@
 }
 
 .eyeDock_bottom_left_taskbar_entry {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_off.png') no-repeat scroll center top;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/minimized/minbar_off.png') no-repeat scroll center top;
 }
 
 .eyeDock_bottom_left_taskbar_entry:hover {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_off_x.png') no-repeat scroll center top;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/minimized/minbar_off_x.png') no-repeat scroll center top;
 }
 
 .eyeDock_bottom_left_taskbar_entry_focus {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_on.png') no-repeat scroll center top;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/minimized/minbar_on.png') no-repeat scroll center top;
 }
 
 .eyeDock_bottom_left_taskbar_entry_focus:hover {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/minbar_on_x.png') no-repeat scroll center top;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/minimized/minbar_on_x.png') no-repeat scroll center top;
+}
+
+.eyeDock_bottom_left_taskbar_entry > img, .eyeDock_bottom_left_taskbar_entry_focus > img {
+	margin-left: 10px;
+	height: 16px;
+	width: 16px;
 }
 
 .eyeDock_bottom_left_taskbar_entry_div {
@@ -800,7 +881,9 @@
 	overflow: hidden;
 	padding: 7px 0 0 0;
 	text-indent: 5px;
-	width: 156px;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	width: 126px;
 }
 
 .eyeDock_bottom_left_taskbar_left, .eyeDock_bottom_left_taskbar_right {
@@ -818,12 +901,12 @@
 }
 
 .eyeDock_bottom_left_taskbar_move_left {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/arrow_l.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/minimized/arrow_l.png');
 	margin-right: -12px;
 }
 
 .eyeDock_bottom_left_taskbar_move_right {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/minimized/arrow_r.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/minimized/arrow_r.png');
 	margin-left: -12px;
 }
 
@@ -841,13 +924,13 @@
 /* left */
 
 .eyeDock_left {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/left.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/left.png');
 }
 
 /* right */
 
 .eyeDock_right {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/right.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/right.png');
 	right: 0;
 }
 
@@ -863,7 +946,7 @@
 
 .eyeDock_top {
 	background-color: #232D34;
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/apps/eyeDock/backgrounds/top.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/apps/eyeDock/backgrounds/top.png');
 	background-repeat: repeat-x;
 	background-position: bottom;
 	border-bottom: 2px ridge #000000;
@@ -1045,14 +1128,9 @@
 }
 
 .eyeLine {
-	background: #eeeeee url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/border_r.png') repeat-y;
+	background: #eeeeee url('index.php?theme=USERTHEME&extern=images/windows/border_r.png') repeat-y;
 	position: relative;
 	z-index: 1;
-}
-
-.eyeLoginWindow {
-	margin-left: -150px;
-	margin-top: -210px;
 }
 
 .eyeMessageBox {
@@ -1078,7 +1156,7 @@
 }
 
 .eyeMessageBoxText:before {
-	content: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/doowee/message.png');
+	content: url('index.php?theme=USERTHEME&extern=images/doowee/message.png');
 	float: left;
 	margin-top: -4px;
 	padding-right: 5px;
@@ -1086,13 +1164,13 @@
 }
 
 .eyeNav_url_bar {
-	background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/tabbgTop.png') repeat-x top;
+	background: #ffffff url('index.php?theme=USERTHEME&extern=images/windows/tabbgTop.png') repeat-x top;
 	height: 38px;
 	width: 100%;
 }
 
 .eyeProgress {
-	border-color: #dddddd #e7e7e7 #e7e7e7 #dddddd;
+	border-color: #bfbfbf;
 	border-style: solid;
 	border-width: 1px;
 	height: 15px;
@@ -1126,19 +1204,19 @@
 .eyeSplit {}
 
 .eyeSplitter_horizontal {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=defaul&extern=images/windows/slider_ns.png')no-repeat center center;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/slider_ns.png')no-repeat center center;
 	border-bottom: 1px dotted #eeeeee;
 	height: 5px
 }
 
 .eyeSplitter_vertical {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=defaul&extern=images/windows/slider_ew.png')no-repeat center center;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/slider_ew.png')no-repeat center center;
 	border-right: 1px dotted #eeeeee;
 	width: 5px
 }
 
 .eyeTab {
-	background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x bottom;
+	background: #ffffff url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x bottom;
 }
 
 .eyeTabArrowRight, .eyeTabArrowLeft {
@@ -1151,24 +1229,24 @@
 }
 
 .eyeTabArrowRight {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/arrow_right.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/arrow_right.png');
 	right: 0px;
 }
 
 .eyeTabArrowLeft {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/arrow_left.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/arrow_left.png');
 	left: 0px;
 }
 
 .eyeTabBody {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/tabbgTop.png') repeat-x 0 -2px;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/tabbgTop.png') repeat-x 0 -2px;
 	left: 0;
 	position: absolute;
 	top: 22px;
 }
 
 .eyeTabCross {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/cross.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/cross.png');
 	background-position: center;
 	background-repeat: no-repeat;
 	color: #7f7f7f;
@@ -1198,7 +1276,7 @@
 }
 
 .eyeTabNotSelected {
-	background: #FFFFFF url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/tabbgTop.png') repeat-x 0 -8px;
+	background: #FFFFFF url('index.php?theme=USERTHEME&extern=images/windows/tabbgTop.png') repeat-x 0 -8px;
 	border-top: 1px solid #dddddd;
 	height: 17px !important;
 	margin-top: 3px;
@@ -1217,7 +1295,7 @@
 }
 
 .eyeTabSelected {
-	background: #fff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x 0 8px;
+	background: #fff url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x 0 8px;
 	border-top: 1px solid #cccccc;
 	height: 21px;
 	z-index: 1;
@@ -1241,16 +1319,17 @@
 	border-style: groove solid solid;
 	border-width: 2px 1px 1px;
 	font-size: 11px;
-
 }
 
 .eyeTextarea:hover, .eyeTextarea:focus, .eyeTextbox:hover, .eyeTextbox:focus, select:hover, select:focus, input:hover, input:focus {
-	border-color: #aaaaaa #858585 #858585;
+	border-color: #000000;
 	border-style: groove solid solid;
 	border-width: 2px 1px 1px;
 }
 
-.eyeTextareaContainer {}
+.eyeTextareaContainer iframe {
+	visibility: inherit !important;
+}
 
 .eyeTextbox, select, input {
 	background-color: #ffffff;
@@ -1261,8 +1340,8 @@
 	padding-left: 2px;
 }
 
-select, input {
-	padding-left: 0px;
+.eyeCheckbox, .eyeCheckbox:hover, .eyeCheckbox:focus, .eyeRadio, .eyeRadio:hover, .eyeRadio:focus {
+	border-style: none;
 }
 
 .eyeWidgets {
@@ -1286,7 +1365,7 @@ select, input {
 }
 
 .eyeWidgets_icon:hover {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x scroll center bottom;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png') repeat-x scroll center bottom;
 	padding-bottom: 5px;
 }
 
@@ -1333,18 +1412,18 @@ select, input {
 }
 
 .eyeWindowCloseButton {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/close.png') no-repeat;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/close.png') no-repeat;
 }
 
 .eyeWindowCloseButton:hover {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/close_x.png') no-repeat;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/close_x.png') no-repeat;
 }
 
 .eyeWindowContent, .eyeWindowMainDrag {
-	background: #ffffff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png') repeat-x scroll bottom;
+	background-color: #ffffff;
 	border-color: #80b5ff; border-style: solid; border-width: 0px 1px 1px;
 	bottom: 0; left: 0; right: 0; top: 23px;
-	overflow: hidden;
+	overflow: inherit;
 	position: relative;
 }
 
@@ -1353,6 +1432,24 @@ select, input {
 	bottom: 0; left: 0; right: 0; top: 23px;
 	overflow: auto;
 	position: absolute;
+}
+
+.eyeWindowFullScreen {
+	background-color: #ffffff;
+	border-radius: 0;
+}
+
+.eyeWindowFullScreen > .activeWindow, .eyeWindowFullScreen > .inactiveWindow {
+	cursor: default;
+}
+
+/* .eyeWindowFullScreen > .activeWindow, */ .eyeWindowFullScreen > .activeWindow > .activeWindow_border_left, .eyeWindowFullScreen > .activeWindow > .activeWindow_border_right, .eyeWindowFullScreen > .activeWindow > .eyeWindowTitle_center, .eyeWindowFullScreen > .eyeWindowBottom, .eyeWindowFullScreen > .eyeWindowBottom_center, .eyeWindowFullScreen > .eyeWindowBottom_left, .eyeWindowFullScreen > .eyeWindowBottom_right, .eyeWindowFullScreen > .eyeWindowLeft, .eyeWindowFullScreen > .eyeWindowRight, /* .eyeWindowFullScreen > .inactiveWindow, */ .eyeWindowFullScreen > .inactiveWindow > .inactiveWindow_border_left, .eyeWindowFullScreen > .inactiveWindow > .inactiveWindow_border_right {
+	display: none !important;
+}
+
+.eyeWindowFullScreen > .eyeWindowContent {
+	border: 0;
+	/* top: 0; */
 }
 
 .eyeWindowLeft, .eyeWindowRight {
@@ -1378,28 +1475,29 @@ select, input {
 }
 
 .eyeWindowMainDrag {
-	background: #bfdaff url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/eyefilesbg.png') no-repeat top left;
+	background: #bfdaff url('index.php?theme=USERTHEME&extern=images/windows/eyefilesbg.png') no-repeat top left;
+	border: 0;
 	overflow: hidden;
 }
 
 .eyeWindowMaxButton {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/max.png') no-repeat;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/max.png') no-repeat;
 }
 
 .eyeWindowMaxButton:hover {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/max_x.png') no-repeat;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/max_x.png') no-repeat;
 }
 
 .eyeWindowMinimizeButton {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min.png') no-repeat;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/min.png') no-repeat;
 }
 
 .eyeWindowMinimizeButton:hover {
-	background: transparent url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/min_x.png') no-repeat;
+	background: transparent url('index.php?theme=USERTHEME&extern=images/windows/min_x.png') no-repeat;
 }
 
 .eyeWindowResizeButton {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/resizebutton.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/windows/resizebutton.png');
 	bottom: 2px;
 	cursor: se-resize;
 	height: 12px;
@@ -1462,7 +1560,7 @@ select, input {
 }
 
 .shadowLayer {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/bg.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/bg.png');
 	height: 100%;
 	left: 0;
 	position: absolute;
@@ -1479,11 +1577,11 @@ select, input {
 }
 
 .sort-arrow.ascending {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/upsimple.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/upsimple.png');
 }
 
 .sort-arrow.descending {
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/widgets/downsimple.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/widgets/downsimple.png');
 }
 
 .sort-table {
@@ -1506,7 +1604,7 @@ select, input {
 
 .sort-table thead td {
 	background-color: #ffffff;
-	background-image: url('index.php?version=EXTERN_CACHE_VERSION&theme=default&extern=images/windows/toolbar.png');
+	background-image: url('index.php?theme=USERTHEME&extern=images/windows/toolbar.png');
 	background-repeat: repeat-x;
 	background-position: bottom;
 	border-color: #AEAEAE #7F7F7F #7F7F7F #AEAEAE;
@@ -1537,6 +1635,10 @@ select, input {
 	background-color: #666666;
 }
 
+.sort-table tr {
+	height: 0;
+}
+
 .sort-table-container {
 	border: 1px Solid #dddddd;
 	overflow-x: hidden;
@@ -1554,4 +1656,16 @@ select, input {
 .vertical {
 	height: 200px;
 	width: 29px;
+}
+
+@media (max-width: 800px) {
+	.eyeDock_bottom_left_icon_div, .eyeDock_bottom_right_icon_div, .eyeDock_left_top_icon_div, .eyeDock_right_top_icon_div, .eyeDock_top_left_icon_div, .eyeDock_top_right_icon_div, .eyeDock_bottom_left_menu_div, .eyeDock_bottom_right_menu_div, .eyeDock_left_top_menu_div, .eyeDock_right_top_menu_div, .eyeDock_top_left_menu_div, .eyeDock_top_right_menu_div, .eyeWindowMaxButton, .eyeWindowResizeButton {
+		display: none !important;
+	}
+	.eyeWindowMain {
+		height: 100% !important;
+		left: 0 !important;
+		top: 0 !important;
+		width: 100% !important;
+	}
 }

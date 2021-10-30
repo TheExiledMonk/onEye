@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeControl_lib_findIdByText($params) {
@@ -31,6 +24,7 @@ function eyeControl_lib_findIdByText($params) {
 		return false;
 	}
 	$x = 0;
+	$return = array();
 	foreach($array as $secArray) {
 		if (is_array($path)) {
 			foreach($path as $pathNow) {
@@ -44,24 +38,32 @@ function eyeControl_lib_findIdByText($params) {
 		}
 		$x++;
 	}
-	return($return);
+	return $return;
 }
 
 function eyeControl_lib_findArrayByText($params) {
 	$array = $params[0];
 	$text = $params[1];
 	$path = $params[2];
-	$type = $params[3];
+	$type = null;
+	if (isset($params[3]) === true) {
+		$type = $params[3];
+	}
 	if (!$array || !$text || !is_array($array)) {
 		errorCodes('setErrorCode',array(INCORRECT_PARAMS));
 		return false;
 	}
 	$x = 0;
+	$return = array();
 	foreach($array as $secArray) {
 		$secText = $secArray;
 		if (is_array($path)) {
 			foreach($path as $pathNow) {
-				$secText = $secText[$pathNow];
+				if (isset($secText[$pathNow]) === false) {
+					$secText = false;
+				} else if ($secText !== false) {
+					$secText = $secText[$pathNow];
+				}
 			}
 		}
 		if ($secText != $text && $type == 2) {
@@ -71,6 +73,6 @@ function eyeControl_lib_findArrayByText($params) {
 		}
 		$x++;
 	}
-	return($return);
+	return $return;
 }
 ?>

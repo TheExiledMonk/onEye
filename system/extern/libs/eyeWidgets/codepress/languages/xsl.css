@@ -2,7 +2,7 @@
  * CodePress color styles for HTML syntax highlighting
  * By RJ Bruneel
  */
- 
+
 b {color:#000080;} /* tags */
 ins, ins b, ins s, ins em {color:gray;} /* comments */
 s, s b {color:#7777e4;} /* attribute values */

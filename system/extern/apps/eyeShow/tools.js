@@ -142,38 +142,6 @@ SlimeyInsertTextTool.prototype.execute = function() {
 /*---------------------------------------------------------------------------*/
 
 /**
- *  class SlimeyInsertImageTool - this tool inserts new images into the editor
- */
-var SlimeyInsertImageTool = function(slimey) {
-	/* create the DOM element that represents the tool (a clickable image) */
-	var img = createImageButton('insertImage', lang("insert image"), this);
-
-	SlimeyTool.call(this, 'insertImage', img, slimey);
-}
-
-/**
- *  SlimeyInsertImageTool extends SlimeyTool
- */
-SlimeyInsertImageTool.prototype = new SlimeyTool();
-
-/**
- *  inserts a new image into the editor
- */
-SlimeyInsertImageTool.prototype.execute = function() {
-	chooseImage(this.imageChosen, this, this.element);
-}
-
-SlimeyInsertImageTool.prototype.imageChosen = function(url) {
-	if (url) {
-		var action = new SlimeyInsertAction(this.slimey, 'img');
-		action.getElement().src = url;
-		this.slimey.editor.performAction(action);
-	}
-}
-
-/*---------------------------------------------------------------------------*/
-
-/**
  *  class SlimeyInsertOrderedListTool - this tool inserts new ordered list into the editor
  */
 var SlimeyInsertOrderedListTool = function(slimey) {
@@ -1037,7 +1005,7 @@ var SlimeySaveTool = function(slimey) {
 	//this.enabled = false;
 	this.element.src = Slimey.imagesDir + this.name + '.png';
 	this.element.style.cursor = 'pointer';
-	//eyeOS: not wanted so hidden
+	// oneye: not wanted so hidden
 	this.element.style.visibility = 'hidden';
 }
 
@@ -1070,13 +1038,13 @@ SlimeySaveTool.prototype.notifyActionPerformed = function() {
 		this.enabled = true;
 		this.element.src = Slimey.imagesDir + this.name + '.png';
 		this.element.style.cursor = 'pointer';
-		//eyeOS: not wanted so hidd
+		// oneye: not wanted so hidd
 		this.element.style.visibility = 'hidden';
 	} else {
 		this.enabled = false;
 		this.element.src = Slimey.imagesDir + this.name + 'x.png';
 		this.element.style.cursor = 'default';
-		//eyeOS: not wanted so hidden
+		// oneye: not wanted so hidden
 		this.element.style.visibility = 'hidden';
 	}
 }
@@ -1091,7 +1059,7 @@ var SlimeyPreviewTool = function(slimey) {
 	var img = createImageButton('preview', lang("preview slideshow"), this);
 
 	SlimeyTool.call(this, 'preview', img, slimey);
-		//eyeOS: not wanted so hidden
+		// oneye: not wanted so hidden
 	this.element.style.visibility = 'hidden';
 }
 
@@ -1398,7 +1366,7 @@ function createImageButtonBig(name, title, slimeyTool) {
 
 function createImageButtonText(name, title, slimeyTool,image) {
 	var div = document.createElement('div');
-	div.innerHTML = '<img class="blockbarImg" src="index.php?extern=apps/eyeX/themes/default/icons/22x22/'+image+'.png"/><div class="blockbarText"><a href="#"  accesskey="n">'+title+'</a></div>' ;
+	div.innerHTML = '<img class="blockbarImg" src="index.php?theme=' + USERTHEME + '&amp;extern=icons/22x22/'+image+'.png"/><div class="blockbarText"><a href="#"  accesskey="n">'+title+'</a></div>' ;
 
 	div.className = 'blockbarItem';
 	div.slimeyTool = slimeyTool;
@@ -1490,37 +1458,7 @@ SlimeyNewBig.prototype.execute = function() {
 }
 
 /**
- *  class SlimeyInsertImageToolBig - this tool inserts new images into the editor from Clipart directory
- */
-
-var SlimeyInsertImageToolBig = function(slimey) {
-	/* create the DOM element that represents the tool (a clickable image) */
-	var div = createImageButtonText('open', lang('Clipart'), this, 'eyeImages');
-	SlimeyTool.call(this, 'insertImage', div, slimey);
-}
-
-
-SlimeyInsertImageToolBig.prototype = new SlimeyTool();
-
-SlimeyInsertImageToolBig.prototype.execute = function() {
-	chooseImage(this.imageChosen, this, this.element);
-}
-
-SlimeyInsertImageToolBig.prototype.imageChosen = function(url,width,height) {
-	if (url) {
-		var action = new SlimeyInsertAction(this.slimey, 'img');
-		action.getElement().src = url;
-		action.getElement().style.width = width;
-		action.getElement().style.height = height;
-
-
-		this.slimey.editor.performAction(action);
-	}
-}
-
-
-/**
- *  class SlimeyInsertImageTooleyeOS - this tool inserts new images into the editor from eyeOS Directory
+ *  class SlimeyInsertImageTooleyeOS - this tool inserts new images into the editor from oneye Directory
  */
 
 var SlimeyInsertImageToolBigEye = function(slimey) {

@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function lib_eyeAddressBook_imageExists($params=null) {
@@ -62,11 +55,7 @@ function lib_eyeAddressBook_getImage($params=null) {
 	$imagePath = um('getCurrentUserDir').CONF_USER_DIR.'/eyeAddressBook/images/'.$params[0].'.png';
 	$imageInfo = @getimagesize($imagePath);
 	if ($imageInfo !== false) {
-		header('Content-Type: ' . $imageInfo['mime']);
-		header('Content-Length: ' . vfs('real_filesize',array($imagePath)));
-		header('Accept-Ranges: bytes');
-		header('X-Pad: avoid browser bug');
-		vfs('printFile',array($imagePath));
+		extern('getContent', array(vfs('real_getFileContent', array($imagePath)), 'png'));
 	}
 	return true;
 }
@@ -195,7 +184,7 @@ function lib_eyeAddressBook_saveContactXML($params=null) {
 	$contacts['Contacts'][0][$index] = $params[0][$index];
 	$path = um('getCurrentUserDir').CONF_USER_DIR.'/eyeAddressBook/contacts.xml';
 	if (eyeXML('setXMLfile', array($path, $contacts))) {
-		 return utf8_substr($index,3);
+		return /* utf8 */ substr($index, 3);
 	} else {
 		return false;
 	}
@@ -231,7 +220,7 @@ function lib_eyeAddressBook_importFromEyeContacts() {
 	if (is_array($content)) {
 		foreach($content as $dir){
 			if(vfs('isDir',array($dir))){
-				$subContent = vfs('real_getDirContent',array($path.'/'.utf8_basename($dir)));
+				$subContent = vfs('real_getDirContent',array($path.'/'.basename($dir)));
 				foreach($subContent as $contact){
 					$contactInfo = eyeContacts('pathToInfo',array($contact));
 					$info  = eyeAddressBook('retrive_2',array($contactInfo[0],$contactInfo[1],$contactInfo[2]));
@@ -274,7 +263,7 @@ function lib_eyeAddressBook_importFromVcard($params){
 		return false;
 	}
 	$path = $params[0];
-	include(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeAddressBook/lib/vcard_parser.eyecode');
+	eyePear('Load', array('Contact_Vcard_Parse'));
 	$parse = new Contact_Vcard_Parse();
 	$realPath = vfs('getRealName',array($path));
 	$cardInfo = $parse->fromFile($realPath);
@@ -306,7 +295,7 @@ function lib_eyeAddressBook_importFromVcard($params){
 					foreach($comp as $component){
 						$preType = array();
 						foreach($component['param']['TYPE'] as $type){
-							$preType[] = utf8_strtoupper(strval($type));
+							$preType[] = /* utf8 */ strtoupper(strval($type));
 						}
 						$mail='';
 						if(isset($component['value'][0][0]) && $component['value'][0][0] != ''){
@@ -337,7 +326,7 @@ function lib_eyeAddressBook_importFromVcard($params){
 						$preType = array();
 						//Getting types
 						foreach($component['param']['TYPE'] as $type){
-							$preType[] = utf8_strtoupper(strval($type));
+							$preType[] = /* utf8 */ strtoupper(strval($type));
 						}
 						if($preType[0] == 'HOME' || $preType[1] == 'HOME' || $preType[0] == 'MAIN' || $preType[1] == 'MAIN') {
 							$eyeCard[0]['home'][0]['phone'][0]['local'][0] = $tel;
@@ -373,7 +362,7 @@ function lib_eyeAddressBook_importFromVcard($params){
 						$address = str_replace(";", "\n", $address);
 						//Getting type
 						if(isset($component['param']['TYPE'][0])){
-							$preType = utf8_strtoupper(strval($component['param']['TYPE'][0]));
+							$preType = /* utf8 */ strtoupper(strval($component['param']['TYPE'][0]));
 						}else{
 							$preType = 'HOME';
 						}
@@ -390,14 +379,34 @@ function lib_eyeAddressBook_importFromVcard($params){
 						$eyeCard[0]['other'][0]['nick'][0] = $comp[0]['value'][0][0];
 					}
 				break;
-				case 'X-KADDRESSBOOK-X-IMADDRESS': case 'X-AIM': case 'X-ICQ': case 'X-YAHOO': case 'X-JABBER': case 'X-MSN':
-					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
-						$eyeCard[0]['other'][0]['im'][0] = $comp[0]['value'][0][0];
-					}
-				break;
 				case 'URL': case 'ITEM1.URL': case 'ITEM2.URL': case 'ITEM3.URL': case 'ITEM4.URL': case 'ITEM5.URL':
 					if(isset($comp[0]['value'][0][0]) && $comp[0]['value'][0][0] != ''){
 						$eyeCard[0]['home'][0]['website'][0] = $comp[0]['value'][0][0];
+					}
+				break;
+				case 'ROLE':
+					if (!empty($comp[0]['value'][0][0])) {
+						$eyeCard[0]['company'][0]['role'][0] = $comp[0]['value'][0][0];
+					}
+				break;
+				case 'X-ONEYE-WORKURL':
+					if (!empty($comp[0]['value'][0][0])) {
+						$eyeCard[0]['company'][0]['website'][0] = $comp[0]['value'][0][0];
+					}
+				break;
+				case 'X-ONEYE-IM':
+					if (!empty($comp[0]['value'][0][0])) {
+						$eyeCard[0]['other'][0]['im'][0] = $comp[0]['value'][0][0];
+					}
+				break;
+				case 'X-ONEYE-VOIP':
+					if (!empty($comp[0]['value'][0][0])) {
+						$eyeCard[0]['other'][0]['voip'][0] = $comp[0]['value'][0][0];
+					}
+				break;
+				case 'X-ONEYE-USER':
+					if (!empty($comp[0]['value'][0][0])) {
+						$eyeCard[0]['other'][0]['user'][0] = $comp[0]['value'][0][0];
 					}
 				break;
 				default:
@@ -432,14 +441,14 @@ function lib_eyeAddressBook_exportToVcard($params){
 	}
 	global $checknum;
 	$outPath = $params[0];
-	include(EYE_ROOT.'/'.SYSTEM_DIR.'/'.LIB_DIR.'/eyeAddressBook/lib/vcard_builder.eyecode');
+	eyePear('Load', array('Contact_Vcard_Build'));
 	//Getting eyeCard content itering on $vCard array files.
 	$vCardsText = '';
 	foreach($vCards as $key=>$vCardContent){
 	//Build eyeCard to vcf
 		$vcard = new Contact_Vcard_Build();
 		$vcard->setFormattedName($vCardContent[0]['home'][0]['name'][0].' '.$vCardContent[0]['home'][0]['surname'][0]);
-		$vcard->setName($vCardContent[0]['home'][0]['name'][0],$vCardContent[0]['home'][0]['surname'][0]);
+		$vcard->setName($vCardContent[0]['home'][0]['surname'][0], $vCardContent[0]['home'][0]['name'][0]);
 		if (!empty($vCardContent[0]['home'][0]['phone'][0]['local'][0])) {
 			$vcard->addTelephone($vCardContent[0]['home'][0]['phone'][0]['local'][0]);
 			$vcard->addParam('TYPE','HOME');
@@ -487,9 +496,35 @@ function lib_eyeAddressBook_exportToVcard($params){
 			$vcard->addAddress(' ',' ',$vCardContent[0]['company'][0]['address'][0],' ',' ',' ',' ');
 			$vcard->addParam('TYPE','WORK');
 		}
+		if (!empty($vCardContent[0]['company'][0]['role'][0])) {
+			$vcard->setRole($vCardContent[0]['company'][0]['role'][0]);
+		}
+		if (!empty($vCardContent[0]['other'][0]['nick'][0])) {
+			$vcard->addNickname($vCardContent[0]['other'][0]['nick'][0]);
+		}
 
-		$vCardsText .= $vcard->fetch();
-		$vCardsText .= "\r\n";
+		$vCardsText .= /* utf8 */ substr($vcard->fetch(), 0, -10);
+		if (!empty($vCardContent[0]['company'][0]['website'][0])) {
+			$value = /* utf8 */ trim($vCardContent[0]['company'][0]['website'][0]);
+			$vcard->escape($value);
+			$vCardsText .= 'X-ONEYE-WORKURL:' . $value . "\n";
+		}
+		if (!empty($vCardContent[0]['other'][0]['im'][0])) {
+			$value = /* utf8 */ trim($vCardContent[0]['other'][0]['im'][0]);
+			$vcard->escape($value);
+			$vCardsText .= 'X-ONEYE-IM:' . $value . "\n";
+		}
+		if (!empty($vCardContent[0]['other'][0]['voip'][0])) {
+			$value = /* utf8 */ trim($vCardContent[0]['other'][0]['voip'][0]);
+			$vcard->escape($value);
+			$vCardsText .= 'X-ONEYE-VOIP:' . $value . "\n";
+		}
+		if (!empty($vCardContent[0]['other'][0]['user'][0])) {
+			$value = /* utf8 */ trim($vCardContent[0]['other'][0]['user'][0]);
+			$vcard->escape($value);
+			$vCardsText .= 'X-ONEYE-USER:' . $value . "\n";
+		}
+		$vCardsText .= 'END:VCARD' . "\n";
 	}
 
 	if(!vfs('fileExists',array($outPath))){
@@ -535,46 +570,46 @@ function lib_eyeAddressBook_searchXML($params=null) {
 	foreach($contacts['Contacts'][0] as $index=>$id) {
 		// Use conditional o some foreachs? I try with conditional (Only 18 items)
 		if ($group == '0' || $group == $id[0]['group'][0]) {
-			if (empty($key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['home'][0]['name'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['home'][0]['surname'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['home'][0]['address'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['home'][0]['phone'][0]['local'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['home'][0]['phone'][0]['mobile'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['home'][0]['email'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['home'][0]['website'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['name'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['address'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['phone'][0]['local'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['phone'][0]['mobile'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['phone'][0]['fax'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['email'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['website'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['company'][0]['role'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['other'][0]['im'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['other'][0]['voip'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['other'][0]['nick'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
-			} elseif (utf8_stristr($id[0]['other'][0]['user'][0],$key)) {
-				$value['Contacts'][0][$index]=$id;
+			if (empty($key) === true) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['home'][0]['name'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['home'][0]['surname'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['home'][0]['address'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['home'][0]['phone'][0]['local'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['home'][0]['phone'][0]['mobile'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['home'][0]['email'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['home'][0]['website'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['name'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['address'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['phone'][0]['local'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['phone'][0]['mobile'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['phone'][0]['fax'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['email'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['website'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['company'][0]['role'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['other'][0]['im'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['other'][0]['voip'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['other'][0]['nick'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
+			} else if (utf8_stripos($id[0]['other'][0]['user'][0], $key) !== false) {
+				$value['Contacts'][0][$index] = $id;
 			}
 		}
 	}
@@ -743,15 +778,15 @@ function lib_eyeAddressBook_pathToInfo($params=null){
 	}
 	$contact = $params[0];
 	//Getting only the file name (with extension).
-	$contact = utf8_basename($contact);
+	$contact = basename($contact);
 	//From character 0 to first _ position
-	$name = utf8_substr($contact,0,utf8_strpos($contact,'_'));
+	$name = substr($contact, 0, strpos($contact, '_')); // utf8
 	//From first _ to last _
-	$sName = utf8_substr($contact,utf8_strpos($contact,'_')+1,utf8_strrpos($contact,'_')-utf8_strpos($contact,'_')-1);
+	$sName = substr(strstr($contact, '_'), 1, strrpos($contact, '_') - 1); // utf8
 	//From the last _ to the end of the string
-	$md5 = utf8_substr($contact,utf8_strrpos($contact,'_')+1,utf8_strlen($contact));
+	$md5 = substr($contact, strrpos($contact, '_') + 1); // utf8
 	//Remove extension
-	$md5 = utf8_basename($md5,'.eyeCard');
+	$md5 = basename($md5,'.eyeCard');
 	return  array($name,$sName,$md5);
 }
 
@@ -837,7 +872,7 @@ function lib_eyeAddressBook_userList($params=null){
 	$contacts = $contacts['Contacts'][0];
 	$contact = array();
 	foreach ($contacts as $key=>$newContact) {
-		$id = utf8_substr($key,3);
+		$id = /* utf8 */ substr($key, 3);
 		$contact[$id]['name'][0] = $newContact[0]['home'][0]['name'][0];
 		$contact[$id]['surname'][0] = $newContact[0]['home'][0]['surname'][0];
 		$contact[$id]['home_phone'][0] = $newContact[0]['home'][0]['phone'][0]['local'][0];

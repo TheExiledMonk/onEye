@@ -1,11 +1,11 @@
 /**
  * Translation source file for Simple Spreadsheet
  * Language: English
- * Author: Sophie Lee (spylee ง gmail.com)
+ * Author: Sophie Lee (spylee ยง gmail.com)
  * Created on: 11.11.2006
- * ---------------------------------------------- 
- * Released under GPL version 2 
- **/ 
+ * ----------------------------------------------
+ * Released under GPL version 2
+ **/
 
 var strings = new Array();
 
@@ -33,7 +33,7 @@ strings["August"] = "August";
 strings["September"] = "September";
 strings["October"] = "October";
 strings["November"] = "November";
-strings["December"] = "December"; 
+strings["December"] = "December";
 
 strings["Monday"] = "Monday";
 strings["Tuesday"] = "Tuesday";
@@ -43,7 +43,7 @@ strings["Friday"] = "Friday";
 strings["Saturday"] = "Saturday";
 strings["Sunday"] = "Sunday";
 
-// eyeOS
+// oneye
 strings["Copy / paste this code to other spreadsheet applications (e.g. Excel)"] = "Copy / paste this code to other spreadsheet applications (e.g. Excel)";
 strings["Help"] = "Help";
 strings["Del. Column"] = "Del. Column";

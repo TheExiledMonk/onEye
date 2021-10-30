@@ -1,25 +1,19 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
+
 function eyeHelp_on_cancel($paramse=null) {
 	$GLOBALS["edit_wnd"]->close();
 }
@@ -62,8 +56,13 @@ function getTitleTopic($params=null){
 	$oldUser = $currentUser;
 	$currentUser = ROOTUSER;
 	$myDir = $folder;
-	if(utf8_substr($myDir, -1)!='/')$myDir = $myDir.'/';
+	if ( /* utf8 */ substr($myDir, -1) !== '/') {
+		$myDir .= '/';
+	}
 	$myInfoFile = $myDir.'info.xml';
+	if (file_exists($myDir . $_SESSION['lang'] . '.xml') === true) {
+		$myInfoFile = $myDir . $_SESSION['lang'] . '.xml';
+	}
 	$size = vfs('real_filesize',array($myInfoFile));
 	if ($size > 0) {
 		$fp = vfs('real_open',array($myInfoFile,'r'));
@@ -75,10 +74,9 @@ function getTitleTopic($params=null){
 	$info = eyeXML('xml2array',array($InfoContent));
 	$info = $info['eyeHelp'][0];
 
-	if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
-		else $title = utf8_trim($info['title'][0]);
-	$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
-	if($title=="")$title = utf8_basename($myDir2);
+	$title = /* utf8 */ trim($info['title'][0]);
+	$myDir2 = /* utf8 */ substr($myDir, -1);
+	if($title=="")$title = basename($myDir2);
 }
 
 function eyeHelp_on_goto($params=null){
@@ -86,7 +84,7 @@ function eyeHelp_on_goto($params=null){
 	global $currentUser;
 
 	$folder = eyeHelp_getFolder();
-	$open = utf8_substr($params['itemName'][0],5);
+	$open = /* utf8 */ substr($params['itemName'][0], 5);
 	if($params[0]){
 		$open = str_replace('..','.',$params[0]);
 	}
@@ -95,11 +93,16 @@ function eyeHelp_on_goto($params=null){
 
 	if($open && $stop!==TRUE){
 		$myDir = $open;
-		if($myDir{utf8_strlen($myDir)-1}!='/')$myDir = $myDir.'/';
+		if ( /* utf8 */ substr($myDir, -1) !== '/') {
+			$myDir .= '/';
+		}
 
 		$oldUser = $currentUser;
 		$currentUser = ROOTUSER;
 		$myInfoFile = $myDir.'info.xml';
+		if (file_exists($myDir . $_SESSION['lang'] . '.xml') === true) {
+			$myInfoFile = $myDir . $_SESSION['lang'] . '.xml';
+		}
 		$size = vfs('real_filesize',array($myInfoFile));
 		if ($size > 0) {
 			$fp = vfs('real_open',array($myInfoFile,'r'));
@@ -120,15 +123,16 @@ function eyeHelp_on_goto($params=null){
 		}
 		$currentUser = $oldUser;
 
-		if($info['title-'.$_SESSION['lang']][0]!='')$title = utf8_trim($info['title-'.$_SESSION['lang']][0]);
-			else $title = utf8_trim($info['title'][0]);
-		$myDir2 = utf8_substr($myDir,0,utf8_strlen($myDir)-1);
-		if($title=="")$title = utf8_basename($myDir2);
+		$title = /* utf8 */ trim($info['title'][0]);
+		$myDir2 = substr($myDir, 0, strlen($myDir) - 1); // utf8
+		if($title=="")$title = basename($myDir2);
 
 		eyeX('runjs',array('js'=>'document.getElementById("'.$myPid.'_label1").innerHTML="<h1>'.str_replace('"','\\"',$title).'</h1><hr />";'));
 
-		if(utf8_trim($info['HTML-only'][0])!=1)$IndexContent = eyeHelp_Code($IndexContent);
-		$IndexContent_array = explode('<br />[split]<br />',$IndexContent);
+		if ( /* utf8 */ trim($info['HTML-only'][0]) !== '1') {
+			$IndexContent = eyeHelp_Code($IndexContent);
+		}
+		$IndexContent_array = /* utf8 */ explode('<br />[split]<br />',$IndexContent);
 
 		foreach($IndexContent_array as $value){
 			eyeX('concatDiv',array('name'=>$myPid.'_label1','value'=>$value));
@@ -137,7 +141,9 @@ function eyeHelp_on_goto($params=null){
 }
 
 function eyeHelp_on_open($param){
-	if(utf8_strpos($param,'..'))$getfolder_param['root']=1;
+	if ( /* utf8 */ strpos($param, '..') !== false) {
+		$getfolder_param['root'] = 1;
+	}
 	$goto = array(eyeHelp_getFolder($getfolder_param).$param);
 	eyeHelp_on_goto($goto);
 }
@@ -151,7 +157,7 @@ function eyeHelp_on_pref() {
 			'btn1_capt' => 'Submit',
 			'btn1_name' => 'submit',
 			'content' => 'User to contact to ask for help:',
-			'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/eyeMessages.png',
+			'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/eyeMessages.png',
 			'textbox_name' => 'eyeHelp_contact_box',
 			'textbox_text' => $xml['eyeHelp'][0]['contact'][0],
 			'textbox_event' => 'submit',

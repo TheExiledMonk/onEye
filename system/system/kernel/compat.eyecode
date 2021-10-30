@@ -1,81 +1,35 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*
 	this file is used to emulate php functions when it are not availables on the current php installation/version
 */
 
-date_default_timezone_set('UTC');
+date_default_timezone_set(TIMEZONE);
 
 function get_tmp_dir() {
-	// Try to use the function set_get_temp_dir()
-	if (function_exists('sys_get_temp_dir')) {
-		$array[] = sys_get_temp_dir();
-	}
-	// Try to get the temporary dir from an environment variable
-	$array[] = $_ENV['TMP'];
-	$array[] = $_ENV['TMPDIR'];
-	$array[] = $_ENV['TEMP'];
-
-	foreach ($array as $path) {
-		if ($path) {
-			// Check non realpath first
-			if (is_dir($path) && is_readable($path) && is_writable($path)) {
-				return $path;
-			}
-			// Check realpath now
-			if (realpath($path) && is_dir(realpath($path)) && is_readable(realpath($path)) && is_writable(realpath($path))) {
-				return realpath($path);
-			}
-		}
-	}
-
-	// Try to detect the temporary dir by creating a temporary file
-	$file = tempnam(md5(uniqid(rand(),1)),'');
-	if ($file) {
-		unlink($file);
-		$path = dirname($file);
-		if ($path) {
-			// Check non realpath first
-			if (is_dir($path) && is_readable($path) && is_writable($path)) {
-				return $path;
-			}
-			// Check realpath now
-			if (realpath($path) && is_dir(realpath($path)) && is_readable(realpath($path)) && is_writable(realpath($path))) {
-				return realpath($path);
-			}
-		}
-	}
-	// Return eyeOS' own temporary dir if no other one works
 	return EYE_ROOT . '/' . EYEOS_TMP_DIR;
 }
 
 function ini_get_size($sName)
 {
     $sSize = ini_get($sName);
-    $sUnit = utf8_substr($sSize, -1);
-    $iSize = (int) utf8_substr($sSize, 0, -1);
-    switch (utf8_strtoupper($sUnit))
+    $sUnit = /* utf8 */ substr($sSize, -1);
+    $iSize = (int) /* utf8 */ substr($sSize, 0, -1);
+    switch ( /* utf8 */ strtoupper($sUnit))
     {
         case 'Y' : $iSize *= 1024; // Yotta
         case 'Z' : $iSize *= 1024; // Zetta
@@ -87,6 +41,12 @@ function ini_get_size($sName)
         case 'K' : $iSize *= 1024; // kilo
     };
     return $iSize;
+}
+
+if (!function_exists('hash_equals')) {
+	function hash_equals($known_string, $user_string) {
+		return $known_string === $user_string;
+	}
 }
 
 if (!function_exists('json_encode')) {
@@ -132,6 +92,12 @@ if (!function_exists('json_encode')) {
     		}
     		return '{' . join(',', $result) . '}';
     	}
+	}
+}
+
+if (!function_exists('lcfirst')) {
+	function /* utf8 */ lcfirst($str) {
+		return strtolower(substr($str, 0, 1)) . substr($str, 1); // utf8
 	}
 }
 ?>

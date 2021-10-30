@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /*********************************************************************************************/
@@ -32,7 +25,7 @@
  * The following procedure is used for connection and download/upload operations.
  * It makes possible to update the interface BEFORE performing an operation which can take some
  * time to achieve, so we can inform the user that a process has started and he has to wait.
- * 
+ *
  * @param array $params An array with at least the following content:
  *                      array('__signal' => the_name_of_the_signal_to_send)
  */
@@ -51,8 +44,8 @@ function eyeFTP_bounceRequest($params=null) {
 
 /**
  * Checks if the calling function was called from a "bounced" request
- * 
- * @param mixed $params Arguments given to the calling function when called 
+ *
+ * @param mixed $params Arguments given to the calling function when called
  * @return boolean TRUE if the arguments indicate that the function is called from a "bounced" request,
  *                 FALSE otherwise
  */
@@ -96,7 +89,7 @@ function eyeFTP_getConf() {
 
 /**
  * Checks whether a connection is active to the server or not, and trys to reconnect if necessary.
- * 
+ *
  * @return boolean TRUE if connection is already active or established successfully, FALSE otherwise
  */
 function eyeFTP_autoConnect() {
@@ -111,7 +104,7 @@ function eyeFTP_autoConnect() {
 
 /**
  * Removes double slashes when present and returns result string.
- * 
+ *
  * @param string $dir The path to format
  * @return string The path formated
  */
@@ -126,7 +119,7 @@ function eyeFTP_getFormatedDirPath($dir) {
 
 /**
  * Adds text to log console
- * 
+ *
  * @param string $text The text to append to the console
  * @param array $tokens Tokens for i18n
  * @param string $type Message type (normal, success, warning, ... See defined constants in events.eyecode)
@@ -154,8 +147,8 @@ function eyeFTP_clearLogConsole() {
 
 /**
  * Updates interface elements states according to the argument passed.
- * 
- * @param boolean $active Specifies whether the connection is active (TRUE), or inactive (FALSE) 
+ *
+ * @param boolean $active Specifies whether the connection is active (TRUE), or inactive (FALSE)
  */
 function eyeFTP_setConnectionActive($active=true) {
 	if ($active) {
@@ -183,9 +176,9 @@ function eyeFTP_setConnectionActive($active=true) {
 
 /**
  * This procedure is called when the user clicks on one of the two tables.
- * The next actions (create folder, rename, download, etc.) will be applied to the latest view clicked 
+ * The next actions (create folder, rename, download, etc.) will be applied to the latest view clicked
  * (local or remote).
- * 
+ *
  * @param string $view Sets the active view for actions ('local' or 'remote')
  */
 function eyeFTP_setActiveView($view) {
@@ -207,10 +200,10 @@ function eyeFTP_setActiveView($view) {
 /**
  * Parses strings returned by the ftp_rawlist() function and put each file's information in
  * a dedicated named cell in a PHP array for better future processings.
- * 
+ *
  * -- Source: php.net / Google :)
  * -- Adaptation: Nanawel (nanawel@eyeos.org)
- * 
+ *
  * @param array $array The array to parse
  * @return arrat An array in the form of (filename => array(fileInformations))
  */
@@ -243,7 +236,7 @@ function parse_rawlist($array, $addParent=true) {
 		//eyeFTP_logConsole($currentFile, null, true);
 		$matches = array();
 		//            type   permissions   number     owner            group          size      month            day                     time/year       name
-		preg_match("/([-dl])([rwxst-]+).* ([0-9])+ ([a-zA-Z0-9]+).* ([a-zA-Z0-9]+).* ([0-9]*) ([a-zA-Z]{3}).? ([0-9]{1,2}) ([0-9]{2}:[0-9]{2}| [0-9]{4}) (.+)/",$currentFile,$matches);
+		preg_match("/([-dl])([rwxst-]+).* ([0-9])+ ([a-zA-Z0-9]+).* ([a-zA-Z0-9]+).* ([0-9]*) ([a-zA-Z]{3}).? ([0-9]{1,2}) ([0-9]{2}:[0-9]{2}| [0-9]{4}) (.+)/", $currentFile, $matches); // utf8
 
 		$fileInfo = array();
 		$fileInfo['type'] = $matches[1];
@@ -265,7 +258,7 @@ function parse_rawlist($array, $addParent=true) {
 	}
 
 	//sort data (parent folder, other folders, then files)
-	usort($filesData, eyeFTP_compareFilesData);
+	usort($filesData, 'eyeFTP_compareFilesData');
 	$return = array();
 	$i = 1;
 	foreach($filesData as $fileData) {
@@ -278,7 +271,7 @@ function parse_rawlist($array, $addParent=true) {
  * Sort files list processed by parse_rawlist() in order to put the folders on top
  * of the list.
  * AUTOMATICALLY CALLED BY parse_rawlist()
- * 
+ *
  * @param array $a
  * @param array $b
  * @return int A negative value if $a must be placed before $b, a positive value otherwise
@@ -319,7 +312,7 @@ function eyeFTP_getVersionFromInfoXML() {
 				return $content['package'][0]['version'][0];
 		}
 	}
-	return '(unknown)'; 
+	return '(unknown)';
 }
 
 ?>

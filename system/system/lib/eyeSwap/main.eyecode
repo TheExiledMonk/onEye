@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function lib_eyeSwap_send($params) {
@@ -27,10 +20,10 @@ function lib_eyeSwap_send($params) {
 		return false;
 	}
 
-	$to = utf8_basename($params[0]);
+	$to = basename($params[0]);
 	$subject = $params[1];
 	$text = $params[2];
-	$directory = utf8_basename($params[3]);
+	$directory = basename($params[3]);
 	$file = $params[4];
 
 	if(!um('userExist',array($to)) || empty($text)) {
@@ -108,7 +101,7 @@ function lib_eyeSwap_copyFile($params) {
 
 	$to = $params[0];
 	$orig = $params[1];
-	$directory = utf8_basename($params[2]);
+	$directory = basename($params[2]);
 
 	global $currentUser;
 
@@ -123,7 +116,7 @@ function lib_eyeSwap_copyFile($params) {
 	if(!vfs('fileExists',array($orig))) {
 		return false;
 	}
-	$name = utf8_basename($orig);
+	$name = basename($orig);
 	$hash = md5(uniqid(time())); //new hash for the file
 
 	$swapDir = um('getUserDir',array($to));
@@ -172,7 +165,7 @@ function lib_eyeSwap_getFile($params) {
 
 	$hash = $params[0];
 	$dest = $params[1];
-	$directory = utf8_basename($params[2]);
+	$directory = basename($params[2]);
 
 	if(empty($directory)) {
 		return false;
@@ -203,7 +196,7 @@ function lib_eyeSwap_deleteFile($params) {
 	}
 
 	$hash = $params[0];
-	$directory = utf8_basename($params[1]);
+	$directory = basename($params[1]);
 
 	if(empty($directory)) {
 		return false;
@@ -227,7 +220,7 @@ function lib_eyeSwap_list($params) {
 		return false;
 	}
 
-	$directory = utf8_basename($params[0]);
+	$directory = basename($params[0]);
 
 	if(empty($directory)) {
 		return false;
@@ -247,7 +240,7 @@ function lib_eyeSwap_list($params) {
 		$myArray[] = array(
 						'author' => $xml['swapMessage'][0]['header'][0]['from'][0],
 						'date' => $xml['swapMessage'][0]['header'][0]['date'][0],
-						'hash' => utf8_substr(utf8_basename($msg), 0, utf8_strlen(utf8_basename($msg))-utf8_strlen('.msgSwap')),
+						'hash' => basename($msg, '.msgSwap'),
 						'subject' => $xml['swapMessage'][0]['header'][0]['subject'][0]
 		);
 	}
@@ -260,7 +253,7 @@ function lib_eyeSwap_read($params) {
 		return false;
 	}
 	$hash = $params[0];
-	$directory = utf8_basename($params[1]);
+	$directory = basename($params[1]);
 
 	if(empty($directory)) {
 		return false;
@@ -280,7 +273,7 @@ function lib_eyeSwap_delete($params) {
 	}
 
 	$hash = $params[0];
-	$directory = utf8_basename($params[1]);
+	$directory = basename($params[1]);
 
 	$swapDir = um('getCurrentUserDir').'/swap/'.$directory.'/';
 
@@ -295,7 +288,7 @@ function lib_eyeSwap_start($params){
 	}
 
 	$to = $params[0];
-	$directory = utf8_basename($params[1]);
+	$directory = basename($params[1]);
 
 	if(empty($directory)) {
 		return false;

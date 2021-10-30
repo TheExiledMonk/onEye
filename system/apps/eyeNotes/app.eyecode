@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeNotes_run($params=null) {
@@ -27,13 +20,13 @@ function eyeNotes_run($params=null) {
 	$myWindow = new Window(array('name'=>'eyeNotesWND','father'=>'eyeApps', 'removeWin' => 2,
 	'cent'=>1,'width'=>600,'height'=>500,'title'=>'Text Editor','sendResizeMsg'=>1,'sigResize'=>'Resize','savePosition' => 1));
 
-	if (IE && IE < 7 || eregi('safari',$_SERVER['HTTP_USER_AGENT'])) {
+	if (IE > 0 && IE < 7 || /* utf8 */ stripos($_SERVER['HTTP_USER_AGENT'], 'safari') !== false) {
 		$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
 			'width'=>$myWindow->width-6,'height'=>$myWindow->height-90,'x'=>0,'y'=>60));
 	} else {
 		if($params[0]) {
-			$info = utf8_pathinfo($params[0]);
-			$ext = utf8_strtolower($info['extension']);
+			$info = pathinfo($params[0]);
+			$ext = /* utf8 */ strtolower($info['extension']);
 			if($ext == 'asp') {
 				$lang = 'asp';
 			} else if($ext == 'cs') {
@@ -68,12 +61,18 @@ function eyeNotes_run($params=null) {
 		} else {
 			$lang = 'text';
 		}
-		$myWindow->setTitle(utf8_basename($params[0].' - '.i18n('translate',array('Text Editor'))));
 		$myTextArea = new Textarea(array('name'=>'noteContent','father'=>'eyeNotesWND_Content',
 			'width'=>$myWindow->width-8,'height'=>$myWindow->height-84,'x'=>2,'y'=>57,'code'=>1,'lang'=>$lang));
 	}
 	$myWindow->addFriend($myTextArea);
 	$myWindow->show();
+
+	if (!empty($params[0])) {
+		$windows_title = $params[0] . ' - ';
+	} else {
+		$windows_title = '';
+	}
+	$myWindow->setTitle(basename($windows_title . i18n('translate', array('Text Editor'))));
 
 	$myTextArea->show();
 	$myTextArea->focus();
@@ -87,12 +86,12 @@ function eyeNotes_run($params=null) {
 
 	$myToolbar = new Toolbar(array('name'=>'myBar','father'=>'eyeNotesWND_Content'));
 	$myToolbar->show();
-	$myToolbar->addItem('new','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/filenew.png','New');
-	$myToolbar->addItem('open','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fileopen.png','Open');
-	$myToolbar->addItem('save','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/filesave.png','Save',array($myTextArea));
-	$myToolbar->addItem('saveAs','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/filesaveas.png','Save As',array($myTextArea));
+	$myToolbar->addItem('new','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/filenew.png','New');
+	$myToolbar->addItem('open','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fileopen.png','Open');
+	$myToolbar->addItem('save','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/filesave.png','Save',array($myTextArea));
+	$myToolbar->addItem('saveAs','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/filesaveas.png','Save As',array($myTextArea));
 	$myToolbar->addLine();
-	$myToolbar->addItem('fullscreen','index.php?version='.EXTERN_CACHE_VERSION.'&theme=1&extern=icons/22x22/fullScreen.png','Full Screen','',1);
+	$myToolbar->addItem('fullscreen','index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/22x22/fullScreen.png','Full Screen','',1);
 	addListenerServiceCall('fullResized','eyex','resizedbrowser');
 	if($params[0]) {
 		$file = $params[0];

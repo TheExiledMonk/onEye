@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 include_once(EYE_ROOT.'/'.APP_DIR.'/eyeMail/preferences'.EYE_CODE_EXTENSION);
@@ -207,7 +200,7 @@ function eyeMail_on_SelectFileOpen($params=null) {
 			$GLOBALS['eyeMail_Sortabletable']->unhide();
 		}
 		$GLOBALS['attachments']->text[] = $file;
-		$GLOBALS['eyeMail_Sortabletable']->addRow(array(utf8_basename($file),vfs('fileSize',array($file))));
+		$GLOBALS['eyeMail_Sortabletable']->addRow(array(basename($file),vfs('fileSize',array($file))));
 	}
 }
 
@@ -378,7 +371,7 @@ function eyeMail_on_delete($params) {
 		'btn2_capt' => 'No',
 		'btn2_name' => 'noDelete',
 		'content' => $content,
-		'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/editClean.png',
+		'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/editClean.png',
 		'savePosition' => 1,
 		'title' => $title,
 		'type' => 3,
@@ -443,7 +436,7 @@ function eyeMail_on_openAttachment($params) {
 
 function eyeMail_on_SelectFileSave($params) {
 	$file = $params['arg'][0];
-	$arr = explode(',',$GLOBALS['eyeMail_Sortabletable']->selected);
+	$arr = /* utf8 */ explode(',', $GLOBALS['eyeMail_Sortabletable']->selected);
 	$id = $arr[0];
 	$type = $arr[1];
 	$userconfig = $GLOBALS['defaultMail']->text;
@@ -477,21 +470,21 @@ function eyeMail_on_SelectFileSave($params) {
 function getdecodevalue($message,$coding) {
 	if($coding == 'imap') {
 		$message = imap_base64($message);
-	}elseif ($coding == 0) { 
-		$message = imap_8bit($message); 
-	} elseif ($coding == 1) { 
-		$message = imap_8bit($message); 
-	} elseif ($coding == 2) { 
-		$message = imap_binary($message); 
-	} elseif ($coding == 3) { 
-		$message=imap_base64($message); 
-	} elseif ($coding == 4) { 
-		$message = imap_qprint($message); 
-	} elseif ($coding == 5) { 
-		$message = imap_base64($message); 
-	} 
+	}elseif ($coding == 0) {
+		$message = imap_8bit($message);
+	} elseif ($coding == 1) {
+		$message = imap_8bit($message);
+	} elseif ($coding == 2) {
+		$message = imap_binary($message);
+	} elseif ($coding == 3) {
+		$message=imap_base64($message);
+	} elseif ($coding == 4) {
+		$message = imap_qprint($message);
+	} elseif ($coding == 5) {
+		$message = imap_base64($message);
+	}
 	return $message;
-} 
+}
 
 function eyeMail_on_reply($params) {
 	$userconfig = $GLOBALS['defaultMail']->text;
@@ -518,8 +511,8 @@ function eyeMail_on_reply($params) {
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
 
-	if(utf8_substr($result[0]['subject'],0,3) != 'Re:') {
-		$result[0]['subject'] = 'Re: '.$result[0]['subject'];
+	if ( /* utf8 */ substr($result[0]['subject'], 0, 3) !== 'Re:') {
+		$result[0]['subject'] = 'Re: ' . $result[0]['subject'];
 	}
 	$body .= $result[0]['sender']." wrote:\n";
 	$body .= ">";
@@ -553,8 +546,8 @@ function eyeMail_on_forward($params) {
 	$query = sqlite_query($dbHandle, $sqlGetView);
 	$result = sqlite_fetch_all($query, SQLITE_ASSOC);
 
-	if(utf8_substr($result[0]['subject'],0,4) != 'Fwd:') {
-		$result[0]['subject'] = 'Fwd: '.$result[0]['subject'];
+	if ( /* utf8 */ substr($result[0]['subject'], 0, 4) !== 'Fwd:') {
+		$result[0]['subject'] = 'Fwd: ' . $result[0]['subject'];
 	}
 	$body .= "\n\n\n\n------ Forwarded Message ---------\n";
 	$body .= "From: ".$result[0]['sender']."\n";
@@ -608,7 +601,7 @@ function get_part($stream, $msg_number, $mime_type, $structure = false,$part_num
 }
 
 function list_attachments($connection,$msg) {
-	$structure = imap_fetchstructure($connection, $msg);    
+	$structure = imap_fetchstructure($connection, $msg);
 	$parts = $structure->parts;
 	$i = 1;
 	foreach($parts as $part) {
@@ -625,22 +618,22 @@ function list_attachments($connection,$msg) {
 function eyeMail_ByteSize($bytes) {
 	$size = $bytes / 1024;
     if($size < 1024) {
-        $size = number_format($size, 2);
+        $size = /* utf8 */ number_format($size, 2);
         $size .= ' KB';
     } else  {
         if($size / 1024 < 1024) {
-            $size = number_format($size / 1024, 2);
+            $size = /* utf8 */ number_format($size / 1024, 2);
             $size .= ' MB';
         } else if ($size / 1024 / 1024 < 1024) {
-            $size = number_format($size / 1024 / 1024, 2);
+            $size = /* utf8 */ number_format($size / 1024 / 1024, 2);
             $size .= ' GB';
-        } 
+        }
     }
     return $size;
-} 
+}
 
 function decode_qprint($str) {
-    $str = preg_replace("/\=([A-F][A-F0-9])/","%$1",$str);
+    $str = /* utf8 */ preg_replace('/\\=([A-F][A-F0-9])/', '%$1', $str);
     $str = urldecode($str);
     $str = utf8_encode($str);
     return $str;

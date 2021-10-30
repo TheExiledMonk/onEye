@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____ 
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___  
-                 / _ \ | | |/ _ \ |  | |\___ \ 
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/ 
-                       __/ |                   
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU General Public License Version 3 (GPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/gpl.txt
-
-        Copyright 2005-2007 eyeOS Team (team@eyeos.org)         
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 global $checknum;
@@ -43,7 +36,7 @@ $myFlash = new Flash(array(
 	),
 	'height' => 200,
 	'name' => 'eyeUpload_advanced_Flash',
-	'src' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeUpload/swf/eyeuploadx.swf&type=swf',
+	'src' => 'index.php?extern=apps/eyeUpload/swf/eyeuploadx.swf&type=swf',
 	'width' => 450,
 	'x' => 8,
 	'y' => 8

@@ -39,7 +39,7 @@ SlimeyToolbar.prototype.addTool = function(tool) {
  *  adds a separator between tools in the toolbar.
  */
 SlimeyToolbar.prototype.addSeparator = function() {
-	var sep = document.createElement('img');  /**@TODO eyeos */
+	var sep = document.createElement('img');  /**@TODO oneye */
 	sep.src = Slimey.imagesDir + 'sep.png';
 	sep.style.marginLeft = '8px';
 	sep.style.marginRight = '4px';
@@ -65,7 +65,6 @@ var SlimeyNavbar = function(slimey) {
 	this.addTool(new SlimeySaveToolBig(this.slimey));
 	this.addTool(new SlimeySaveToolBigAs(this.slimey));
 	this.addTool(new SlimeyInsertImageToolBigEye(this.slimey));
-	this.addTool(new SlimeyInsertImageToolBig(this.slimey));
 	this.addTool(new SlimeyPreviewToolBig(this.slimey));
 	this.addBreak();
 	//this.addTool(new SlimeyEditContentTool());

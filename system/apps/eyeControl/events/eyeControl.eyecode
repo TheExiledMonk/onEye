@@ -1,30 +1,23 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeControl_on_box_label($params = '') {
 	foreach($params as $key => $value) {
-		if(utf8_stristr($key,'eyeControl_box_hiddenCAT_')) {
-			$key = utf8_substr($key,utf8_strlen('eyeControl_box_hiddenCAT_') - utf8_strlen($key),utf8_strlen($key));
+		if ( /* utf8 */ stripos($key, 'eyeControl_box_hiddenCAT_') !== false) {
+			$key = substr($key, strlen('eyeControl_box_hiddenCAT_') - strlen($key)); // utf8
 			eyeControl_lib_loadContent($GLOBALS['eyeControl_box_hiddenCAT_' . $key]->text,$GLOBALS['eyeControl_box_hiddenNAME_' . $key]->text);
 		}
 	}
@@ -32,8 +25,8 @@ function eyeControl_on_box_label($params = '') {
 
 function eyeControl_on_box_cat_label($params = '') {
 	foreach($params as $key => $value) {
-		if(utf8_stristr($key,'eyeControl_box_hiddenCAT_')) {
-			$key = utf8_substr($key,utf8_strlen('eyeControl_box_hiddenCAT_') - utf8_strlen($key),utf8_strlen($key));
+		if ( /* utf8 */ stripos($key, 'eyeControl_box_hiddenCAT_') !== false) {
+			$key = substr($key, strlen('eyeControl_box_hiddenCAT_') - strlen($key)); // utf8
 			eyeControl_lib_loadContent($GLOBALS['eyeControl_box_hiddenCAT_' . $key]->text);
 		}
 	}
@@ -50,7 +43,7 @@ function eyeControl_on_selectUser($params = '') {
 				'buttons' => array(array('selectUser_select','Select'),array('selectUser_cancel','Cancel')),
 				'content' => 'Please type the username here:',
 				'father' => 'eyeControl_window',
-				'img' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&theme=1&extern=icons/48x48/eyeGroups.png',
+				'img' => 'index.php?theme=' . $_SESSION['usertheme'] . '&extern=icons/48x48/eyeGroups.png',
 				'textbox_event' => 'selectUser_select',
 				'textbox_name' => 'eyeControl_searchuser_textbox',
 				'title' => 'Search user...',

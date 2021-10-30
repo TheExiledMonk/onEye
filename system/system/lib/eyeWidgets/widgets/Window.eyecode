@@ -1,28 +1,21 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 // These constants should be used for the style parameter.
-// Do not use their values, since they can change in any later eyeos release!
+// Do not use their values, since they can change in any later oneye release!
 define('TITLE', 1);
 define('LISTED', 2);
 define('MIN', 4);
@@ -30,6 +23,12 @@ define('MAX', 8);
 define('CLOSE', 16);
 define('RESIZE', 32);
 define('NODRAG', 64);
+
+// These constants are used with the saveSize and savePosition parameter
+// Chosen to be backwards compatible
+define('NO_SAVE', 0);
+define('ABSOLUTE', 1);
+define('RELATIVE', 2);
 
 // These constants are deprecated!
 define('NORMAL_WINDOW', 1);
@@ -61,7 +60,7 @@ class Window {
 		'wBottomRight' => 'eyeWindowBottom_right',
 		'wContent' => 'eyeWindowContent',
 		'wLeft' => 'eyeWindowLeft',
-		'wMain' => 'eyeWindowMain', 
+		'wMain' => 'eyeWindowMain',
 		'wRight' => 'eyeWindowRight',
 		'wTitle' => 'eyeWindowTitle',
 		'wTitleCenter' => 'eyeWindowTitle_center',
@@ -76,10 +75,12 @@ class Window {
 	var $fullScreen = 0;
 	var $height;
 	var $horiz;
+	var $image = null;
 	var $listed = 0;
 	var $max = 0;
 	var $maxHeight;
 	var $maxWidth;
+	var $maximized = 0;
 	var $max_pos;
 	var $min = 0;
 	var $minHeight;
@@ -97,6 +98,7 @@ class Window {
 	var $removepid;
 	var $resize = 0;
 	var $saveFunc;
+	var $saveSize;
 	var $savePosition;
 	var $sendResizeMsg;
 	var $showDragContent;
@@ -113,8 +115,9 @@ class Window {
 	var $x;
 	var $y;
 
-	function Window($params) {
+	function __construct($params) {
 		global $myPid;
+		global $procInfo;
 		$this->creatorPid = $myPid;
 		$this->father = $params['father'];
 		$this->name = $params['name'];
@@ -128,6 +131,7 @@ class Window {
 		isset($params['dragBgColor']) ? $this->dragBgColor = $params['dragBgColor'] : $this->dragBgColor = 0;
 		isset($params['height']) ? $this->height = $params['height'] : $this->height = 200;
 		isset($params['horiz']) ? $this->horiz = $params['horiz'] : $this->horiz = 0;
+		isset($params['image']) ? $this->image = $params['image'] : $this->image = null;
 		isset($params['maxHeight']) ? $this->maxHeight = $params['maxHeight'] : $this->maxHeight = 0;
 		isset($params['maxWidth']) ? $this->maxWidth = $params['maxWidth'] : $this->maxWidth = 0;
 		isset($params['minHeight']) ? $this->minHeight = $params['minHeight'] : $this->minHeight = 70;
@@ -137,7 +141,7 @@ class Window {
 		isset($params['removeWin']) ? $this->removeWin = $params['removeWin'] : $this->removeWin = 1;
 		isset($params['removepid']) ? $this->removepid = $params['removepid'] : $this->removepid = 1;
 		isset($params['saveFunc']) ? $this->saveFunc = $params['saveFunc'] : $this->saveFunc = '';
-		isset($params['savePosition']) ? $this->savePosition = $params['savePosition'] : $this->savePosition = 0;
+		isset($params['savePosition']) ? $this->savePosition = $params['savePosition'] : $this->savePosition = NO_SAVE;
 		isset($params['sendResizeMsg']) ? $this->sendResizeMsg = $params['sendResizeMsg'] : $this->sendResizeMsg = 0;
 		isset($params['showDragContent']) ? $this->showDragContent = $params['showDragContent'] : $this->showDragContent = 0;
 		isset($params['sigClose']) ? $this->sigClose = $params['sigClose'] : $this->sigClose = 'Close';
@@ -147,29 +151,22 @@ class Window {
 		isset($params['type']) ? $this->type = $params['type'] : $this->type = 0;
 		isset($params['vert']) ? $this->vert = $params['vert'] : $this->vert = 0;
 		isset($params['width']) ? $this->width = $params['width'] : $this->width = 200;
-
-		if ($params['forceSavePosition']) {
-			$this->savePosition = 1;
-		} elseif ($params['forcePosition']) {
-			$this->savePosition = 0;
+		isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
+		isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
+		
+		if ($this->image === null) {
+			$appInfo = getAppInfo(proc('findNameByPid', array($myPid)));
+			$this->image = $appInfo['package'][0]['icon'][0]; // TODO: isset, ...?!
+		}
+		
+		if (isset($params['forceSavePosition']) === true && $params['forceSavePosition']) {
+			$this->savePosition = ABSOLUTE;
+		} elseif (isset($params['forcePosition']) === true && $params['forcePosition']) {
+			$this->savePosition = NO_SAVE;
 		} else {
 			$xml = eyeXML('getXMLconfig',array('eyex','eyeX.xml'));
 			if ($xml['eyex'][0]['saveWindowPositions'][0] == '0') {
-				$this->savePosition = 0;
-			}
-		}
-		if (!$this->savePosition) {
-			isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
-			isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
-		} else {
-			$position = $this->getSavedPositions();
-			if (!$position || $this->father == 'eyeApps' && ($position['top'][0] >= $_SESSION['SCREEN']['eyeApps']['height'] || $position['left'][0] >= $_SESSION['SCREEN']['eyeApps']['width'])) {
-				isset($params['x']) ? $this->x = $params['x'] : $this->x = 20;
-				isset($params['y']) ? $this->y = $params['y'] : $this->y = 20;
-			} else {
-				$this->cent = 0;
-				$this->x = intval($position['left'][0]);
-				$this->y = intval($position['top'][0]);
+				$this->savePosition = NO_SAVE;
 			}
 		}
 		if ($this->type == INVISIBLE_WINDOW) {
@@ -240,7 +237,83 @@ class Window {
 				$this->min_pos = $x;
 			}
 		}
-		if ($this->resize) {
+		
+		
+		if (isset($params['saveSize'])) {
+			$this->saveSize = $params['saveSize'];
+		} elseif ($this->resize == 0 && $this->max == 0) {
+			$this->saveSize = NO_SAVE;
+		} else {
+			$this->saveSize = ABSOLUTE;
+		}
+		
+		
+		$position = $this->getSavedPositions();
+		if (is_array($position) === true) {
+			
+			if ($this->max === 1 && is_array($position['maximized'])) {
+				$this->maximized = intval($position['maximized'][0]);
+			}
+			
+			if ($this->saveSize !== NO_SAVE) {
+				if (is_array($position['height'])) { $this->height = intval($position['height'][0]); }
+				if (is_array($position['width'])) { $this->width = intval($position['width'][0]); }
+				
+				if ($this->saveSize === RELATIVE) {
+					$this->width = $_SESSION['SCREEN']['eyeApps']['width'] * ($this->width / 100);
+					$this->height = $_SESSION['SCREEN']['eyeApps']['height'] * ($this->height / 100);
+				}
+				
+			}
+			
+			if ($this->savePosition !== NO_SAVE) {
+				if (is_array($position['left']) || is_array($position['top'])) { $this->cent = 0; }
+				if (is_array($position['left'])) { $this->x = intval($position['left'][0]); }
+				if (is_array($position['top'])) { $this->y = intval($position['top'][0]); }
+				
+				if ($this->savePosition === RELATIVE) {
+					$this->x = $_SESSION['SCREEN']['eyeApps']['width'] * ($this->x / 100);
+					$this->y = $_SESSION['SCREEN']['eyeApps']['width'] * ($this->y / 100);
+				}
+			}
+			
+		}
+		
+		if ($this->max === 1 && is_array($procInfo['xArgs']['winState'])) {
+			switch ($procInfo['xArgs']['winState'][0]) {
+				case "max":
+					$this->maximized = 1;
+					break;
+				case "win":
+					$this->maximized = 0;
+					break;
+				case "fs":
+					$this->fullScreen = 1;
+					break;
+			}
+		}
+		
+		if ($this->father === "eyeApps") {
+			$wCnt = 0;
+			foreach (proc('getProcessTable') as $process) {
+				if ($process['appName'] == $procInfo['appName'] && $process['pid'] != $myPid) {
+					$wCnt++;
+				}
+			}
+			if ($wCnt > 0) {
+				$this->x += 16 * $wCnt;
+				$this->y += 16 * $wCnt;
+			}
+		}
+		
+		if ($this->x > ($_SESSION['SCREEN']['eyeApps']['width'] - 32)) {
+			$this->x = $_SESSION['SCREEN']['eyeApps']['width'] - $this->width;
+		}
+		if ($this->y > ($_SESSION['SCREEN']['eyeApps']['height'] - 32)) {
+			$this->y = $_SESSION['SCREEN']['eyeApps']['height'] - $this->height;
+		}
+		
+		if ($this->resize === 1) {
 			if ($this->height > $_SESSION['SCREEN']['eyeApps']['height']) {
 				$this->height = $_SESSION['SCREEN']['eyeApps']['height'];
 			}
@@ -317,6 +390,7 @@ class Window {
 		eyex('rawjs',array('js' => 'Windows.Focus("' . $myPid . '_' . $this->name . '");'));
 	}
 
+	/*	Gets stored positions and size from relevant file, returns as array	*/
 	function getSavedPositions() {
 		global $myPid;
 		$xml = eyeXML('getXMLconfig',array('eyex',proc('findNameByPid',array($myPid)) . '.xml'));
@@ -420,7 +494,7 @@ class Window {
 			eyeApps.style.width = "' . $_SESSION['SCREEN']['eyeApps']['width'] . 'px";
 			eyeApps.style.left = "' . $_SESSION['SCREEN']['eyeApps']['x'] . 'px";
 			eyeApps.style.top = "' . $_SESSION['SCREEN']['eyeApps']['y'] . 'px";
-			document.getElementById("' . $myPid . '_' . $this->name . '").style.backgroundColor = null;'));
+			document.getElementById("' . $myPid . '_' . $this->name . '").className = "eyeWindowMain";'));
 			$this->setHeight($this->oldHeight);
 			$this->setWidth($this->oldWidth);
 			$this->setX($this->oldX);
@@ -463,7 +537,7 @@ class Window {
 			eyeApps.style.width = "' . $_SESSION['SCREEN']['eyeApps']['width'] . 'px";
 			eyeApps.style.left = "0";
 			eyeApps.style.top = "0";
-			document.getElementById("' . $myPid . '_' . $this->name . '").style.backgroundColor = "#ffffff";'));
+			document.getElementById("' . $myPid . '_' . $this->name . '").className = "eyeWindowMain eyeWindowFullScreen";'));
 			$this->setHeight($_SESSION['SCREEN']['eyeApps']['height']);
 			$this->setWidth($_SESSION['SCREEN']['eyeApps']['width']);
 			$this->setX(0);
@@ -492,6 +566,34 @@ class Window {
 		global $myPid;
 		$this->height = intval($height);
 		eyex('rawjs',array('js' => 'Windows.SetHeight("' . $myPid . '_' . $this->name . '",' . $this->height . ',1);'));
+	}
+
+	function setMaxHeight($maxHeight) {
+		global $myPid;
+		
+		$this->maxHeight = intval($maxHeight);
+		eyex('rawjs', array('js' => 'Windows.List["' . $myPid . '_' . $this->name . '"].maxHeight = ' . strval($this->maxHeight) . ';'));
+	}
+
+	function setMaxWidth($maxWidth) {
+		global $myPid;
+		
+		$this->maxWidth = intval($maxWidth);
+		eyex('rawjs', array('js' => 'Windows.List["' . $myPid . '_' . $this->name . '"].maxWidth = ' . strval($this->maxWidth) . ';'));
+	}
+
+	function setMinHeight($minHeight) {
+		global $myPid;
+		
+		$this->minHeight = intval($minHeight);
+		eyex('rawjs', array('js' => 'Windows.List["' . $myPid . '_' . $this->name . '"].minHeight = ' . strval($this->minHeight) . ';'));
+	}
+
+	function setMinWidth($minWidth) {
+		global $myPid;
+		
+		$this->minWidth = intval($minWidth);
+		eyex('rawjs', array('js' => 'Windows.List["' . $myPid . '_' . $this->name . '"].minWidth = ' . strval($this->minWidth) . ';'));
 	}
 
 	function setNoDrag($nodrag = 2) {
@@ -560,6 +662,13 @@ class Window {
 	}
 
 	function show() {
+		global $currentUser;
+		$user = $currentUser;
+		foreach (proc('getProcessTable') as $process) {
+			if ( /* utf8 */ strtolower($process['appName']) === 'eyex' && $currentUser === $process['currentUser']) {
+				$user = '';
+			}
+		}
 		if (is_array($this->cssReplace)) {
 			foreach ($this->cssReplace as $key => $value) {
 				$this->cssClasses[$key] = $value;
@@ -573,10 +682,12 @@ class Window {
 			'dragBgAlpha' => $this->dragBgAlpha,
 			'dragBgColor' => $this->dragBgColor,
 			'height' => $this->height,
+			'image' => $this->image,
 			'listed' => $this->listed,
 			'max' => $this->max,
 			'maxHeight' => $this->maxHeight,
 			'maxWidth' => $this->maxWidth,
+			'maximized' => $this->maximized,
 			'max_pos' => $this->max_pos,
 			'min' => $this->min,
 			'minHeight' => $this->minHeight,
@@ -589,6 +700,7 @@ class Window {
 			'resize' => $this->resize,
 			'saveFunc' => $this->saveFunc,
 			'savePosition' => $this->savePosition,
+			'saveSize' => $this->saveSize,
 			'sendCloseMsg' => $this->removepid,
 			'sendResizeMsg' => $this->sendResizeMsg,
 			'showDragContent' => $this->showDragContent,
@@ -596,8 +708,9 @@ class Window {
 			'sigClose' => $this->sigClose,
 			'sigResize' => $this->sigResize,
 			'sync' => $this->friends,
-			'title' => htmlspecialchars($this->title,ENT_QUOTES,'UTF-8'),
+			'title' => utf8_htmlspecialchars($this->title, ENT_QUOTES),
 			'type' => $this->type,
+			'user' => $user,
 			'wBottomCenter' => $this->cssClasses['wBottomCenter'],
 			'wBottomLeft' => $this->cssClasses['wBottomLeft'],
 			'wBottomRight' => $this->cssClasses['wBottomRight'],
@@ -632,6 +745,9 @@ class Window {
 		eyex('createWidget',$widget);
 		if (!$this->noZindex) {
 			$this->focus();
+		}
+		if ($this->fullScreen > 0) {
+			$this->setFullScreen(1,1);
 		}
 		eyeWidgets('serialize',array($this));
 	}

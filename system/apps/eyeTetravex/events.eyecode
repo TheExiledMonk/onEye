@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 /**
@@ -76,7 +69,7 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		'dialog_configuration_notice1' => array(i18n('translate',array('These options won\'t be applied until you start a new game.'))),
 		'dialog_configuration_saveconfigtofile' => array(i18n('translate',array('Always remember my last configuration'))),
 		'dialog_configuration_usesharedhighscores' => array(i18n('translate',array('Use shared highscores on server (all users)'))),
-		'dialog_configuration_notice2' => array(i18n('translate',array('These features can only be used when running from an eyeOS server.'))),
+		'dialog_configuration_notice2' => array(i18n('translate',array('These features can only be used when running from an oneye server.'))),
 
 		//HIGHSCORES DIALOG
 		'dialog_highscores_title' => array(i18n('translate',array('Highscores'))),
@@ -103,7 +96,7 @@ function eyeTetravex_on_loadConfiguration($params=null) {
 		//NETWORK PROBLEM DIALOG
 		'dialog_netprob_title' => array(i18n('translate',array('Network problem'))),
 		'dialog_netprob_text1' => array(i18n('translate',array('Unable to connect to the host server.'))),
-		'dialog_netprob_text2' => array(i18n('translate',array('Would you like to disable eyeOS related features?')))
+		'dialog_netprob_text2' => array(i18n('translate',array('Would you like to disable oneye related features?')))
 	);
 	$return['configuration'][0]['i18n'][0] = $i18nValues;
 
@@ -224,7 +217,7 @@ function eyeTetravex_saveHighscore($storageMethod, $inputXml) {
 
 	$newHighscore = array();
 	$newHighscore['user'][0] = $currentUser;
-	$newHighscore['date'][0] = date('Y-m-d H:i');
+	$newHighscore['date'][0] = date('Y-m-d G:i');
 	$newHighscore['maxNumber'][0] = $inputXml['highscore'][0]['maxNumber'][0];
 	$newHighscore['time'][0] = $inputXml['highscore'][0]['time'][0];
 	$newHighscore['moves'][0] = $inputXml['highscore'][0]['moves'][0];
@@ -320,11 +313,11 @@ function eyeTetravex_compareRegularHighscores($a, $b) {
 		$return = 1;
 	}
 	else {
-		$a_min = intval(utf8_substr($a['time'][0], 0, utf8_strpos($a['time'][0],':')));
-		$a_sec = intval(utf8_substr($a['time'][0], utf8_strpos($a['time'][0],':') +1));
+		$a_min = intval(substr($a['time'][0], 0, strpos($a['time'][0], ':'))); // utf8
+		$a_sec = intval(substr($a['time'][0], strpos($a['time'][0], ':') + 1)); // utf8
 
-		$b_min = intval(utf8_substr($b['time'][0], 0, utf8_strpos($b['time'][0],':')));
-		$b_sec = intval(utf8_substr($b['time'][0], utf8_strpos($b['time'][0],':') +1));
+		$b_min = intval(substr($b['time'][0], 0, strpos($b['time'][0], ':'))); // utf8
+		$b_sec = intval(substr($b['time'][0], strpos($b['time'][0], ':') + 1)); // utf8
 
 		if ($a_min < $b_min) {
 			$return = -1;

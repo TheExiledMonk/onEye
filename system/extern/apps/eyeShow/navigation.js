@@ -19,7 +19,7 @@ var SlimeyNavigation = function(slimey) {
 	this.container.style.left = '0px';
 	this.container.style.top = '59px';
 	this.container.style.width = '195px';
-	this.container.style.cssFloat = 'left'; // eyeOS
+	this.container.style.cssFloat = 'left'; // oneye
 
 	this.slides = new Array();
 	this.doms = new Array();

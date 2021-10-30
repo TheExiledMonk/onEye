@@ -1,7 +1,7 @@
 /*
  * CodePress regular expressions for generic syntax highlighting
  */
- 
+
 // generic languages
 Language.syntax = [
 	{ input : /\"(.*?)(\"|<br>|<\/P>)/g, output : '<s>"$1$2</s>' }, // strings double quote

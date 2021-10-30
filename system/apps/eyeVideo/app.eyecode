@@ -1,24 +1,17 @@
 <?php
 /*
-                                  ____   _____
-                                 / __ \ / ____|
-                  ___ _   _  ___| |  | | (___
-                 / _ \ | | |/ _ \ |  | |\___ \
-                |  __/ |_| |  __/ |__| |____) |
-                 \___|\__, |\___|\____/|_____/
-                       __/ |
-                      |___/              1.9
+  ___  _ __   ___ _   _  ___
+ / _ \| '_ \ / _ \ | | |/ _ \
+| (_) | | | |  __/ |_| |  __/
+ \___/|_| |_|\___|\__, |\___|
+                  |___/
 
-                     Web Operating System
-                           eyeOS.org
+oneye is released under the GNU Affero General Public License Version 3 (AGPL3)
+ -> provided with this release in license.txt
+ -> or via web at www.gnu.org/licenses/agpl-3.0.txt
 
-             eyeOS Engineering Team - www.eyeos.org/team
-
-     eyeOS is released under the GNU Affero General Public License Version 3 (AGPL3)
-            provided with this release in license.txt
-             or via web at gnu.org/licenses/agpl-3.0.txt
-
-        Copyright 2005-2009 eyeOS Team (team@eyeos.org)
+Copyright © 2005 - 2010 eyeos Team (team@eyeos.org)
+             since 2010 Lars Knickrehm (mail@lars-sh.de)
 */
 
 function eyeVideo_run($params = '') {
@@ -31,8 +24,7 @@ function eyeVideo_run($params = '') {
 			'height' => 374,
 			'name' => 'eyeVideo_Window',
 			'savePosition' => 1,
-			'showDragContent' => 2,
-			'title' => utf8_basename($params[0]) . ' - eyeVideo',
+			'title' => basename($params[0]) . ' - eyeVideo',
 			'style' => TITLE + MIN + LISTED + CLOSE,
 			'width' => 470
 		));
@@ -44,8 +36,10 @@ function eyeVideo_run($params = '') {
 			'text' => $params[0]
 		));
 		$myHidden->show();
-		eyex('loadScript',array('url' => 'index.php?version=' . EXTERN_CACHE_VERSION . '&extern=apps/eyeVideo/flowplayer.min.js&type=text'));
-		eyex('rawjs',array('js' => 'sendMsg(' . $checknum . ',"loadVideo","");'));
+		eyex('loadScript',array('url' => 'index.php?extern=apps/eyeVideo/flowplayer.js&type=text'));
+		
+		addShortUrl($myPid . '_eyeVideo','getFile');
+		eyex('rawjs',array('js' => 'var func = function () { if (typeof flowplayer === "function") { flowplayer("' . $myPid . '_eyeVideo_Window_Content", {src: "index.php?extern=apps/eyeVideo/flowplayer.swf", wmode: "opaque"}, "index.php/' . $myPid . '_eyeVideo"); } else { setTimeout(func, 100); } }; func();'));
 	} else {
 		proc('end');
 	}
